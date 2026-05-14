@@ -2426,3 +2426,62 @@ M13 result:
 - For the next performance milestone, focus on reusable compiled prefill graphs,
   prompt-cache construction/reuse, or batching/chunk scheduling rather than
   simply adding more warmup prompts.
+
+## M14 Prefix-Cache Population Mode
+
+M14 compares the current foreground cache-create path against async cache
+population. This isolates the latency cost of building the reusable prefix
+cache on the populate request.
+
+Implementation:
+
+- added `benchmarks/python/prefix_cache_population_mode_probe.py`
+- runs the same repeated-prefix prompt sequence under `sync-safe`
+- runs the same sequence under `async-experimental`
+- writes per-request rows for baseline, populate, and cache-hit phases
+- writes a summary comparing populate request latency and cache-prepare time
+
+622-token validation:
+
+```text
+m14_request sync baseline service_ms 2425.78 cache_prepare_ms 0.0 actual_prefill 622 created False scheduled False hit False
+m14_request sync populate service_ms 467.6 cache_prepare_ms 315.86 actual_prefill 8 created True scheduled False hit False
+m14_request sync hit service_ms 149.25 cache_prepare_ms 0.16 actual_prefill 10 created False scheduled False hit True
+m14_request async baseline service_ms 439.93 cache_prepare_ms 0.0 actual_prefill 622 created False scheduled False hit False
+m14_request async populate service_ms 444.45 cache_prepare_ms 0.07 actual_prefill 625 created False scheduled True hit False
+m14_request async hit service_ms 167.49 cache_prepare_ms 0.18 actual_prefill 10 created False scheduled False hit True
+m14_summary populate_improvement_ms 23.15 async_to_sync_ratio 0.95 prefix-cache-population-mode-m14.jsonl
+```
+
+Longer 1520-token validation:
+
+```text
+m14_request sync baseline service_ms 2898.72 cache_prepare_ms 0.0 actual_prefill 1522 created False scheduled False hit False
+m14_request sync populate service_ms 854.33 cache_prepare_ms 699.92 actual_prefill 8 created True scheduled False hit False
+m14_request sync hit service_ms 153.82 cache_prepare_ms 0.17 actual_prefill 10 created False scheduled False hit True
+m14_request async baseline service_ms 824.95 cache_prepare_ms 0.0 actual_prefill 1521 created False scheduled False hit False
+m14_request async populate service_ms 842.08 cache_prepare_ms 0.09 actual_prefill 1524 created False scheduled True hit False
+m14_request async hit service_ms 156.47 cache_prepare_ms 0.21 actual_prefill 10 created False scheduled False hit True
+m14_summary populate_improvement_ms 12.24 async_to_sync_ratio 0.986 prefix-cache-population-mode-m14-long.jsonl
+```
+
+Interpretation:
+
+- Sync cache population gives the populate request suffix-only prefill, but only
+  after doing a foreground prefix-cache build.
+- Async cache population removes that foreground cache-build stall: cache
+  prepare drops from `699.92 ms` to `0.09 ms` in the longer run.
+- The async populate request still performs full prefill while the cache is
+  scheduled for background construction, so end-to-end populate latency is
+  roughly neutral.
+- The follow-up request hits the cache in both modes and returns to the fast
+  suffix-only path.
+
+M14 result:
+
+- Async cache population should be preferred for interactive throughput modes
+  when foreground latency is more important than making the populate request
+  itself suffix-only.
+- The next real speedup opportunity is to avoid a second prefix prefill during
+  cache creation by reusing or slicing the populate request's own prompt-cache
+  state safely.

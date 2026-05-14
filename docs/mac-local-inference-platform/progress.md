@@ -1188,3 +1188,32 @@
     shape; the next optimization should target reusable compiled prefill graphs,
     prompt-cache construction/reuse, or request-shape batching rather than
     simply adding more warmup prompts
+- Completed M14 prefix-cache population mode measurement:
+  - added `benchmarks/python/prefix_cache_population_mode_probe.py`
+  - probe compares `sync-safe` foreground cache creation against
+    `async-experimental` background cache population for the same repeated-prefix
+    prompt sequence
+  - each mode runs baseline, populate, and follow-up hit requests, prunes cache
+    before the case, records `service_request_ms`, `cache_prepare_ms`,
+    `actual_prefill_tokens`, cache-created/scheduled/hit state, and writes a
+    JSONL summary
+  - 622-token run:
+    - sync populate: `467.60 ms`, including `315.86 ms` foreground
+      `cache_prepare_ms`, suffix-only `actual_prefill_tokens=8`
+    - async populate: `444.45 ms`, `0.07 ms` cache prepare, full
+      `actual_prefill_tokens=625`, cache scheduled in background
+    - async follow-up hit: `167.49 ms`, `actual_prefill_tokens=10`
+  - 1520-token run:
+    - sync populate: `854.33 ms`, including `699.92 ms` foreground
+      `cache_prepare_ms`, suffix-only `actual_prefill_tokens=8`
+    - async populate: `842.08 ms`, `0.09 ms` cache prepare, full
+      `actual_prefill_tokens=1524`, cache scheduled in background
+    - async follow-up hit: `156.47 ms`, `actual_prefill_tokens=10`
+  - M14 conclusion: async cache population removes the foreground cache-build
+    stall from the populate request, but the populate request still pays full
+    prefill; end-to-end populate latency is therefore roughly neutral. The real
+    win is operational: avoid blocking the request path on cache construction
+    and let the next related request get the fast cache-hit path. The next
+    optimization should target reusing the populate request's own prompt cache
+    or safely slicing prompt-cache state so cache creation does not require a
+    second prefill at all.
