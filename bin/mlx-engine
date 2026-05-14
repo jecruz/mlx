@@ -43,6 +43,11 @@ def serve(args: argparse.Namespace) -> int:
         str(args.port),
         "--warmup-prompt-tokens",
         args.warmup_prompt_tokens,
+        (
+            "--warmup-profile-prefill"
+            if args.warmup_profile_prefill
+            else "--no-warmup-profile-prefill"
+        ),
         "--warmup-mode",
         args.warmup_mode,
         "--engine-preset",
@@ -167,8 +172,10 @@ def correctness(args: argparse.Namespace) -> int:
             raise RuntimeError(f"{label} correctness response was empty")
         if response["usage"]["completion_tokens"] <= 0:
             raise RuntimeError(f"{label} correctness response generated no tokens")
-        if response["engine_metrics"]["prefill_step_size"] is None:
-            raise RuntimeError(f"{label} correctness response did not select a prefill policy")
+        if not response["engine_metrics"].get("prefill_selection_source"):
+            raise RuntimeError(
+                f"{label} correctness response did not report a prefill policy"
+            )
 
     if args.expect_same_text:
         a = first["choices"][0]["message"]["content"]
@@ -198,6 +205,12 @@ def build_parser() -> argparse.ArgumentParser:
     serve_parser.add_argument("--host", default="127.0.0.1")
     serve_parser.add_argument("--port", type=int, default=8765)
     serve_parser.add_argument("--warmup-prompt-tokens", default="64,512")
+    serve_parser.add_argument(
+        "--warmup-profile-prefill",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Warm one representative prompt per profile-selected prefill step.",
+    )
     serve_parser.add_argument(
         "--warmup-mode",
         choices=("sync", "async", "off"),

@@ -147,6 +147,7 @@ class ReloadRequest(BaseModel):
     model: str | None = None
     profile: str | None = None
     warmup_prompt_tokens: str | None = None
+    warmup_profile_prefill: bool | None = None
     warmup_mode: WarmupMode | None = None
 
 
@@ -880,6 +881,7 @@ class ResidentEngine:
         model_path: str,
         profile_path: Path | None,
         warmup_prompt_tokens: list[int],
+        warmup_profile_prefill: bool,
         require_gpu: bool,
         max_concurrent_requests: int,
         max_queued_requests: int,
@@ -909,6 +911,7 @@ class ResidentEngine:
         self.model_path = model_path
         self.profile_path = profile_path
         self.warmup_prompt_tokens = warmup_prompt_tokens
+        self.warmup_profile_prefill = warmup_profile_prefill
         self.warmup_mode = warmup_mode
         self.warmup_lock = threading.RLock()
         self.warmup_results: list[dict[str, Any]] = []
@@ -2176,11 +2179,64 @@ class ResidentEngine:
                 break
         thread.join(timeout=1)
 
+    def warmup_targets(self) -> list[dict[str, Any]]:
+        targets: list[dict[str, Any]] = []
+        seen_prompt_tokens: set[int] = set()
+        seen_profile_steps: set[str] = set()
+
+        for prompt_tokens in self.warmup_prompt_tokens:
+            if prompt_tokens in seen_prompt_tokens:
+                continue
+            seen_prompt_tokens.add(prompt_tokens)
+            targets.append(
+                {
+                    "prompt_tokens": prompt_tokens,
+                    "source": "configured",
+                }
+            )
+
+        if not self.warmup_profile_prefill:
+            return targets
+
+        for band in sorted(
+            self.profile.get("prompt_token_bands") or [],
+            key=lambda item: int(item.get("max_prompt_tokens") or 0),
+        ):
+            prompt_tokens = int(band.get("max_prompt_tokens") or 0)
+            if prompt_tokens <= 0:
+                continue
+            step_size = (
+                (band.get("policy") or {})
+                .get("throughput_default", {})
+                .get("prefill_step_size")
+            )
+            step_key = "default" if step_size is None else str(step_size)
+            if step_key in seen_profile_steps:
+                continue
+            seen_profile_steps.add(step_key)
+            if prompt_tokens in seen_prompt_tokens:
+                continue
+            seen_prompt_tokens.add(prompt_tokens)
+            targets.append(
+                {
+                    "prompt_tokens": prompt_tokens,
+                    "source": "profile_band",
+                    "band_min_prompt_tokens": band.get("min_prompt_tokens"),
+                    "band_max_prompt_tokens": band.get("max_prompt_tokens"),
+                }
+            )
+
+        return targets
+
     def _warmup(self):
         results = []
         tokenizer = self.tokenizer.tokenizer if hasattr(self.tokenizer, "tokenizer") else self.tokenizer
-        prefill_step_size = self.selected_prefill_step_size("throughput_default")
-        for prompt_tokens in self.warmup_prompt_tokens:
+        for target in self.warmup_targets():
+            prompt_tokens = int(target["prompt_tokens"])
+            prefill_step_size, prefill_selection = self.selected_prefill_policy(
+                "throughput_default",
+                prompt_tokens=prompt_tokens,
+            )
             token_prompt = build_token_prompt(tokenizer, prompt_tokens)
             row = self._run(
                 prompt=token_prompt,
@@ -2191,7 +2247,15 @@ class ResidentEngine:
             row.pop("_prompt_cache", None)
             row.pop("_owned_prompt_cache", None)
             row["warmup_prompt_tokens"] = prompt_tokens
+            row["warmup_source"] = target["source"]
             row["prefill_step_size"] = prefill_step_size
+            row["prefill_selection_source"] = prefill_selection["source"]
+            row["prefill_band_min_prompt_tokens"] = (
+                prefill_selection["band_min_prompt_tokens"]
+            )
+            row["prefill_band_max_prompt_tokens"] = (
+                prefill_selection["band_max_prompt_tokens"]
+            )
             results.append(row)
         return results
 
@@ -2228,12 +2292,14 @@ class ResidentEngine:
             completed = self.warmup_completed_at is not None and self.warmup_error is None
             return {
                 "mode": self.warmup_mode,
+                "profile_prefill": self.warmup_profile_prefill,
                 "running": running,
                 "completed": completed,
                 "error": self.warmup_error,
                 "started_at": self.warmup_started_at,
                 "completed_at": self.warmup_completed_at,
                 "result_count": len(self.warmup_results),
+                "targets": self.warmup_targets(),
             }
 
     def health(self):
@@ -2252,6 +2318,7 @@ class ResidentEngine:
             "startup_timings": startup_timings,
             "uptime_s": time.time() - self.started_at,
             "warmup_prompt_tokens": self.warmup_prompt_tokens,
+            "warmup_profile_prefill": self.warmup_profile_prefill,
             "warmup_results": self.warmup_results,
             "warmup": self.warmup_snapshot(),
             "profile_path": str(self.profile_path) if self.profile_path else None,
@@ -2278,6 +2345,7 @@ class ResidentEngine:
             "started_at": self.started_at,
             "uptime_s": time.time() - self.started_at,
             "warmup_prompt_tokens": self.warmup_prompt_tokens,
+            "warmup_profile_prefill": self.warmup_profile_prefill,
             "warmup_results": self.warmup_results,
             "warmup": self.warmup_snapshot(),
             "metrics": self.metrics.snapshot(),
@@ -2844,6 +2912,7 @@ class EngineManager:
         model_path: str,
         profile_path: Path | None,
         warmup_prompt_tokens: list[int],
+        warmup_profile_prefill: bool,
         require_gpu: bool,
         max_concurrent_requests: int,
         max_queued_requests: int,
@@ -2861,6 +2930,7 @@ class EngineManager:
         self.lock = threading.Lock()
         self.require_gpu = require_gpu
         self.warmup_prompt_tokens = warmup_prompt_tokens
+        self.warmup_profile_prefill = warmup_profile_prefill
         self.warmup_mode = warmup_mode
         self.max_concurrent_requests = max_concurrent_requests
         self.max_queued_requests = max_queued_requests
@@ -2882,6 +2952,7 @@ class EngineManager:
             model_path=model_path,
             profile_path=profile_path,
             warmup_prompt_tokens=warmup_prompt_tokens,
+            warmup_profile_prefill=warmup_profile_prefill,
             require_gpu=require_gpu,
             max_concurrent_requests=max_concurrent_requests,
             max_queued_requests=max_queued_requests,
@@ -2915,6 +2986,7 @@ class EngineManager:
                 "last_reload_error": self.last_reload_error,
                 "last_unloaded_at": self.last_unloaded_at,
                 "warmup_prompt_tokens": self.warmup_prompt_tokens,
+                "warmup_profile_prefill": self.warmup_profile_prefill,
                 "warmup_mode": self.warmup_mode,
                 "engine_preset": self.engine_preset,
                 "scheduler_config": {
@@ -3115,6 +3187,11 @@ class EngineManager:
                 if request.warmup_prompt_tokens
                 else self.warmup_prompt_tokens
             )
+            warmup_profile_prefill = (
+                request.warmup_profile_prefill
+                if request.warmup_profile_prefill is not None
+                else self.warmup_profile_prefill
+            )
             warmup_mode = request.warmup_mode or self.warmup_mode
 
             try:
@@ -3123,6 +3200,7 @@ class EngineManager:
                     model_path=model_path,
                     profile_path=profile_path,
                     warmup_prompt_tokens=warmup_prompt_tokens,
+                    warmup_profile_prefill=warmup_profile_prefill,
                     require_gpu=self.require_gpu,
                     max_concurrent_requests=self.max_concurrent_requests,
                     max_queued_requests=self.max_queued_requests,
@@ -3147,6 +3225,7 @@ class EngineManager:
                     self.last_model_path = model_path
                     self.last_profile_path = profile_path
                     self.warmup_prompt_tokens = warmup_prompt_tokens
+                    self.warmup_profile_prefill = warmup_profile_prefill
                     self.warmup_mode = warmup_mode
                     self.reload_count += 1
                     self.last_reload_error = None
@@ -3192,6 +3271,15 @@ def parse_args():
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--warmup-prompt-tokens", default="64,512")
+    parser.add_argument(
+        "--warmup-profile-prefill",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Add one representative warmup prompt per profile-selected prefill "
+            "step size."
+        ),
+    )
     parser.add_argument(
         "--warmup-mode",
         choices=("sync", "async", "off"),
@@ -3409,6 +3497,7 @@ def main():
         model_path=args.model,
         profile_path=profile_path,
         warmup_prompt_tokens=parse_warmup_tokens(args.warmup_prompt_tokens),
+        warmup_profile_prefill=args.warmup_profile_prefill,
         require_gpu=args.require_gpu,
         max_concurrent_requests=args.max_concurrent_requests,
         max_queued_requests=args.max_queued_requests,
