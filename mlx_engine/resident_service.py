@@ -53,6 +53,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_min_entries": 0,
             "prefix_cache_population_mode": "sync",
             "prefix_cache_async_idle_timeout_ms": 30000,
+            "prefix_cache_async_idle_grace_ms": 0,
         },
         "async-experimental": {
             "max_concurrent_requests": 1,
@@ -63,6 +64,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_min_entries": 0,
             "prefix_cache_population_mode": "async",
             "prefix_cache_async_idle_timeout_ms": 30000,
+            "prefix_cache_async_idle_grace_ms": 50,
         },
         "memory-saver": {
             "max_concurrent_requests": 1,
@@ -73,6 +75,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_min_entries": 1,
             "prefix_cache_population_mode": "sync",
             "prefix_cache_async_idle_timeout_ms": 30000,
+            "prefix_cache_async_idle_grace_ms": 0,
         },
         "custom": {
             "max_concurrent_requests": 1,
@@ -83,6 +86,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_min_entries": 0,
             "prefix_cache_population_mode": "sync",
             "prefix_cache_async_idle_timeout_ms": 30000,
+            "prefix_cache_async_idle_grace_ms": 0,
         },
     }
     return dict(presets[name])
@@ -157,6 +161,7 @@ class EngineConfigRequest(BaseModel):
     prefix_cache_min_entries: int | None = Field(default=None, ge=0)
     prefix_cache_population_mode: Literal["sync", "async", "off"] | None = None
     prefix_cache_async_idle_timeout_ms: int | None = Field(default=None, ge=1)
+    prefix_cache_async_idle_grace_ms: int | None = Field(default=None, ge=0)
 
 
 class CachePruneRequest(BaseModel):
@@ -683,6 +688,47 @@ class RequestScheduler:
                 self.condition.wait(timeout=remaining)
             return True
 
+    def wait_until_idle_for(
+        self,
+        *,
+        timeout_ms: int,
+        grace_ms: int,
+    ) -> tuple[bool, float, int]:
+        wait_t0 = time.perf_counter()
+        deadline = wait_t0 + timeout_ms / 1000
+        idle_since: float | None = None
+        resets = 0
+        grace_s = max(grace_ms, 0) / 1000
+
+        with self.condition:
+            while True:
+                now = time.perf_counter()
+                busy = self.active_requests > 0 or self.queued_requests > 0
+                if busy:
+                    if idle_since is not None:
+                        resets += 1
+                        idle_since = None
+                    remaining = deadline - now
+                    if remaining <= 0:
+                        return False, 1e3 * (time.perf_counter() - wait_t0), resets
+                    self.condition.wait(timeout=remaining)
+                    continue
+
+                if grace_s <= 0:
+                    return True, 1e3 * (time.perf_counter() - wait_t0), resets
+
+                if idle_since is None:
+                    idle_since = now
+
+                grace_remaining = grace_s - (now - idle_since)
+                if grace_remaining <= 0:
+                    return True, 1e3 * (time.perf_counter() - wait_t0), resets
+
+                remaining = deadline - now
+                if remaining <= 0:
+                    return False, 1e3 * (time.perf_counter() - wait_t0), resets
+                self.condition.wait(timeout=min(remaining, grace_remaining))
+
     def configure(
         self,
         *,
@@ -724,6 +770,7 @@ class SchedulerAdmission:
                 raise SchedulerRejected("resident engine queue is full")
 
             scheduler.queued_requests += 1
+            scheduler.condition.notify_all()
             try:
                 while scheduler.active_requests >= scheduler.max_concurrent_requests:
                     remaining = deadline - time.perf_counter()
@@ -734,6 +781,7 @@ class SchedulerAdmission:
 
                 scheduler.queued_requests -= 1
                 scheduler.active_requests += 1
+                scheduler.condition.notify_all()
                 scheduler.total_admitted += 1
                 queue_wait_ms = 1e3 * (time.perf_counter() - start)
                 scheduler.total_queue_wait_ms += queue_wait_ms
@@ -842,6 +890,7 @@ class ResidentEngine:
         prefix_cache_min_entries: int,
         prefix_cache_population_mode: str,
         prefix_cache_async_idle_timeout_ms: int,
+        prefix_cache_async_idle_grace_ms: int,
         warmup_mode: WarmupMode,
         startup_context: dict[str, Any] | None = None,
     ):
@@ -931,6 +980,9 @@ class ResidentEngine:
         self.prefix_cache_async_background_wait_ms = 0.0
         self.prefix_cache_async_priority_deferrals = 0
         self.prefix_cache_async_idle_timeout_ms = prefix_cache_async_idle_timeout_ms
+        self.prefix_cache_async_idle_grace_ms = prefix_cache_async_idle_grace_ms
+        self.prefix_cache_async_idle_grace_wait_ms = 0.0
+        self.prefix_cache_async_idle_grace_resets = 0
         self.last_prefix_cache_async_error: str | None = None
         self.scheduler = RequestScheduler(
             max_concurrent_requests=max_concurrent_requests,
@@ -1002,6 +1054,13 @@ class ResidentEngine:
                     self.prefix_cache_async_priority_deferrals
                 ),
                 "async_idle_timeout_ms": self.prefix_cache_async_idle_timeout_ms,
+                "async_idle_grace_ms": self.prefix_cache_async_idle_grace_ms,
+                "async_idle_grace_wait_ms": (
+                    self.prefix_cache_async_idle_grace_wait_ms
+                ),
+                "async_idle_grace_resets": (
+                    self.prefix_cache_async_idle_grace_resets
+                ),
                 "last_async_error": self.last_prefix_cache_async_error,
             }
 
@@ -1076,6 +1135,16 @@ class ResidentEngine:
                 policy_changes["async_idle_timeout_ms"] = {
                     "before": before,
                     "after": self.prefix_cache_async_idle_timeout_ms,
+                }
+            if "prefix_cache_async_idle_grace_ms" in config:
+                before = self.prefix_cache_async_idle_grace_ms
+                self.prefix_cache_async_idle_grace_ms = max(
+                    int(config["prefix_cache_async_idle_grace_ms"]),
+                    0,
+                )
+                policy_changes["async_idle_grace_ms"] = {
+                    "before": before,
+                    "after": self.prefix_cache_async_idle_grace_ms,
                 }
         if policy_changes:
             changes["prefix_cache_policy"] = policy_changes
@@ -1201,9 +1270,13 @@ class ResidentEngine:
 
         def worker() -> None:
             try:
-                idle = self.scheduler.wait_until_idle(
-                    timeout_ms=self.prefix_cache_async_idle_timeout_ms
+                idle, grace_wait_ms, grace_resets = self.scheduler.wait_until_idle_for(
+                    timeout_ms=self.prefix_cache_async_idle_timeout_ms,
+                    grace_ms=self.prefix_cache_async_idle_grace_ms,
                 )
+                with self.prefix_cache_build_lock:
+                    self.prefix_cache_async_idle_grace_wait_ms += grace_wait_ms
+                    self.prefix_cache_async_idle_grace_resets += grace_resets
                 if not idle:
                     with self.prefix_cache_build_lock:
                         self.prefix_cache_async_builds_skipped += 1
@@ -1331,12 +1404,64 @@ class ResidentEngine:
         override: int | None = None,
         prompt_tokens: int | None = None,
     ) -> int | None:
+        step_size, _selection = self.selected_prefill_policy(
+            policy,
+            override=override,
+            prompt_tokens=prompt_tokens,
+        )
+        return step_size
+
+    def selected_prefill_band(
+        self,
+        prompt_tokens: int | None,
+    ) -> dict[str, Any] | None:
+        bands = self.profile.get("prompt_token_bands") or []
+        if not bands or prompt_tokens is None:
+            return None
+        ordered = sorted(
+            bands,
+            key=lambda band: int(band.get("max_prompt_tokens") or 0),
+        )
+        for band in ordered:
+            if prompt_tokens <= int(band.get("max_prompt_tokens") or 0):
+                return band
+        return ordered[-1]
+
+    def selected_prefill_policy(
+        self,
+        policy: PolicyName,
+        *,
+        override: int | None = None,
+        prompt_tokens: int | None = None,
+    ) -> tuple[int | None, dict[str, Any]]:
+        effective_policy = self.effective_policy(policy, prompt_tokens)
         if override is not None:
-            return override
-        policy = self.effective_policy(policy, prompt_tokens)
+            return override, {
+                "source": "request_override",
+                "effective_policy": effective_policy,
+                "band_min_prompt_tokens": None,
+                "band_max_prompt_tokens": None,
+            }
+
+        band = self.selected_prefill_band(prompt_tokens)
+        if band is not None:
+            selected = (band.get("policy") or {}).get(effective_policy)
+            if selected is not None:
+                return selected.get("prefill_step_size"), {
+                    "source": "prompt_token_band",
+                    "effective_policy": effective_policy,
+                    "band_min_prompt_tokens": band.get("min_prompt_tokens"),
+                    "band_max_prompt_tokens": band.get("max_prompt_tokens"),
+                }
+
         policy_block = self.profile.get("policy", {})
-        selected = policy_block.get(policy, {})
-        return selected.get("prefill_step_size")
+        selected = policy_block.get(effective_policy, {})
+        return selected.get("prefill_step_size"), {
+            "source": "global_policy",
+            "effective_policy": effective_policy,
+            "band_min_prompt_tokens": None,
+            "band_max_prompt_tokens": None,
+        }
 
     def prompt_token_count(self, prompt: str) -> int:
         return len(self.prompt_tokens(prompt))
@@ -1354,10 +1479,9 @@ class ResidentEngine:
     ) -> dict[str, Any]:
         tokens = self.prompt_tokens(prompt)
         prompt_tokens_estimate = len(tokens)
-        effective_policy = self.effective_policy(policy, prompt_tokens_estimate)
-        prefill_step_size = self.selected_prefill_step_size(
+        prefill_step_size, prefill_selection = self.selected_prefill_policy(
             policy,
-            prefill_step_size_override,
+            override=prefill_step_size_override,
             prompt_tokens=prompt_tokens_estimate,
         )
         request_id = f"req_{uuid.uuid4().hex}"
@@ -1368,8 +1492,15 @@ class ResidentEngine:
             "model": self.model_path,
             "backend": self.backend,
             "policy": policy,
-            "effective_policy": effective_policy,
+            "effective_policy": prefill_selection["effective_policy"],
             "prefill_step_size": prefill_step_size,
+            "prefill_selection_source": prefill_selection["source"],
+            "prefill_band_min_prompt_tokens": (
+                prefill_selection["band_min_prompt_tokens"]
+            ),
+            "prefill_band_max_prompt_tokens": (
+                prefill_selection["band_max_prompt_tokens"]
+            ),
             "prompt_tokens_estimate": prompt_tokens_estimate,
             "default_device": self.device_info["default_device"],
             "metal_available": self.device_info["metal_available"],
@@ -2723,6 +2854,7 @@ class EngineManager:
         prefix_cache_min_entries: int,
         prefix_cache_population_mode: str,
         prefix_cache_async_idle_timeout_ms: int,
+        prefix_cache_async_idle_grace_ms: int,
         warmup_mode: WarmupMode,
         startup_context: dict[str, Any] | None = None,
     ):
@@ -2739,6 +2871,7 @@ class EngineManager:
         self.prefix_cache_min_entries = prefix_cache_min_entries
         self.prefix_cache_population_mode = prefix_cache_population_mode
         self.prefix_cache_async_idle_timeout_ms = prefix_cache_async_idle_timeout_ms
+        self.prefix_cache_async_idle_grace_ms = prefix_cache_async_idle_grace_ms
         self.reload_count = 0
         self.unload_count = 0
         self.last_reload_error: str | None = None
@@ -2759,6 +2892,7 @@ class EngineManager:
             prefix_cache_min_entries=prefix_cache_min_entries,
             prefix_cache_population_mode=prefix_cache_population_mode,
             prefix_cache_async_idle_timeout_ms=prefix_cache_async_idle_timeout_ms,
+            prefix_cache_async_idle_grace_ms=prefix_cache_async_idle_grace_ms,
             warmup_mode=warmup_mode,
             startup_context=startup_context,
         )
@@ -2794,6 +2928,9 @@ class EngineManager:
                 "prefix_cache_population_mode": self.prefix_cache_population_mode,
                 "prefix_cache_async_idle_timeout_ms": (
                     self.prefix_cache_async_idle_timeout_ms
+                ),
+                "prefix_cache_async_idle_grace_ms": (
+                    self.prefix_cache_async_idle_grace_ms
                 ),
             }
         return {
@@ -2856,6 +2993,13 @@ class EngineManager:
                         self.prefix_cache_async_idle_timeout_ms,
                     ),
                 ),
+                "async_idle_grace_ms": config.get(
+                    "prefix_cache_async_idle_grace_ms",
+                    prefix_policy.get(
+                        "async_idle_grace_ms",
+                        self.prefix_cache_async_idle_grace_ms,
+                    ),
+                ),
             },
         }
         if "prefix_cache_memory_limit_mb" in config:
@@ -2881,6 +3025,7 @@ class EngineManager:
             "prefix_cache_min_entries",
             "prefix_cache_population_mode",
             "prefix_cache_async_idle_timeout_ms",
+            "prefix_cache_async_idle_grace_ms",
         ):
             value = getattr(request, key)
             if value is not None:
@@ -2940,6 +3085,12 @@ class EngineManager:
                     self.prefix_cache_async_idle_timeout_ms,
                 )
             )
+            self.prefix_cache_async_idle_grace_ms = int(
+                config.get(
+                    "prefix_cache_async_idle_grace_ms",
+                    self.prefix_cache_async_idle_grace_ms,
+                )
+            )
 
             if self.engine is None:
                 return {
@@ -2983,6 +3134,9 @@ class EngineManager:
                     prefix_cache_population_mode=self.prefix_cache_population_mode,
                     prefix_cache_async_idle_timeout_ms=(
                         self.prefix_cache_async_idle_timeout_ms
+                    ),
+                    prefix_cache_async_idle_grace_ms=(
+                        self.prefix_cache_async_idle_grace_ms
                     ),
                     warmup_mode=warmup_mode,
                 )
@@ -3063,6 +3217,7 @@ def parse_args():
         default="sync",
     )
     parser.add_argument("--prefix-cache-async-idle-timeout-ms", type=int, default=30000)
+    parser.add_argument("--prefix-cache-async-idle-grace-ms", type=int, default=0)
     return parser.parse_args()
 
 
@@ -3264,6 +3419,7 @@ def main():
         prefix_cache_min_entries=args.prefix_cache_min_entries,
         prefix_cache_population_mode=args.prefix_cache_population_mode,
         prefix_cache_async_idle_timeout_ms=args.prefix_cache_async_idle_timeout_ms,
+        prefix_cache_async_idle_grace_ms=args.prefix_cache_async_idle_grace_ms,
         warmup_mode=args.warmup_mode,
         startup_context=startup_context,
     )

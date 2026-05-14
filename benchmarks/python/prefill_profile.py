@@ -97,6 +97,36 @@ def select_profiles(candidates, memory_headroom_gb):
     }
 
 
+def select_prompt_token_bands(candidates, memory_headroom_gb):
+    by_prompt_tokens = {}
+    for row in candidates:
+        by_prompt_tokens.setdefault(int(row["prompt_tokens"]), []).append(row)
+
+    bands = []
+    previous_max = 0
+    for prompt_tokens, group in sorted(by_prompt_tokens.items()):
+        bands.append(
+            {
+                "min_prompt_tokens": previous_max + 1,
+                "max_prompt_tokens": prompt_tokens,
+                "candidate_count": len(group),
+                "policy": select_profiles(group, memory_headroom_gb),
+            }
+        )
+        previous_max = prompt_tokens
+    return bands
+
+
+def select_global_fallback_policy(candidates, memory_headroom_gb):
+    largest_prompt_tokens = max(int(row["prompt_tokens"]) for row in candidates)
+    largest_prompt_candidates = [
+        row
+        for row in candidates
+        if int(row["prompt_tokens"]) == largest_prompt_tokens
+    ]
+    return select_profiles(largest_prompt_candidates, memory_headroom_gb)
+
+
 def main():
     args = parse_args()
     rows = load_rows(args.input_jsonl)
@@ -110,7 +140,11 @@ def main():
         "backend": backend,
         "default_device": device,
         "metal_available": metal,
-        "policy": select_profiles(candidates, args.memory_headroom_gb),
+        "policy": select_global_fallback_policy(candidates, args.memory_headroom_gb),
+        "prompt_token_bands": select_prompt_token_bands(
+            candidates,
+            args.memory_headroom_gb,
+        ),
         "candidates": candidates,
         "source_files": [str(path) for path in args.input_jsonl],
     }

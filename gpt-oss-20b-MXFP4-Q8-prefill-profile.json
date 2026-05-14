@@ -36,6 +36,96 @@
       "prefill_step_size": 4096,
       "prompt_tokens": 4096,
       "samples": 1
+    },
+    {
+      "max_peak_memory_gb": 12.174819908,
+      "mean_prompt_tps": 202.38077040319092,
+      "mean_run_ms": 145.34074999392033,
+      "median_prompt_tps": 202.38077040319092,
+      "prefill_step_size": null,
+      "prompt_tokens": 8,
+      "samples": 2
+    },
+    {
+      "max_peak_memory_gb": 12.174819908,
+      "mean_prompt_tps": 319.82096319607376,
+      "mean_run_ms": 147.08106295438483,
+      "median_prompt_tps": 319.82096319607376,
+      "prefill_step_size": null,
+      "prompt_tokens": 16,
+      "samples": 2
+    },
+    {
+      "max_peak_memory_gb": 12.174819908,
+      "mean_prompt_tps": 434.9377439119679,
+      "mean_run_ms": 167.80785453738645,
+      "median_prompt_tps": 434.9377439119679,
+      "prefill_step_size": null,
+      "prompt_tokens": 32,
+      "samples": 2
+    },
+    {
+      "max_peak_memory_gb": 12.175158622,
+      "mean_prompt_tps": 654.5749060876262,
+      "mean_run_ms": 195.79277106095105,
+      "median_prompt_tps": 654.5749060876262,
+      "prefill_step_size": null,
+      "prompt_tokens": 64,
+      "samples": 2
+    },
+    {
+      "max_peak_memory_gb": 12.265069534,
+      "mean_prompt_tps": 866.4000815641689,
+      "mean_run_ms": 253.99795803241432,
+      "median_prompt_tps": 866.4000815641689,
+      "prefill_step_size": null,
+      "prompt_tokens": 128,
+      "samples": 2
+    },
+    {
+      "max_peak_memory_gb": 12.344051666,
+      "mean_prompt_tps": 1196.9574677842857,
+      "mean_run_ms": 320.9333959966898,
+      "median_prompt_tps": 1196.9574677842857,
+      "prefill_step_size": null,
+      "prompt_tokens": 256,
+      "samples": 2
+    },
+    {
+      "max_peak_memory_gb": 12.609505466,
+      "mean_prompt_tps": 1778.1393378313267,
+      "mean_run_ms": 387.6449583331123,
+      "median_prompt_tps": 1814.5497093755007,
+      "prefill_step_size": null,
+      "prompt_tokens": 512,
+      "samples": 3
+    },
+    {
+      "max_peak_memory_gb": 12.685179238,
+      "mean_prompt_tps": 1691.9462633454948,
+      "mean_run_ms": 703.4565419889987,
+      "median_prompt_tps": 1691.9462633454948,
+      "prefill_step_size": null,
+      "prompt_tokens": 1024,
+      "samples": 1
+    },
+    {
+      "max_peak_memory_gb": 12.953224434,
+      "mean_prompt_tps": 2114.4884155161053,
+      "mean_run_ms": 1069.8115000268444,
+      "median_prompt_tps": 2114.4884155161053,
+      "prefill_step_size": null,
+      "prompt_tokens": 2048,
+      "samples": 1
+    },
+    {
+      "max_peak_memory_gb": 13.019112678,
+      "mean_prompt_tps": 1988.4729494629605,
+      "mean_run_ms": 2158.8161250110716,
+      "median_prompt_tps": 1988.4729494629605,
+      "prefill_step_size": null,
+      "prompt_tokens": 4096,
+      "samples": 1
     }
   ],
   "default_device": "Device(gpu, 0)",
@@ -70,7 +160,351 @@
       "samples": 1
     }
   },
+  "prompt_token_bands": [
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 8,
+      "min_prompt_tokens": 1,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 202.38077040319092,
+          "mean_run_ms": 145.34074999392033,
+          "median_prompt_tps": 202.38077040319092,
+          "prefill_step_size": null,
+          "prompt_tokens": 8,
+          "samples": 2
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 202.38077040319092,
+          "mean_run_ms": 145.34074999392033,
+          "median_prompt_tps": 202.38077040319092,
+          "prefill_step_size": null,
+          "prompt_tokens": 8,
+          "samples": 2
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 202.38077040319092,
+          "mean_run_ms": 145.34074999392033,
+          "median_prompt_tps": 202.38077040319092,
+          "prefill_step_size": null,
+          "prompt_tokens": 8,
+          "samples": 2
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 16,
+      "min_prompt_tokens": 9,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 319.82096319607376,
+          "mean_run_ms": 147.08106295438483,
+          "median_prompt_tps": 319.82096319607376,
+          "prefill_step_size": null,
+          "prompt_tokens": 16,
+          "samples": 2
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 319.82096319607376,
+          "mean_run_ms": 147.08106295438483,
+          "median_prompt_tps": 319.82096319607376,
+          "prefill_step_size": null,
+          "prompt_tokens": 16,
+          "samples": 2
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 319.82096319607376,
+          "mean_run_ms": 147.08106295438483,
+          "median_prompt_tps": 319.82096319607376,
+          "prefill_step_size": null,
+          "prompt_tokens": 16,
+          "samples": 2
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 32,
+      "min_prompt_tokens": 17,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 434.9377439119679,
+          "mean_run_ms": 167.80785453738645,
+          "median_prompt_tps": 434.9377439119679,
+          "prefill_step_size": null,
+          "prompt_tokens": 32,
+          "samples": 2
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 434.9377439119679,
+          "mean_run_ms": 167.80785453738645,
+          "median_prompt_tps": 434.9377439119679,
+          "prefill_step_size": null,
+          "prompt_tokens": 32,
+          "samples": 2
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.174819908,
+          "mean_prompt_tps": 434.9377439119679,
+          "mean_run_ms": 167.80785453738645,
+          "median_prompt_tps": 434.9377439119679,
+          "prefill_step_size": null,
+          "prompt_tokens": 32,
+          "samples": 2
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 64,
+      "min_prompt_tokens": 33,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.175158622,
+          "mean_prompt_tps": 654.5749060876262,
+          "mean_run_ms": 195.79277106095105,
+          "median_prompt_tps": 654.5749060876262,
+          "prefill_step_size": null,
+          "prompt_tokens": 64,
+          "samples": 2
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.175158622,
+          "mean_prompt_tps": 654.5749060876262,
+          "mean_run_ms": 195.79277106095105,
+          "median_prompt_tps": 654.5749060876262,
+          "prefill_step_size": null,
+          "prompt_tokens": 64,
+          "samples": 2
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.175158622,
+          "mean_prompt_tps": 654.5749060876262,
+          "mean_run_ms": 195.79277106095105,
+          "median_prompt_tps": 654.5749060876262,
+          "prefill_step_size": null,
+          "prompt_tokens": 64,
+          "samples": 2
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 128,
+      "min_prompt_tokens": 65,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.265069534,
+          "mean_prompt_tps": 866.4000815641689,
+          "mean_run_ms": 253.99795803241432,
+          "median_prompt_tps": 866.4000815641689,
+          "prefill_step_size": null,
+          "prompt_tokens": 128,
+          "samples": 2
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.265069534,
+          "mean_prompt_tps": 866.4000815641689,
+          "mean_run_ms": 253.99795803241432,
+          "median_prompt_tps": 866.4000815641689,
+          "prefill_step_size": null,
+          "prompt_tokens": 128,
+          "samples": 2
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.265069534,
+          "mean_prompt_tps": 866.4000815641689,
+          "mean_run_ms": 253.99795803241432,
+          "median_prompt_tps": 866.4000815641689,
+          "prefill_step_size": null,
+          "prompt_tokens": 128,
+          "samples": 2
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 256,
+      "min_prompt_tokens": 129,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.344051666,
+          "mean_prompt_tps": 1196.9574677842857,
+          "mean_run_ms": 320.9333959966898,
+          "median_prompt_tps": 1196.9574677842857,
+          "prefill_step_size": null,
+          "prompt_tokens": 256,
+          "samples": 2
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.344051666,
+          "mean_prompt_tps": 1196.9574677842857,
+          "mean_run_ms": 320.9333959966898,
+          "median_prompt_tps": 1196.9574677842857,
+          "prefill_step_size": null,
+          "prompt_tokens": 256,
+          "samples": 2
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.344051666,
+          "mean_prompt_tps": 1196.9574677842857,
+          "mean_run_ms": 320.9333959966898,
+          "median_prompt_tps": 1196.9574677842857,
+          "prefill_step_size": null,
+          "prompt_tokens": 256,
+          "samples": 2
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 512,
+      "min_prompt_tokens": 257,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.609505466,
+          "mean_prompt_tps": 1778.1393378313267,
+          "mean_run_ms": 387.6449583331123,
+          "median_prompt_tps": 1814.5497093755007,
+          "prefill_step_size": null,
+          "prompt_tokens": 512,
+          "samples": 3
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.609505466,
+          "mean_prompt_tps": 1778.1393378313267,
+          "mean_run_ms": 387.6449583331123,
+          "median_prompt_tps": 1814.5497093755007,
+          "prefill_step_size": null,
+          "prompt_tokens": 512,
+          "samples": 3
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.609505466,
+          "mean_prompt_tps": 1778.1393378313267,
+          "mean_run_ms": 387.6449583331123,
+          "median_prompt_tps": 1814.5497093755007,
+          "prefill_step_size": null,
+          "prompt_tokens": 512,
+          "samples": 3
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 1024,
+      "min_prompt_tokens": 513,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.685179238,
+          "mean_prompt_tps": 1691.9462633454948,
+          "mean_run_ms": 703.4565419889987,
+          "median_prompt_tps": 1691.9462633454948,
+          "prefill_step_size": null,
+          "prompt_tokens": 1024,
+          "samples": 1
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.685179238,
+          "mean_prompt_tps": 1691.9462633454948,
+          "mean_run_ms": 703.4565419889987,
+          "median_prompt_tps": 1691.9462633454948,
+          "prefill_step_size": null,
+          "prompt_tokens": 1024,
+          "samples": 1
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.685179238,
+          "mean_prompt_tps": 1691.9462633454948,
+          "mean_run_ms": 703.4565419889987,
+          "median_prompt_tps": 1691.9462633454948,
+          "prefill_step_size": null,
+          "prompt_tokens": 1024,
+          "samples": 1
+        }
+      }
+    },
+    {
+      "candidate_count": 1,
+      "max_prompt_tokens": 2048,
+      "min_prompt_tokens": 1025,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 12.953224434,
+          "mean_prompt_tps": 2114.4884155161053,
+          "mean_run_ms": 1069.8115000268444,
+          "median_prompt_tps": 2114.4884155161053,
+          "prefill_step_size": null,
+          "prompt_tokens": 2048,
+          "samples": 1
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.953224434,
+          "mean_prompt_tps": 2114.4884155161053,
+          "mean_run_ms": 1069.8115000268444,
+          "median_prompt_tps": 2114.4884155161053,
+          "prefill_step_size": null,
+          "prompt_tokens": 2048,
+          "samples": 1
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 12.953224434,
+          "mean_prompt_tps": 2114.4884155161053,
+          "mean_run_ms": 1069.8115000268444,
+          "median_prompt_tps": 2114.4884155161053,
+          "prefill_step_size": null,
+          "prompt_tokens": 2048,
+          "samples": 1
+        }
+      }
+    },
+    {
+      "candidate_count": 5,
+      "max_prompt_tokens": 4096,
+      "min_prompt_tokens": 2049,
+      "policy": {
+        "balanced": {
+          "max_peak_memory_gb": 13.019112678,
+          "mean_prompt_tps": 2082.167368165406,
+          "mean_run_ms": 2070.5598749918863,
+          "median_prompt_tps": 2082.167368165406,
+          "prefill_step_size": 2048,
+          "prompt_tokens": 4096,
+          "samples": 1
+        },
+        "memory_saver": {
+          "max_peak_memory_gb": 12.651668218,
+          "mean_prompt_tps": 1811.3944497057887,
+          "mean_run_ms": 2354.9905420513824,
+          "median_prompt_tps": 1811.3944497057887,
+          "prefill_step_size": 512,
+          "prompt_tokens": 4096,
+          "samples": 1
+        },
+        "throughput_default": {
+          "max_peak_memory_gb": 13.019112678,
+          "mean_prompt_tps": 2082.167368165406,
+          "mean_run_ms": 2070.5598749918863,
+          "median_prompt_tps": 2082.167368165406,
+          "prefill_step_size": 2048,
+          "prompt_tokens": 4096,
+          "samples": 1
+        }
+      }
+    }
+  ],
   "source_files": [
+    "gpu-prompt-sweep-steady.jsonl",
+    "gpu-prompt-sweep-long.jsonl",
     "gpu-prefill-step-512.jsonl",
     "gpu-prefill-step-1024.jsonl",
     "gpu-prefill-step-2048.jsonl",

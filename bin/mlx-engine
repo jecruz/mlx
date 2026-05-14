@@ -45,6 +45,26 @@ def serve(args: argparse.Namespace) -> int:
         args.warmup_prompt_tokens,
         "--warmup-mode",
         args.warmup_mode,
+        "--engine-preset",
+        args.engine_preset,
+        "--max-concurrent-requests",
+        str(args.max_concurrent_requests),
+        "--max-queued-requests",
+        str(args.max_queued_requests),
+        "--queue-timeout-ms",
+        str(args.queue_timeout_ms),
+        "--prefix-cache-max-entries",
+        str(args.prefix_cache_max_entries),
+        "--prefix-cache-memory-limit-mb",
+        str(args.prefix_cache_memory_limit_mb),
+        "--prefix-cache-min-entries",
+        str(args.prefix_cache_min_entries),
+        "--prefix-cache-population-mode",
+        args.prefix_cache_population_mode,
+        "--prefix-cache-async-idle-timeout-ms",
+        str(args.prefix_cache_async_idle_timeout_ms),
+        "--prefix-cache-async-idle-grace-ms",
+        str(args.prefix_cache_async_idle_grace_ms),
     ]
     if args.profile:
         cmd.extend(["--profile", args.profile])
@@ -104,6 +124,8 @@ def suite(args: argparse.Namespace) -> int:
         cmd.append("--skip-generated-cache-edges")
     if args.skip_concurrent_cancel_pressure:
         cmd.append("--skip-concurrent-cancel-pressure")
+    if args.skip_async_cache_priority:
+        cmd.append("--skip-async-cache-priority")
     return subprocess.call(cmd, cwd=ROOT)
 
 
@@ -183,6 +205,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="Use async by default for interactive service readiness.",
     )
     serve_parser.add_argument("--require-gpu", action=argparse.BooleanOptionalAction, default=True)
+    serve_parser.add_argument(
+        "--engine-preset",
+        choices=("custom", "sync-safe", "async-experimental", "memory-saver"),
+        default="custom",
+    )
+    serve_parser.add_argument("--max-concurrent-requests", type=int, default=1)
+    serve_parser.add_argument("--max-queued-requests", type=int, default=16)
+    serve_parser.add_argument("--queue-timeout-ms", type=int, default=30000)
+    serve_parser.add_argument("--prefix-cache-max-entries", type=int, default=16)
+    serve_parser.add_argument("--prefix-cache-memory-limit-mb", type=float, default=0.0)
+    serve_parser.add_argument("--prefix-cache-min-entries", type=int, default=0)
+    serve_parser.add_argument(
+        "--prefix-cache-population-mode",
+        choices=("sync", "async", "off"),
+        default="sync",
+    )
+    serve_parser.add_argument("--prefix-cache-async-idle-timeout-ms", type=int, default=30000)
+    serve_parser.add_argument("--prefix-cache-async-idle-grace-ms", type=int, default=0)
     serve_parser.set_defaults(func=serve)
 
     smoke_parser = subcommands.add_parser("smoke", help="Smoke-test a running engine")
@@ -208,6 +248,7 @@ def build_parser() -> argparse.ArgumentParser:
     suite_parser.add_argument("--skip-generated-cache-safety", action="store_true")
     suite_parser.add_argument("--skip-generated-cache-edges", action="store_true")
     suite_parser.add_argument("--skip-concurrent-cancel-pressure", action="store_true")
+    suite_parser.add_argument("--skip-async-cache-priority", action="store_true")
     suite_parser.set_defaults(func=suite)
 
     correctness_parser = subcommands.add_parser("correctness", help="Run API correctness gates")

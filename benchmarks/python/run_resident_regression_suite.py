@@ -157,6 +157,7 @@ def main() -> int:
     parser.add_argument("--skip-generated-cache-safety", action="store_true")
     parser.add_argument("--skip-generated-cache-edges", action="store_true")
     parser.add_argument("--skip-concurrent-cancel-pressure", action="store_true")
+    parser.add_argument("--skip-async-cache-priority", action="store_true")
     parser.add_argument("--generated-cache-long-max-tokens", type=int, default=32)
     parser.add_argument("--generated-cache-stream-max-tokens", type=int, default=12)
     parser.add_argument("--generated-cache-cancel-repeats", type=int, default=96)
@@ -313,6 +314,17 @@ def main() -> int:
             cwd=cwd,
         )
 
+    if not args.skip_async_cache_priority:
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/async_cache_priority_probe.py",
+                "--base-url",
+                args.base_url,
+            ],
+            cwd=cwd,
+        )
+
     if args.cold_start:
         print(
             "suite_result PASS",
@@ -325,6 +337,8 @@ def main() -> int:
             not args.skip_generated_cache_edges,
             "concurrent_cancel_pressure=",
             not args.skip_concurrent_cancel_pressure,
+            "async_cache_priority=",
+            not args.skip_async_cache_priority,
         )
     else:
         print(
@@ -337,6 +351,8 @@ def main() -> int:
             not args.skip_generated_cache_edges,
             "concurrent_cancel_pressure=",
             not args.skip_concurrent_cancel_pressure,
+            "async_cache_priority=",
+            not args.skip_async_cache_priority,
         )
     return 0
 
