@@ -1,0 +1,232 @@
+#!/usr/bin/env python3
+"""CLI wrapper for the resident MLX local inference engine."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+import urllib.request
+from pathlib import Path
+from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+PYTHON_DIR = ROOT / "benchmarks" / "python"
+SERVICE = ROOT / "mlx_engine" / "resident_service.py"
+SMOKE = PYTHON_DIR / "smoke_resident_service.py"
+READY = PYTHON_DIR / "wait_resident_ready.py"
+REGRESSION_SUITE = PYTHON_DIR / "run_resident_regression_suite.py"
+
+
+def request_json(method: str, url: str, payload: dict[str, Any] | None = None):
+    data = None
+    headers = {}
+    if payload is not None:
+        data = json.dumps(payload).encode()
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, method=method, headers=headers)
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        return json.loads(resp.read().decode())
+
+
+def serve(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(SERVICE),
+        "--model",
+        args.model,
+        "--host",
+        args.host,
+        "--port",
+        str(args.port),
+        "--warmup-prompt-tokens",
+        args.warmup_prompt_tokens,
+        "--warmup-mode",
+        args.warmup_mode,
+    ]
+    if args.profile:
+        cmd.extend(["--profile", args.profile])
+    if args.require_gpu:
+        cmd.append("--require-gpu")
+    try:
+        return subprocess.call(cmd, cwd=ROOT)
+    except KeyboardInterrupt:
+        return 130
+
+
+def smoke(args: argparse.Namespace) -> int:
+    cmd = [sys.executable, str(SMOKE), "--base-url", args.base_url]
+    return subprocess.call(cmd, cwd=ROOT)
+
+
+def ready(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(READY),
+        "--base-url",
+        args.base_url,
+        "--timeout-s",
+        str(args.timeout_s),
+    ]
+    if args.require_gpu:
+        cmd.append("--require-gpu")
+    if args.require_warmup:
+        cmd.append("--require-warmup")
+    return subprocess.call(cmd, cwd=ROOT)
+
+
+def suite(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(REGRESSION_SUITE),
+        "--base-url",
+        args.base_url,
+        "--tag",
+        args.tag,
+        "--requests",
+        str(args.requests),
+        "--prefill-runs",
+        str(args.prefill_runs),
+        "--prefix-repeats",
+        str(args.prefix_repeats),
+        "--max-tokens",
+        str(args.max_tokens),
+        "--prefill-max-tokens",
+        str(args.prefill_max_tokens),
+    ]
+    if args.cold_start:
+        cmd.append("--cold-start")
+    if args.skip_generated_cache_safety:
+        cmd.append("--skip-generated-cache-safety")
+    if args.skip_generated_cache_edges:
+        cmd.append("--skip-generated-cache-edges")
+    if args.skip_concurrent_cancel_pressure:
+        cmd.append("--skip-concurrent-cancel-pressure")
+    return subprocess.call(cmd, cwd=ROOT)
+
+
+def correctness(args: argparse.Namespace) -> int:
+    base_url = args.base_url.rstrip("/")
+    engine = request_json("GET", f"{base_url}/engine")
+    if not engine["ok"]:
+        raise RuntimeError("engine did not report ok=true")
+    if args.require_gpu and "gpu" not in engine["device"]["default_device"]:
+        raise RuntimeError(f"engine is not on GPU: {engine['device']['default_device']}")
+    if args.require_profile and not engine["profile_loaded"]:
+        raise RuntimeError("engine did not load a profile")
+
+    first = request_json(
+        "POST",
+        f"{base_url}/v1/chat/completions",
+        {
+            "model": "mlx-engine-correctness",
+            "messages": [{"role": "user", "content": args.prompt}],
+            "max_tokens": args.max_tokens,
+            "policy": "auto",
+        },
+    )
+    second = request_json(
+        "POST",
+        f"{base_url}/v1/chat/completions",
+        {
+            "model": "mlx-engine-correctness",
+            "messages": [{"role": "user", "content": args.prompt}],
+            "max_tokens": args.max_tokens,
+            "policy": "auto",
+        },
+    )
+
+    for label, response in (("first", first), ("second", second)):
+        choice = response["choices"][0]
+        content = choice["message"]["content"]
+        if not content:
+            raise RuntimeError(f"{label} correctness response was empty")
+        if response["usage"]["completion_tokens"] <= 0:
+            raise RuntimeError(f"{label} correctness response generated no tokens")
+        if response["engine_metrics"]["prefill_step_size"] is None:
+            raise RuntimeError(f"{label} correctness response did not select a prefill policy")
+
+    if args.expect_same_text:
+        a = first["choices"][0]["message"]["content"]
+        b = second["choices"][0]["message"]["content"]
+        if a != b:
+            raise RuntimeError("repeat correctness responses differed")
+
+    metrics = request_json("GET", f"{base_url}/metrics")
+    print(
+        "correctness",
+        "ok",
+        engine["device"]["default_device"],
+        engine["profile_loaded"],
+        metrics["total_requests"],
+        metrics["failed_requests"],
+    )
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Resident MLX engine CLI")
+    subcommands = parser.add_subparsers(dest="command", required=True)
+
+    serve_parser = subcommands.add_parser("serve", help="Run the resident engine")
+    serve_parser.add_argument("--model", required=True)
+    serve_parser.add_argument("--profile")
+    serve_parser.add_argument("--host", default="127.0.0.1")
+    serve_parser.add_argument("--port", type=int, default=8765)
+    serve_parser.add_argument("--warmup-prompt-tokens", default="64,512")
+    serve_parser.add_argument(
+        "--warmup-mode",
+        choices=("sync", "async", "off"),
+        default="async",
+        help="Use async by default for interactive service readiness.",
+    )
+    serve_parser.add_argument("--require-gpu", action=argparse.BooleanOptionalAction, default=True)
+    serve_parser.set_defaults(func=serve)
+
+    smoke_parser = subcommands.add_parser("smoke", help="Smoke-test a running engine")
+    smoke_parser.add_argument("--base-url", default="http://127.0.0.1:8765")
+    smoke_parser.set_defaults(func=smoke)
+
+    ready_parser = subcommands.add_parser("ready", help="Wait for engine readiness")
+    ready_parser.add_argument("--base-url", default="http://127.0.0.1:8765")
+    ready_parser.add_argument("--timeout-s", type=float, default=120.0)
+    ready_parser.add_argument("--require-gpu", action=argparse.BooleanOptionalAction, default=True)
+    ready_parser.add_argument("--require-warmup", action=argparse.BooleanOptionalAction, default=False)
+    ready_parser.set_defaults(func=ready)
+
+    suite_parser = subcommands.add_parser("suite", help="Run resident regression suite")
+    suite_parser.add_argument("--base-url", default="http://127.0.0.1:8765")
+    suite_parser.add_argument("--tag", default="cli-suite")
+    suite_parser.add_argument("--requests", type=int, default=6)
+    suite_parser.add_argument("--prefill-runs", type=int, default=5)
+    suite_parser.add_argument("--prefix-repeats", type=int, default=24)
+    suite_parser.add_argument("--max-tokens", type=int, default=8)
+    suite_parser.add_argument("--prefill-max-tokens", type=int, default=4)
+    suite_parser.add_argument("--cold-start", action="store_true")
+    suite_parser.add_argument("--skip-generated-cache-safety", action="store_true")
+    suite_parser.add_argument("--skip-generated-cache-edges", action="store_true")
+    suite_parser.add_argument("--skip-concurrent-cancel-pressure", action="store_true")
+    suite_parser.set_defaults(func=suite)
+
+    correctness_parser = subcommands.add_parser("correctness", help="Run API correctness gates")
+    correctness_parser.add_argument("--base-url", default="http://127.0.0.1:8765")
+    correctness_parser.add_argument("--prompt", default="Reply with one concise fact about MLX.")
+    correctness_parser.add_argument("--max-tokens", type=int, default=8)
+    correctness_parser.add_argument("--require-gpu", action=argparse.BooleanOptionalAction, default=True)
+    correctness_parser.add_argument("--require-profile", action=argparse.BooleanOptionalAction, default=True)
+    correctness_parser.add_argument("--expect-same-text", action="store_true")
+    correctness_parser.set_defaults(func=correctness)
+
+    return parser
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

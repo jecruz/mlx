@@ -1,0 +1,95 @@
+# Findings
+
+- The model at `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit` is multimodal, with `model_type = qwen3_5_moe` and `vision_config` present in `config.json`.
+- The direct benchmark harness can load it and measure prompt/runtime timings without the full CLI path.
+- On the minimal prompt `Hi`, the run completed with:
+  - load: `13156.41 ms`
+  - run: `29056.67 ms`
+  - prompt_tokens: `1`
+  - generation_tokens: `1`
+  - prompt_tps: `0.034`
+  - generation_tps: `5885.226`
+  - peak_memory: `21.678 GB`
+- A longer, more representative prompt still stayed in the prompt phase long enough that it was not practical to wait for a first token in this shell, which reinforces that prompt processing remains the dominant latency sink.
+- The repo-local benchmark path is CPU-only in this sandbox:
+  - `mx.metal.is_available: False`
+  - `mx.default_device: Device(cpu, 0)`
+- The text-only `gpt-oss-20b` checkpoint produced two useful fixed-length prompt points on that CPU path:
+  - 8 tokens: load `8840.97 ms`, run `111688.64 ms`, prompt_tps `0.072`, peak memory `12.087 GB`
+  - 16 tokens: load `3218.49 ms`, run `195838.75 ms`, prompt_tps `0.082`, peak memory `12.087 GB`
+- A 32-token point completed successfully on the same CPU path:
+  - 32 tokens: load `6766.61 ms`, run `374564.91 ms`, prompt_tps `0.085`, peak memory `12.091 GB`
+- A 64-token point completed successfully on the same CPU path:
+  - 64 tokens: load `7514.73 ms`, run `739567.15 ms`, prompt_tps `0.087`, peak memory `12.101 GB`
+- The prompt throughput increases slightly as prompt length rises, which suggests fixed setup overhead still matters on short prompts, but the phase remains extremely expensive overall.
+- Across 8, 16, 32, and 64 tokens, prompt throughput stays in a narrow band around `0.07-0.09 tok/s`, indicating the runtime is dominated by a very slow CPU execution path rather than model-format corruption.
+- The prompt phase still dominates total latency on the CPU path, and generation remains comparatively cheap once the first token is reached.
+- The local GPU build is currently blocked by Xcode/Metal toolchain availability in this sandbox even after downloading the Metal Toolchain component.
+- Integrity check on `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8` shows:
+  - 3 shard files listed in `model.safetensors.index.json`
+  - no missing shard files
+  - 775 named weights in the index
+  - `model_type = gpt_oss`
+  - matching installed loader class `GptOssMoeModel` in `mlx_lm.models.gpt_oss`
+- This points to a valid checkpoint/format, not a broken or mismatched model package.
+- The benchmark harness now supports `--require-gpu`, which exits before model load if MLX is not using `Device(gpu, 0)`.
+- The benchmark harness now supports `--json`, which emits one structured result object for sweep collection.
+- `benchmarks/python/run_prompt_sweep.sh` runs the 8/16/32/64 token sweep and writes JSONL output, but it intentionally requires a Metal GPU path.
+- The first Metal-backed shell sweep on `gpt-oss-20b-MXFP4-Q8` confirmed real GPU execution but also exposed warm-up noise because the model was reloaded for every prompt length:
+  - 8 tokens: run `2872.15 ms`, prompt_tps `2.891`
+  - 16 tokens: run `2164.04 ms`, prompt_tps `7.743`
+  - 32 tokens: run `460.71 ms`, prompt_tps `88.671`
+  - 64 tokens: run `420.38 ms`, prompt_tps `198.976`
+- The in-process steady-state sweep loads once, warms once, and then measures prompt lengths without repeated model-load noise.
+- Steady-state Metal prompt processing on `gpt-oss-20b-MXFP4-Q8` is much healthier than the initial shell sweep suggested:
+  - 8 tokens: `190.294` and `214.467` prompt tok/s
+  - 16 tokens: `320.347` and `319.295` prompt tok/s
+  - 32 tokens: `433.436` and `436.439` prompt tok/s
+  - 64 tokens: `650.767` and `658.383` prompt tok/s
+  - 128 tokens: `700.802` and `1031.998` prompt tok/s
+  - 256 tokens: `942.057` and `1451.858` prompt tok/s
+  - 512 tokens: `1696.925` and `1814.550` prompt tok/s
+- The steady-state sweep summary reported mean prompt throughput `775.830 tok/s`, median `654.575 tok/s`, and mean run time `231.34 ms`.
+- The prompt-processing problem is therefore not a broken model and not basic GPU fallback for this checkpoint. The remaining performance question is long-context prefill scaling, prefill chunk sizing, graph compilation/warm-up strategy, and whether LM Studio is paying avoidable cold-start costs.
+- Long-context Metal prefill on `gpt-oss-20b-MXFP4-Q8` remains healthy through 4096 prompt tokens:
+  - 512 tokens: run `386.14 ms`, prompt_tps `1822.944`, peak memory `12.610 GB`
+  - 1024 tokens: run `703.46 ms`, prompt_tps `1691.946`, peak memory `12.685 GB`
+  - 2048 tokens: run `1069.81 ms`, prompt_tps `2114.488`, peak memory `12.953 GB`
+  - 4096 tokens: run `2158.82 ms`, prompt_tps `1988.473`, peak memory `13.019 GB`
+- The long-context sweep summary reported mean prompt throughput `1904.463 tok/s`, median `1905.708 tok/s`, and mean run time `1079.56 ms`.
+- This shifts the immediate engine work from "make MLX use GPU" to "avoid cold-start costs, keep the model resident, precompile/warm graph shapes, and tune prefill chunking for target prompt lengths."
+- At the 4096-token prompt shape, `prefill_step_size` materially changes speed and memory:
+  - 512: run `2354.99 ms`, prompt_tps `1811.394`, peak memory `12.652 GB`
+  - 1024: run `2117.19 ms`, prompt_tps `2025.305`, peak memory `12.777 GB`
+  - 2048: run `2070.56 ms`, prompt_tps `2082.167`, peak memory `13.019 GB`
+  - 4096: run `2170.58 ms`, prompt_tps `1976.961`, peak memory `13.364 GB`
+- For this model and 4096-token shape, `prefill_step_size=2048` is the best measured throughput point, while `512` is the lowest-memory point. A practical engine should expose this as a policy knob or auto-tune it per model/context budget.
+- Added an engine-consumable prefill profile artifact at `gpt-oss-20b-MXFP4-Q8-prefill-profile.json`.
+- The generated profile currently selects:
+  - `throughput_default`: `prefill_step_size=2048`, prompt_tps `2082.167`, peak memory `13.019 GB`
+  - `memory_saver`: `prefill_step_size=512`, prompt_tps `1811.394`, peak memory `12.652 GB`
+  - `balanced`: `prefill_step_size=2048` under the current `0.5 GB` memory headroom policy
+- This is the first concrete runtime policy artifact for the planned fast MLX engine: load a model, warm representative shapes, measure candidate prefill chunk sizes, and store the selected policy next to the model/runtime profile.
+- The resident service prototype showed that policy should be prompt-length aware. On a roughly 110-token prompt, `memory_saver`/512 completed in `337.09 ms` with `939.164` prompt tok/s, while `throughput_default`/2048 completed in `644.59 ms` with `267.430` prompt tok/s. The current service therefore includes `policy=auto`, which maps short prompts below 512 estimated tokens to `memory_saver` and longer prompts to `throughput_default`.
+- After restarting with `policy=auto`, the same short-prompt class returned `prefill_step_size=512`, `prompt_tokens_estimate=110`, run `529.33 ms`, prompt_tps `343.406`, and generation_tps `136.862`. This verifies the service is using the prompt-length-aware policy path.
+- The Qwen3.6 MLX configs for both dense 27B and 35B-A3B MoE explicitly request interleaved MROPE:
+  - `mrope_interleaved = true`
+  - `mrope_section = [11, 11, 10]`
+  - `partial_rotary_factor = 0.25`
+  - `rope_theta = 10000000`
+- The tested Qwen3.6 configs use `head_dim = 256`, so the effective rotary dimension is `64` and the rotary frequency lane count is `32`.
+- The installed `mlx-vlm` Qwen3.5/Qwen3.6 rotary implementation maps interleaved lanes with temporal as default, height on lanes `1, 4, 7, ...`, and width on lanes `2, 5, 8, ...`.
+- puma.cpp and panthro.cpp classify Qwen3.5/Qwen3.6 dense and MoE models as `LLAMA_ROPE_TYPE_IMROPE`, then use the GGML IMROPE sector rule in `ggml_rope_multi`.
+- The parity probe found the same owner sequence in MLX and puma/panthro for both target Qwen3.6 checkpoints: `thwthwthwthwthwthwthwthwthwthwth`.
+- The Qwen3.6 IMROPE mismatch count is `0` for the dense 27B MLX checkpoint and `0` for the 35B-A3B MoE MLX checkpoint.
+- This means ROPE/IMROPE lane semantics are not the likely cause of hallucination, looping, or prompt-processing slowness for the tested MLX Qwen3.6 checkpoints. The next correctness risks are chat-template fidelity, stop-token policy, sampler defaults, KV-cache position accounting, and full VLM processor/image-token validation.
+- The resident MLX service now satisfies the first production-engine slice: it can run from a model path, discover the local prefill profile, keep the model resident, expose request metrics, and serve both raw `/generate` and non-streaming OpenAI-style completion/chat endpoints.
+- The no-profile service restart validated profile discovery by loading `gpt-oss-20b-MXFP4-Q8-prefill-profile.json` from the worktree and selecting `memory_saver` / `prefill_step_size=512` for short prompts.
+- The M4 smoke client validated repeated requests without reload: raw generation, `/v1/completions`, `/v1/chat/completions`, and `/metrics` all completed in one resident process with `Device(gpu, 0)`.
+- Streaming support now works for OpenAI-style completions and chat completions. The smoke client saw `5` completion stream events with `[DONE]` and `6` chat stream events with `[DONE]`.
+- Lifecycle metadata and reload now work for the resident engine. `/engine` reports loaded profile policy names, and `/engine/reload` successfully replaced the resident engine with the same model while staying on `Device(gpu, 0)`.
+- The packaged `bin/mlx-engine` wrapper now provides a durable command surface for `serve`, `smoke`, and `correctness`. The smoke gate validates the full local API surface, including streaming and reload. The correctness gate validates profile/device/API/token contract and can optionally require exact repeated text with `--expect-same-text`.
+- M4 is complete enough for this milestone. Remaining work should move to a hardening milestone: launchd/app-helper packaging, explicit unload/memory-pressure policy, VLM processor validation, and model-family-specific deterministic text parity.
+- M5 explicit unload is now implemented: `/engine/unload` releases the active resident engine, records unloaded metadata, calls garbage collection and `mx.clear_cache()` when available, and allows `/engine/reload` to load again from the unloaded state.
+- M5 packaging now has a concrete launchd template that runs `bin/mlx-engine serve` with model, host, port, and GPU guard arguments.
+- M5 VLM static validation now passes for both tested Qwen3.6 MLX checkpoints: required processor/config/tokenizer/chat-template/shard files are present, vision special token IDs exist, core vision config keys exist, shard files are complete, and chat templates contain vision markers.

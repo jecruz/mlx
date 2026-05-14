@@ -1,0 +1,79 @@
+{
+  "backend": "text",
+  "candidates": [
+    {
+      "max_peak_memory_gb": 12.651668218,
+      "mean_prompt_tps": 1811.3944497057887,
+      "mean_run_ms": 2354.9905420513824,
+      "median_prompt_tps": 1811.3944497057887,
+      "prefill_step_size": 512,
+      "prompt_tokens": 4096,
+      "samples": 1
+    },
+    {
+      "max_peak_memory_gb": 12.77682563,
+      "mean_prompt_tps": 2025.3051064854756,
+      "mean_run_ms": 2117.193416925147,
+      "median_prompt_tps": 2025.3051064854756,
+      "prefill_step_size": 1024,
+      "prompt_tokens": 4096,
+      "samples": 1
+    },
+    {
+      "max_peak_memory_gb": 13.019112678,
+      "mean_prompt_tps": 2082.167368165406,
+      "mean_run_ms": 2070.5598749918863,
+      "median_prompt_tps": 2082.167368165406,
+      "prefill_step_size": 2048,
+      "prompt_tokens": 4096,
+      "samples": 1
+    },
+    {
+      "max_peak_memory_gb": 13.363701062,
+      "mean_prompt_tps": 1976.9612340718882,
+      "mean_run_ms": 2170.5764170037583,
+      "median_prompt_tps": 1976.9612340718882,
+      "prefill_step_size": 4096,
+      "prompt_tokens": 4096,
+      "samples": 1
+    }
+  ],
+  "default_device": "Device(gpu, 0)",
+  "metal_available": true,
+  "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+  "policy": {
+    "balanced": {
+      "max_peak_memory_gb": 13.019112678,
+      "mean_prompt_tps": 2082.167368165406,
+      "mean_run_ms": 2070.5598749918863,
+      "median_prompt_tps": 2082.167368165406,
+      "prefill_step_size": 2048,
+      "prompt_tokens": 4096,
+      "samples": 1
+    },
+    "memory_saver": {
+      "max_peak_memory_gb": 12.651668218,
+      "mean_prompt_tps": 1811.3944497057887,
+      "mean_run_ms": 2354.9905420513824,
+      "median_prompt_tps": 1811.3944497057887,
+      "prefill_step_size": 512,
+      "prompt_tokens": 4096,
+      "samples": 1
+    },
+    "throughput_default": {
+      "max_peak_memory_gb": 13.019112678,
+      "mean_prompt_tps": 2082.167368165406,
+      "mean_run_ms": 2070.5598749918863,
+      "median_prompt_tps": 2082.167368165406,
+      "prefill_step_size": 2048,
+      "prompt_tokens": 4096,
+      "samples": 1
+    }
+  },
+  "source_files": [
+    "gpu-prefill-step-512.jsonl",
+    "gpu-prefill-step-1024.jsonl",
+    "gpu-prefill-step-2048.jsonl",
+    "gpu-prefill-step-4096.jsonl"
+  ]
+}

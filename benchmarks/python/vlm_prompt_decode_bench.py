@@ -1,0 +1,212 @@
+# Copyright © 2023-2024 Apple Inc.
+
+import argparse
+import json
+import sys
+import time
+from pathlib import Path
+
+import mlx.core as mx
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Measure VLM prompt prefill and single-token decode latency."
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        required=True,
+        help="Local model directory or Hugging Face repo ID.",
+    )
+    parser.add_argument(
+        "--prompt",
+        type=str,
+        default="Write one paragraph on why prompt processing often dominates local inference latency.",
+        help="Prompt to evaluate.",
+    )
+    parser.add_argument("--adapter-path", type=str, default=None)
+    parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument("--max-tokens", type=int, default=1)
+    parser.add_argument("--revision", type=str, default="main")
+    parser.add_argument("--force-download", action="store_true")
+    parser.add_argument("--trust-remote-code", action="store_true")
+    parser.add_argument("--prefill-step-size", type=int, default=None)
+    parser.add_argument(
+        "--prompt-tokens",
+        type=int,
+        default=None,
+        help="Generate a synthetic prompt with approximately this many tokens.",
+    )
+    parser.add_argument(
+        "--require-gpu",
+        action="store_true",
+        help="Exit before loading the model if MLX is not using a Metal GPU.",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print a final JSON object with benchmark results.",
+    )
+    return parser.parse_args()
+
+
+def detect_backend(model_path: str) -> str:
+    config_path = Path(model_path) / "config.json"
+    config = json.loads(config_path.read_text())
+    if config.get("model_type") == "gpt_oss":
+        return "text"
+    if any(
+        key in config
+        for key in ("vision_tower", "audio_tower", "vision_config", "audio_config")
+    ):
+        return "vlm"
+    return "text"
+
+
+def runtime_device_info():
+    return {
+        "metal_available": bool(mx.metal.is_available()),
+        "default_device": str(mx.default_device()),
+    }
+
+
+def print_runtime_device(device_info):
+    print(f"mx.metal.is_available: {device_info['metal_available']}", flush=True)
+    print(f"mx.default_device: {device_info['default_device']}", flush=True)
+
+
+def build_token_prompt(tokenizer, target_tokens: int) -> str:
+    base = (
+        "Prompt processing dominates inference latency because the full input must be "
+        "encoded before the first token can be emitted. "
+    )
+    tokens = list(tokenizer.encode(base, add_special_tokens=False))
+    if not tokens:
+        raise RuntimeError("Tokenizer produced no tokens for the base prompt.")
+    while len(tokens) < target_tokens:
+        tokens.extend(tokens[: max(1, min(len(tokens), target_tokens - len(tokens)))])
+    return tokens[:target_tokens]
+
+
+def main():
+    args = parse_args()
+    backend = detect_backend(args.model)
+    device_info = runtime_device_info()
+    print_runtime_device(device_info)
+
+    if args.require_gpu and not (
+        device_info["metal_available"] and "gpu" in device_info["default_device"]
+    ):
+        print(
+            "error: --require-gpu was set, but MLX is not using a Metal GPU",
+            file=sys.stderr,
+            flush=True,
+        )
+        raise SystemExit(2)
+
+    if backend == "vlm":
+        from mlx_vlm.generate import stream_generate
+        from mlx_vlm.utils import load
+    else:
+        from mlx_lm.generate import stream_generate
+        from mlx_lm.utils import load
+
+    print("load: start", flush=True)
+    load_t0 = time.perf_counter()
+    if backend == "vlm":
+        model, processor = load(
+            args.model,
+            adapter_path=args.adapter_path,
+            revision=args.revision,
+            force_download=args.force_download,
+            trust_remote_code=args.trust_remote_code,
+        )
+    else:
+        model, processor = load(
+            args.model,
+            adapter_path=args.adapter_path,
+            revision=args.revision,
+        )
+    load_ms = 1e3 * (time.perf_counter() - load_t0)
+    print(f"load: done ({load_ms:.2f} ms)", flush=True)
+
+    tokenizer = processor.tokenizer if hasattr(processor, "tokenizer") else processor
+    prompt = args.prompt
+    synthetic_input_ids = None
+    synthetic_mask = None
+    if args.prompt_tokens is not None:
+        token_prompt = build_token_prompt(tokenizer, args.prompt_tokens)
+        if backend == "vlm":
+            synthetic_input_ids = mx.array([token_prompt])
+            synthetic_mask = mx.ones_like(synthetic_input_ids)
+        else:
+            prompt = token_prompt
+
+    run_kwargs = {
+        "max_tokens": args.max_tokens,
+    }
+    if backend == "vlm":
+        run_kwargs["temperature"] = args.temperature
+    if args.prefill_step_size is not None:
+        run_kwargs["prefill_step_size"] = args.prefill_step_size
+    if synthetic_input_ids is not None:
+        run_kwargs["input_ids"] = synthetic_input_ids
+        run_kwargs["mask"] = synthetic_mask
+
+    print("generate: start", flush=True)
+    run_t0 = time.perf_counter()
+    if backend == "vlm":
+        result = None
+        for response in stream_generate(
+            model, processor, prompt, **run_kwargs
+        ):
+            result = response
+    else:
+        result = None
+        for response in stream_generate(
+            model, processor, prompt, **run_kwargs
+        ):
+            result = response
+    run_ms = 1e3 * (time.perf_counter() - run_t0)
+    print(f"generate: done ({run_ms:.2f} ms)", flush=True)
+
+    if result is None:
+        raise RuntimeError("No generation response returned")
+
+    prompt_mode = "token_count" if args.prompt_tokens is not None else "text"
+    data = {
+        "model": args.model,
+        "backend": backend,
+        "metal_available": device_info["metal_available"],
+        "default_device": device_info["default_device"],
+        "load_ms": load_ms,
+        "run_ms": run_ms,
+        "prompt_mode": prompt_mode,
+        "requested_prompt_tokens": args.prompt_tokens,
+        "prompt_tokens": int(result.prompt_tokens),
+        "generation_tokens": int(result.generation_tokens),
+        "prompt_tps": float(result.prompt_tps),
+        "generation_tps": float(result.generation_tps),
+        "peak_memory_gb": float(result.peak_memory),
+    }
+
+    print(f"model: {data['model']}")
+    print(f"backend: {data['backend']}")
+    print(f"load_ms: {data['load_ms']:.2f}")
+    print(f"run_ms: {data['run_ms']:.2f}")
+    print(f"prompt_mode: {data['prompt_mode']}")
+    if args.prompt_tokens is not None:
+        print(f"requested_prompt_tokens: {data['requested_prompt_tokens']}")
+    print(f"prompt_tokens: {data['prompt_tokens']}")
+    print(f"generation_tokens: {data['generation_tokens']}")
+    print(f"prompt_tps: {data['prompt_tps']:.3f}")
+    print(f"generation_tps: {data['generation_tps']:.3f}")
+    print(f"peak_memory_gb: {data['peak_memory_gb']:.3f}")
+
+    if args.json:
+        print(json.dumps(data, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

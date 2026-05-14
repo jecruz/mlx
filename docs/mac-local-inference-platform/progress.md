@@ -1,0 +1,1165 @@
+# Progress
+
+- Added an isolated benchmark worktree at `.worktrees/prompt-processing-bench`.
+- Added `benchmarks/python/vlm_prompt_decode_bench.py` to measure load time, prompt processing, and first-token generation timing.
+- Verified the 35B A3B checkpoint runs through the benchmark harness successfully.
+- Recorded the current baseline result for the minimal prompt `Hi` so the next iteration can compare against it.
+- Attempted a longer prompt on the same checkpoint; it remained prompt-bound long enough that the run was stopped, confirming the prompt phase is still the main bottleneck for this test shape.
+- Added explicit runtime device reporting to the benchmark harness.
+- Ran fixed-length prompt sweeps on the text-only `gpt-oss-20b` checkpoint with the repo-local path:
+  - 8 tokens completed successfully
+  - 16 tokens completed successfully
+- Ran a 32-token fixed-length prompt sweep successfully on the same checkpoint, which gives a better view of the prompt scaling curve.
+- Ran a 64-token fixed-length prompt sweep successfully on the same checkpoint, giving a third scaling point and confirming prompt throughput remains in the same low band.
+- Confirmed the sandbox runtime is CPU-only for the repo-local path, which explains the long prompt times.
+- Tried to rebuild a GPU-capable local MLX extension, but the build is blocked by the Metal toolchain state in this environment.
+- Ran a checkpoint integrity check for `gpt-oss-20b-MXFP4-Q8` and confirmed shard completeness plus loader/model-type alignment.
+- Added a `--require-gpu` guard to prevent accidental long CPU fallback runs when collecting Metal numbers.
+- Added JSON result output to make sweep comparison scriptable.
+- Added `benchmarks/python/run_prompt_sweep.sh` for one-command 8/16/32/64 token sweeps in a Metal-capable shell.
+- Ran the first Metal-backed `gpt-oss-20b-MXFP4-Q8` prompt sweep from the tmux pane and confirmed GPU execution.
+- Fixed the text-backend benchmark path so it no longer passes VLM-only `temperature` into `mlx_lm.generate_step`.
+- Added `benchmarks/python/summarize_prompt_sweep.py` for JSONL result summaries and GPU/CPU validity verdicts.
+- Added `benchmarks/python/inprocess_prompt_sweep.py` to load the model once, warm up once, and measure steady-state prompt processing without repeated load/compile noise.
+- Ran the in-process steady-state sweep through 512 prompt tokens, producing `gpu-prompt-sweep-steady.jsonl`.
+- Current meaningful result: warmed Metal prompt processing reaches about `1.7-1.8k tok/s` at 512 prompt tokens on `gpt-oss-20b-MXFP4-Q8`, so the earlier apparent prompt slowness was mostly cold-start and measurement-shape noise.
+- Ran a long-context in-process sweep through 4096 prompt tokens, producing `gpu-prompt-sweep-long.jsonl`.
+- Current long-context result: warmed Metal prompt processing stays around `1.7k-2.1k tok/s` from 512 through 4096 tokens, with the 4096-token point completing in `2158.82 ms`.
+- Ran a 4096-token `prefill_step_size` sweep for 512, 1024, 2048, and 4096.
+- Current chunking result: `prefill_step_size=2048` is fastest at `2082.167 tok/s`, while `512` uses the least peak memory at `12.652 GB`.
+- Added `benchmarks/python/prefill_profile.py` to convert benchmark JSONL files into an engine-consumable prefill policy profile.
+- Generated `gpt-oss-20b-MXFP4-Q8-prefill-profile.json` from the measured candidate chunk-size files.
+- Current profile result: use `prefill_step_size=2048` for throughput/default behavior and `512` for memory-saver behavior.
+- Added `benchmarks/python/resident_mlx_service.py` plus `run_resident_service.sh` for a resident localhost MLX service.
+- Verified `/health`, `/profile`, and `/generate` against the resident service on `127.0.0.1:8765`.
+- Fixed service text accumulation so `/generate` returns the full streamed response text rather than only the final detokenizer segment.
+- Added `policy=auto` to select `memory_saver` for prompts below 512 estimated tokens and `throughput_default` for longer prompts.
+- Restarted the resident service and verified `policy=auto` chooses `prefill_step_size=512` for a 110-token request.
+- Added `benchmarks/python/qwen_imrope_static_probe.py` to compare MLX Qwen3.6 IMROPE lane ownership against the puma.cpp/panthro.cpp IMROPE sector rule.
+- Ran the Qwen3.6 IMROPE parity probe in a Metal-capable tmux shell and wrote `qwen3_6-imrope-parity-report.json`.
+- Current correctness result: both tested Qwen3.6 MLX checkpoints, dense 27B and 35B-A3B MoE, match the puma/panthro IMROPE lane rule with zero mismatches.
+- Added `docs/mac-local-inference-platform/qwen-imrope-parity.md` and `docs/mac-local-inference-platform/inference-correctness-risks.md` as M1 correctness evidence.
+- Productionized the resident service API surface for the first M4 slice:
+  - profile auto-discovery
+  - `/metrics`
+  - request IDs and effective policy reporting
+  - OpenAI-style `/v1/completions`
+  - OpenAI-style `/v1/chat/completions`
+  - repeatable smoke client
+- Fixed the launcher so `run_resident_service.sh "$MODEL" 8765` works without an explicit profile argument.
+- Restarted the service without `--profile`; it discovered `gpt-oss-20b-MXFP4-Q8-prefill-profile.json` from the worktree and stayed on `Device(gpu, 0)`.
+- Smoke-tested health, raw generate, completions, chat completions, and metrics against the resident service on `127.0.0.1:8765`.
+- Added streaming support:
+  - `/generate` streams newline-delimited JSON when `stream=true`
+  - `/v1/completions` streams OpenAI-style SSE when `stream=true`
+  - `/v1/chat/completions` streams OpenAI-style SSE when `stream=true`
+- Extended the smoke client to validate streaming completion and chat responses; both emitted data events and `[DONE]`.
+- Added `EngineManager` lifecycle control around the resident engine.
+- Added `/engine` to report loaded model, profile state, policy names, warm-up state, reload count, and metrics.
+- Added `/engine/reload` to load a replacement resident engine and swap it in after the old engine is idle.
+- Extended the smoke client to validate lifecycle metadata and same-model reload.
+- Validated lifecycle reload on the GPU-backed service: reload count advanced to `1`, device stayed `Device(gpu, 0)`, profile remained loaded, and warm-up tokens changed to `[64]`.
+- Added packaged CLI wrapper `bin/mlx-engine` with `serve`, `smoke`, and `correctness` subcommands.
+- Validated `bin/mlx-engine smoke` and `bin/mlx-engine correctness` against the running GPU resident service.
+- Current packaged CLI result: smoke passed raw generation, OpenAI completion, OpenAI chat, streaming completion/chat, metrics, and reload; correctness passed with `Device(gpu, 0)`, profile loaded, `2` total correctness requests, and `0` failures.
+- Created M5 hardening milestone evidence.
+- Added `/engine/unload` plus unloaded-state handling; smoke now validates unload followed by reload.
+- Added launchd template at `packaging/launchd/com.jecruz.mlx-engine.plist.template`.
+- Added `benchmarks/python/vlm_processor_static_probe.py` and generated `qwen3_6-vlm-processor-static-report.json`.
+- Static VLM processor probe passed for both Qwen3.6 dense 27B and Qwen3.6 35B-A3B MoE MLX checkpoints.
+- Added `docs/mac-local-inference-platform/github-mlx-project-research.md` with a public GitHub research pass covering MLX projects worth studying for resident-engine, caching, VLM, native Swift, packaging, and speculative-decoding ideas.
+- Attempted to launch Claude Code from tmux pane `codex-gpt5_5-panthro_cpp:2.1` for a public-only MLX GitHub research pass. `--bare` could not use the existing login, and the authenticated retry stalled with no output, so it was interrupted. The durable research artifact is the web-sourced research note.
+- Added `docs/mac-local-inference-platform/verified-mlx-research-results.md` to reconcile web-verified MLX project research against agent-generated results.
+- Started M6 prefix-cache instrumentation:
+  - added `PrefixOpportunityTracker` to `benchmarks/python/resident_mlx_service.py`
+  - added rendered prompt hash and tokenized prompt hash fields
+  - added longest common prefix token detection against recent requests
+  - added prefix reuse ratio, estimated recompute tokens, and cache-candidate verdicts
+  - added aggregate prefix metrics to `/metrics`
+  - extended `benchmarks/python/smoke_resident_service.py` with two related prompts to validate shared-prefix detection
+- Validation status: `python3 -m py_compile benchmarks/python/resident_mlx_service.py benchmarks/python/smoke_resident_service.py` passed. Full GPU service smoke is blocked from this Codex process because `/Volumes/StudioStackSSD4TB/.../gpt-oss-20b-MXFP4-Q8/config.json` returns `Operation not permitted`, and importing MLX directly in the sandbox crashes while initializing the Metal device.
+- User ran the updated smoke test from a GPU-capable shell and M6 validation passed:
+  - health stayed on `Device(gpu, 0)`
+  - generated/completion/chat/streaming checks passed
+  - prefix probe reported `prefix False 38 0.95 True`
+  - `/metrics` reported `7` total successful requests and `2` cache-candidate requests
+  - unload/reload still worked and reload stayed on `Device(gpu, 0)`
+- Added `benchmarks/python/prefix_opportunity_sweep.py` and ran a realistic agent-style repeated-prefix sweep against the live GPU service from a trusted terminal pane.
+- Prefix sweep result: `6` requests, `5` cache candidates, `970` total matched prefix tokens, mean prefix match `161.67` tokens. After the first cold request, every related request matched `194` prefix tokens with reuse ratios from `0.937` to `0.951`.
+- Prefix sweep artifact: `prefix-opportunity-sweep.jsonl`.
+- Started the conservative real prefix-cache reuse prototype:
+  - added an in-memory LRU `PrefixKVCacheStore`
+  - precomputes matched-prefix `mlx-lm` prompt caches with `generate_step(..., max_tokens=0)`
+  - deep-copies cached prefix state for the current request
+  - runs generation on only the uncached suffix tokens when a safe shorter-prefix match exists
+  - reports `cache_reuse_enabled`, `cache_hit`, `cache_created`, `cached_prefix_tokens`, and `actual_prefill_tokens`
+  - exposes `prefix_kv_cache` state in `/health` and `/engine`
+- Extended smoke and prefix-sweep output to print real cache-reuse fields, not just prefix-opportunity fields.
+- Validation status: `python3 -m py_compile benchmarks/python/resident_mlx_service.py benchmarks/python/smoke_resident_service.py benchmarks/python/prefix_opportunity_sweep.py` passed.
+- Live GPU validation status: blocked from Codex-launched tmux commands by macOS permissions on `/Volumes/StudioStackSSD4TB/.../config.json`. The old user-launched service had model access, but the patched service must be restarted from a Terminal process with the required volume permission.
+- Dedicated tmux session routing:
+  - `codex-mlx-server` is reserved for the resident service.
+  - `codex-mlx-testing` is reserved for smoke/sweep/client validation.
+- Confirmed both dedicated tmux contexts can see the model config metadata but cannot open the file contents; even `wc -c` returns `Operation not permitted`.
+- Added model-access preflight checks to `resident_mlx_service.py` and `run_resident_service.sh`; the server launcher now exits `77` with a clear unreadable-model-volume message instead of a deep Python stack trace.
+- User reran validation from a permitted terminal context and confirmed the
+  conservative prefix-cache reuse prototype works on GPU:
+  - health stayed on `Device(gpu, 0)`
+  - smoke passed raw generation, OpenAI completion, chat, streaming completion,
+    streaming chat, unload, and reload
+  - smoke prefix probe reported `prefix False 38 0.95 True True False True 38 2`
+  - prefix sweep request 1 did full prefill: `206` actual prefill tokens
+  - prefix sweep request 2 created the reusable prefix cache:
+    `cache_reuse_enabled=True`, `cache_created=True`, `actual_prefill_tokens=11`
+  - prefix sweep requests 3-6 hit the cache:
+    `cache_hit=True`, `actual_prefill_tokens=11,12,13,10`
+  - summary stayed `6` requests, `5` cache candidates, mean reuse `0.787`
+- Current M7 result: repeated coding-agent prompts with ~194 shared prefix tokens
+  now avoid recomputing that prefix after the cache is created, reducing actual
+  prefill work to only the suffix tokens on cache-hit requests.
+- Added `benchmarks/python/prefix_latency_sweep.py` for the next validation
+  slice: compare full-prefill, cache-create, and cache-hit request latency using
+  grouped repeated-prefix prompts.
+- Latency sweep compile validation passed.
+- Retried after a tmux server reboot with sessions recreated at `2026-05-13
+  01:05:15`; `codex-mlx-server` still cannot open the external-volume model
+  config.
+- Process ancestry check: the `codex-mlx-server` pane shell is child of the
+  detached tmux server `/opt/homebrew/bin/tmux` whose parent is launchd
+  (`PPID=1`). This indicates the permission that matters is the detached tmux
+  server context, not only the attached Terminal window.
+- Retried with new panes split from `codex-gpt5_5-panthro_cpp`:
+  - server pane: `codex-gpt5_5-panthro_cpp:1.2`
+  - testing pane: `codex-gpt5_5-panthro_cpp:1.3`
+  - server started successfully on `127.0.0.1:8765`
+  - smoke, prefix opportunity sweep, and prefix latency sweep all completed
+- Added service-side timing instrumentation:
+  - `cache_prepare_ms`
+  - `service_request_ms`
+- Latest prefix opportunity result with timing:
+  - request 2 cache creation prepared the `194` token prefix in `147.96 ms`
+  - requests 3-6 were cache hits with `cache_prepare_ms=0.11 ms`
+- Latest latency sweep result:
+  - `full_prefill`: `3` requests, mean `run_ms=600.45`, mean
+    `service_request_ms=601.77`, mean actual prefill `929.67`
+  - `cache_create`: `3` requests, mean `cache_prepare_ms=443.81`, mean
+    `run_ms=186.16`, mean `service_request_ms=631.28`, mean actual prefill `10`
+  - `cache_hit`: `12` requests, mean `cache_prepare_ms=0.16`, mean
+    `run_ms=197.99`, mean `service_request_ms=199.53`, mean actual prefill `9.5`
+- Current performance conclusion: cache hits reduce service-side request time
+  from about `602 ms` to about `200 ms` on ~930-token prompts with repeated
+  prefixes, roughly a `3x` improvement after the cache is built.
+- Added `--skip-lifecycle` to `benchmarks/python/smoke_resident_service.py` so
+  smoke validation can be chained before benchmark sweeps without unloading the
+  resident service.
+- Safe validation chain now leaves the service alive:
+  - `smoke_resident_service.py --skip-lifecycle`
+  - `prefix_opportunity_sweep.py`
+  - `prefix_latency_sweep.py`
+- Fixed `prefix_opportunity_sweep.py` to insert a unique run id at the first
+  prompt line. This prevents repeated runs in the same resident process from
+  matching entire old prompts and hiding the shorter-prefix cache path.
+- Corrected opportunity-sweep behavior after the run-id fix:
+  - request 1: `220` tokens, `1` prefix token, no cache candidate
+  - request 2: `219` tokens, `208` matched prefix tokens, cache created,
+    `actual_prefill_tokens=11`
+  - requests 3-6: cache hits with `actual_prefill_tokens=11,12,13,10`
+- Added scoped prefix-cache keys:
+  - model path
+  - profile path
+  - backend
+  - effective policy
+  - prefill step size
+  - tokenizer class
+  - chat-template hash
+- Extended real prefix-cache reuse to streaming paths:
+  - `/generate` with `stream=true`
+  - `/v1/completions` with `stream=true`
+  - `/v1/chat/completions` with `stream=true`
+- Extended smoke validation to parse final SSE events and assert streaming
+  prefix-cache reuse.
+- Streaming smoke evidence: `stream_prefix 64 0.955 True True False True
+  96.28 64 3`, proving streaming cache creation and suffix-only prefill.
+- Final M7 opportunity sweep evidence:
+  - request 1: `221` tokens, `1` matched token, no cache candidate
+  - request 2: `220` tokens, `209` matched prefix tokens, cache created,
+    `actual_prefill_tokens=11`
+  - requests 3-6: cache hits with `actual_prefill_tokens=11,12,13,10`
+- Final M7 latency evidence:
+  - `full_prefill`: mean `service_request_ms=600.18`, mean actual prefill
+    `930.67`
+  - `cache_create`: mean `service_request_ms=631.11`, mean
+    `cache_prepare_ms=446.22`, mean actual prefill `10`
+  - `cache_hit`: mean `service_request_ms=183.63`, mean
+    `cache_prepare_ms=0.17`, mean actual prefill `9.5`
+- M7 completion result: cache-hit requests are now about `3.27x` faster than
+  full-prefill requests for the measured ~930-token repeated-prefix workload,
+  non-streaming and streaming paths both reuse prefix caches, cache keys are
+  scoped to compatibility metadata, and safe chained validation leaves the
+  resident service alive.
+- Started M8 scheduler and multi-request serving work.
+- Added bounded scheduler/admission control to the resident engine:
+  - default `max_concurrent_requests=1`
+  - default `max_queued_requests=16`
+  - default `queue_timeout_ms=30000`
+  - exposed via CLI args and `run_resident_service.sh` environment variables
+  - exposed scheduler snapshot in `/health` and `/engine`
+  - records `scheduler_queue_wait_ms`,
+    `scheduler_active_requests_at_admit`, and
+    `scheduler_queued_requests_at_admit` per request
+- Added `benchmarks/python/scheduler_admission_probe.py` to create concurrent
+  client pressure and validate queue metrics.
+- M8 scheduler probe evidence with three concurrent clients:
+  - request 1: queue wait `0.0 ms`
+  - request 2: queue wait `403.45 ms`
+  - request 3: queue wait `648.21 ms`
+  - scheduler after probe: `total_admitted=3`, `total_completed=3`,
+    `total_rejected=0`, mean queue wait `350.55 ms`
+- Safe smoke still passes after scheduler admission control, including streaming
+  prefix reuse.
+- Added streaming latency metrics:
+  - `stream_first_token_ms`
+  - `stream_mean_token_gap_ms`
+  - `stream_token_events`
+- Streaming smoke evidence after metrics addition:
+  - `stream_prefix 62 0.954 True True False True 93.01 62 3 100.76 7.55`
+  - first token latency `100.76 ms`
+  - mean streamed token gap `7.55 ms`
+- Extended `scheduler_admission_probe.py` to report scheduler 503 rejections
+  instead of failing the whole probe.
+- Rejection-path validation with `MAX_QUEUED_REQUESTS=1` and
+  `QUEUE_TIMEOUT_MS=50`:
+  - one request admitted
+  - three requests rejected
+  - rejection details included `resident engine queue is full` and
+    `resident engine queue wait timed out`
+  - scheduler after probe: `total_admitted=1`, `total_completed=1`,
+    `total_rejected=3`
+- Restored the resident service to normal scheduler defaults after rejection
+  validation.
+- Added `docs/mac-local-inference-platform/native-overlap-audit.md` comparing
+  MLX native C++/Metal/GGUF/RoPE/cache/scheduler domains against
+  `llama.cpp`, `puma.cpp`, and `panthro.cpp`.
+- Ran larger-context M8 prefix-cache sweeps:
+  - ~2k prompt shape: full prefill `2783.02 ms` service request, cache hit
+    `186.41 ms`, actual prefill `10` tokens, about `14.9x` cache-hit speedup
+  - ~4k prompt shape: full prefill `2021.29 ms`, cache hit `248.66 ms`, actual
+    prefill `10` tokens, about `8.1x` cache-hit speedup
+  - ~7.4k prompt shape: full prefill `3718.98 ms`, cache hit `211.4 ms`, actual
+    prefill `10` tokens, about `17.6x` cache-hit speedup
+- M8 milestone result: scheduler/admission control, streaming latency metrics,
+  rejection handling, larger-context cache-hit sweeps, and native-overlap audit
+  are now complete. Remaining work moves to M9 optimization experiments:
+  fused kernels, memory pressure/eviction, and safe batching/concurrency.
+- Added the native overlap audit to M8 planning. The goal is to compare MLX
+  C++/Metal/GGUF/RoPE/attention/quantization/cache/scheduler areas against
+  `llama.cpp`, `puma.cpp`, and `panthro.cpp` so prior fixes and performance
+  enhancements can guide MLX optimization without blindly porting incompatible
+  code.
+- Started M9 optimization observability.
+- Added prefix-cache eviction telemetry:
+  - `PrefixKVCacheStore` now tracks cumulative `evictions`.
+  - `/health` and `/engine` expose `prefix_kv_cache.entries`,
+    `prefix_kv_cache.max_entries`, `prefix_kv_cache.evictions`, and retained
+    cache-key metadata.
+  - `run_resident_service.sh` accepts `PREFIX_CACHE_MAX_ENTRIES`.
+  - `resident_mlx_service.py` accepts `--prefix-cache-max-entries`.
+- Added MLX memory telemetry to `/health` and `/engine`:
+  - `active_memory_bytes`
+  - `cache_memory_bytes`
+  - `peak_memory_bytes`
+- Added engine lock-wait telemetry:
+  - per-request `engine_lock_wait_ms`
+  - scheduler probe output now includes engine lock wait
+- Ran a controlled `MAX_CONCURRENT_REQUESTS=2` experiment. The scheduler admits
+  two active requests, but model execution is still serialized by the engine
+  lock:
+  - request 2: active-at-admit `1`, engine lock wait `0.0 ms`
+  - request 1: active-at-admit `2`, engine lock wait `555.12 ms`
+  - request 3: queue wait `516.11 ms`, engine lock wait `213.01 ms`
+- M9 concurrency conclusion: increasing `max_concurrent_requests` above `1`
+  does not create true parallel MLX model execution yet. It moves some waiting
+  from scheduler queue time into engine-lock time, so the safe default remains
+  `1` until the runtime has a real concurrent execution or batching design.
+- Validated prefix-cache eviction with `PREFIX_CACHE_MAX_ENTRIES=2` and four
+  repeated-prefix cache groups:
+  - `prefix_kv_cache.entries=2`
+  - `prefix_kv_cache.max_entries=2`
+  - `prefix_kv_cache.evictions=2`
+  - MLX memory snapshot after the run:
+    `active_memory_bytes=12135785624`,
+    `cache_memory_bytes=32158024`,
+    `peak_memory_bytes=12898081034`
+- M9 eviction sweep result:
+  - `full_prefill`: mean service request `659.16 ms`, mean actual prefill
+    `929.25` tokens
+  - `cache_create`: mean service request `597.75 ms`, mean cache prepare
+    `443.93 ms`, mean actual prefill `10` tokens
+  - `cache_hit`: mean service request `157.83 ms`, mean cache prepare
+    `0.19 ms`, mean actual prefill `11` tokens
+- Current M9 milestone result: observability for cache eviction, MLX memory,
+  scheduler queueing, and engine lock contention is in place and validated.
+  The next M9 slice should use those signals to implement memory-pressure
+  policy and decide whether to pursue batching, async prefill-cache creation,
+  or lower-level Metal kernel work first.
+- Implemented M9 memory-pressure policy:
+  - `PREFIX_CACHE_MEMORY_LIMIT_MB` / `--prefix-cache-memory-limit-mb`
+  - `PREFIX_CACHE_MIN_ENTRIES` / `--prefix-cache-min-entries`
+  - `prefix_cache_policy` in `/health` and `/engine`
+  - per-request `memory_prune_applied` and
+    `memory_prune_removed_entries`
+  - `/engine/cache/prune` manual recovery/testing endpoint
+  - cache store `prunes` counter
+- Added `benchmarks/python/memory_pressure_probe.py` for repeatable validation.
+- Validated forced memory pressure with `PREFIX_CACHE_MEMORY_LIMIT_MB=1` and
+  `PREFIX_CACHE_MIN_ENTRIES=0`:
+  - first request had no cache candidate and no prune
+  - second request matched `65` prefix tokens, created a prefix cache, then
+    applied memory pruning
+  - probe output: `memory_probe 2 65 True False True True 1 236.11`
+  - health after requests: `entries=0`, `evictions=1`, `prunes=1`
+  - MLX cache memory changed from `3577334` bytes before prune to `0` bytes
+    after prune
+  - manual prune endpoint returned `before_entries=0`, `after_entries=0`,
+    `removed_entries=0`, confirming it is safe when already empty
+- Restored the resident service to normal defaults after the forced
+  memory-pressure test.
+- Implemented async prefix-cache population:
+  - `PREFIX_CACHE_POPULATION_MODE` / `--prefix-cache-population-mode`
+  - supported modes: `sync`, `async`, `off`
+  - async mode schedules a background cache build on cache-candidate miss and
+    lets the current request fall back to full prompt processing
+  - cache policy now reports pending, started, completed, failed async builds,
+    and the last async error
+  - per-request metrics now include `cache_population_mode`,
+    `cache_scheduled`, and `cache_pending`
+- Added `benchmarks/python/async_prefix_cache_probe.py`.
+- Validated async prefix-cache population with
+  `PREFIX_CACHE_POPULATION_MODE=async`:
+  - request 1: no prefix candidate, full prompt path
+  - request 2: matched `52` prefix tokens, scheduled background cache build,
+    did not pay synchronous cache-create cost, `cache_prepare_ms=0.13 ms`,
+    service request `206.95 ms`
+  - async wait: pending `0`, started `1`, completed `1`, failed `0`, cache
+    entries `1`
+  - request 3: cache hit, `cache_prepare_ms=0.15 ms`, service request
+    `141.43 ms`, actual prefill `2` tokens
+- Restored the resident service to default sync cache-population mode after the
+  async validation run.
+- Extended `prefix_latency_sweep.py` to classify and summarize
+  `cache_scheduled` requests separately from `full_prefill`, `cache_create`,
+  and `cache_hit`.
+- Ran async-vs-sync latency exploration and found an important scheduling
+  issue:
+  - first async sweep showed request 3 could block on background cache creation,
+    producing `cache_prepare_ms` around `444-450 ms`
+  - fixed the async path so pending background builds do not block cache-state
+    checks through the engine lock
+  - second async sweep showed request 2 could still slow down because the
+    background builder could take the engine lock before the current request
+    started generation
+  - fixed that by deferring background cache-build scheduling until after the
+    current request completes
+- Validated deferred async prefix-cache sweep:
+  - `cache_scheduled`: `3` requests, mean service request `612.14 ms`, mean
+    cache prepare `0.09 ms`, mean actual prefill `930` tokens
+  - `cache_hit`: `9` requests, mean service request `188.71 ms`, mean cache
+    prepare `0.18 ms`, mean actual prefill `9` tokens
+  - artifact: `prefix-latency-sweep-async-deferred.jsonl`
+- Async population conclusion:
+  - async mode successfully removes synchronous cache-build cost from the
+    scheduling request
+  - cache hits remain fast once the background build completes
+  - immediate requests that arrive while the background builder is active can
+    still contend for the model engine lock, so async should remain opt-in
+    until the builder becomes idle-aware or queue-aware
+- Implemented queue-aware async cache building:
+  - async builder waits for scheduler idle before taking the engine lock
+  - added `PREFIX_CACHE_ASYNC_IDLE_TIMEOUT_MS` /
+    `--prefix-cache-async-idle-timeout-ms`
+  - added async telemetry:
+    `async_builds_skipped` and `async_idle_timeout_ms`
+- Validated queue-aware async sweep:
+  - `cache_scheduled`: `3` requests, mean service request `601.03 ms`, mean
+    cache prepare `0.09 ms`, mean actual prefill `931.33` tokens
+  - `cache_hit`: `9` requests, mean service request `184.55 ms`, mean cache
+    prepare `0.17 ms`, mean actual prefill `9` tokens
+  - async health: started `3`, completed `3`, failed `0`, skipped `0`
+  - artifact: `prefix-latency-sweep-async-idle.jsonl`
+- Queue-aware async conclusion:
+  - scheduled requests no longer pay synchronous cache-build preparation
+  - later hits remain fast and near sync hit latency
+  - a race remains: if the scheduler becomes idle and the background worker
+    grabs the engine lock just before the next foreground request arrives, that
+    foreground request can still wait behind the background build
+  - therefore async remains opt-in; the next optimization should implement a
+    foreground-priority engine lock or debounce/idle-grace policy before making
+    async the default
+- Implemented foreground-priority execution locking:
+  - replaced direct resident model `RLock` use on inference/cache-build paths
+    with `EngineExecutionLock`
+  - foreground inference acquires the foreground side of the lock
+  - async cache builds acquire the background side and cannot enter while
+    foreground requests are waiting
+  - `/health` and `/engine` expose `execution_lock` telemetry
+  - async cache policy now records `async_background_wait_ms` and
+    `async_priority_deferrals`
+- Validated foreground-priority async sweep:
+  - artifact: `prefix-latency-sweep-async-priority.jsonl`
+  - `cache_scheduled`: `3` requests, mean service request `598.67 ms`, mean
+    cache prepare `0.08 ms`, mean actual prefill `930.67` tokens
+  - `cache_hit`: `9` requests, mean service request `185.65 ms`, mean cache
+    prepare `0.18 ms`, mean actual prefill `9` tokens
+  - async health: started `3`, completed `3`, failed `0`, skipped `0`
+  - execution lock telemetry: foreground acquires `20`, background acquires
+    `3`, no pending waiters at the end of the run
+- Foreground-priority conclusion:
+  - async remains opt-in, but the engine now has the lock semantics needed to
+    prevent known background-cache work from overtaking waiting foreground work
+  - next validation should add a synthetic race probe with concurrent foreground
+    traffic to prove priority deferrals occur under pressure
+- Added synthetic execution-lock priority probe:
+  - endpoint: `/engine/lock/priority-probe`
+  - holds the execution lock, starts a background waiter, then starts a
+    foreground waiter
+  - releases the lock and verifies foreground acquires before background
+  - validates `background_priority_deferrals` increments
+- Priority probe evidence:
+  - `ok=True`
+  - acquisition order: `foreground`, then `background`
+  - `background_priority_deferrals_delta=1`
+  - foreground wait `0.03 ms`
+  - background wait `0.07 ms`
+- Final sync-mode smoke still passed after the probe:
+  - `health True Device(gpu, 0)`
+  - streaming prefix reuse remained valid:
+    `stream_prefix 65 0.956 True True False True 93.31 65 3 108.9 7.55`
+- Added operator engine presets:
+  - launcher env: `ENGINE_PRESET=sync-safe|async-experimental|memory-saver|custom`
+  - service arg: `--engine-preset`
+  - `/health` and `/engine` report `engine_preset`
+  - preset defaults are applied in `run_resident_service.sh`, while explicit
+    per-knob env vars still override the preset
+- Preset intent:
+  - `sync-safe`: conservative default, sync prefix-cache population, 16 cache
+    entries, no memory cap
+  - `async-experimental`: same scheduler/cache size as `sync-safe`, but async
+    prefix-cache population
+  - `memory-saver`: smaller queue/cache surface, 4 cache entries, 64 MiB MLX
+    cache-memory limit, retains at least 1 prefix-cache entry
+- Preset validation evidence:
+  - `async-experimental`: `preset_probe async-experimental async 16 None 16`
+  - `memory-saver`: `preset_probe memory-saver sync 4 67108864 1 8`
+  - restored default: `preset_probe sync-safe sync 16 None 16`
+  - final smoke after restore:
+    `stream_prefix 65 0.956 True True False True 93.26 65 3 110.71 7.58`
+- Added live runtime configuration:
+  - endpoint: `POST /engine/config`
+  - accepts `engine_preset` and explicit overrides for scheduler, prefix-cache
+    size, memory-pressure policy, cache population mode, and async idle timeout
+  - preset updates apply without reloading model weights
+  - explicit overrides can customize a preset, for example `memory-saver` with
+    `prefix_cache_max_entries=3`
+- Runtime config validation evidence:
+  - switched live to `async-experimental`:
+    `config_probe {'engine_preset': 'async-experimental'} async-experimental async 16 None 16`
+  - switched live to customized `memory-saver`:
+    `config_probe {'engine_preset': 'memory-saver', 'prefix_cache_max_entries': 3} memory-saver sync 3 67108864 8`
+  - restored live to `sync-safe`:
+    `config_probe {'engine_preset': 'sync-safe'} sync-safe sync 16 None 16`
+  - final smoke after live mutation:
+    `stream_prefix 64 0.955 True True False True 95.61 64 3 116.66 7.52`
+  - final runtime state:
+    `final_config_probe sync-safe sync 16 None 16`
+- Validation caveat:
+  - importing `resident_mlx_service.py` from a Codex-spawned Python subprocess
+    can abort in MLX Metal initialization with
+    `-[__NSArray0 objectAtIndex:]: index 0 beyond bounds for empty array`
+  - this is not the resident server crashing; it is the sandboxed subprocess
+    importing `mlx.core`
+  - use `py_compile` for syntax validation and tmux-hosted runtime probes for
+    MLX behavior
+- Added repeatable config policy probe:
+  - script: `benchmarks/python/config_policy_probe.py`
+  - uses HTTP only, so it does not import `mlx.core`
+  - validates `dry_run`, async preset apply, memory-saver override apply,
+    restore to sync-safe, and smoke after config changes
+- Config policy probe evidence:
+  - `initial_config sync-safe sync 16 None 16`
+  - `dry_run_config memory-saver sync 3 67108864 8`
+  - `apply_async async-experimental async 16 None 16`
+  - `apply_memory_saver_override memory-saver sync 3 67108864 8`
+  - `restore_sync_safe sync-safe sync 16 None 16`
+  - smoke after config still passed:
+    `smoke_after_config stream_prefix 62 0.954 True True False True 93.74 62 3 119.4 7.6`
+- Added unified resident benchmark harness:
+  - script: `benchmarks/python/resident_benchmark_harness.py`
+  - writes health snapshots, config application, cache prune evidence, request
+    rows, streaming rows, and phase summaries to one JSONL artifact
+  - accepts `--engine-preset`, `--reset-cache`, `--requests`, `--prefix-repeats`,
+    and `--output-jsonl`
+- First harness artifact:
+  - `resident-benchmark-sync-safe.jsonl`
+  - `15` JSONL rows
+  - run id: `1778730833-29612fa9`
+- Harness validation evidence:
+  - `harness_health_before sync-safe Device(gpu, 0) sync 16`
+  - `harness_cache_prune 3 0`
+  - full prefill: `571` actual prefill tokens, `2516.39 ms` service request
+  - cache create: mean `469.54 ms` service request, mean `7.5` actual prefill
+    tokens
+  - cache hit: mean `189.66 ms` service request, mean `8.0` actual prefill
+    tokens
+  - streaming cache-create: first token `125.35 ms`, mean token gap `7.55 ms`
+- Added resident benchmark comparison:
+  - script: `benchmarks/python/compare_resident_benchmarks.py`
+  - compared `resident-benchmark-sync-safe.jsonl`,
+    `resident-benchmark-async-experimental.jsonl`, and
+    `resident-benchmark-memory-saver.jsonl`
+- Preset comparison artifacts:
+  - `sync-safe`: mode `sync`, cache entries `16`, run id
+    `1778730833-29612fa9`
+  - `async-experimental`: mode `async`, cache entries `16`, run id
+    `1778731069-8e0b324a`
+  - `memory-saver`: mode `sync`, cache entries `4`, memory limit `67108864`,
+    run id `1778731075-a72f3233`
+- Preset comparison evidence:
+  - cache hit mean service request:
+    - `sync-safe`: `189.66 ms`, actual prefill `8.00`
+    - `async-experimental`: `192.86 ms`, actual prefill `8.00`
+    - `memory-saver`: `190.85 ms`, actual prefill `8.00`
+  - async scheduled requests:
+    - `async-experimental`: `589.86 ms`, actual prefill `572.50`
+  - cache create:
+    - `sync-safe`: `469.54 ms`, actual prefill `7.50`
+    - `memory-saver`: `476.36 ms`, actual prefill `7.50`
+  - caveat: full-prefill rows are warm-state sensitive across sequential preset
+    runs, so cache-hit rows are the better cross-preset comparison for this
+    batch
+- Added prefill-isolation benchmark mode:
+  - command mode: `--mode prefill-isolation`
+  - forces `prefix_cache_population_mode=off`
+  - prunes prefix cache and clears MLX cache before the first measured request
+  - records `prefill_cold` for the first full-prefill request and
+    `prefill_warm` for subsequent full-prefill requests
+  - optionally restores the engine preset after the run
+- Prefill-isolation artifact:
+  - `resident-prefill-isolation-sync-safe.jsonl`
+  - `13` JSONL rows
+  - run id: `1778734638-71cd2892`
+- Prefill-isolation evidence:
+  - cold full-prefill: `586` actual prefill tokens, `2520.02 ms` service
+    request, `246.48` prompt tok/s
+  - warm full-prefill: `586` actual prefill tokens, `426.14 ms` mean service
+    request, about `1.88k` prompt tok/s
+  - cache reuse stayed disabled: `cache_reuse_enabled=False`
+  - final artifact state restored to `sync-safe` with cache population `sync`
+- Interpretation:
+  - the large first-request latency is primarily warmup/compile/cache-state
+    cost, not steady-state prefill throughput
+  - steady-state full prefill for this ~586-token shape is about `426 ms`
+  - prefix-cache hits at about `190 ms` remain faster than warmed full prefill,
+    but the realistic full-prefill baseline for warmed resident service is far
+    below the first cold-ish request
+- Added artifact-based regression gate:
+  - script: `benchmarks/python/resident_regression_gate.py`
+  - consumes one cache benchmark artifact and one prefill-isolation artifact
+  - default thresholds:
+    - cache-hit mean service request <= `250 ms`
+    - cache-hit mean actual prefill tokens <= `16`
+    - warm-prefill mean service request <= `550 ms`
+    - warm-prefill actual prefill tokens >= `500`
+    - cold/warm prefill ratio <= `8x`
+  - also validates every cache-hit row has suffix reuse enabled and every
+    warm-prefill row has cache reuse disabled
+- Regression gate evidence:
+  - current artifacts passed:
+    `gate_result PASS`
+  - intentional failure with `--max-cache-hit-service-ms 100` failed as expected:
+    `gate_failure cache_hit.mean_service_request_ms: 189.659 > 100.000`
+- Added one-command regression suite:
+  - script: `benchmarks/python/run_resident_regression_suite.py`
+  - runs sync-safe cache benchmark
+  - runs sync-safe prefill-isolation benchmark
+  - compares the generated artifacts
+  - runs `resident_regression_gate.py`
+  - exits non-zero if benchmark generation, comparison, or regression gate fails
+- Regression suite smoke evidence:
+  - command tag: `suite-smoke`
+  - cache artifact: `resident-benchmark-sync-safe-suite-smoke.jsonl`
+  - prefill artifact: `resident-prefill-isolation-sync-safe-suite-smoke.jsonl`
+  - cache-hit mean service request: `180.23 ms`, actual prefill `8.00`
+  - prefill-warm mean service request: `432.51 ms`, actual prefill `585.00`
+  - gate result: `gate_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-suite-smoke.jsonl resident-prefill-isolation-sync-safe-suite-smoke.jsonl`
+- Suite interpretation:
+  - the one-command flow is now suitable as the default local performance
+    regression check
+  - the suite's `prefill_cold` row can be warm-state dependent if the service
+    has already run similar shapes, so the regression gate primarily protects
+    warm-prefill and cache-hit behavior
+- Added cold-start suite mode:
+  - flag: `--cold-start`
+  - writes lifecycle artifact:
+    `resident-cold-start-sync-safe-<tag>.jsonl`
+  - records pre-unload health, unload response, reload response, and
+    post-reload health
+  - then runs the standard benchmark, comparison, and regression gate flow
+- Cold-start suite smoke evidence:
+  - tag: `cold-suite-smoke`
+  - lifecycle artifact: `resident-cold-start-sync-safe-cold-suite-smoke.jsonl`
+  - cache artifact:
+    `resident-benchmark-sync-safe-cold-suite-smoke.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-cold-suite-smoke.jsonl`
+  - unload elapsed: `940.13 ms`
+  - reload elapsed: `6457.05 ms`
+  - model load time reported by service: `4385.97 ms`
+  - warmup tokens: `[64, 512]`
+  - first post-reload full-prefill request: `443.67 ms`, `571` actual prefill
+    tokens
+  - cache-hit mean: `174.70 ms`, `8.00` actual prefill tokens
+  - warm-prefill mean: `422.68 ms`, `585.00` actual prefill tokens
+  - gate result: `gate_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-cold-suite-smoke.jsonl resident-prefill-isolation-sync-safe-cold-suite-smoke.jsonl resident-cold-start-sync-safe-cold-suite-smoke.jsonl`
+- Cold-start interpretation:
+  - the lifecycle reload path captures model unload/reload/load/warmup overhead
+  - after reload warmup, first benchmark full-prefill was already warm-state
+    speed, so strict OS/process cold-start still requires a process restart
+  - this mode is still useful because it turns lifecycle overhead into a tracked
+    artifact and validates post-reload performance does not regress
+- Added exact-prompt prefix-cache reuse:
+  - prior behavior rejected cache reuse when the prefix match covered the full
+    current prompt
+  - new behavior trims exact matches to cache `len(prompt_tokens) - 1` tokens
+    and prefill only the final trailing token
+  - this mirrors the useful LM Studio cache-wrapper behavior without sending an
+    empty prompt segment into MLX generation
+- Exact-prompt validation:
+  - script: `benchmarks/python/exact_prefix_cache_probe.py`
+  - endpoint: `/v1/completions`, because it returns `engine_metrics`
+  - evidence:
+    - first unique prompt run: `59` prompt tokens, partial prior prefix match
+      from previous requests, `25` actual prefill tokens
+    - second exact repeat: `59` prompt tokens, `59` matched tokens,
+      `cache_exact_match_trimmed=True`, `58` cached prefix tokens, `1` actual
+      prefill token, `213.78 ms`
+    - third exact repeat: cache hit with `58` cached prefix tokens, `1` actual
+      prefill token, `117.11 ms`
+    - result: `exact_prefix_result PASS`
+- Added native prompt-progress telemetry:
+  - wires `mlx_lm.generate_step` `prompt_progress_callback(processed, total)`
+    through resident text inference
+  - final `engine_metrics` now include:
+    - `prompt_progress_events`
+    - `prompt_progress_total_tokens`
+    - `prompt_progress_processed_tokens`
+    - `prompt_progress_first_ms`
+    - `prompt_progress_last_ms`
+    - `prompt_progress_complete`
+    - bounded `prompt_progress_trace`
+  - benchmark artifacts now carry the same progress summary fields
+- Prompt-progress validation:
+  - script: `benchmarks/python/prompt_progress_probe.py`
+  - test settings: `prefill_step_size=16`, `64` repeated prompt segments,
+    prefix cache disabled for full-prefill isolation
+  - evidence:
+    - `1112` prompt tokens
+    - `1112` actual prefill tokens
+    - `72` native progress events
+    - final processed/total: `1112/1112`
+    - completion flag: `prompt_progress_complete=True`
+    - final progress timestamp: `2747.41 ms`
+    - result: `prompt_progress_result PASS`
+- Added live prompt-progress streaming:
+  - raw `/generate` with `stream=true` now uses a worker-thread JSONL stream
+    path
+  - progress callback events are emitted as JSON lines with
+    `type=prompt_progress` while MLX is still processing prefill
+  - token events and final events keep the existing JSONL shape
+  - OpenAI-compatible SSE streaming remains unchanged for compatibility
+- Live prompt-progress validation:
+  - script: `benchmarks/python/live_prompt_progress_probe.py`
+  - test settings: `prefill_step_size=16`, `64` repeated prompt segments,
+    prefix cache disabled for full-prefill isolation
+  - evidence:
+    - streamed progress events: `64`
+    - streamed progress events before first token: `64`
+    - token events: `4`
+    - actual prefill tokens: `987`
+    - final metric progress events: `64`
+    - completion flag: `True`
+    - first progress event reached client at `82.98 ms`
+    - final progress event: `987/987` at `2443.4 ms`
+    - first token latency: `2439.85 ms`
+    - result: `live_prompt_progress_result PASS`
+- Added best-effort request cancellation:
+  - active request registry tracks route, status, prompt tokens, policy,
+    prefill step size, cancellation state, and recent completed requests
+  - endpoints:
+    - `GET /engine/requests`
+    - `POST /engine/requests/{request_id}/cancel`
+  - cancellation is checked at native MLX prompt-progress callback boundaries
+    and between decode token events
+  - raw `/generate` JSONL stream emits `type=cancelled` when a request is
+    cancelled
+- Request-cancellation validation:
+  - script: `benchmarks/python/cancel_request_probe.py`
+  - test settings: `prefill_step_size=16`, `96` repeated prompt segments,
+    prefix cache disabled, `max_tokens=32`
+  - probe starts a raw streaming request, waits for first `prompt_progress`,
+    calls the cancel endpoint with the streamed `request_id`, then validates the
+    stream and registry state
+  - evidence:
+    - request id: `req_ab6ffa1750c44d6889c2aa09c7b03359`
+    - progress events before cancellation: `2`
+    - token events before cancellation: `0`
+    - cancelled event progress count: `2`
+    - completed registry status: `cancelled`
+    - cancel endpoint immediate status: `cancelling`
+    - result: `cancel_request_result PASS`
+- Added OpenAI-compatible SSE prompt-progress comments:
+  - `/v1/completions` with `stream=true` now uses the live worker stream and
+    emits prompt progress as SSE comments:
+    `: prompt_progress {...}`
+  - `/v1/chat/completions` with `stream=true` uses the same comment strategy
+  - OpenAI payload compatibility is preserved because generated content and
+    final metrics still use normal `data:` chunks
+  - cancellation on OpenAI streams maps to a final `data:` chunk with
+    `finish_reason="cancelled"`
+- OpenAI SSE progress validation:
+  - script: `benchmarks/python/openai_sse_progress_probe.py`
+  - test settings: `prefill_step_size=16`, `64` repeated prompt segments,
+    prefix cache disabled for full-prefill isolation
+  - evidence:
+    - streamed prompt-progress comments: `68`
+    - comments before first `data:` chunk: `68`
+    - OpenAI `data:` chunks: `5`
+    - actual prefill tokens: `1050`
+    - final metric progress events: `68`
+    - completion flag: `True`
+    - first comment reached client at `89.97 ms`
+    - final comment: `1050/1050` at `2633.08 ms`
+    - first token latency: `2629.04 ms`
+    - result: `openai_sse_progress_result PASS`
+- Added generated-token prefix-cache recording:
+  - sync requests and live worker streams now keep the mutable MLX
+    `prompt_cache` used during generation
+  - generated token IDs are recorded from `GenerationResponse.token`
+  - after successful generation, the engine records a prefix tracker entry for
+    `prompt_tokens + generated_token_ids`
+  - the same full generated prefix is stored in `PrefixKVCacheStore` without
+    recomputing prefill
+  - warmup rows strip internal prompt-cache objects before `/health` serialization
+- Generated-token cache validation:
+  - script: `benchmarks/python/generated_prefix_cache_probe.py`
+  - probe sends an initial completion, builds a follow-up prompt beginning with
+    the original prompt plus generated text, then verifies prefix-cache reuse
+  - evidence:
+    - first prompt tokens: `41`
+    - first generation tokens recorded: `12`
+    - generated prefix cache recorded: `True`
+    - generated prefix cache tokens: `53`
+    - second prompt tokens: `59`
+    - second longest prefix match: `53`
+    - second cache reuse enabled: `True`
+    - second cache hit: `True`
+    - second cached prefix tokens: `53`
+    - second actual prefill tokens: `6`
+    - result: `generated_prefix_cache_result PASS`
+- Added generated-prefix cache safety probe:
+  - script: `benchmarks/python/generated_prefix_cache_safety_probe.py`
+  - covers:
+    - longer sync continuation reuse
+    - raw streaming continuation reuse
+    - cancelled prefill does not add generated-prefix cache entries
+  - discovered and fixed a stream-path bug where `_stream_run_live_jsonl`
+    received only public metadata and therefore lacked private `_prompt_tokens`
+    during generated-cache recording
+  - the stream helper now accepts explicit prompt tokens/text for generated
+    cache recording and reports post-generation cache-recording errors instead
+    of hanging the client
+- Generated-prefix cache safety evidence:
+  - long sync continuation:
+    `generated_cache_long_safety 33 32 32 True 65 72 65 True True 7`
+  - raw stream continuation:
+    `generated_cache_stream_safety 33 12 12 True 45 50 45 True True 5`
+  - cancelled prefill:
+    `generated_cache_cancel_safety 0 0 2 0 2`
+  - result: `generated_prefix_cache_safety_result PASS`
+- Integrated generated-prefix cache safety into the one-command regression
+  suite:
+  - script: `benchmarks/python/run_resident_regression_suite.py`
+  - new optional controls:
+    - `--skip-generated-cache-safety`
+    - `--generated-cache-long-max-tokens`
+    - `--generated-cache-stream-max-tokens`
+    - `--generated-cache-cancel-repeats`
+    - `--generated-cache-prefill-step-size`
+  - the suite now runs the cache benchmark, prefill-isolation benchmark,
+    comparison, regression gate, and generated-cache safety probe unless the
+    safety stage is explicitly skipped
+- Integrated suite smoke evidence:
+  - tag: `generated-cache-suite-smoke2`
+  - command used a shorter prompt shape with `--prefix-repeats 16`, so the
+    warm-prefill gate was adjusted to `--min-warm-prefill-tokens 350`
+  - cache artifact:
+    `resident-benchmark-sync-safe-generated-cache-suite-smoke2.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-generated-cache-suite-smoke2.jsonl`
+  - cache-hit mean service request: `163.24 ms`
+  - cache-hit mean actual prefill: `8.00` tokens
+  - warm-prefill mean service request: `352.03 ms`
+  - warm-prefill mean actual prefill: `409.00` tokens
+  - regression gate result: `gate_result PASS`
+  - generated-cache safety:
+    - long sync: `generated_cache_long_safety 35 12 12 True 47 54 47 True True 7`
+    - raw stream: `generated_cache_stream_safety 35 6 6 True 41 46 41 True True 5`
+    - cancelled prefill: `generated_cache_cancel_safety 0 0 2 0 2`
+    - result: `generated_prefix_cache_safety_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-generated-cache-suite-smoke2.jsonl resident-prefill-isolation-sync-safe-generated-cache-suite-smoke2.jsonl generated_cache_safety= True`
+- Integration note:
+  - an earlier reduced-prompt smoke failed because `--prefix-repeats 16` only
+    produced about `411` warm-prefill tokens while the default gate expected at
+    least `500`
+  - this was a threshold/prompt-shape mismatch, not an engine regression
+- Full-size integrated suite evidence:
+  - tag: `generated-cache-suite-full`
+  - command used default-size prompt validation with `--prefix-repeats 24`,
+    default `--min-warm-prefill-tokens 500`, and generated-cache safety enabled
+  - cache artifact:
+    `resident-benchmark-sync-safe-generated-cache-suite-full.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-generated-cache-suite-full.jsonl`
+  - full-prefill request: `572` actual prefill tokens, `702.49 ms`
+  - cache-create mean: `457.29 ms`, `7.50` actual prefill tokens
+  - cache-hit mean: `183.51 ms`, `8.00` actual prefill tokens
+  - warm-prefill mean: `429.61 ms`, `589.00` actual prefill tokens
+  - regression gate:
+    - `cache_hit.mean_service_request_ms 183.512 <= 250.0`
+    - `cache_hit.mean_actual_prefill_tokens 8.0 <= 16.0`
+    - `prefill_warm.mean_service_request_ms 429.609 <= 550.0`
+    - `prefill_warm.mean_actual_prefill_tokens 589.0 >= 500.0`
+    - `cache_hit_rows_reuse_suffix 4 / 4`
+    - `prefill_warm_rows_no_cache_full_prefill 4 / 4`
+    - result: `gate_result PASS`
+  - generated-cache safety:
+    - long sync: `generated_cache_long_safety 36 32 32 True 68 75 68 True True 7`
+    - raw stream: `generated_cache_stream_safety 35 12 12 True 47 52 47 True True 5`
+    - cancelled prefill: `generated_cache_cancel_safety 0 0 2 0 2`
+    - result: `generated_prefix_cache_safety_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-generated-cache-suite-full.jsonl resident-prefill-isolation-sync-safe-generated-cache-suite-full.jsonl generated_cache_safety= True`
+- Added strict process-level cold-start suite:
+  - script: `benchmarks/python/process_cold_start_suite.py`
+  - starts a separate resident service process on an isolated port
+  - waits for `/health` to report loaded GPU state
+  - records startup, health-ready, suite, and process-exit rows to JSONL
+  - runs the existing one-command regression suite against the fresh process
+  - terminates the fresh service process after validation
+- Strict process cold-start validation evidence:
+  - tag: `process-cold-full`
+  - port: `127.0.0.1:8766`
+  - fresh service PID: `15989`
+  - process artifact:
+    `resident-process-cold-start-process-cold-full.jsonl`
+  - service log:
+    `resident-process-cold-start-process-cold-full.log`
+  - cold health ready elapsed: `16049.67 ms`
+  - service-reported model load: `8578.13 ms`
+  - device: `Device(gpu, 0)`
+  - warmup prompt tokens: `[64, 512]`
+  - suite elapsed: `7105.00 ms`
+  - suite return code: `0`
+  - fresh process exit: `-15` after intentional SIGTERM
+  - post-run check: no listener remained on port `8766`
+- Strict process cold-start suite result:
+  - cache artifact:
+    `resident-benchmark-sync-safe-process-cold-full-suite.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-process-cold-full-suite.jsonl`
+  - full-prefill request: `571` actual prefill tokens, `490.36 ms`
+  - cache-hit mean: `185.48 ms`, `8.00` actual prefill tokens
+  - warm-prefill mean: `431.17 ms`, `586.00` actual prefill tokens
+  - regression gate: `gate_result PASS`
+  - generated-cache safety:
+    - long sync: `generated_cache_long_safety 37 32 32 True 69 76 69 True True 7`
+    - raw stream: `generated_cache_stream_safety 36 12 12 True 48 53 48 True True 5`
+    - cancelled prefill: `generated_cache_cancel_safety 0 0 2 0 2`
+    - result: `generated_prefix_cache_safety_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-process-cold-full-suite.jsonl resident-prefill-isolation-sync-safe-process-cold-full-suite.jsonl generated_cache_safety= True`
+- Added startup phase instrumentation:
+  - `resident_mlx_service.py` now exposes `startup_timings` in `/health`
+  - timings include parent-spawn to module import, profile discovery, device
+    detection, model access validation, backend detection, `mlx_lm` helper
+    imports, profile load, engine state init, model load, warmup, total engine
+    init, and parent-spawn to health response
+  - `process_cold_start_suite.py` sets
+    `MLX_ENGINE_PARENT_STARTED_AT_EPOCH`, records the `/health`
+    `startup_timings` block in the process JSONL artifact, and prints a compact
+    `process_cold_startup_breakdown` line
+- Startup phase breakdown evidence:
+  - tag: `process-cold-phases`
+  - port: `127.0.0.1:8767`
+  - fresh service PID: `18607`
+  - process artifact:
+    `resident-process-cold-start-process-cold-phases.jsonl`
+  - service log:
+    `resident-process-cold-start-process-cold-phases.log`
+  - parent spawn to module import: `349.09 ms`
+  - parent spawn to engine init start: `352.53 ms`
+  - runtime device info: `0.01 ms`
+  - model access validation: `0.12 ms`
+  - backend detection: `0.41 ms`
+  - `mlx_lm` helper imports: `3130.47 ms`
+  - profile discovery/load combined: `0.52 ms`
+  - model load: `6939.15 ms`
+  - warmup: `2532.66 ms`
+  - engine init total: `12603.19 ms`
+  - parent spawn to health response: `13154.25 ms`
+  - wrapper-observed health ready: `13151.65 ms`
+  - suite elapsed after readiness: `6847.01 ms`
+  - post-run check: no listener remained on port `8767`
+- Instrumented cold-start suite result:
+  - cache artifact:
+    `resident-benchmark-sync-safe-process-cold-phases-suite.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-process-cold-phases-suite.jsonl`
+  - cache-hit mean: `186.29 ms`, `8.00` actual prefill tokens
+  - warm-prefill mean: `436.01 ms`, `588.00` actual prefill tokens
+  - regression gate: `gate_result PASS`
+  - generated-cache safety: `generated_prefix_cache_safety_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-process-cold-phases-suite.jsonl resident-prefill-isolation-sync-safe-process-cold-phases-suite.jsonl generated_cache_safety= True`
+- Added async warmup mode:
+  - `resident_mlx_service.py` now supports `--warmup-mode sync|async|off`
+  - default remains `sync` to preserve existing startup behavior
+  - async mode marks the engine loaded after model load and starts warmup in a
+    background thread
+  - `/health` now includes a `warmup` status object with mode, running,
+    completed, error, timestamps, and result count
+  - `run_resident_service.sh` accepts `WARMUP_MODE`
+  - `process_cold_start_suite.py` accepts `--warmup-mode` and can wait for
+    warmup completion before running the regression suite
+- Async warmup cold-start validation:
+  - tag: `process-cold-async-warmup`
+  - port: `127.0.0.1:8768`
+  - fresh service PID: `58751`
+  - process artifact:
+    `resident-process-cold-start-process-cold-async-warmup.jsonl`
+  - service log:
+    `resident-process-cold-start-process-cold-async-warmup.log`
+  - health-ready elapsed: `8135.73 ms`
+  - health-ready model load: `4442.99 ms`
+  - parent spawn to health response: `8139.15 ms`
+  - parent spawn to module import: `342.75 ms`
+  - `mlx_lm` helper imports: `2966.59 ms`
+  - engine init total before background warmup: `7410.54 ms`
+  - background warmup wait after health: `1538.82 ms`
+  - full warmup completed at about `9678.86 ms` from parent spawn
+  - warmup result count: `2`
+  - post-run check: no listener remained on port `8768`
+- Async warmup regression result:
+  - cache artifact:
+    `resident-benchmark-sync-safe-process-cold-async-warmup-suite.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-process-cold-async-warmup-suite.jsonl`
+  - cache-hit mean: `174.66 ms`, `8.00` actual prefill tokens
+  - warm-prefill mean: `420.60 ms`, `586.00` actual prefill tokens
+  - regression gate: `gate_result PASS`
+  - generated-cache safety: `generated_prefix_cache_safety_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-process-cold-async-warmup-suite.jsonl resident-prefill-isolation-sync-safe-process-cold-async-warmup-suite.jsonl generated_cache_safety= True`
+- Async warmup result:
+  - HTTP readiness improved from the prior instrumented sync-warmup result of
+    `13154.25 ms` to `8139.15 ms`, a `5015.10 ms` readiness reduction
+  - full warmup still completed before the regression suite ran
+  - cache-hit, warm-prefill isolation, generated continuation reuse, stream
+    continuation reuse, and cancellation non-pollution still passed
+- Validated no-warmup startup mode:
+  - command uses `--warmup-mode off`
+  - tag: `process-cold-no-warmup`
+  - port: `127.0.0.1:8769`
+  - fresh service PID: `82264`
+  - process artifact:
+    `resident-process-cold-start-process-cold-no-warmup.jsonl`
+  - service log:
+    `resident-process-cold-start-process-cold-no-warmup.log`
+  - health-ready elapsed: `8652.24 ms`
+  - parent spawn to health response: `8654.98 ms`
+  - model load: `4972.17 ms`
+  - `mlx_lm` helper imports: `2955.78 ms`
+  - warmup mode: `off`
+  - warmup result count: `0`
+  - post-run check: no listener remained on port `8769`
+- No-warmup regression result:
+  - cache artifact:
+    `resident-benchmark-sync-safe-process-cold-no-warmup-suite.jsonl`
+  - prefill artifact:
+    `resident-prefill-isolation-sync-safe-process-cold-no-warmup-suite.jsonl`
+  - first real full-prefill request: `2189.62 ms`, `574` actual prefill tokens
+  - cache-hit mean: `182.60 ms`, `8.00` actual prefill tokens
+  - warm-prefill mean: `431.62 ms`, `588.00` actual prefill tokens
+  - regression gate: `gate_result PASS`
+  - generated-cache safety: `generated_prefix_cache_safety_result PASS`
+  - suite result:
+    `suite_result PASS resident-benchmark-sync-safe-process-cold-no-warmup-suite.jsonl resident-prefill-isolation-sync-safe-process-cold-no-warmup-suite.jsonl generated_cache_safety= True`
+- Warmup policy conclusion:
+  - `off` does not materially beat async readiness on this run
+    (`8654.98 ms` off vs `8139.15 ms` async)
+  - `off` exposes a first-request latency spike (`2189.62 ms`) because no
+    representative prefill has been warmed
+  - `async` remains the preferred default for interactive service readiness:
+    early HTTP readiness, background warmup, and no first-request cold penalty
+    when clients wait for `warmup.completed=true`
+- Promoted async warmup to launcher default:
+  - `run_resident_service.sh` now defaults `WARMUP_MODE` to `async`
+  - direct `resident_mlx_service.py` still defaults to `sync` for explicit
+    benchmark compatibility
+  - operators can still override launcher behavior with `WARMUP_MODE=sync` or
+    `WARMUP_MODE=off`
+  - launcher smoke validation started the service on `127.0.0.1:8770` through
+    `run_resident_service.sh` and terminated it with `timeout 20s`
+  - post-run check confirmed no listener remained on port `8770`
+- Added resident readiness probe:
+  - script: `benchmarks/python/wait_resident_ready.py`
+  - waits for `/health` to report `ok=true` and loaded model state
+  - optional `--require-gpu` verifies `Device(gpu, 0)` style GPU readiness
+  - optional `--require-warmup` waits for `warmup.completed=true`
+  - includes backward-compatible warmup inference for legacy service processes
+    that expose `warmup_results` but not the newer `warmup` object
+- Readiness probe validation against live server:
+  - loaded/GPU check:
+    `resident_ready True sync-safe Device(gpu, 0) legacy True 2`
+  - loaded/GPU/warmup check:
+    `resident_ready True sync-safe Device(gpu, 0) legacy True 2`
+  - validation used the current live resident server on `127.0.0.1:8765`
+- Promoted readiness probe into packaged CLI:
+  - added `bin/mlx-engine ready`
+  - supports `--require-gpu` and `--require-warmup`
+  - packaged CLI validation against live server:
+    - `resident_ready True sync-safe Device(gpu, 0) legacy True 2`
+    - `resident_ready True sync-safe Device(gpu, 0) legacy True 2`
+- Promoted regression suite into packaged CLI:
+  - added `bin/mlx-engine suite`
+  - wraps `benchmarks/python/run_resident_regression_suite.py`
+  - packaged CLI full-suite validation:
+    - command: `bin/mlx-engine suite --base-url http://127.0.0.1:8765 --tag cli-suite-full`
+    - cache-hit mean: `178.02 ms`, `8.00` actual prefill tokens
+    - warm-prefill mean: `415.59 ms`, `586.00` actual prefill tokens
+    - `gate_result PASS`
+    - `generated_prefix_cache_safety_result PASS`
+    - `suite_result PASS resident-benchmark-sync-safe-cli-suite-full.jsonl resident-prefill-isolation-sync-safe-cli-suite-full.jsonl generated_cache_safety= True`
+- Started package cleanup:
+  - moved stable resident service implementation into
+    `mlx_engine/resident_service.py`
+  - added `mlx_engine/__init__.py`
+  - replaced `benchmarks/python/resident_mlx_service.py` with a compatibility
+    wrapper that imports `mlx_engine.resident_service.main`
+  - updated `bin/mlx-engine serve` to target the packaged service path
+  - added `--warmup-mode` to `bin/mlx-engine serve`, defaulting to `async`
+- Package-path validation:
+  - command:
+    `timeout 20s bin/mlx-engine serve --model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8 --port 8771`
+  - result:
+    `INFO: Uvicorn running on http://127.0.0.1:8771`
+  - timeout shutdown completed:
+    `INFO: Finished server process [57278]`
+  - post-run check confirmed no listener remained on port `8771`
+- Compatibility wrapper validation:
+  - command:
+    `timeout 20s python3 benchmarks/python/resident_mlx_service.py --model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8 --port 8772 --warmup-mode async --require-gpu`
+  - result:
+    `INFO: Uvicorn running on http://127.0.0.1:8772`
+  - timeout shutdown completed:
+    `INFO: Finished server process [99286]`
+  - post-run check confirmed no listener remained on port `8772`
+- Added package/source hygiene:
+  - added `mlx_engine/README.md` to define the stable package boundary
+  - added `.gitignore` rules for local MLX engine run artifacts:
+    `*.jsonl`, `resident-*.log`, and `resident-service-*.log`
+  - generated benchmark artifacts are now ignored, while source scripts, docs,
+    profile JSON, and Qwen static report JSON files remain visible for review
+- Updated launchd packaging:
+  - `packaging/launchd/com.jecruz.mlx-engine.plist.template` now passes
+    `--warmup-mode async` explicitly
+  - added `packaging/launchd/README.md` with template substitutions and
+    readiness commands for loaded and warm states
+- Completed M9.1 generated-prefix cache edge hardening:
+  - added API stop-string support to raw `/generate`, `/v1/completions`, and
+    `/v1/chat/completions`, including streaming paths
+  - added a generated-prefix token-boundary guard before storing generated KV
+    cache entries
+  - stop-string-trimmed responses now skip generated-prefix cache storage when
+    returned text no longer retokenizes to the recorded generated token IDs
+  - added `benchmarks/python/generated_prefix_cache_edge_probe.py`
+  - integrated the edge probe into `benchmarks/python/run_resident_regression_suite.py`
+    and `bin/mlx-engine suite`
+  - `bin/mlx-engine suite` now includes generated-cache safety and generated-cache
+    edge probes by default
+- M9.1 validation against patched fresh server on `127.0.0.1:8773`:
+  - readiness:
+    `resident_ready True custom Device(gpu, 0) async True 2`
+  - standalone edge probe:
+    `generated_prefix_cache_edge_result PASS`
+  - default integrated suite:
+    - cache-hit mean: `185.04 ms`, `8.00` actual prefill tokens
+    - warm-prefill mean: `425.83 ms`, `589.00` actual prefill tokens
+    - `gate_result PASS`
+    - `generated_prefix_cache_safety_result PASS`
+    - `generated_prefix_cache_edge_result PASS`
+    - `suite_result PASS resident-benchmark-sync-safe-edge-integrated-suite.jsonl resident-prefill-isolation-sync-safe-edge-integrated-suite.jsonl generated_cache_safety= True generated_cache_edges= True`
+- Completed M9.2 concurrent cancellation pressure hardening:
+  - added `benchmarks/python/concurrent_cancel_pressure_probe.py`
+  - probe starts one cancellable long-prefill stream, stacks four foreground
+    completion clients behind it, cancels at the first prompt-progress event,
+    verifies queued clients complete, verifies the cancelled stream emits no
+    token events, verifies request registry state is `cancelled`, verifies the
+    scheduler returns idle, and verifies cache entries do not change while cache
+    population is off
+  - integrated the pressure probe into the default `bin/mlx-engine suite`
+  - added `--skip-concurrent-cancel-pressure` for explicit bypasses
+- M9.2 validation against patched fresh server on `127.0.0.1:8773`:
+  - standalone pressure probe:
+    `concurrent_cancel_pressure_result PASS`
+  - standalone probe queue evidence:
+    - cancelled request progress events: `2`
+    - cancelled request token events: `0`
+    - four client requests completed with queue waits from about `299.95 ms`
+      to `962.33 ms`
+    - scheduler after probe: `total_admitted=5`, `total_completed=5`,
+      `total_rejected=0`
+  - default integrated suite:
+    - cache-hit mean: `178.24 ms`, `8.00` actual prefill tokens
+    - warm-prefill mean: `424.66 ms`, `587.00` actual prefill tokens
+    - `gate_result PASS`
+    - `generated_prefix_cache_safety_result PASS`
+    - `generated_prefix_cache_edge_result PASS`
+    - `concurrent_cancel_pressure_result PASS`
+    - `suite_result PASS resident-benchmark-sync-safe-concurrent-integrated-suite.jsonl resident-prefill-isolation-sync-safe-concurrent-integrated-suite.jsonl generated_cache_safety= True generated_cache_edges= True concurrent_cancel_pressure= True`
+- Completed launchd operational packaging slice:
+  - added `packaging/launchd/install.sh`
+  - added `packaging/launchd/uninstall.sh`
+  - template now supports rendered `__LABEL__`, `__HOST__`, `__PORT__`, and
+    `__WARMUP_MODE__` values in addition to repo/model/log paths
+  - install script renders the plist, creates log/plist directories, runs
+    `plutil -lint`, and optionally bootstraps the LaunchAgent with `--load`
+  - uninstall script bootouts the LaunchAgent and removes the rendered plist
+    unless `--keep-plist` is passed
+  - updated `packaging/launchd/README.md` with install, load, readiness, and
+    uninstall commands
+- Launchd packaging validation:
+  - template lint:
+    `packaging/launchd/com.jecruz.mlx-engine.plist.template: OK`
+  - dry render command used temporary paths:
+    `packaging/launchd/install.sh --model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8 --plist-dir /tmp/mlx-engine-launchagents --log-dir /tmp/mlx-engine-logs --label com.jecruz.mlx-engine.test --port 8774`
+  - rendered plist lint:
+    `/tmp/mlx-engine-launchagents/com.jecruz.mlx-engine.test.plist: OK`
+  - rendered plist used `bin/mlx-engine serve`, the target model path,
+    `127.0.0.1:8774`, `--warmup-mode async`, and `--require-gpu`
+  - uninstall validation removed the temporary plist:
+    `mlx_engine_launchd_plist_removed /tmp/mlx-engine-launchagents/com.jecruz.mlx-engine.test.plist`

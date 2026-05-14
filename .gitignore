@@ -79,3 +79,8 @@ uv.lock
 .cache/
 # vim
 *.swp
+
+# Local MLX engine benchmark/run artifacts
+*.jsonl
+resident-*.log
+resident-service-*.log

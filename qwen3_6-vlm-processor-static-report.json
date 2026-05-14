@@ -1,0 +1,78 @@
+{
+  "probe": "vlm_processor_static_probe",
+  "models": [
+    {
+      "model_path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      "model_type": "qwen3_5",
+      "architectures": [
+        "Qwen3_5ForConditionalGeneration"
+      ],
+      "image_token_id": 248056,
+      "video_token_id": 248057,
+      "vision_start_token_id": 248053,
+      "vision_end_token_id": 248054,
+      "processor_class": "Qwen3VLProcessor",
+      "image_processor_type": null,
+      "vision_model_type": "qwen3_5",
+      "vision_patch_size": 16,
+      "vision_spatial_merge_size": 2,
+      "vision_temporal_patch_size": 2,
+      "weight_shard_count": 5,
+      "missing_files": [],
+      "missing_top_level_keys": [],
+      "missing_vision_keys": [],
+      "missing_weight_files": [],
+      "template_markers": {
+        "image_token_literal": true,
+        "video_token_literal": true,
+        "vision_start_literal": true,
+        "vision_end_literal": true
+      },
+      "checks": {
+        "required_files_present": true,
+        "required_top_level_keys_present": true,
+        "required_vision_keys_present": true,
+        "weight_shards_present": true,
+        "chat_template_has_vision_markers": true
+      },
+      "passes": true
+    },
+    {
+      "model_path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "model_type": "qwen3_5_moe",
+      "architectures": [
+        "Qwen3_5MoeForConditionalGeneration"
+      ],
+      "image_token_id": 248056,
+      "video_token_id": 248057,
+      "vision_start_token_id": 248053,
+      "vision_end_token_id": 248054,
+      "processor_class": "Qwen3VLProcessor",
+      "image_processor_type": null,
+      "vision_model_type": "qwen3_5_moe",
+      "vision_patch_size": 16,
+      "vision_spatial_merge_size": 2,
+      "vision_temporal_patch_size": 2,
+      "weight_shard_count": 5,
+      "missing_files": [],
+      "missing_top_level_keys": [],
+      "missing_vision_keys": [],
+      "missing_weight_files": [],
+      "template_markers": {
+        "image_token_literal": true,
+        "video_token_literal": true,
+        "vision_start_literal": true,
+        "vision_end_literal": true
+      },
+      "checks": {
+        "required_files_present": true,
+        "required_top_level_keys_present": true,
+        "required_vision_keys_present": true,
+        "weight_shards_present": true,
+        "chat_template_has_vision_markers": true
+      },
+      "passes": true
+    }
+  ],
+  "passes": true
+}

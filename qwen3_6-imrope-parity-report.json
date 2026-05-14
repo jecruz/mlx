@@ -1,0 +1,63 @@
+{
+  "probe": "qwen_imrope_static_probe",
+  "comparison": "mlx-vlm Qwen3_5RotaryEmbedding.apply_interleaved_mrope vs puma.cpp/panthro.cpp GGML_ROPE_TYPE_IMROPE sector rule",
+  "models": [
+    {
+      "model_path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      "top_level_model_type": "qwen3_5",
+      "text_model_type": "qwen3_5_text",
+      "architectures": [
+        "Qwen3_5ForConditionalGeneration"
+      ],
+      "head_dim": 256,
+      "partial_rotary_factor": 0.25,
+      "rotary_dim": 64,
+      "frequency_lane_count": 32,
+      "rope_parameters": {
+        "mrope_interleaved": true,
+        "mrope_section": [
+          11,
+          11,
+          10
+        ],
+        "partial_rotary_factor": 0.25,
+        "rope_theta": 10000000,
+        "rope_type": "default"
+      },
+      "mlx_lane_owners": "thwthwthwthwthwthwthwthwthwthwth",
+      "puma_panthro_lane_owners": "thwthwthwthwthwthwthwthwthwthwth",
+      "mismatch_count": 0,
+      "mismatches": [],
+      "passes": true
+    },
+    {
+      "model_path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "top_level_model_type": "qwen3_5_moe",
+      "text_model_type": "qwen3_5_moe_text",
+      "architectures": [
+        "Qwen3_5MoeForConditionalGeneration"
+      ],
+      "head_dim": 256,
+      "partial_rotary_factor": 0.25,
+      "rotary_dim": 64,
+      "frequency_lane_count": 32,
+      "rope_parameters": {
+        "mrope_interleaved": true,
+        "mrope_section": [
+          11,
+          11,
+          10
+        ],
+        "partial_rotary_factor": 0.25,
+        "rope_theta": 10000000,
+        "rope_type": "default"
+      },
+      "mlx_lane_owners": "thwthwthwthwthwthwthwthwthwthwth",
+      "puma_panthro_lane_owners": "thwthwthwthwthwthwthwthwthwthwth",
+      "mismatch_count": 0,
+      "mismatches": [],
+      "passes": true
+    }
+  ],
+  "passes": true
+}
