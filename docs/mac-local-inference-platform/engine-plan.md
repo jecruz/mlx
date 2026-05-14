@@ -2374,3 +2374,55 @@ Rendered plist spot check:
 - bind: `127.0.0.1:8774`
 - warmup: `async`
 - GPU guard: `--require-gpu`
+
+## M13 Profile-Prefill Warmup Latency
+
+M13 tests whether profile-selected warmup improves the first real prompt after a
+reload, independent of prefix-cache reuse.
+
+Implementation:
+
+- added `benchmarks/python/profile_prefill_warmup_latency_probe.py`
+- reloads the resident engine with `warmup_profile_prefill=false`
+- waits for configured async warmup to complete
+- prunes prefix cache
+- sends the first real prompt and records service/prefill metrics
+- repeats the same sequence with `warmup_profile_prefill=true`
+- writes JSONL evidence with per-case rows and a summary row
+
+Short-prompt control:
+
+```text
+m13_case profile_prefill_off profile_prefill False warmup_results 2 prompt_tokens 1025 prefill_step None service_ms 587.76 actual_prefill 1025
+m13_case profile_prefill_on profile_prefill True warmup_results 4 prompt_tokens 1025 prefill_step None service_ms 588.71 actual_prefill 1025
+m13_summary delta_ms 0.95 ratio 1.002 profile-prefill-warmup-latency-m13.jsonl
+```
+
+Long-prompt profile-band test:
+
+```text
+m13_case profile_prefill_off profile_prefill False warmup_results 2 prompt_tokens 4102 prefill_step 2048 service_ms 2032.46 actual_prefill 4102
+m13_case profile_prefill_on profile_prefill True warmup_results 4 prompt_tokens 4102 prefill_step 2048 service_ms 2048.37 actual_prefill 4102
+m13_summary delta_ms 15.91 ratio 1.008 profile-prefill-warmup-latency-m13-long.jsonl
+```
+
+Interpretation:
+
+- Profile-prefill warmup coverage works: the `on` case warmed configured
+  targets plus profile-band targets, including the 4096-token band using
+  `prefill_step_size=2048`.
+- The first real long-prompt request still performed full prefill
+  (`actual_prefill_tokens=4102`) and took about the same service time as the
+  non-profile-prefill case.
+- The measured delta was noise-level/slightly negative in this run:
+  `2048.37 ms` on vs `2032.46 ms` off.
+
+M13 result:
+
+- Do not treat profile-selected warmup alone as a first-prompt latency
+  optimization.
+- Keep it as an operational correctness/readiness feature because it verifies
+  profile-band execution paths before traffic.
+- For the next performance milestone, focus on reusable compiled prefill graphs,
+  prompt-cache construction/reuse, or batching/chunk scheduling rather than
+  simply adding more warmup prompts.

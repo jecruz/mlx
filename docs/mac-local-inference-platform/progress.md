@@ -1163,3 +1163,28 @@
     `127.0.0.1:8774`, `--warmup-mode async`, and `--require-gpu`
   - uninstall validation removed the temporary plist:
     `mlx_engine_launchd_plist_removed /tmp/mlx-engine-launchagents/com.jecruz.mlx-engine.test.plist`
+- Completed M13 profile-prefill warmup latency measurement:
+  - added `benchmarks/python/profile_prefill_warmup_latency_probe.py`
+  - probe reloads the resident engine twice against the same model/profile:
+    once with `warmup_profile_prefill=false`, once with
+    `warmup_profile_prefill=true`
+  - each case waits for async warmup completion, prunes prefix cache, then sends
+    the same first real prompt and records `service_request_ms`,
+    `prompt_tokens_estimate`, `actual_prefill_tokens`, selected
+    `prefill_step_size`, and warmup results
+  - short initial run at `1025` prompt tokens selected `prefill_step_size=None`
+    and showed no expected profile-prefill advantage:
+    `587.76 ms` off vs `588.71 ms` on
+  - long run targeted the measured long-prompt band:
+    `4102` prompt tokens, `prefill_step_size=2048`,
+    `actual_prefill_tokens=4102`
+  - profile-prefill-on warmup included the extra `4096` token profile-band
+    target with `prefill_step_size=2048` before the first real prompt
+  - long-run first real prompt result:
+    `2032.46 ms` with profile-prefill off vs `2048.37 ms` with
+    profile-prefill on
+  - M13 conclusion: profile-selected prefill warmup validates warmup coverage
+    but does not materially improve first real long-prompt latency for this
+    shape; the next optimization should target reusable compiled prefill graphs,
+    prompt-cache construction/reuse, or request-shape batching rather than
+    simply adding more warmup prompts
