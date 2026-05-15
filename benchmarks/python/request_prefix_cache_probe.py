@@ -177,6 +177,8 @@ def run_case(
             "cache_stored_from_request": metrics.get("cache_stored_from_request"),
             "cache_request_trimmed_tokens": metrics.get("cache_request_trimmed_tokens"),
             "cache_request_store_reason": metrics.get("cache_request_store_reason"),
+            "cache_split_prefill": metrics.get("cache_split_prefill"),
+            "cache_split_prefill_reason": metrics.get("cache_split_prefill_reason"),
             "cached_prefix_tokens": metrics.get("cached_prefix_tokens"),
         }
         rows.append(row)
@@ -193,6 +195,8 @@ def run_case(
             row["actual_prefill_tokens"],
             "stored_from_request",
             row["cache_stored_from_request"],
+            "split_prefill",
+            row["cache_split_prefill"],
             "scheduled",
             row["cache_scheduled"],
             "hit",
@@ -216,6 +220,7 @@ def run_case(
         in {
             "not_trimmable_fallback_async",
             "trim_incomplete_fallback_async",
+            "split_prefill",
         }
     ):
         raise RuntimeError(
@@ -234,10 +239,10 @@ def run_case(
     if (
         mode == "request"
         and "ArraysCache" in (before_capabilities.get("non_trimmable_classes") or [])
-        and populate["cache_request_store_reason"] != "not_trimmable_fallback_async"
+        and not populate["cache_split_prefill"]
     ):
         raise RuntimeError(
-            "request case did not preserve ArraysCache safety fallback: "
+            "request case did not preserve ArraysCache split-prefill safety path: "
             f"capabilities={before_capabilities} populate={populate}"
         )
     if mode == "async" and not populate["cache_scheduled"]:

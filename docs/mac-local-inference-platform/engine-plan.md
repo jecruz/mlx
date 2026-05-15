@@ -2669,3 +2669,54 @@ M17 result:
   prefix into a cache, store/copy that prefix cache, then continue the same
   request through the suffix. That avoids suffix trimming and avoids an
   additional background rebuild.
+
+## M18 Split-Prefill Request Population
+
+M18 implements the safe follow-up to M17 for recurrent Qwen cache stacks.
+
+Before M18, `prefix_cache_population_mode=request` behaved this way for
+non-trimmable cache stacks:
+
+- full-prefill the populate request
+- discover that request-owned cache trimming is unsafe
+- schedule an async background prefix-cache build
+- next related request gets the cache hit after the background build
+
+M18 changes that path to split-prefill:
+
+- when request mode sees a non-trimmable prompt-cache stack, it builds the
+  matched prefix cache synchronously
+- stores that prefix cache immediately
+- passes a copy of that prefix cache into the current request
+- runs only the uncached suffix tokens for the populate request
+- does not schedule an async rebuild
+
+New request metrics:
+
+- `cache_split_prefill`
+- `cache_split_prefill_reason`
+
+Live Qwen validation:
+
+```text
+m15_capabilities async entries 40 all_trimmable False non_trimmable 30 blockers array_or_recurrent_state_not_suffix_trimmable classes ArraysCache,KVCache
+m15_request async populate service_ms 493.64 cache_prepare_ms 0.05 actual_prefill 630 stored_from_request False split_prefill False scheduled True hit False
+m15_request async hit service_ms 204.0 cache_prepare_ms 0.21 actual_prefill 7 stored_from_request False split_prefill False scheduled False hit True
+m15_capabilities request entries 40 all_trimmable False non_trimmable 30 blockers array_or_recurrent_state_not_suffix_trimmable classes ArraysCache,KVCache
+m15_request request populate service_ms 531.53 cache_prepare_ms 321.0 actual_prefill 9 stored_from_request False split_prefill True scheduled False hit False
+m15_request request hit service_ms 211.41 cache_prepare_ms 0.21 actual_prefill 7 stored_from_request False split_prefill False scheduled False hit True
+m15_summary populate_improvement_ms -37.89 request_populate_ms 531.53 async_populate_ms 493.64 request-prefix-cache-m18-qwen-a3b-split.jsonl
+```
+
+M18 result:
+
+- Request mode no longer does full-prefill-plus-background-rebuild for
+  non-trimmable Qwen recurrent cache stacks.
+- Populate request prefill work drops from the full prompt (`630` tokens in the
+  async case) to suffix-only (`9` tokens) after foreground prefix preparation.
+- The foreground prefix preparation cost is visible as `cache_prepare_ms`
+  (`321.00 ms` in the short validation).
+- At ~630 prompt tokens, async remains slightly faster end-to-end because the
+  rebuild runs outside the populate request path. Split-prefill should be
+  retested at 1.5k, 4k, and 8k contexts where avoiding full populate prefill and
+  avoiding a background rebuild should have more value.

@@ -1307,3 +1307,30 @@
     it should instead avoid computing the suffix before cache storage, for
     example by prefill-splitting the populate request at the matched prefix
     boundary and then continuing generation from a copied prefix cache.
+- Completed M18 split-prefill request population:
+  - changed `prefix_cache_population_mode=request` for non-trimmable cache
+    stacks from "full prefill, then async fallback build" to explicit
+    split-prefill:
+    - synchronously build/store the matched prefix cache
+    - copy that prefix cache into the current request
+    - continue the current request through only the suffix tokens
+    - do not schedule a background rebuild
+  - added request metrics:
+    - `cache_split_prefill`
+    - `cache_split_prefill_reason`
+  - extended `benchmarks/python/request_prefix_cache_probe.py` output and
+    assertions for the split-prefill path
+  - live Qwen A3B validation:
+    - async populate: `493.64 ms`, `actual_prefill_tokens=630`,
+      `cache_scheduled=True`
+    - async follow-up hit: `204.00 ms`, `actual_prefill_tokens=7`
+    - request split-prefill populate: `531.53 ms`,
+      `cache_prepare_ms=321.00`, `actual_prefill_tokens=9`,
+      `cache_split_prefill=True`, `cache_scheduled=False`
+    - request follow-up hit: `211.41 ms`, `actual_prefill_tokens=7`
+  - M18 conclusion: split-prefill is now the safe recurrent-cache population
+    path. On the ~630 token Qwen probe it is about `37.89 ms` slower than async
+    end-to-end because the prefix cache is built in the foreground, but it
+    eliminates full populate prefill and the separate background rebuild. The
+    next performance test should repeat this at longer prompts where avoiding
+    full populate prefill and background rebuild should matter more.

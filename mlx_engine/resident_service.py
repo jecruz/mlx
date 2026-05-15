@@ -240,6 +240,8 @@ class EngineMetrics:
                 "cache_request_trimmed_tokens": row.get(
                     "cache_request_trimmed_tokens"
                 ),
+                "cache_split_prefill": row.get("cache_split_prefill"),
+                "cache_split_prefill_reason": row.get("cache_split_prefill_reason"),
                 "cache_prepare_ms": row.get("cache_prepare_ms"),
                 "cache_scope_hash": row.get("cache_scope_hash"),
                 "cached_prefix_tokens": row.get("cached_prefix_tokens"),
@@ -1784,6 +1786,8 @@ class ResidentEngine:
             "cache_stored_from_request": False,
             "cache_request_trimmed_tokens": 0,
             "cache_request_store_reason": None,
+            "cache_split_prefill": False,
+            "cache_split_prefill_reason": None,
         }
         prepare_t0 = time.perf_counter()
         if (
@@ -1853,6 +1857,38 @@ class ResidentEngine:
                         "cached_prefix_tokens": cache_prefix_tokens,
                         "actual_prefill_tokens": len(rest_tokens),
                         "cache_exact_match_trimmed": exact_match_trimmed,
+                    }
+                )
+                return rest_tokens, request_cache, cache_info
+
+            prompt_cache = self.make_prompt_cache(self.model)
+            if not self.can_trim_prompt_cache(prompt_cache):
+                self.execution_lock.acquire_foreground()
+                try:
+                    entry = self.build_prefix_cache_locked(
+                        key=key,
+                        prefix_tokens=prefix_tokens,
+                        scope=scope,
+                        prefill_step_size=metadata["prefill_step_size"],
+                    )
+                finally:
+                    self.execution_lock.release()
+                request_cache = copy.deepcopy(entry["prompt_cache"])
+                cache_info.update(
+                    {
+                        "cache_reuse_enabled": True,
+                        "cache_created": True,
+                        "cache_prepare_ms": 1e3
+                        * (time.perf_counter() - prepare_t0),
+                        "cache_scope_hash": scope_hash,
+                        "cached_prefix_tokens": cache_prefix_tokens,
+                        "actual_prefill_tokens": len(rest_tokens),
+                        "cache_exact_match_trimmed": exact_match_trimmed,
+                        "cache_split_prefill": True,
+                        "cache_split_prefill_reason": (
+                            "non_trimmable_request_cache"
+                        ),
+                        "cache_request_store_reason": "split_prefill",
                     }
                 )
                 return rest_tokens, request_cache, cache_info
