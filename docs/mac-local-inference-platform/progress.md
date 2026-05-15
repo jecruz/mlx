@@ -1534,3 +1534,16 @@
   - M28 conclusion: Dax is no longer only an engine monitor; it can now submit
     real generation work to the resident MLX engine while still using the
     OpenAI-compatible HTTP boundary.
+- Completed M29 Dax streaming generation:
+  - extended `dax mlx-engine` with `--stream`
+  - streaming mode consumes OpenAI-compatible SSE events from:
+    - `POST /v1/chat/completions`
+    - `POST /v1/completions`
+  - added SSE data-block parsing, `[DONE]` handling, chunk printing, and final
+    usage reporting
+  - live Qwen A3B validation through Dax:
+    - chat streaming returned usage `prompt=18 completion=8 total=26`
+    - raw completion streaming returned usage `prompt=4 completion=6 total=10`
+  - M29 conclusion: Dax can now display generation as the resident MLX engine
+    emits tokens, which is the correct interaction model for a terminal
+    operator UI and agentic coding workflow.

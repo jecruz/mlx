@@ -3130,3 +3130,35 @@ M28 result:
 - The integration still uses the OpenAI-compatible HTTP boundary.
 - Live validation against the Qwen A3B server returned completion text plus
   prompt/completion/total token usage counters.
+
+## M29 Dax Streaming Generation
+
+M29 adds token-streaming output to the Dax MLX command.
+
+Command:
+
+```bash
+dax mlx-engine --base-url http://127.0.0.1:8773 \
+  --prompt "Stream exactly four words about MLX." \
+  --max-tokens 8 \
+  --stream
+
+dax mlx-engine --base-url http://127.0.0.1:8773 \
+  --prompt "MLX streaming:" \
+  --max-tokens 6 \
+  --completion \
+  --stream
+```
+
+Runtime path:
+
+- chat stream: `POST /v1/chat/completions` with `stream=true`
+- text stream: `POST /v1/completions` with `stream=true`
+
+M29 result:
+
+- Dax parses OpenAI-compatible SSE data blocks.
+- Dax ignores prompt-progress comment events, prints token chunks as they
+  arrive, handles `[DONE]`, and prints final usage when available.
+- Live validation against the Qwen A3B server returned streamed text and usage
+  counters for both chat and raw completion modes.

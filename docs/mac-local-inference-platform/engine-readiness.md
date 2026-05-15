@@ -96,6 +96,10 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --once
 npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   --prompt "Reply with exactly three words about MLX speed." \
   --max-tokens 8
+npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
+  --prompt "Stream exactly four words about MLX." \
+  --max-tokens 8 \
+  --stream
 ```
 
 ## Go Criteria
@@ -121,6 +125,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   metrics, and runtime-profile state from the resident engine
 - `dax mlx-engine --prompt ...` returns a non-streaming generation response and
   usage counters through the resident engine HTTP API
+- `dax mlx-engine --prompt ... --stream` prints streamed chunks from the
+  OpenAI-compatible SSE API and reports usage counters when the final event
+  arrives
 
 ## Current Qwen Result
 
