@@ -55,6 +55,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_population_mode": "sync",
             "prefix_cache_async_idle_timeout_ms": 30000,
             "prefix_cache_async_idle_grace_ms": 0,
+            "prefix_cache_pending_wait_ms": 0,
         },
         "async-experimental": {
             "max_concurrent_requests": 1,
@@ -66,6 +67,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_population_mode": "async",
             "prefix_cache_async_idle_timeout_ms": 30000,
             "prefix_cache_async_idle_grace_ms": 50,
+            "prefix_cache_pending_wait_ms": 0,
         },
         "memory-saver": {
             "max_concurrent_requests": 1,
@@ -77,6 +79,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_population_mode": "sync",
             "prefix_cache_async_idle_timeout_ms": 30000,
             "prefix_cache_async_idle_grace_ms": 0,
+            "prefix_cache_pending_wait_ms": 0,
         },
         "custom": {
             "max_concurrent_requests": 1,
@@ -88,6 +91,7 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_population_mode": "sync",
             "prefix_cache_async_idle_timeout_ms": 30000,
             "prefix_cache_async_idle_grace_ms": 0,
+            "prefix_cache_pending_wait_ms": 0,
         },
     }
     return dict(presets[name])
@@ -164,6 +168,7 @@ class EngineConfigRequest(BaseModel):
     prefix_cache_population_mode: PrefixCachePopulationMode | None = None
     prefix_cache_async_idle_timeout_ms: int | None = Field(default=None, ge=1)
     prefix_cache_async_idle_grace_ms: int | None = Field(default=None, ge=0)
+    prefix_cache_pending_wait_ms: int | None = Field(default=None, ge=0)
 
 
 class CachePruneRequest(BaseModel):
@@ -244,6 +249,8 @@ class EngineMetrics:
                 "cache_split_prefill_reason": row.get("cache_split_prefill_reason"),
                 "cache_build_deduplicated": row.get("cache_build_deduplicated"),
                 "cache_build_dedup_reason": row.get("cache_build_dedup_reason"),
+                "cache_pending_wait_ms": row.get("cache_pending_wait_ms"),
+                "cache_pending_wait_result": row.get("cache_pending_wait_result"),
                 "cache_prepare_ms": row.get("cache_prepare_ms"),
                 "cache_scope_hash": row.get("cache_scope_hash"),
                 "cached_prefix_tokens": row.get("cached_prefix_tokens"),
@@ -902,6 +909,7 @@ class ResidentEngine:
         prefix_cache_population_mode: str,
         prefix_cache_async_idle_timeout_ms: int,
         prefix_cache_async_idle_grace_ms: int,
+        prefix_cache_pending_wait_ms: int,
         warmup_mode: WarmupMode,
         startup_context: dict[str, Any] | None = None,
     ):
@@ -1001,6 +1009,12 @@ class ResidentEngine:
         self.prefix_cache_pending_build_deduplications = 0
         self.prefix_cache_async_idle_timeout_ms = prefix_cache_async_idle_timeout_ms
         self.prefix_cache_async_idle_grace_ms = prefix_cache_async_idle_grace_ms
+        self.prefix_cache_pending_wait_ms = prefix_cache_pending_wait_ms
+        self.prefix_cache_pending_waits = 0
+        self.prefix_cache_pending_wait_hits = 0
+        self.prefix_cache_pending_wait_timeouts = 0
+        self.prefix_cache_pending_wait_misses = 0
+        self.prefix_cache_pending_wait_total_ms = 0.0
         self.prefix_cache_async_idle_grace_wait_ms = 0.0
         self.prefix_cache_async_idle_grace_resets = 0
         self.last_prefix_cache_async_error: str | None = None
@@ -1090,6 +1104,12 @@ class ResidentEngine:
                 ),
                 "async_idle_timeout_ms": self.prefix_cache_async_idle_timeout_ms,
                 "async_idle_grace_ms": self.prefix_cache_async_idle_grace_ms,
+                "pending_wait_ms": self.prefix_cache_pending_wait_ms,
+                "pending_waits": self.prefix_cache_pending_waits,
+                "pending_wait_hits": self.prefix_cache_pending_wait_hits,
+                "pending_wait_timeouts": self.prefix_cache_pending_wait_timeouts,
+                "pending_wait_misses": self.prefix_cache_pending_wait_misses,
+                "pending_wait_total_ms": self.prefix_cache_pending_wait_total_ms,
                 "async_idle_grace_wait_ms": (
                     self.prefix_cache_async_idle_grace_wait_ms
                 ),
@@ -1250,6 +1270,16 @@ class ResidentEngine:
                 policy_changes["async_idle_grace_ms"] = {
                     "before": before,
                     "after": self.prefix_cache_async_idle_grace_ms,
+                }
+            if "prefix_cache_pending_wait_ms" in config:
+                before = self.prefix_cache_pending_wait_ms
+                self.prefix_cache_pending_wait_ms = max(
+                    int(config["prefix_cache_pending_wait_ms"]),
+                    0,
+                )
+                policy_changes["pending_wait_ms"] = {
+                    "before": before,
+                    "after": self.prefix_cache_pending_wait_ms,
                 }
         if policy_changes:
             changes["prefix_cache_policy"] = policy_changes
@@ -1435,6 +1465,74 @@ class ResidentEngine:
             return cache_info
         cache_info["cache_scheduled"] = self.schedule_prefix_cache_build(**build)
         return cache_info
+
+    def wait_for_pending_prefix_cache(
+        self,
+        *,
+        key: str,
+        scope: dict[str, Any],
+        timeout_ms: int,
+    ) -> tuple[dict[str, Any] | None, float, str | None]:
+        if timeout_ms <= 0:
+            return None, 0.0, None
+
+        wait_t0 = time.perf_counter()
+        released_scheduler_slot = False
+        with self.scheduler.condition:
+            if self.scheduler.active_requests > 0:
+                self.scheduler.active_requests -= 1
+                released_scheduler_slot = True
+                self.scheduler.condition.notify_all()
+
+        result = "timeout"
+        try:
+            deadline = time.perf_counter() + timeout_ms / 1000
+            while True:
+                entry = self.prefix_kv_cache.get(key)
+                if entry is not None and entry["scope"] == scope:
+                    result = "hit"
+                    return entry, 1e3 * (time.perf_counter() - wait_t0), result
+
+                with self.prefix_cache_build_lock:
+                    pending = key in self.prefix_cache_pending_builds
+                if not pending:
+                    result = "miss"
+                    return None, 1e3 * (time.perf_counter() - wait_t0), result
+
+                remaining = deadline - time.perf_counter()
+                if remaining <= 0:
+                    return None, 1e3 * (time.perf_counter() - wait_t0), result
+                time.sleep(min(0.005, remaining))
+        finally:
+            wait_ms = 1e3 * (time.perf_counter() - wait_t0)
+            with self.prefix_cache_build_lock:
+                self.prefix_cache_pending_waits += 1
+                self.prefix_cache_pending_wait_total_ms += wait_ms
+                if result == "hit":
+                    self.prefix_cache_pending_wait_hits += 1
+                elif result == "miss":
+                    self.prefix_cache_pending_wait_misses += 1
+                else:
+                    self.prefix_cache_pending_wait_timeouts += 1
+
+            if released_scheduler_slot:
+                with self.scheduler.condition:
+                    deadline = (
+                        time.perf_counter() + self.scheduler.queue_timeout_ms / 1000
+                    )
+                    while (
+                        self.scheduler.active_requests
+                        >= self.scheduler.max_concurrent_requests
+                    ):
+                        remaining = deadline - time.perf_counter()
+                        if remaining <= 0:
+                            raise SchedulerRejected(
+                                "resident engine queue wait timed out while "
+                                "reacquiring pending-cache wait slot"
+                            )
+                        self.scheduler.condition.wait(timeout=remaining)
+                    self.scheduler.active_requests += 1
+                    self.scheduler.condition.notify_all()
 
     def cache_scope(self, metadata: dict[str, Any]) -> dict[str, Any]:
         tokenizer = (
@@ -1800,6 +1898,8 @@ class ResidentEngine:
             "cache_split_prefill_reason": None,
             "cache_build_deduplicated": False,
             "cache_build_dedup_reason": None,
+            "cache_pending_wait_ms": 0.0,
+            "cache_pending_wait_result": None,
         }
         prepare_t0 = time.perf_counter()
         if (
@@ -1854,6 +1954,28 @@ class ResidentEngine:
             else:
                 cache_info["cache_build_deduplicated"] = True
                 cache_info["cache_build_dedup_reason"] = "pending_async_build"
+                entry, wait_ms, wait_result = self.wait_for_pending_prefix_cache(
+                    key=key,
+                    scope=scope,
+                    timeout_ms=self.prefix_cache_pending_wait_ms,
+                )
+                cache_info["cache_pending_wait_ms"] = wait_ms
+                cache_info["cache_pending_wait_result"] = wait_result
+                if entry is not None:
+                    request_cache = copy.deepcopy(entry["prompt_cache"])
+                    cache_info.update(
+                        {
+                            "cache_reuse_enabled": True,
+                            "cache_hit": True,
+                            "cache_prepare_ms": 1e3
+                            * (time.perf_counter() - prepare_t0),
+                            "cache_scope_hash": scope_hash,
+                            "cached_prefix_tokens": cache_prefix_tokens,
+                            "actual_prefill_tokens": len(rest_tokens),
+                            "cache_exact_match_trimmed": exact_match_trimmed,
+                        }
+                    )
+                    return rest_tokens, request_cache, cache_info
             cache_info["cache_prepare_ms"] = 1e3 * (
                 time.perf_counter() - prepare_t0
             )
@@ -3197,6 +3319,7 @@ class EngineManager:
         prefix_cache_population_mode: str,
         prefix_cache_async_idle_timeout_ms: int,
         prefix_cache_async_idle_grace_ms: int,
+        prefix_cache_pending_wait_ms: int,
         warmup_mode: WarmupMode,
         startup_context: dict[str, Any] | None = None,
     ):
@@ -3215,6 +3338,7 @@ class EngineManager:
         self.prefix_cache_population_mode = prefix_cache_population_mode
         self.prefix_cache_async_idle_timeout_ms = prefix_cache_async_idle_timeout_ms
         self.prefix_cache_async_idle_grace_ms = prefix_cache_async_idle_grace_ms
+        self.prefix_cache_pending_wait_ms = prefix_cache_pending_wait_ms
         self.reload_count = 0
         self.unload_count = 0
         self.last_reload_error: str | None = None
@@ -3237,6 +3361,7 @@ class EngineManager:
             prefix_cache_population_mode=prefix_cache_population_mode,
             prefix_cache_async_idle_timeout_ms=prefix_cache_async_idle_timeout_ms,
             prefix_cache_async_idle_grace_ms=prefix_cache_async_idle_grace_ms,
+            prefix_cache_pending_wait_ms=prefix_cache_pending_wait_ms,
             warmup_mode=warmup_mode,
             startup_context=startup_context,
         )
@@ -3277,6 +3402,7 @@ class EngineManager:
                 "prefix_cache_async_idle_grace_ms": (
                     self.prefix_cache_async_idle_grace_ms
                 ),
+                "prefix_cache_pending_wait_ms": self.prefix_cache_pending_wait_ms,
             }
         return {
             "ok": True,
@@ -3345,6 +3471,13 @@ class EngineManager:
                         self.prefix_cache_async_idle_grace_ms,
                     ),
                 ),
+                "pending_wait_ms": config.get(
+                    "prefix_cache_pending_wait_ms",
+                    prefix_policy.get(
+                        "pending_wait_ms",
+                        getattr(self, "prefix_cache_pending_wait_ms", 0),
+                    ),
+                ),
             },
         }
         if "prefix_cache_memory_limit_mb" in config:
@@ -3371,6 +3504,7 @@ class EngineManager:
             "prefix_cache_population_mode",
             "prefix_cache_async_idle_timeout_ms",
             "prefix_cache_async_idle_grace_ms",
+            "prefix_cache_pending_wait_ms",
         ):
             value = getattr(request, key)
             if value is not None:
@@ -3436,6 +3570,12 @@ class EngineManager:
                     self.prefix_cache_async_idle_grace_ms,
                 )
             )
+            self.prefix_cache_pending_wait_ms = int(
+                config.get(
+                    "prefix_cache_pending_wait_ms",
+                    self.prefix_cache_pending_wait_ms,
+                )
+            )
 
             if self.engine is None:
                 return {
@@ -3489,6 +3629,7 @@ class EngineManager:
                     prefix_cache_async_idle_grace_ms=(
                         self.prefix_cache_async_idle_grace_ms
                     ),
+                    prefix_cache_pending_wait_ms=self.prefix_cache_pending_wait_ms,
                     warmup_mode=warmup_mode,
                 )
                 if old_engine is not None:
@@ -3579,6 +3720,7 @@ def parse_args():
     )
     parser.add_argument("--prefix-cache-async-idle-timeout-ms", type=int, default=30000)
     parser.add_argument("--prefix-cache-async-idle-grace-ms", type=int, default=0)
+    parser.add_argument("--prefix-cache-pending-wait-ms", type=int, default=0)
     return parser.parse_args()
 
 
@@ -3782,6 +3924,7 @@ def main():
         prefix_cache_population_mode=args.prefix_cache_population_mode,
         prefix_cache_async_idle_timeout_ms=args.prefix_cache_async_idle_timeout_ms,
         prefix_cache_async_idle_grace_ms=args.prefix_cache_async_idle_grace_ms,
+        prefix_cache_pending_wait_ms=args.prefix_cache_pending_wait_ms,
         warmup_mode=args.warmup_mode,
         startup_context=startup_context,
     )

@@ -2815,3 +2815,63 @@ M20 result:
   state to add admission-aware scheduling: if a matching prefix build is pending
   and likely near completion, a foreground request can wait briefly and convert
   into a cache hit instead of doing full prefill.
+
+## M21 Admission-Aware Pending-Build Wait
+
+M21 converts the M20 pending-build signal into a request-path scheduling
+decision.
+
+The key scheduler issue is that an admitted foreground request counts as active.
+Async prefix builders intentionally wait until the scheduler is idle before
+building, so a foreground request cannot simply block inside cache preparation
+and wait for the builder: that would keep the scheduler non-idle and prevent the
+builder from running. M21 handles this by temporarily releasing the scheduler
+active slot while the request waits for the matching pending prefix build, then
+reacquiring the slot before generation continues.
+
+M21 adds:
+
+- runtime config:
+  - `prefix_cache_pending_wait_ms`
+- prefix-cache policy counters:
+  - `pending_waits`
+  - `pending_wait_hits`
+  - `pending_wait_timeouts`
+  - `pending_wait_misses`
+  - `pending_wait_total_ms`
+- per-request metrics:
+  - `cache_pending_wait_ms`
+  - `cache_pending_wait_result`
+- `benchmarks/python/async_prefix_pending_wait_probe.py`
+
+Live Qwen A3B validation:
+
+```text
+m21_health True custom 0 0 0
+m21_request baseline service_ms 1185.13 scheduled False pending False wait_result None hit False actual_prefill 1222
+m21_request schedule service_ms 717.99 scheduled True pending False wait_result None hit False actual_prefill 1226
+m21_request wait_hit service_ms 1267.09 scheduled False pending True wait_result hit hit True actual_prefill 10
+m21_summary started_delta 1 completed_delta 1 waits_delta 1 wait_hits_delta 1 async-prefix-pending-wait-m21-qwen-a3b.jsonl
+```
+
+Interpretation:
+
+- The schedule request starts exactly one async prefix build.
+- The duplicate request sees the matching build pending and waits
+  `1053.43 ms`.
+- While waiting, it releases its scheduler active slot so the background build
+  can pass the idle gate.
+- The duplicate request resumes with `cache_hit=True` and only `10` actual
+  prefill tokens instead of full-prefilling the `1229` token prompt.
+
+M21 result:
+
+- Pending async prefix construction can now improve foreground duplicate-request
+  prefill shape when the caller enables `prefix_cache_pending_wait_ms`.
+- The wait remains opt-in so default async behavior keeps low-latency
+  foreground execution unless a product/profile explicitly trades wait time for
+  reduced prefill work.
+- M22 should move below request-level scheduling and investigate lower-level
+  MLX cache continuation or cache materialization hooks so the engine can avoid
+  replaying the matched prefix for both the scheduling request and follow-up
+  requests.

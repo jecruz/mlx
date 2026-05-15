@@ -1388,3 +1388,32 @@
     rebuild work and gives M21 an admission/scheduling signal to decide when
     requests should wait for a nearly-ready prefix build versus proceed through
     full prefill.
+- Completed M21 admission-aware pending-build wait:
+  - added runtime config:
+    - `prefix_cache_pending_wait_ms`
+  - added prefix-cache policy counters:
+    - `pending_waits`
+    - `pending_wait_hits`
+    - `pending_wait_timeouts`
+    - `pending_wait_misses`
+    - `pending_wait_total_ms`
+  - added per-request metrics:
+    - `cache_pending_wait_ms`
+    - `cache_pending_wait_result`
+  - added `benchmarks/python/async_prefix_pending_wait_probe.py`
+  - live Qwen A3B validation:
+    - baseline: `1185.13 ms`, `actual_prefill_tokens=1222`
+    - schedule: `717.99 ms`, `cache_scheduled=True`,
+      `actual_prefill_tokens=1226`
+    - pending wait hit: `1267.09 ms`, `cache_pending=True`,
+      `cache_build_deduplicated=True`,
+      `cache_pending_wait_result=hit`,
+      `cache_pending_wait_ms=1053.43`, `cache_hit=True`,
+      `actual_prefill_tokens=10`
+    - summary: `started_delta=1`, `completed_delta=1`,
+      `pending_waits_delta=1`, `pending_wait_hits_delta=1`
+  - M21 conclusion: a duplicate foreground request can now yield its scheduler
+    active slot while a matching async prefix build completes, then resume as a
+    cache hit instead of full-prefilling. This is the first path where pending
+    async construction directly improves the duplicate request's prefill shape,
+    not just background work duplication.
