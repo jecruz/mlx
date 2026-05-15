@@ -3046,3 +3046,27 @@ M25 result:
   stitching together `/health`, `/engine`, `/engine/profiles`, and metrics.
 - The endpoint deliberately hides low-level detail behind product-facing groups
   while preserving enough diagnostic counters for an advanced settings panel.
+
+## M26 UI Client Adapter
+
+M26 adds a small Python client adapter over the UI contract.
+
+Files:
+
+- `mlx_engine/ui_client.py`
+- `benchmarks/python/ui_client_adapter_probe.py`
+
+Adapter surface:
+
+- `EngineUiClient.status()`
+- `EngineUiClient.profiles()`
+- `EngineUiClient.apply_profile(runtime_profile, dry_run=False)`
+- `EngineUiClient.summary()`
+- `EngineUiSummary`
+
+M26 result:
+
+- Python-based CLI/TUI/product experiments can consume the resident engine UI
+  contract without hand-rolling HTTP calls.
+- The adapter gives oMLX/Prowl integration a concrete normalized schema to
+  mirror in Swift/TypeScript later.

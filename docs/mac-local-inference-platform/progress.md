@@ -1494,3 +1494,11 @@
   - updated `engine-readiness.md` with the UI integration contract
   - M25 conclusion: a UI or app integration can now consume one stable status
     endpoint instead of composing low-level engine endpoints directly.
+- Completed M26 UI client adapter:
+  - added `mlx_engine/ui_client.py`
+  - added `EngineUiClient`
+  - added normalized `EngineUiSummary`
+  - added `benchmarks/python/ui_client_adapter_probe.py`
+  - updated `engine-readiness.md` with the adapter validation command
+  - M26 conclusion: Python CLI/TUI/product integrations can consume `/engine/ui`
+    through a small stable adapter instead of binding directly to raw JSON.

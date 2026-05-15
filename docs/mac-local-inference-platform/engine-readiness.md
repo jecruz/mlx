@@ -51,6 +51,9 @@ with:
 - memory summary
 - request metrics
 
+Python integrations can use `mlx_engine.ui_client.EngineUiClient` to consume the
+same contract and normalize it into `EngineUiSummary`.
+
 Recommended product profiles:
 
 - Low-latency interactive:
@@ -84,6 +87,9 @@ python3 benchmarks/python/runtime_profile_probe.py \
 
 python3 benchmarks/python/ui_status_contract_probe.py \
   --base-url http://127.0.0.1:8773
+
+python3 benchmarks/python/ui_client_adapter_probe.py \
+  --base-url http://127.0.0.1:8773
 ```
 
 ## Go Criteria
@@ -104,6 +110,7 @@ python3 benchmarks/python/ui_status_contract_probe.py \
 - `/engine/profiles` returns all named runtime profiles
 - `/engine/config` can apply `runtime_profile=agent-workspace`
 - `/engine/ui` returns the stable UI integration contract
+- `EngineUiClient.summary()` returns a normalized UI summary
 
 ## Current Qwen Result
 
