@@ -3350,3 +3350,36 @@ M36 result:
   Dax TUI.
 - Cache actions are recorded in the transcript and can be captured by the M34
   `/export [path]` evidence artifact.
+
+## Tensor Parallelism Position
+
+MLX supports tensor-parallel building blocks, but tensor parallelism is not
+automatic just because a model is stored in MLX format.
+
+Current distinction:
+
+- MLX framework capability: supported through `mlx.core.distributed`,
+  distributed collectives, `shard_linear`, `shard_inplace`,
+  `AllToShardedLinear`, `ShardedToAllLinear`, and their quantized variants.
+- MLX model format: does not imply tensor-parallel inference by itself.
+- Current resident engine: no active use of `mx.distributed`, `shard_linear`,
+  `AllToShardedLinear`, or `ShardedToAllLinear` was found in `mlx_engine/`.
+
+Practical implication:
+
+- Tensor parallelism is a valid future performance milestone, especially for
+  multi-Mac or very large model experiments.
+- It requires explicit model graph sharding plus distributed launch
+  orchestration; it is not a config-only toggle in the current resident server.
+- Single-Mac near-term performance work should continue prioritizing prompt
+  processing, prefix-cache reuse, scheduler behavior, warmup/JIT behavior, and
+  quantized kernel efficiency.
+
+Reference surfaces:
+
+- MLX tensor parallelism example:
+  `https://ml-explore.github.io/mlx/build/html/examples/tensor_parallelism.html`
+- MLX distributed communication API:
+  `https://ml-explore.github.io/mlx/build/html/python/distributed.html`
+- MLX distributed usage and launch documentation:
+  `https://ml-explore.github.io/mlx/build/html/usage/distributed.html`

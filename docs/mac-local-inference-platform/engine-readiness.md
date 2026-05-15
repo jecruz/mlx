@@ -171,3 +171,19 @@ instead of raw internals:
 - `Agent Workspace`: wait briefly for repeated context prefix builds.
 - `Memory Saver`: cap cache entries and prune aggressively.
 - `Diagnostics`: run the readiness probes and show cache continuation blockers.
+
+## Tensor Parallelism Note
+
+MLX has tensor-parallel and distributed primitives, but the current resident
+engine does not use them.
+
+- Framework support exists through `mlx.core.distributed`, distributed
+  collectives, `shard_linear`, `shard_inplace`, `AllToShardedLinear`, and
+  `ShardedToAllLinear`.
+- MLX model format alone does not make inference tensor-parallel.
+- The current `mlx_engine/` resident service should be treated as a
+  single-process resident engine until an explicit distributed model-sharding
+  milestone is added.
+- Tensor parallelism is more relevant for multi-Mac or very large model work;
+  the current single-Mac path should prioritize prompt processing, cache reuse,
+  scheduling, warmup/JIT behavior, and quantized kernels first.
