@@ -1448,3 +1448,21 @@
     structurally compatible, but the 30 recurrent `ArraysCache` layers need
     model-specific continuation semantics before we can avoid replaying the
     matched prefix safely.
+- Completed M23 productization / engine readiness:
+  - added `docs/mac-local-inference-platform/engine-readiness.md`
+  - added `benchmarks/python/engine_readiness_probe.py`
+  - readiness probe validates:
+    - health is OK
+    - Metal GPU is active
+    - M20 build deduplication counters are exposed
+    - M21 pending-wait controls and counters are exposed
+    - M22 continuation report is exposed
+    - `/engine/config` dry-run plans `prefix_cache_pending_wait_ms`
+  - live readiness validation:
+    - backend: `text`
+    - device: `Device(gpu, 0)`
+    - `mlx-lm`: `0.30.7`
+    - safe strategy: `split_prefill_or_async_build`
+  - M23 conclusion: M20-M22 are now packaged into an operator-facing readiness
+    surface with named controls, probes, and go/no-go checks suitable for the
+    next product/UI integration pass.

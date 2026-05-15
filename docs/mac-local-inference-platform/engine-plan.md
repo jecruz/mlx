@@ -2936,3 +2936,41 @@ M22 result:
 - M23 should package these controls into an operator-ready engine surface:
   presets, documented settings, probes, and a concise readiness checklist for
   the Mac local-inference product path.
+
+## M23 Productization / Engine Readiness
+
+M23 packages the prompt-processing work into an operator-facing readiness
+surface.
+
+Added:
+
+- `docs/mac-local-inference-platform/engine-readiness.md`
+- `benchmarks/python/engine_readiness_probe.py`
+
+The readiness probe validates:
+
+- `/health.ok`
+- Metal GPU availability
+- M20 build-deduplication counters
+- M21 pending-wait controls and counters
+- M22 prompt-cache continuation report
+- `/engine/config` dry-run support for `prefix_cache_pending_wait_ms`
+
+Live validation:
+
+```text
+m23_readiness True backend text device Device(gpu, 0) mlx_lm 0.30.7 strategy split_prefill_or_async_build engine-readiness-m23-qwen-a3b.json
+```
+
+M23 result:
+
+- The engine now has a concrete readiness checklist for product integration.
+- The performance controls can be surfaced as named profiles instead of raw
+  implementation details:
+  - `Interactive`: async build, no pending wait
+  - `Agent Workspace`: async build with bounded pending wait
+  - `Memory Saver`: smaller prefix cache plus memory pruning
+  - `Diagnostics`: run readiness and continuation probes
+- The next product phase should wire these controls into the intended UI/API
+  surface, then run the probe set automatically before marking a model/profile
+  as ready.
