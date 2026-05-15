@@ -39,6 +39,7 @@ EnginePresetName = Literal[
     "memory-saver",
 ]
 WarmupMode = Literal["sync", "async", "off"]
+PrefixCachePopulationMode = Literal["sync", "async", "request", "off"]
 StopValue = str | list[str]
 
 
@@ -160,7 +161,7 @@ class EngineConfigRequest(BaseModel):
     prefix_cache_max_entries: int | None = Field(default=None, ge=0)
     prefix_cache_memory_limit_mb: float | None = Field(default=None, ge=0)
     prefix_cache_min_entries: int | None = Field(default=None, ge=0)
-    prefix_cache_population_mode: Literal["sync", "async", "off"] | None = None
+    prefix_cache_population_mode: PrefixCachePopulationMode | None = None
     prefix_cache_async_idle_timeout_ms: int | None = Field(default=None, ge=1)
     prefix_cache_async_idle_grace_ms: int | None = Field(default=None, ge=0)
 
@@ -235,6 +236,10 @@ class EngineMetrics:
                 "cache_population_mode": row.get("cache_population_mode"),
                 "cache_scheduled": row.get("cache_scheduled"),
                 "cache_pending": row.get("cache_pending"),
+                "cache_stored_from_request": row.get("cache_stored_from_request"),
+                "cache_request_trimmed_tokens": row.get(
+                    "cache_request_trimmed_tokens"
+                ),
                 "cache_prepare_ms": row.get("cache_prepare_ms"),
                 "cache_scope_hash": row.get("cache_scope_hash"),
                 "cached_prefix_tokens": row.get("cached_prefix_tokens"),
@@ -945,14 +950,16 @@ class ResidentEngine:
 
         t0 = time.perf_counter()
         from mlx_lm.generate import generate_step, stream_generate
-        from mlx_lm.models.cache import make_prompt_cache
+        from mlx_lm.models.cache import can_trim_prompt_cache, make_prompt_cache, trim_prompt_cache
         from mlx_lm.utils import load
         self.startup_timings["import_mlx_lm_helpers_ms"] = 1e3 * (
             time.perf_counter() - t0
         )
 
         self.generate_step = generate_step
+        self.can_trim_prompt_cache = can_trim_prompt_cache
         self.make_prompt_cache = make_prompt_cache
+        self.trim_prompt_cache = trim_prompt_cache
         self.stream_generate = stream_generate
         t0 = time.perf_counter()
         self.profile = self._load_profile(profile_path)
@@ -971,11 +978,13 @@ class ResidentEngine:
         self.prefix_cache_min_entries = max(prefix_cache_min_entries, 0)
         self.prefix_cache_memory_prunes = 0
         self.last_prefix_cache_prune: dict[str, Any] | None = None
-        if prefix_cache_population_mode not in {"sync", "async", "off"}:
-            raise ValueError("prefix cache population mode must be sync, async, or off")
+        if prefix_cache_population_mode not in {"sync", "async", "request", "off"}:
+            raise ValueError(
+                "prefix cache population mode must be sync, async, request, or off"
+            )
         self.prefix_cache_population_mode = prefix_cache_population_mode
         self.prefix_cache_pending_builds: set[str] = set()
-        self.prefix_cache_build_lock = threading.Lock()
+        self.prefix_cache_build_lock = threading.RLock()
         self.prefix_cache_async_builds_started = 0
         self.prefix_cache_async_builds_completed = 0
         self.prefix_cache_async_builds_failed = 0
@@ -1120,9 +1129,9 @@ class ResidentEngine:
             if "prefix_cache_population_mode" in config:
                 before = self.prefix_cache_population_mode
                 mode = config["prefix_cache_population_mode"]
-                if mode not in {"sync", "async", "off"}:
+                if mode not in {"sync", "async", "request", "off"}:
                     raise ValueError(
-                        "prefix cache population mode must be sync, async, or off"
+                        "prefix cache population mode must be sync, async, request, or off"
                     )
                 self.prefix_cache_population_mode = mode
                 policy_changes["population_mode"] = {
@@ -1589,6 +1598,79 @@ class ResidentEngine:
             "generated_prefix_cache_reason": "stored",
         }
 
+    def store_request_prefix_cache(
+        self,
+        *,
+        cache_info: dict[str, Any],
+        prompt_cache,
+        generated_token_count: int,
+    ) -> dict[str, Any]:
+        store = cache_info.pop("_request_cache_store", None)
+        if store is None:
+            return {}
+        if prompt_cache is None:
+            return {
+                "cache_stored_from_request": False,
+                "cache_request_store_reason": "missing_prompt_cache",
+            }
+
+        key = store["key"]
+        scope = store["scope"]
+        prefix_tokens = store["prefix_tokens"]
+        prefill_step_size = store["prefill_step_size"]
+        trim_tokens = int(store["suffix_tokens"]) + int(generated_token_count)
+
+        with self.prefix_cache_build_lock:
+            existing = self.prefix_kv_cache.get(key)
+            if existing is not None and existing["scope"] == scope:
+                return {
+                    "cache_stored_from_request": False,
+                    "cache_request_trimmed_tokens": trim_tokens,
+                    "cache_request_store_reason": "already_cached",
+                }
+
+            request_cache = copy.deepcopy(prompt_cache)
+            if not self.can_trim_prompt_cache(request_cache):
+                scheduled = self.schedule_prefix_cache_build(
+                    key=key,
+                    prefix_tokens=prefix_tokens,
+                    scope=scope,
+                    prefill_step_size=prefill_step_size,
+                )
+                return {
+                    "cache_stored_from_request": False,
+                    "cache_scheduled": scheduled,
+                    "cache_request_trimmed_tokens": trim_tokens,
+                    "cache_request_store_reason": "not_trimmable_fallback_async",
+                }
+            trimmed = self.trim_prompt_cache(request_cache, trim_tokens)
+            if trimmed != trim_tokens:
+                scheduled = self.schedule_prefix_cache_build(
+                    key=key,
+                    prefix_tokens=prefix_tokens,
+                    scope=scope,
+                    prefill_step_size=prefill_step_size,
+                )
+                return {
+                    "cache_stored_from_request": False,
+                    "cache_scheduled": scheduled,
+                    "cache_request_trimmed_tokens": trimmed,
+                    "cache_request_store_reason": "trim_incomplete_fallback_async",
+                }
+            mx.eval([c.state for c in request_cache])
+            self.prefix_kv_cache.put(
+                key=key,
+                tokens=prefix_tokens,
+                scope=scope,
+                prompt_cache=request_cache,
+            )
+
+        return {
+            "cache_stored_from_request": True,
+            "cache_request_trimmed_tokens": trim_tokens,
+            "cache_request_store_reason": "stored",
+        }
+
     @staticmethod
     def public_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -1616,6 +1698,9 @@ class ResidentEngine:
             "cache_population_mode": self.prefix_cache_population_mode,
             "cache_scheduled": False,
             "cache_pending": False,
+            "cache_stored_from_request": False,
+            "cache_request_trimmed_tokens": 0,
+            "cache_request_store_reason": None,
         }
         prepare_t0 = time.perf_counter()
         if (
@@ -1669,6 +1754,40 @@ class ResidentEngine:
                 time.perf_counter() - prepare_t0
             )
             cache_info["cache_scope_hash"] = scope_hash
+            return metadata["_prompt"], None, cache_info
+
+        if self.prefix_cache_population_mode == "request":
+            entry = self.prefix_kv_cache.get(key)
+            if entry is not None and entry["scope"] == scope:
+                request_cache = copy.deepcopy(entry["prompt_cache"])
+                cache_info.update(
+                    {
+                        "cache_reuse_enabled": True,
+                        "cache_hit": True,
+                        "cache_prepare_ms": 1e3
+                        * (time.perf_counter() - prepare_t0),
+                        "cache_scope_hash": scope_hash,
+                        "cached_prefix_tokens": cache_prefix_tokens,
+                        "actual_prefill_tokens": len(rest_tokens),
+                        "cache_exact_match_trimmed": exact_match_trimmed,
+                    }
+                )
+                return rest_tokens, request_cache, cache_info
+
+            cache_info.update(
+                {
+                    "cache_prepare_ms": 1e3 * (time.perf_counter() - prepare_t0),
+                    "cache_scope_hash": scope_hash,
+                    "cached_prefix_tokens": cache_prefix_tokens,
+                    "_request_cache_store": {
+                        "key": key,
+                        "prefix_tokens": prefix_tokens,
+                        "scope": scope,
+                        "suffix_tokens": len(rest_tokens),
+                        "prefill_step_size": metadata["prefill_step_size"],
+                    },
+                }
+            )
             return metadata["_prompt"], None, cache_info
 
         entry = self.prefix_kv_cache.get(key)
@@ -2101,9 +2220,15 @@ class ResidentEngine:
                 result, "stop_reason", None
             )
             actual_prefill_tokens = int(result.prompt_tokens)
+            request_cache_info = self.store_request_prefix_cache(
+                cache_info=cache_info,
+                prompt_cache=worker_prompt_cache,
+                generated_token_count=len(generated_token_ids),
+            )
             row = {
                 **metadata,
                 **cache_info,
+                **request_cache_info,
                 "text": "".join(text_parts),
                 "run_ms": run_ms,
                 "engine_lock_wait_ms": engine_lock_wait_ms,
@@ -2488,8 +2613,14 @@ class ResidentEngine:
                 generated_token_ids = row.pop("_generated_token_ids", [])
                 row_prompt_cache = row.pop("_prompt_cache", None)
                 row.pop("_owned_prompt_cache", None)
+                request_cache_info = self.store_request_prefix_cache(
+                    cache_info=cache_info,
+                    prompt_cache=row_prompt_cache,
+                    generated_token_count=len(generated_token_ids),
+                )
                 row.update(self.public_metadata(metadata))
                 row.update(cache_info)
+                row.update(request_cache_info)
                 row.update(admission)
                 row["actual_prefill_tokens"] = actual_prefill_tokens
                 row["prompt_tokens"] = metadata["prompt_tokens_estimate"]
@@ -3301,7 +3432,7 @@ def parse_args():
     parser.add_argument("--prefix-cache-min-entries", type=int, default=0)
     parser.add_argument(
         "--prefix-cache-population-mode",
-        choices=("sync", "async", "off"),
+        choices=("sync", "async", "request", "off"),
         default="sync",
     )
     parser.add_argument("--prefix-cache-async-idle-timeout-ms", type=int, default=30000)

@@ -1217,3 +1217,30 @@
     optimization should target reusing the populate request's own prompt cache
     or safely slicing prompt-cache state so cache creation does not require a
     second prefill at all.
+- Completed M15 request-derived prefix-cache guardrail:
+  - added experimental `prefix_cache_population_mode=request`
+  - request mode first tries to store a matched prefix by deep-copying the
+    request-owned prompt cache after generation and trimming generated tokens
+    plus the non-shared suffix
+  - if the active `mlx-lm` cache stack reports that prompt-cache trimming is
+    unsafe, request mode falls back to async prefix-cache population instead of
+    silently losing cache reuse
+  - added `benchmarks/python/request_prefix_cache_probe.py`
+  - 1520-token validation against
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8`:
+    - async populate: `827.14 ms`, `cache_prepare_ms=0.10`,
+      `actual_prefill_tokens=1523`, `cache_scheduled=True`
+    - async follow-up hit: `162.66 ms`, `actual_prefill_tokens=7`
+    - request populate: `832.39 ms`, `cache_prepare_ms=0.10`,
+      `actual_prefill_tokens=1526`, `cache_request_store_reason=not_trimmable_fallback_async`,
+      `cache_scheduled=True`
+    - request follow-up hit: `151.76 ms`, `actual_prefill_tokens=7`
+  - M15 conclusion: request-derived cache slicing is not safe for this
+    `gpt-oss-20b-MXFP4-Q8` cache stack because `mlx-lm` reports at least one
+    prompt-cache component as non-trimmable. The new mode is still useful as a
+    correctness gate: it proves the engine can attempt zero-extra-prefill cache
+    population only when MLX cache classes support it, and otherwise degrade to
+    async population while preserving the next-request cache-hit path. The next
+    performance path should identify which Qwen/MLX cache classes are trimmable
+    and validate request-derived prefix slicing on that model family before
+    enabling it in an operator preset.

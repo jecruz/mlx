@@ -2485,3 +2485,66 @@ M14 result:
 - The next real speedup opportunity is to avoid a second prefix prefill during
   cache creation by reusing or slicing the populate request's own prompt-cache
   state safely.
+
+## M15 Request-Derived Prefix Cache
+
+M15 adds an explicit experimental population mode for the next cache
+optimization boundary:
+
+- `prefix_cache_population_mode=request`
+- deep-copy the request-owned prompt cache after generation
+- trim generated tokens plus the non-shared suffix from that copy
+- store the remaining matched-prefix cache for the next related request
+- fall back to async population when the active `mlx-lm` cache stack is not
+  safely trimmable
+
+This keeps the safe default unchanged while giving the engine a concrete
+runtime path for future zero-extra-prefill cache population on models whose MLX
+cache classes support trimming.
+
+Validation probe:
+
+- `benchmarks/python/request_prefix_cache_probe.py`
+- compares `async-experimental` against `request`
+- verifies populate behavior and follow-up cache hit behavior
+- fails if request mode neither stores from the request-owned prompt cache nor
+  uses the explicit safe fallback
+
+Live validation against:
+
+```text
+/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8
+```
+
+Result:
+
+```text
+m15_request async baseline service_ms 1148.17 cache_prepare_ms 0.0 actual_prefill 1520 stored_from_request False scheduled False hit False
+m15_request async populate service_ms 827.14 cache_prepare_ms 0.1 actual_prefill 1523 stored_from_request False scheduled True hit False
+m15_request async hit service_ms 162.66 cache_prepare_ms 0.22 actual_prefill 7 stored_from_request False scheduled False hit True
+m15_request request baseline service_ms 833.58 cache_prepare_ms 0.0 actual_prefill 1523 stored_from_request False scheduled False hit False
+m15_request request populate service_ms 832.39 cache_prepare_ms 0.1 actual_prefill 1526 stored_from_request False scheduled True hit False
+m15_request request hit service_ms 151.76 cache_prepare_ms 0.2 actual_prefill 7 stored_from_request False scheduled False hit True
+m15_summary populate_improvement_ms -5.25 request_populate_ms 832.39 async_populate_ms 827.14 request-prefix-cache-m15.jsonl
+```
+
+Interpretation:
+
+- `gpt-oss-20b-MXFP4-Q8` does not currently allow safe request-cache trimming;
+  `mlx-lm` reports at least one prompt-cache component as non-trimmable.
+- Request mode therefore recorded
+  `cache_request_store_reason=not_trimmable_fallback_async`.
+- The fallback preserved correctness: the populate request scheduled background
+  cache creation and the next request hit the prefix cache with suffix-only
+  prefill.
+- There is no speedup for this model in M15 because the zero-extra-prefill path
+  is correctly disabled by the cache-class guard.
+
+M15 result:
+
+- The engine now has a safe experimental request-derived prefix-cache mode.
+- For non-trimmable cache stacks, it degrades to async population instead of
+  pretending request slicing is valid.
+- The next performance milestone should validate this mode on a Qwen MLX model
+  with trimmable KV cache classes, then compare request-derived population
+  against async rebuild on 1.5k, 4k, and 8k repeated-prefix prompts.
