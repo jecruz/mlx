@@ -3191,3 +3191,31 @@ M30 result:
 - The panel still talks only to the standalone MLX HTTP service.
 - This is the first usable shell for agentic coding workflows on the resident
   MLX engine path.
+
+## M31 Interactive Runtime Profile Controls
+
+M31 adds runtime profile controls inside the Dax MLX prompt panel.
+
+Panel commands:
+
+```text
+/profiles
+/profile interactive
+/profile agent-workspace
+/profile memory-saver
+/profile diagnostics
+/profile next
+```
+
+Runtime path:
+
+- `POST /engine/config` applies the selected runtime profile
+- `GET /engine/ui` refreshes the panel state after profile changes
+
+M31 result:
+
+- The user can switch runtime behavior from the TUI without leaving the prompt
+  panel.
+- Profile changes are validated against the engine profile catalog before being
+  applied.
+- The panel header updates after successful profile application.

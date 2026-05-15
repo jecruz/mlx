@@ -1560,3 +1560,15 @@
     accumulation, usage rendering, and re-render callbacks
   - M30 conclusion: Dax now has the first product-shaped terminal interaction
     surface for the resident MLX engine instead of only one-shot command output.
+- Completed M31 interactive runtime profile controls:
+  - added in-panel commands:
+    - `/profiles`
+    - `/profile <name>`
+    - `/profile next`
+  - profile application calls `POST /engine/config` and refreshes `GET
+    /engine/ui`
+  - the panel header updates after a successful profile switch
+  - added tests for in-panel profile listing, cycling, application, and rendered
+    status update
+  - M31 conclusion: Dax can now control resident-engine runtime behavior from
+    inside the interactive terminal panel without leaving the MLX operator UI.
