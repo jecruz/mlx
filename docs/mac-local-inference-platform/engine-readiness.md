@@ -16,8 +16,17 @@ resident MLX engine work through M23.
 
 ## Controls
 
-Use `/engine/config` to tune runtime behavior without reloading the model:
+Use `/engine/profiles` to discover product-facing runtime profiles:
 
+- `interactive`
+- `agent-workspace`
+- `memory-saver`
+- `diagnostics`
+
+Use `/engine/config` to apply a named profile or tune lower-level behavior
+without reloading the model:
+
+- `runtime_profile`
 - `engine_preset`
 - `prefix_cache_population_mode`
 - `prefix_cache_async_idle_timeout_ms`
@@ -29,14 +38,16 @@ Use `/engine/config` to tune runtime behavior without reloading the model:
 - `max_queued_requests`
 - `queue_timeout_ms`
 
-Recommended product presets:
+Recommended product profiles:
 
 - Low-latency interactive:
-  `async-experimental`, `prefix_cache_pending_wait_ms=0`
+  `runtime_profile=interactive`
 - Repeated-agent-context:
-  `async-experimental`, `prefix_cache_pending_wait_ms=1000-3000`
+  `runtime_profile=agent-workspace`
 - Memory constrained:
-  `memory-saver`, small prefix cache, explicit memory limit
+  `runtime_profile=memory-saver`
+- Operational diagnostics:
+  `runtime_profile=diagnostics`
 
 ## Readiness Probes
 
@@ -53,6 +64,9 @@ python3 benchmarks/python/cache_continuation_capabilities_probe.py \
   --base-url http://127.0.0.1:8773
 
 python3 benchmarks/python/engine_readiness_probe.py \
+  --base-url http://127.0.0.1:8773
+
+python3 benchmarks/python/runtime_profile_probe.py \
   --base-url http://127.0.0.1:8773
 ```
 
@@ -71,6 +85,8 @@ python3 benchmarks/python/engine_readiness_probe.py \
   - `safe_request_prefix_store_strategy`
   - `required_lower_level_work`
 - `/engine/config` dry-run returns planned state for pending-wait controls
+- `/engine/profiles` returns all named runtime profiles
+- `/engine/config` can apply `runtime_profile=agent-workspace`
 
 ## Current Qwen Result
 

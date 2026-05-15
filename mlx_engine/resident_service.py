@@ -39,6 +39,12 @@ EnginePresetName = Literal[
     "async-experimental",
     "memory-saver",
 ]
+RuntimeProfileName = Literal[
+    "interactive",
+    "agent-workspace",
+    "memory-saver",
+    "diagnostics",
+]
 WarmupMode = Literal["sync", "async", "off"]
 PrefixCachePopulationMode = Literal["sync", "async", "request", "off"]
 StopValue = str | list[str]
@@ -96,6 +102,64 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
         },
     }
     return dict(presets[name])
+
+
+def runtime_profile_defaults(name: RuntimeProfileName) -> dict[str, Any]:
+    profiles = {
+        "interactive": {
+            "description": "Low foreground latency; build prefix caches opportunistically.",
+            "config": {
+                **engine_preset_defaults("async-experimental"),
+                "engine_preset": "async-experimental",
+                "prefix_cache_pending_wait_ms": 0,
+            },
+        },
+        "agent-workspace": {
+            "description": (
+                "Repeated coding-agent context; wait briefly for a matching "
+                "pending prefix build to become reusable."
+            ),
+            "config": {
+                **engine_preset_defaults("async-experimental"),
+                "engine_preset": "async-experimental",
+                "prefix_cache_pending_wait_ms": 1500,
+            },
+        },
+        "memory-saver": {
+            "description": "Lower-memory Macs; keep a smaller cache and prune earlier.",
+            "config": {
+                **engine_preset_defaults("memory-saver"),
+                "engine_preset": "memory-saver",
+            },
+        },
+        "diagnostics": {
+            "description": (
+                "Stable diagnostics mode; avoid async cache construction while "
+                "readiness and continuation probes run."
+            ),
+            "config": {
+                **engine_preset_defaults("sync-safe"),
+                "engine_preset": "sync-safe",
+                "prefix_cache_population_mode": "sync",
+            },
+        },
+    }
+    profile = profiles[name]
+    return {
+        "name": name,
+        "description": profile["description"],
+        "config": dict(profile["config"]),
+    }
+
+
+def runtime_profile_catalog() -> dict[str, dict[str, Any]]:
+    names: tuple[RuntimeProfileName, ...] = (
+        "interactive",
+        "agent-workspace",
+        "memory-saver",
+        "diagnostics",
+    )
+    return {name: runtime_profile_defaults(name) for name in names}
 
 
 def normalize_stop(stop: StopValue | None) -> list[str]:
@@ -159,6 +223,7 @@ class ReloadRequest(BaseModel):
 
 class EngineConfigRequest(BaseModel):
     dry_run: bool = False
+    runtime_profile: RuntimeProfileName | None = None
     engine_preset: EnginePresetName | None = None
     max_concurrent_requests: int | None = Field(default=None, ge=1)
     max_queued_requests: int | None = Field(default=None, ge=0)
@@ -904,6 +969,7 @@ class ResidentEngine:
         max_queued_requests: int,
         queue_timeout_ms: int,
         engine_preset: EnginePresetName,
+        runtime_profile: RuntimeProfileName | None,
         prefix_cache_max_entries: int,
         prefix_cache_memory_limit_mb: float,
         prefix_cache_min_entries: int,
@@ -981,6 +1047,7 @@ class ResidentEngine:
         self.startup_timings["load_profile_ms"] = 1e3 * (time.perf_counter() - t0)
         t0 = time.perf_counter()
         self.engine_preset = engine_preset
+        self.runtime_profile = runtime_profile
         self.state_lock = threading.RLock()
         self.execution_lock = EngineExecutionLock()
         self.prefix_tracker = PrefixOpportunityTracker()
@@ -1275,6 +1342,13 @@ class ResidentEngine:
 
     def configure_runtime(self, config: dict[str, Any]) -> dict[str, Any]:
         changes: dict[str, Any] = {}
+        if "runtime_profile" in config:
+            before = self.runtime_profile
+            self.runtime_profile = config["runtime_profile"]
+            changes["runtime_profile"] = {
+                "before": before,
+                "after": self.runtime_profile,
+            }
         if "engine_preset" in config:
             before = self.engine_preset
             self.engine_preset = config["engine_preset"]
@@ -2792,6 +2866,7 @@ class ResidentEngine:
             "warmup": self.warmup_snapshot(),
             "profile_path": str(self.profile_path) if self.profile_path else None,
             "engine_preset": self.engine_preset,
+            "runtime_profile": self.runtime_profile,
             "metrics": self.metrics.snapshot(),
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
@@ -2809,6 +2884,7 @@ class ResidentEngine:
             "backend": self.backend,
             "profile_path": str(self.profile_path) if self.profile_path else None,
             "engine_preset": self.engine_preset,
+            "runtime_profile": self.runtime_profile,
             "profile_loaded": bool(self.profile),
             "policy_names": sorted(self.profile.get("policy", {}).keys()),
             "device": self.device_info,
@@ -3399,6 +3475,7 @@ class EngineManager:
         max_queued_requests: int,
         queue_timeout_ms: int,
         engine_preset: EnginePresetName,
+        runtime_profile: RuntimeProfileName | None,
         prefix_cache_max_entries: int,
         prefix_cache_memory_limit_mb: float,
         prefix_cache_min_entries: int,
@@ -3418,6 +3495,7 @@ class EngineManager:
         self.max_queued_requests = max_queued_requests
         self.queue_timeout_ms = queue_timeout_ms
         self.engine_preset = engine_preset
+        self.runtime_profile = runtime_profile
         self.prefix_cache_max_entries = prefix_cache_max_entries
         self.prefix_cache_memory_limit_mb = prefix_cache_memory_limit_mb
         self.prefix_cache_min_entries = prefix_cache_min_entries
@@ -3441,6 +3519,7 @@ class EngineManager:
             max_queued_requests=max_queued_requests,
             queue_timeout_ms=queue_timeout_ms,
             engine_preset=engine_preset,
+            runtime_profile=runtime_profile,
             prefix_cache_max_entries=prefix_cache_max_entries,
             prefix_cache_memory_limit_mb=prefix_cache_memory_limit_mb,
             prefix_cache_min_entries=prefix_cache_min_entries,
@@ -3473,6 +3552,7 @@ class EngineManager:
                 "warmup_profile_prefill": self.warmup_profile_prefill,
                 "warmup_mode": self.warmup_mode,
                 "engine_preset": self.engine_preset,
+                "runtime_profile": self.runtime_profile,
                 "scheduler_config": {
                     "max_concurrent_requests": self.max_concurrent_requests,
                     "max_queued_requests": self.max_queued_requests,
@@ -3506,6 +3586,10 @@ class EngineManager:
         prefix_kv_cache = metadata.get("prefix_kv_cache", {})
         prefix_policy = metadata.get("prefix_cache_policy", {})
         planned = {
+            "runtime_profile": config.get(
+                "runtime_profile",
+                metadata.get("runtime_profile", self.runtime_profile),
+            ),
             "engine_preset": config.get(
                 "engine_preset",
                 metadata.get("engine_preset", self.engine_preset),
@@ -3576,6 +3660,10 @@ class EngineManager:
     @staticmethod
     def config_from_request(request: EngineConfigRequest) -> dict[str, Any]:
         config = {}
+        if request.runtime_profile is not None:
+            profile = runtime_profile_defaults(request.runtime_profile)
+            config.update(profile["config"])
+            config["runtime_profile"] = request.runtime_profile
         if request.engine_preset is not None:
             config.update(engine_preset_defaults(request.engine_preset))
             config["engine_preset"] = request.engine_preset
@@ -3627,6 +3715,7 @@ class EngineManager:
             self.queue_timeout_ms = int(
                 config.get("queue_timeout_ms", self.queue_timeout_ms)
             )
+            self.runtime_profile = config.get("runtime_profile", self.runtime_profile)
             self.engine_preset = config.get("engine_preset", self.engine_preset)
             self.prefix_cache_max_entries = int(
                 config.get("prefix_cache_max_entries", self.prefix_cache_max_entries)
@@ -3705,6 +3794,7 @@ class EngineManager:
                     max_queued_requests=self.max_queued_requests,
                     queue_timeout_ms=self.queue_timeout_ms,
                     engine_preset=self.engine_preset,
+                    runtime_profile=self.runtime_profile,
                     prefix_cache_max_entries=self.prefix_cache_max_entries,
                     prefix_cache_memory_limit_mb=self.prefix_cache_memory_limit_mb,
                     prefix_cache_min_entries=self.prefix_cache_min_entries,
@@ -3846,6 +3936,13 @@ def create_app(manager: EngineManager):
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         except Exception as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    @app.get("/engine/profiles")
+    def engine_profiles():
+        return {
+            "ok": True,
+            "profiles": runtime_profile_catalog(),
+        }
 
     @app.post("/engine/reload")
     def reload_engine(request: ReloadRequest):
@@ -4004,6 +4101,7 @@ def main():
         max_queued_requests=args.max_queued_requests,
         queue_timeout_ms=args.queue_timeout_ms,
         engine_preset=args.engine_preset,
+        runtime_profile=None,
         prefix_cache_max_entries=args.prefix_cache_max_entries,
         prefix_cache_memory_limit_mb=args.prefix_cache_memory_limit_mb,
         prefix_cache_min_entries=args.prefix_cache_min_entries,

@@ -2974,3 +2974,34 @@ M23 result:
 - The next product phase should wire these controls into the intended UI/API
   surface, then run the probe set automatically before marking a model/profile
   as ready.
+
+## M24 Profile Presets + Readiness API Contract
+
+M24 adds the product-facing profile layer for the engine.
+
+Runtime profiles:
+
+- `interactive`: async prefix builds with no pending wait; prioritize immediate
+  foreground latency
+- `agent-workspace`: async prefix builds with a bounded pending wait; optimize
+  repeated coding-agent context
+- `memory-saver`: smaller cache with a memory limit for lower-memory Macs
+- `diagnostics`: sync-safe cache behavior for probes and operator checks
+
+API additions:
+
+- `GET /engine/profiles`
+- `POST /engine/config` with `runtime_profile`
+- dry-run planning for `runtime_profile`
+- `/health.runtime_profile`
+- `/engine.runtime_profile`
+
+Probe:
+
+- `benchmarks/python/runtime_profile_probe.py`
+
+M24 result:
+
+- Product/UI integration can target named profiles instead of exposing raw
+  prefix-cache and scheduler controls first.
+- Lower-level controls remain available for diagnostics and tuning.

@@ -1466,3 +1466,17 @@
   - M23 conclusion: M20-M22 are now packaged into an operator-facing readiness
     surface with named controls, probes, and go/no-go checks suitable for the
     next product/UI integration pass.
+- Completed M24 profile presets and readiness API contract:
+  - added product-facing `runtime_profile` control:
+    - `interactive`
+    - `agent-workspace`
+    - `memory-saver`
+    - `diagnostics`
+  - added `/engine/profiles` catalog endpoint
+  - extended `/engine/config` dry-run and apply paths to accept
+    `runtime_profile`
+  - added `benchmarks/python/runtime_profile_probe.py`
+  - updated `engine-readiness.md` to make named profiles the product-facing
+    surface over lower-level cache/scheduler knobs
+  - M24 conclusion: product/UI integration can target named runtime profiles
+    instead of exposing raw implementation controls first.
