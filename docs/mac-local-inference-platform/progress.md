@@ -1659,3 +1659,18 @@
     invalid key validation
   - M37 conclusion: the Dax prompt panel can now tune runtime profiles, engine
     presets, scheduler policy, and prefix-cache policy without leaving the TUI.
+- Completed M38 interactive help and compact status:
+  - added in-panel commands:
+    - `/help`
+    - `/status`
+  - `/help` appends the current interactive command surface to the transcript
+  - `/status` appends a compact status block with:
+    - loaded/GPU/warm state
+    - model
+    - runtime profile and engine preset
+    - cache strategy/population mode
+    - active/queued/failure counters
+    - available profiles
+  - added tests for help discoverability and compact status rendering
+  - M38 conclusion: the growing Dax operator surface is now discoverable from
+    inside the prompt panel itself.

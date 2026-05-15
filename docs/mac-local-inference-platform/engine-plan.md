@@ -3392,6 +3392,31 @@ M37 result:
 - Config actions are recorded in the transcript and can be captured by the M34
   `/export [path]` evidence artifact.
 
+## M38 Interactive Help and Compact Status
+
+M38 adds in-panel discoverability for the Dax MLX operator surface.
+
+Panel commands:
+
+```text
+/help
+/status
+```
+
+Behavior:
+
+- `/help` appends the current interactive command list to the transcript.
+- `/status` appends a compact status block with loaded/GPU/warm state, model,
+  runtime profile, engine preset, cache mode, scheduler counters, failure
+  counters, and available profiles.
+
+M38 result:
+
+- Operators no longer need to leave the prompt panel or read docs to discover
+  available controls.
+- Compact status can be exported through the M34 `/export [path]` evidence
+  artifact alongside prompt transcripts and config/cache/lifecycle actions.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

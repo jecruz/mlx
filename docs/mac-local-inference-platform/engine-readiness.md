@@ -151,6 +151,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - inside the interactive panel, `/config [--dry-run] key=value ...` applies
   guarded runtime config through `/engine/config` and refreshes the panel from
   `/engine/ui`
+- inside the interactive panel, `/help` shows available controls and `/status`
+  appends a compact engine summary to the transcript
 
 ## Current Qwen Result
 
