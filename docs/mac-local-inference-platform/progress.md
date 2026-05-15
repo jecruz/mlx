@@ -1628,3 +1628,16 @@
     rendering
   - M35 conclusion: the Dax prompt panel can now control resident model
     lifecycle directly instead of requiring a separate terminal or HTTP client.
+- Completed M36 interactive cache controls:
+  - added Dax client helper for:
+    - `POST /engine/cache/prune`
+  - added in-panel command:
+    - `/cache prune [target_entries]`
+  - default prune target is `0` entries, matching the server manual-prune
+    recovery path
+  - cache prune commands refresh the panel from `GET /engine/ui` after the
+    prune completes
+  - added tests for direct cache prune calls, in-panel cache prune transcript
+    rendering, and invalid target validation
+  - M36 conclusion: the Dax prompt panel can now perform manual prefix-cache
+    recovery without requiring a separate HTTP client.

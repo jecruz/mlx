@@ -145,6 +145,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - inside the interactive panel, `/reload [model-path]` and `/unload` control
   resident model lifecycle through the MLX engine HTTP API and refresh the
   panel from `/engine/ui`
+- inside the interactive panel, `/cache prune [target_entries]` performs manual
+  prefix-cache recovery through `/engine/cache/prune` and refreshes the panel
+  from `/engine/ui`
 
 ## Current Qwen Result
 

@@ -3324,3 +3324,29 @@ M35 result:
   unload the resident model without leaving the Dax TUI.
 - Lifecycle actions are recorded in the panel transcript and can be captured by
   the M34 `/export [path]` evidence artifact.
+
+## M36 Interactive Cache Controls
+
+M36 adds manual prefix-cache recovery control from the Dax interactive panel.
+
+Panel command:
+
+```text
+/cache prune [target_entries]
+```
+
+Cache behavior:
+
+- `/cache prune` calls `POST /engine/cache/prune` with
+  `{ "target_entries": 0, "clear_mlx_cache": true }`.
+- `/cache prune <n>` keeps at most `n` prefix-cache entries and clears the MLX
+  runtime cache after pruning.
+- The panel refreshes from `GET /engine/ui` after the prune completes.
+- Invalid targets are rejected in the panel before any HTTP request is sent.
+
+M36 result:
+
+- Operators can recover from cache pressure or run cache experiments inside the
+  Dax TUI.
+- Cache actions are recorded in the transcript and can be captured by the M34
+  `/export [path]` evidence artifact.
