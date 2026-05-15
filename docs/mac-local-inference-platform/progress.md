@@ -1361,3 +1361,30 @@
     reuse the foreground prefix build across multiple waiting requests, move it
     off the foreground path with admission-aware scheduling, or add lower-level
     cache continuation that avoids reprocessing the matched prefix.
+- Completed M20 async prefix-build amortization probe:
+  - added `benchmarks/python/async_prefix_build_amortization_probe.py`
+  - added prefix-cache policy counters:
+    - `existing_build_reuses`
+    - `pending_build_deduplications`
+  - added per-request metrics:
+    - `cache_build_deduplicated`
+    - `cache_build_dedup_reason`
+  - live Qwen A3B validation with
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`:
+    - baseline: `1285.07 ms`, `actual_prefill_tokens=1343`
+    - schedule: `771.20 ms`, `cache_scheduled=True`,
+      `actual_prefill_tokens=1346`
+    - duplicate pending request: `772.63 ms`, `cache_pending=True`,
+      `cache_build_deduplicated=True`,
+      `cache_build_dedup_reason=pending_async_build`
+    - final hit: `217.74 ms`, `cache_hit=True`,
+      `actual_prefill_tokens=9`
+    - summary: `started_delta=1`, `completed_delta=1`,
+      `pending_build_deduplications_delta=1`
+  - M20 conclusion: in-flight async prefix builds are now explicitly shared
+    and measurable. A second related request no longer launches another
+    background build while the first build is pending. This does not reduce the
+    duplicate request's own prefill yet; it prevents redundant background
+    rebuild work and gives M21 an admission/scheduling signal to decide when
+    requests should wait for a nearly-ready prefix build versus proceed through
+    full prefill.

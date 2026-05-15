@@ -2764,3 +2764,54 @@ M19 result:
     the build cost
   - investigate lower-level MLX cache continuation APIs that can store the
     matched prefix without replaying it in foreground request handling
+
+## M20 Async Prefix-Build Amortization
+
+M20 makes duplicate async prefix-build sharing observable and testable.
+
+Before M20, the engine already avoided adding the same key to
+`prefix_cache_pending_builds` twice, but that behavior was implicit. The service
+did not expose whether a related request arrived while a matching async prefix
+build was already pending, so the scheduler could not reason about amortization.
+
+M20 adds:
+
+- prefix-cache policy counters:
+  - `existing_build_reuses`
+  - `pending_build_deduplications`
+- per-request metrics:
+  - `cache_build_deduplicated`
+  - `cache_build_dedup_reason`
+- `benchmarks/python/async_prefix_build_amortization_probe.py`
+
+Live Qwen A3B validation:
+
+```text
+m20_health True custom 0 0 0
+m20_request baseline service_ms 1285.07 scheduled False pending False dedup False hit False actual_prefill 1343
+m20_request schedule service_ms 771.2 scheduled True pending False dedup False hit False actual_prefill 1346
+m20_request duplicate_pending service_ms 772.63 scheduled False pending True dedup True hit False actual_prefill 1350
+m20_request hit service_ms 217.74 scheduled False pending False dedup False hit True actual_prefill 9
+m20_summary started_delta 1 completed_delta 1 dedup_delta 1 async-prefix-build-amortization-m20-qwen-a3b.jsonl
+```
+
+Interpretation:
+
+- The first related request schedules exactly one async prefix build.
+- The duplicate related request sees `cache_pending=True` and
+  `cache_build_deduplicated=True` with reason `pending_async_build`.
+- The policy counter `pending_build_deduplications` increments by `1`.
+- The async build starts once and completes once.
+- The follow-up request hits the completed prefix cache and drops actual prefill
+  to `9` tokens.
+
+M20 result:
+
+- In-flight prefix builds are now a measured resource rather than an implicit
+  side effect.
+- Duplicate async background rebuilds are prevented and observable.
+- The duplicate foreground request still performs full prefill because M20 only
+  deduplicates the background build. M21 should use these counters and pending
+  state to add admission-aware scheduling: if a matching prefix build is pending
+  and likely near completion, a foreground request can wait briefly and convert
+  into a cache hit instead of doing full prefill.

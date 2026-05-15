@@ -242,6 +242,8 @@ class EngineMetrics:
                 ),
                 "cache_split_prefill": row.get("cache_split_prefill"),
                 "cache_split_prefill_reason": row.get("cache_split_prefill_reason"),
+                "cache_build_deduplicated": row.get("cache_build_deduplicated"),
+                "cache_build_dedup_reason": row.get("cache_build_dedup_reason"),
                 "cache_prepare_ms": row.get("cache_prepare_ms"),
                 "cache_scope_hash": row.get("cache_scope_hash"),
                 "cached_prefix_tokens": row.get("cached_prefix_tokens"),
@@ -995,6 +997,8 @@ class ResidentEngine:
         self.prefix_cache_async_builds_skipped = 0
         self.prefix_cache_async_background_wait_ms = 0.0
         self.prefix_cache_async_priority_deferrals = 0
+        self.prefix_cache_existing_build_reuses = 0
+        self.prefix_cache_pending_build_deduplications = 0
         self.prefix_cache_async_idle_timeout_ms = prefix_cache_async_idle_timeout_ms
         self.prefix_cache_async_idle_grace_ms = prefix_cache_async_idle_grace_ms
         self.prefix_cache_async_idle_grace_wait_ms = 0.0
@@ -1079,6 +1083,10 @@ class ResidentEngine:
                 ),
                 "async_priority_deferrals": (
                     self.prefix_cache_async_priority_deferrals
+                ),
+                "existing_build_reuses": self.prefix_cache_existing_build_reuses,
+                "pending_build_deduplications": (
+                    self.prefix_cache_pending_build_deduplications
                 ),
                 "async_idle_timeout_ms": self.prefix_cache_async_idle_timeout_ms,
                 "async_idle_grace_ms": self.prefix_cache_async_idle_grace_ms,
@@ -1359,8 +1367,10 @@ class ResidentEngine:
         with self.prefix_cache_build_lock:
             existing = self.prefix_kv_cache.get(key)
             if existing is not None and existing["scope"] == scope:
+                self.prefix_cache_existing_build_reuses += 1
                 return False
             if key in self.prefix_cache_pending_builds:
+                self.prefix_cache_pending_build_deduplications += 1
                 return False
             self.prefix_cache_pending_builds.add(key)
             self.prefix_cache_async_builds_started += 1
@@ -1788,6 +1798,8 @@ class ResidentEngine:
             "cache_request_store_reason": None,
             "cache_split_prefill": False,
             "cache_split_prefill_reason": None,
+            "cache_build_deduplicated": False,
+            "cache_build_dedup_reason": None,
         }
         prepare_t0 = time.perf_counter()
         if (
@@ -1829,6 +1841,8 @@ class ResidentEngine:
 
             with self.prefix_cache_build_lock:
                 cache_info["cache_pending"] = key in self.prefix_cache_pending_builds
+                if cache_info["cache_pending"]:
+                    self.prefix_cache_pending_build_deduplications += 1
             if not cache_info["cache_pending"]:
                 cache_info["cache_scheduled"] = True
                 cache_info["_async_cache_build"] = {
@@ -1837,6 +1851,9 @@ class ResidentEngine:
                     "scope": scope,
                     "prefill_step_size": metadata["prefill_step_size"],
                 }
+            else:
+                cache_info["cache_build_deduplicated"] = True
+                cache_info["cache_build_dedup_reason"] = "pending_async_build"
             cache_info["cache_prepare_ms"] = 1e3 * (
                 time.perf_counter() - prepare_t0
             )
