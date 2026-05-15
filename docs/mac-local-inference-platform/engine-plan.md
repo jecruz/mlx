@@ -2615,3 +2615,57 @@ M16 result:
 - Request-derived prefix slicing remains gated off for Qwen A3B until
   `ArraysCache` can be trimmed safely or a fully trimmable Qwen text package is
   found.
+
+## M17 Recurrent-Cache Slicing Safety
+
+M17 resolves the open question from M16: whether `ArraysCache` should be made
+trimmable for request-derived prefix-cache storage.
+
+Source inspection:
+
+- `mlx_lm.models.qwen3_5.TextModel.make_cache()` returns
+  `ArraysCache(size=2)` for linear layers and `KVCache()` for full-attention
+  layers.
+- Qwen3.5 linear layers store:
+  - `cache[0]`: convolution state
+  - `cache[1]`: gated-delta recurrent state
+- That state is the result after processing the sequence. It is not an
+  append-only KV tensor with a suffix time dimension that can be removed to
+  recover an earlier prefix state.
+
+Implementation:
+
+- added explicit trim-blocker classification for prompt-cache entries
+- `ArraysCache` is classified as
+  `array_or_recurrent_state_not_suffix_trimmable`
+- `CacheList` blockers include child blocker reasons
+- `/health` and `/engine` now expose:
+  - `prompt_cache_capabilities.trimmable_entries`
+  - `prompt_cache_capabilities.non_trimmable_entries`
+  - `prompt_cache_capabilities.non_trimmable_classes`
+  - `prompt_cache_capabilities.trim_blocker_reasons`
+- `benchmarks/python/request_prefix_cache_probe.py` now fails if request mode
+  stores from a non-trimmable cache stack, and specifically enforces the
+  `ArraysCache` fallback path
+
+Live Qwen validation:
+
+```text
+m15_capabilities async entries 40 all_trimmable False non_trimmable 30 blockers array_or_recurrent_state_not_suffix_trimmable classes ArraysCache,KVCache
+m15_request async populate service_ms 491.42 cache_prepare_ms 0.05 actual_prefill 629 stored_from_request False scheduled True hit False
+m15_request async hit service_ms 207.61 cache_prepare_ms 0.21 actual_prefill 7 stored_from_request False scheduled False hit True
+m15_capabilities request entries 40 all_trimmable False non_trimmable 30 blockers array_or_recurrent_state_not_suffix_trimmable classes ArraysCache,KVCache
+m15_request request populate service_ms 490.71 cache_prepare_ms 0.05 actual_prefill 630 stored_from_request False scheduled True hit False
+m15_request request hit service_ms 204.07 cache_prepare_ms 0.2 actual_prefill 7 stored_from_request False scheduled False hit True
+m15_summary populate_improvement_ms 0.71 request_populate_ms 490.71 async_populate_ms 491.42 request-prefix-cache-m17-qwen-a3b-safety.jsonl
+```
+
+M17 result:
+
+- `ArraysCache` is intentionally not made trimmable.
+- Request-derived prefix-cache slicing is correctly blocked for Qwen3.5
+  recurrent/linear-attention layers.
+- The safe next optimization is split-prefill population: prefill the matched
+  prefix into a cache, store/copy that prefix cache, then continue the same
+  request through the suffix. That avoids suffix trimming and avoids an
+  additional background rebuild.

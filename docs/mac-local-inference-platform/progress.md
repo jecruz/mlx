@@ -1277,3 +1277,33 @@
     should either add safe trimming support for the relevant `ArraysCache`
     state, or locate a Qwen text model whose prompt cache is composed only of
     trimmable KV cache classes.
+- Completed M17 recurrent-cache slicing safety:
+  - inspected `mlx_lm.models.qwen3_5` and confirmed Qwen3.5 linear layers use
+    `ArraysCache(size=2)` for convolution state and gated-delta recurrent state
+  - added explicit trim-blocker telemetry for non-KV prompt-cache entries
+  - `/health` and `/engine` now report:
+    - `prompt_cache_capabilities.trimmable_entries`
+    - `prompt_cache_capabilities.non_trimmable_entries`
+    - `prompt_cache_capabilities.non_trimmable_classes`
+    - `prompt_cache_capabilities.trim_blocker_reasons`
+  - extended `benchmarks/python/request_prefix_cache_probe.py` so request mode
+    fails if it stores a prefix from a non-trimmable cache stack, and
+    specifically asserts the `ArraysCache` fallback path
+  - live Qwen validation:
+    - entries: `40`
+    - trimmable entries: `10`
+    - non-trimmable entries: `30`
+    - non-trimmable class: `ArraysCache`
+    - blocker: `array_or_recurrent_state_not_suffix_trimmable`
+    - async populate: `491.42 ms`, follow-up hit `207.61 ms`,
+      `actual_prefill_tokens=7`
+    - request populate: `490.71 ms`,
+      `cache_request_store_reason=not_trimmable_fallback_async`
+    - request follow-up hit: `204.07 ms`, `actual_prefill_tokens=7`
+  - M17 conclusion: `ArraysCache` must not be suffix-trimmed for
+    request-derived prefix storage because it carries recurrent state after the
+    whole processed sequence. The engine now exposes and enforces that safety
+    boundary. The next speed milestone should not try to "trim" this state;
+    it should instead avoid computing the suffix before cache storage, for
+    example by prefill-splitting the populate request at the matched prefix
+    boundary and then continuing generation from a copied prefix cache.

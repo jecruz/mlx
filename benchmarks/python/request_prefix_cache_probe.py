@@ -133,6 +133,10 @@ def run_case(
         "mode": mode,
         "entry_count": before_capabilities.get("entry_count"),
         "all_trimmable": before_capabilities.get("all_trimmable"),
+        "trimmable_entries": before_capabilities.get("trimmable_entries"),
+        "non_trimmable_entries": before_capabilities.get("non_trimmable_entries"),
+        "non_trimmable_classes": before_capabilities.get("non_trimmable_classes"),
+        "trim_blocker_reasons": before_capabilities.get("trim_blocker_reasons"),
         "classes": before_capabilities.get("classes"),
     }
     write_row(artifact, capability_row)
@@ -143,6 +147,10 @@ def run_case(
         capability_row["entry_count"],
         "all_trimmable",
         capability_row["all_trimmable"],
+        "non_trimmable",
+        capability_row["non_trimmable_entries"],
+        "blockers",
+        ",".join(capability_row["trim_blocker_reasons"] or []),
         "classes",
         ",".join(capability_row["classes"] or []),
         flush=True,
@@ -213,6 +221,24 @@ def run_case(
         raise RuntimeError(
             "request case neither stored cache from request nor used a safe "
             f"fallback: {populate}"
+        )
+    if (
+        mode == "request"
+        and before_capabilities.get("all_trimmable") is False
+        and populate["cache_stored_from_request"]
+    ):
+        raise RuntimeError(
+            "request case stored a prefix from a non-trimmable cache stack: "
+            f"capabilities={before_capabilities} populate={populate}"
+        )
+    if (
+        mode == "request"
+        and "ArraysCache" in (before_capabilities.get("non_trimmable_classes") or [])
+        and populate["cache_request_store_reason"] != "not_trimmable_fallback_async"
+    ):
+        raise RuntimeError(
+            "request case did not preserve ArraysCache safety fallback: "
+            f"capabilities={before_capabilities} populate={populate}"
         )
     if mode == "async" and not populate["cache_scheduled"]:
         raise RuntimeError(f"async case did not schedule cache build: {populate}")

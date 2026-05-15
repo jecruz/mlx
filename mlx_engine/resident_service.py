@@ -1089,33 +1089,72 @@ class ResidentEngine:
                 "last_async_error": self.last_prefix_cache_async_error,
             }
 
+    @staticmethod
+    def prompt_cache_trim_blocker_reason(cache_entry) -> str | None:
+        class_name = type(cache_entry).__name__
+        if class_name == "ArraysCache":
+            return "array_or_recurrent_state_not_suffix_trimmable"
+        if class_name == "CacheList":
+            blockers = []
+            for child in getattr(cache_entry, "caches", []):
+                reason = ResidentEngine.prompt_cache_trim_blocker_reason(child)
+                if reason is not None:
+                    blockers.append(f"{type(child).__name__}:{reason}")
+            return ",".join(blockers) if blockers else None
+        try:
+            if cache_entry.is_trimmable():
+                return None
+        except Exception as exc:
+            return f"trimmability_check_error:{exc}"
+        return f"{class_name}_not_trimmable"
+
     def prompt_cache_capabilities_snapshot(self) -> dict[str, Any]:
         prompt_cache = self.make_prompt_cache(self.model)
         entries = []
         for index, cache_entry in enumerate(prompt_cache):
             is_trimmable = False
+            blocker_reason = None
             try:
                 is_trimmable = bool(cache_entry.is_trimmable())
             except Exception as exc:
+                blocker_reason = f"trimmability_check_error:{exc}"
                 entries.append(
                     {
                         "index": index,
                         "class": type(cache_entry).__name__,
                         "trimmable": False,
-                        "error": str(exc),
+                        "trim_blocker_reason": blocker_reason,
                     }
                 )
                 continue
+            if not is_trimmable:
+                blocker_reason = self.prompt_cache_trim_blocker_reason(cache_entry)
             entries.append(
                 {
                     "index": index,
                     "class": type(cache_entry).__name__,
                     "trimmable": is_trimmable,
+                    "trim_blocker_reason": blocker_reason,
                 }
             )
+        non_trimmable_entries = [
+            entry for entry in entries if not bool(entry["trimmable"])
+        ]
         return {
             "entry_count": len(entries),
             "all_trimmable": all(entry["trimmable"] for entry in entries),
+            "trimmable_entries": sum(1 for entry in entries if entry["trimmable"]),
+            "non_trimmable_entries": len(non_trimmable_entries),
+            "non_trimmable_classes": sorted(
+                {entry["class"] for entry in non_trimmable_entries}
+            ),
+            "trim_blocker_reasons": sorted(
+                {
+                    entry["trim_blocker_reason"]
+                    for entry in non_trimmable_entries
+                    if entry.get("trim_blocker_reason")
+                }
+            ),
             "classes": sorted({entry["class"] for entry in entries}),
             "entries": entries,
         }
