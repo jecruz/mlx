@@ -125,7 +125,28 @@ def run_case(
     )
     before = request_json("GET", f"{base_url}/health")
     before_policy = before["prefix_cache_policy"]
+    before_capabilities = before.get("prompt_cache_capabilities", {})
     before_async_completed = int(before_policy.get("async_builds_completed") or 0)
+    capability_row = {
+        "type": "prompt_cache_capabilities",
+        "created": int(time.time()),
+        "mode": mode,
+        "entry_count": before_capabilities.get("entry_count"),
+        "all_trimmable": before_capabilities.get("all_trimmable"),
+        "classes": before_capabilities.get("classes"),
+    }
+    write_row(artifact, capability_row)
+    print(
+        "m15_capabilities",
+        mode,
+        "entries",
+        capability_row["entry_count"],
+        "all_trimmable",
+        capability_row["all_trimmable"],
+        "classes",
+        ",".join(capability_row["classes"] or []),
+        flush=True,
+    )
     prompts = build_prompts(run_id=f"{mode}-{uuid.uuid4().hex[:8]}", repeats=repeats)
     rows = []
     for index, prompt in enumerate(prompts, start=1):
@@ -208,6 +229,7 @@ def run_case(
         "mode": mode,
         "rows": rows,
         "before_policy": before_policy,
+        "before_capabilities": before_capabilities,
         "after_policy": after_policy,
         "populate_service_request_ms": float(populate["service_request_ms"]),
         "populate_cache_prepare_ms": float(populate["cache_prepare_ms"] or 0.0),

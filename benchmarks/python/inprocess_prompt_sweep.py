@@ -36,8 +36,12 @@ def parse_args():
 def detect_backend(model_path: str) -> str:
     config_path = Path(model_path) / "config.json"
     config = json.loads(config_path.read_text())
+    architectures = config.get("architectures") or []
     if config.get("model_type") == "gpt_oss":
         return "text"
+    if any(str(arch).endswith("ForConditionalGeneration") for arch in architectures):
+        if not any("VL" in str(arch) or "Vision" in str(arch) for arch in architectures):
+            return "text"
     if any(
         key in config
         for key in ("vision_tower", "audio_tower", "vision_config", "audio_config")

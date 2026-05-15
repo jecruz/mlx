@@ -2548,3 +2548,70 @@ M15 result:
 - The next performance milestone should validate this mode on a Qwen MLX model
   with trimmable KV cache classes, then compare request-derived population
   against async rebuild on 1.5k, 4k, and 8k repeated-prefix prompts.
+
+## M16 Qwen Request-Cache Validation
+
+M16 applies the M15 request-cache guardrail to a local Qwen MLX package and
+hardens model loading/observability around that path.
+
+Implementation:
+
+- backend detection now treats text generation architectures such as
+  `Qwen3_5ForConditionalGeneration` and `Qwen3_5MoeForConditionalGeneration`
+  as text models even when the converted config includes `vision_config`
+- resident loading still attempts normal strict `mlx-lm` loading first
+- if strict loading fails only because the package includes extra
+  `language_model.vision_tower.*` tensors, the engine retries text loading with
+  `strict=False`
+- `/health` and `/engine` expose:
+  - `load_strict`
+  - `load_fallback_reason`
+  - `prompt_cache_capabilities.entry_count`
+  - `prompt_cache_capabilities.all_trimmable`
+  - `prompt_cache_capabilities.classes`
+
+Validated model:
+
+```text
+/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit
+```
+
+Health evidence:
+
+```text
+m16_health True False extra_vision_tower_weights_ignored False ['ArraysCache', 'KVCache'] Device(gpu, 0)
+```
+
+Request-cache probe:
+
+```text
+m15_capabilities async entries 40 all_trimmable False classes ArraysCache,KVCache
+m15_request async baseline service_ms 1013.8 cache_prepare_ms 0.0 actual_prefill 628 stored_from_request False scheduled False hit False
+m15_request async populate service_ms 519.63 cache_prepare_ms 0.05 actual_prefill 631 stored_from_request False scheduled True hit False
+m15_request async hit service_ms 225.97 cache_prepare_ms 0.21 actual_prefill 7 stored_from_request False scheduled False hit True
+m15_capabilities request entries 40 all_trimmable False classes ArraysCache,KVCache
+m15_request request baseline service_ms 489.48 cache_prepare_ms 0.0 actual_prefill 624 stored_from_request False scheduled False hit False
+m15_request request populate service_ms 487.47 cache_prepare_ms 0.05 actual_prefill 627 stored_from_request False scheduled True hit False
+m15_request request hit service_ms 205.3 cache_prepare_ms 0.2 actual_prefill 7 stored_from_request False scheduled False hit True
+m15_summary populate_improvement_ms 32.16 request_populate_ms 487.47 async_populate_ms 519.63 request-prefix-cache-m16-qwen-a3b.jsonl
+```
+
+Interpretation:
+
+- The local Qwen A3B package is now usable by the resident text engine despite
+  extra vision-tower tensors in the checkpoint.
+- The model's prompt cache is not wholly trimmable because its cache stack
+  includes `ArraysCache`.
+- Request-derived prefix-cache storage is therefore correctly disabled for this
+  model and falls back to async population:
+  `cache_request_store_reason=not_trimmable_fallback_async`.
+- The follow-up request still reaches the fast cache-hit path with suffix-only
+  prefill.
+
+M16 result:
+
+- Qwen local-package loading is more robust.
+- Cache-class capability telemetry is now explicit.
+- Request-derived prefix slicing remains gated off for Qwen A3B until
+  `ArraysCache` can be trimmed safely or a fully trimmable Qwen text package is
+  found.

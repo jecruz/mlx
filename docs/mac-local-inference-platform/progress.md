@@ -1244,3 +1244,36 @@
     performance path should identify which Qwen/MLX cache classes are trimmable
     and validate request-derived prefix slicing on that model family before
     enabling it in an operator preset.
+- Completed M16 Qwen request-cache validation and loader hardening:
+  - fixed backend detection so Qwen text generation architectures are not
+    rejected only because their converted config includes `vision_config`
+  - added a constrained text-loader fallback for local Qwen packages that carry
+    extra `language_model.vision_tower.*` tensors: strict load is attempted
+    first, then `strict=False` is used only when the strict failure is caused by
+    extra vision-tower weights
+  - exposed `load_strict`, `load_fallback_reason`, and
+    `prompt_cache_capabilities` in `/health` and `/engine`
+  - extended `benchmarks/python/request_prefix_cache_probe.py` to write and
+    print prompt-cache capability rows
+  - Qwen model validated:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+  - health evidence from the live Qwen server:
+    `m16_health True False extra_vision_tower_weights_ignored False ['ArraysCache', 'KVCache'] Device(gpu, 0)`
+  - request-cache probe evidence:
+    - prompt cache entries: `40`
+    - prompt cache classes: `ArraysCache, KVCache`
+    - all trimmable: `False`
+    - async populate: `519.63 ms`, `actual_prefill_tokens=631`,
+      `cache_scheduled=True`
+    - async follow-up hit: `225.97 ms`, `actual_prefill_tokens=7`
+    - request populate: `487.47 ms`, `actual_prefill_tokens=627`,
+      `cache_request_store_reason=not_trimmable_fallback_async`,
+      `cache_scheduled=True`
+    - request follow-up hit: `205.30 ms`, `actual_prefill_tokens=7`
+  - M16 conclusion: this local Qwen A3B MLX package is now loadable in the
+    resident text engine, but request-derived prefix-cache slicing is still not
+    enabled because `ArraysCache` is not trimmable. The safe performance path is
+    still async cache population plus cache-hit reuse. The next optimization
+    should either add safe trimming support for the relevant `ArraysCache`
+    state, or locate a Qwen text model whose prompt cache is composed only of
+    trimmable KV cache classes.

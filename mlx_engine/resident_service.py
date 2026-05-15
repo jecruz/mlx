@@ -951,7 +951,7 @@ class ResidentEngine:
         t0 = time.perf_counter()
         from mlx_lm.generate import generate_step, stream_generate
         from mlx_lm.models.cache import can_trim_prompt_cache, make_prompt_cache, trim_prompt_cache
-        from mlx_lm.utils import load
+        from mlx_lm.utils import load, load_model, load_tokenizer
         self.startup_timings["import_mlx_lm_helpers_ms"] = 1e3 * (
             time.perf_counter() - t0
         )
@@ -961,6 +961,8 @@ class ResidentEngine:
         self.make_prompt_cache = make_prompt_cache
         self.trim_prompt_cache = trim_prompt_cache
         self.stream_generate = stream_generate
+        self.load_model = load_model
+        self.load_tokenizer = load_tokenizer
         t0 = time.perf_counter()
         self.profile = self._load_profile(profile_path)
         self.startup_timings["load_profile_ms"] = 1e3 * (time.perf_counter() - t0)
@@ -1006,7 +1008,18 @@ class ResidentEngine:
         )
 
         load_t0 = time.perf_counter()
-        self.model, self.tokenizer = load(model_path)
+        try:
+            self.model, self.tokenizer = load(model_path)
+            self.load_strict = True
+            self.load_fallback_reason = None
+        except ValueError as exc:
+            message = str(exc)
+            if "parameters not in model" not in message or "vision_tower" not in message:
+                raise
+            self.model, _config = load_model(Path(model_path), strict=False)
+            self.tokenizer = load_tokenizer(model_path)
+            self.load_strict = False
+            self.load_fallback_reason = "extra_vision_tower_weights_ignored"
         self.load_ms = 1e3 * (time.perf_counter() - load_t0)
         self.startup_timings["model_load_ms"] = self.load_ms
         self.started_at = time.time()
@@ -1075,6 +1088,37 @@ class ResidentEngine:
                 ),
                 "last_async_error": self.last_prefix_cache_async_error,
             }
+
+    def prompt_cache_capabilities_snapshot(self) -> dict[str, Any]:
+        prompt_cache = self.make_prompt_cache(self.model)
+        entries = []
+        for index, cache_entry in enumerate(prompt_cache):
+            is_trimmable = False
+            try:
+                is_trimmable = bool(cache_entry.is_trimmable())
+            except Exception as exc:
+                entries.append(
+                    {
+                        "index": index,
+                        "class": type(cache_entry).__name__,
+                        "trimmable": False,
+                        "error": str(exc),
+                    }
+                )
+                continue
+            entries.append(
+                {
+                    "index": index,
+                    "class": type(cache_entry).__name__,
+                    "trimmable": is_trimmable,
+                }
+            )
+        return {
+            "entry_count": len(entries),
+            "all_trimmable": all(entry["trimmable"] for entry in entries),
+            "classes": sorted({entry["class"] for entry in entries}),
+            "entries": entries,
+        }
 
     def configure_runtime(self, config: dict[str, Any]) -> dict[str, Any]:
         changes: dict[str, Any] = {}
@@ -2440,6 +2484,8 @@ class ResidentEngine:
             "backend": self.backend,
             "device": self.device_info,
             "load_ms": self.load_ms,
+            "load_strict": self.load_strict,
+            "load_fallback_reason": self.load_fallback_reason,
             "startup_timings": startup_timings,
             "uptime_s": time.time() - self.started_at,
             "warmup_prompt_tokens": self.warmup_prompt_tokens,
@@ -2451,6 +2497,7 @@ class ResidentEngine:
             "metrics": self.metrics.snapshot(),
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
+            "prompt_cache_capabilities": self.prompt_cache_capabilities_snapshot(),
             "execution_lock": self.execution_lock.snapshot(),
             "scheduler": self.scheduler.snapshot(),
             "mlx_memory": self.mlx_memory_snapshot(),
@@ -2467,6 +2514,8 @@ class ResidentEngine:
             "policy_names": sorted(self.profile.get("policy", {}).keys()),
             "device": self.device_info,
             "load_ms": self.load_ms,
+            "load_strict": self.load_strict,
+            "load_fallback_reason": self.load_fallback_reason,
             "started_at": self.started_at,
             "uptime_s": time.time() - self.started_at,
             "warmup_prompt_tokens": self.warmup_prompt_tokens,
@@ -2476,6 +2525,7 @@ class ResidentEngine:
             "metrics": self.metrics.snapshot(),
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
+            "prompt_cache_capabilities": self.prompt_cache_capabilities_snapshot(),
             "execution_lock": self.execution_lock.snapshot(),
             "scheduler": self.scheduler.snapshot(),
             "mlx_memory": self.mlx_memory_snapshot(),
