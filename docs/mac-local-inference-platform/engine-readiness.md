@@ -135,6 +135,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   streams responses into a short terminal transcript
 - inside the interactive panel, `/profiles`, `/profile <name>`, and `/profile
   next` list and apply runtime profiles without leaving the TUI
+- inside the interactive panel, the configured stop key aborts in-flight
+  generation without exiting the TUI
 
 ## Current Qwen Result
 

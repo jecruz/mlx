@@ -3219,3 +3219,27 @@ M31 result:
 - Profile changes are validated against the engine profile catalog before being
   applied.
 - The panel header updates after successful profile application.
+
+## M32 Interactive Generation Cancellation
+
+M32 adds cancellation for in-flight interactive panel generations.
+
+Command:
+
+```bash
+dax mlx-engine --base-url http://127.0.0.1:8773 \
+  --interactive \
+  --stop-key escape
+```
+
+Runtime path:
+
+- `streamGeneration` accepts an `AbortSignal`
+- the interactive panel creates one `AbortController` per generation
+- pressing the configured stop key aborts the fetch-backed stream
+
+M32 result:
+
+- Long or unwanted generations can be stopped without exiting the TUI.
+- Partial output remains visible in the transcript.
+- The panel records `generation stopped` and returns to input mode.

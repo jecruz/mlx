@@ -1572,3 +1572,15 @@
     status update
   - M31 conclusion: Dax can now control resident-engine runtime behavior from
     inside the interactive terminal panel without leaving the MLX operator UI.
+- Completed M32 interactive generation cancellation:
+  - added configurable stop key support:
+    - `--stop-key`
+    - `DAX_MLX_ENGINE_STOP_KEY`
+    - default: `escape`
+  - `streamGeneration` now accepts an `AbortSignal` and passes it to `fetch`
+  - the interactive panel owns one `AbortController` per in-flight generation
+  - stopping a generation records `generation stopped` in the transcript and
+    leaves the TUI running
+  - added tests for in-flight abort behavior and partial transcript retention
+  - M32 conclusion: long or bad generations can be interrupted without killing
+    the Dax MLX prompt panel.
