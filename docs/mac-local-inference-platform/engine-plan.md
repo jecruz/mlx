@@ -3162,3 +3162,32 @@ M29 result:
   arrive, handles `[DONE]`, and prints final usage when available.
 - Live validation against the Qwen A3B server returned streamed text and usage
   counters for both chat and raw completion modes.
+
+## M30 Dax Interactive Prompt Panel
+
+M30 turns Dax from a command-output consumer into a first interactive terminal
+surface for the resident MLX engine.
+
+Command:
+
+```bash
+dax mlx-engine --base-url http://127.0.0.1:8773 \
+  --interactive \
+  --max-tokens 128
+```
+
+Panel behavior:
+
+- shows current model, GPU readiness, runtime profile, and mode
+- lists available runtime profiles
+- accepts a single-line prompt
+- streams response chunks into the transcript
+- reports final usage counters when the final stream event includes them
+- exits through the configured Dax TUI exit key
+
+M30 result:
+
+- Dax now has a product-shaped local-inference terminal panel.
+- The panel still talks only to the standalone MLX HTTP service.
+- This is the first usable shell for agentic coding workflows on the resident
+  MLX engine path.

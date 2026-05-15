@@ -100,6 +100,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   --prompt "Stream exactly four words about MLX." \
   --max-tokens 8 \
   --stream
+npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
+  --interactive \
+  --max-tokens 128
 ```
 
 ## Go Criteria
@@ -128,6 +131,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - `dax mlx-engine --prompt ... --stream` prints streamed chunks from the
   OpenAI-compatible SSE API and reports usage counters when the final event
   arrives
+- `dax mlx-engine --interactive` opens a focused Dax TUI prompt panel that
+  streams responses into a short terminal transcript
 
 ## Current Qwen Result
 

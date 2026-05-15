@@ -1547,3 +1547,16 @@
   - M29 conclusion: Dax can now display generation as the resident MLX engine
     emits tokens, which is the correct interaction model for a terminal
     operator UI and agentic coding workflow.
+- Completed M30 Dax interactive prompt panel:
+  - extended `dax mlx-engine` with `--interactive`
+  - added a focused Dax TUI prompt panel with:
+    - model/GPU/profile header
+    - current runtime profile catalog
+    - single-line prompt input
+    - short transcript
+    - streamed assistant response updates
+    - usage summary after final stream event
+  - added component-level test coverage for prompt submission, streamed response
+    accumulation, usage rendering, and re-render callbacks
+  - M30 conclusion: Dax now has the first product-shaped terminal interaction
+    surface for the resident MLX engine instead of only one-shot command output.
