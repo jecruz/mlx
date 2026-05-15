@@ -142,6 +142,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - inside the interactive panel, `/export [path]` writes an evidence JSON file
   with the latest engine snapshot, profile catalog, mode, max token cap, and
   plain-text transcript
+- inside the interactive panel, `/reload [model-path]` and `/unload` control
+  resident model lifecycle through the MLX engine HTTP API and refresh the
+  panel from `/engine/ui`
 
 ## Current Qwen Result
 

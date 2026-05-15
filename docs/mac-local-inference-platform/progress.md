@@ -1614,3 +1614,17 @@
   - added tests for export file creation and transcript payload shape
   - M34 conclusion: Dax prompt sessions can now be saved as reproducible local
     inference evidence artifacts.
+- Completed M35 interactive lifecycle controls:
+  - added Dax client helpers for:
+    - `POST /engine/reload`
+    - `POST /engine/unload`
+  - added in-panel commands:
+    - `/reload`
+    - `/reload <model-path>`
+    - `/unload`
+  - reload and unload commands refresh the panel from `GET /engine/ui` after
+    the lifecycle action completes
+  - added tests for client lifecycle calls and in-panel lifecycle transcript
+    rendering
+  - M35 conclusion: the Dax prompt panel can now control resident model
+    lifecycle directly instead of requiring a separate terminal or HTTP client.

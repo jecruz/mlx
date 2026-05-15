@@ -3296,3 +3296,31 @@ M34 result:
 - The default export path is a timestamped `mlx-engine-session-*.json` file.
 - Operators can provide an explicit path when they want to attach the artifact
   to a benchmark, Redmine ticket, or debugging handoff.
+
+## M35 Interactive Lifecycle Controls
+
+M35 adds resident-engine lifecycle control from the Dax interactive panel.
+
+Panel commands:
+
+```text
+/reload
+/reload <model-path>
+/unload
+```
+
+Lifecycle behavior:
+
+- `/reload` calls `POST /engine/reload` with an empty body and refreshes the
+  panel from `GET /engine/ui`.
+- `/reload <model-path>` calls `POST /engine/reload` with `{ "model": path }`
+  and refreshes the panel from `GET /engine/ui`.
+- `/unload` calls `POST /engine/unload` and refreshes the panel from
+  `GET /engine/ui`.
+
+M35 result:
+
+- Operators can reload the current model, switch to another model path, or
+  unload the resident model without leaving the Dax TUI.
+- Lifecycle actions are recorded in the panel transcript and can be captured by
+  the M34 `/export [path]` evidence artifact.
