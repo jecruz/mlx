@@ -12,6 +12,7 @@ import threading
 import time
 import uuid
 from collections import deque
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Literal
 
@@ -1186,6 +1187,89 @@ class ResidentEngine:
                 }
             ),
             "classes": sorted({entry["class"] for entry in entries}),
+            "entries": entries,
+        }
+
+    @staticmethod
+    def package_version(name: str) -> str | None:
+        try:
+            return version(name)
+        except PackageNotFoundError:
+            return None
+
+    def prompt_cache_continuation_snapshot(self) -> dict[str, Any]:
+        prompt_cache = self.make_prompt_cache(self.model)
+        replay_free_classes = {
+            "ChunkedKVCache",
+            "ConcatenateKVCache",
+            "KVCache",
+            "QuantizedKVCache",
+            "RotatingKVCache",
+        }
+        entries = []
+        for index, cache_entry in enumerate(prompt_cache):
+            class_name = type(cache_entry).__name__
+            blocker_reason = None
+            try:
+                trimmable = bool(cache_entry.is_trimmable())
+            except Exception as exc:
+                trimmable = False
+                blocker_reason = f"trimmability_check_error:{exc}"
+            if class_name == "ArraysCache":
+                blocker_reason = "arrays_cache_has_recurrent_state_without_offset_or_trim"
+            elif not trimmable:
+                blocker_reason = self.prompt_cache_trim_blocker_reason(cache_entry)
+            replay_free_prefix_store_supported = (
+                class_name in replay_free_classes and blocker_reason is None
+            )
+            entries.append(
+                {
+                    "index": index,
+                    "class": class_name,
+                    "trimmable": trimmable,
+                    "has_offset": hasattr(cache_entry, "offset"),
+                    "has_size_method": hasattr(cache_entry, "size"),
+                    "has_update_and_fetch": hasattr(cache_entry, "update_and_fetch"),
+                    "state_slots": len(getattr(cache_entry, "state", []) or []),
+                    "replay_free_prefix_store_supported": (
+                        replay_free_prefix_store_supported
+                    ),
+                    "blocker_reason": blocker_reason,
+                }
+            )
+        blocked_entries = [
+            entry
+            for entry in entries
+            if not entry["replay_free_prefix_store_supported"]
+        ]
+        return {
+            "mlx_lm_version": self.package_version("mlx-lm"),
+            "entry_count": len(entries),
+            "native_replay_free_prefix_store_supported": not blocked_entries,
+            "replay_free_supported_entries": (
+                len(entries) - len(blocked_entries)
+            ),
+            "blocked_entries": len(blocked_entries),
+            "blocked_classes": sorted({entry["class"] for entry in blocked_entries}),
+            "blocker_reasons": sorted(
+                {
+                    entry["blocker_reason"]
+                    for entry in blocked_entries
+                    if entry.get("blocker_reason")
+                }
+            ),
+            "safe_request_prefix_store_strategy": (
+                "direct_cache_reuse"
+                if not blocked_entries
+                else "split_prefill_or_async_build"
+            ),
+            "required_lower_level_work": (
+                None
+                if not blocked_entries
+                else (
+                    "model_specific_recurrent_state_continuation_for_arrays_cache"
+                )
+            ),
             "entries": entries,
         }
 
@@ -2712,6 +2796,7 @@ class ResidentEngine:
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
             "prompt_cache_capabilities": self.prompt_cache_capabilities_snapshot(),
+            "prompt_cache_continuation": self.prompt_cache_continuation_snapshot(),
             "execution_lock": self.execution_lock.snapshot(),
             "scheduler": self.scheduler.snapshot(),
             "mlx_memory": self.mlx_memory_snapshot(),
@@ -2740,6 +2825,7 @@ class ResidentEngine:
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
             "prompt_cache_capabilities": self.prompt_cache_capabilities_snapshot(),
+            "prompt_cache_continuation": self.prompt_cache_continuation_snapshot(),
             "execution_lock": self.execution_lock.snapshot(),
             "scheduler": self.scheduler.snapshot(),
             "mlx_memory": self.mlx_memory_snapshot(),

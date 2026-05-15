@@ -2875,3 +2875,64 @@ M21 result:
   MLX cache continuation or cache materialization hooks so the engine can avoid
   replaying the matched prefix for both the scheduling request and follow-up
   requests.
+
+## M22 Lower-Level MLX Cache Continuation Readiness
+
+M22 audits whether the current `mlx-lm` cache stack can safely support a
+generic replay-free prefix-store path below request scheduling.
+
+The installed runtime is `mlx-lm 0.30.7`. Source inspection shows:
+
+- `KVCache` exposes offset, update, state, and trim semantics.
+- Qwen3.5/Next linear-attention layers use `ArraysCache`.
+- `ArraysCache` stores recurrent array state, but does not expose offset or
+  trim semantics. It can be copied and reused as a completed prefix state, but
+  it cannot be generically suffix-trimmed or partially materialized without
+  model-specific recurrent-state rules.
+
+M22 adds runtime continuation reporting:
+
+- `prompt_cache_continuation`
+- `native_replay_free_prefix_store_supported`
+- `replay_free_supported_entries`
+- `blocked_entries`
+- `blocked_classes`
+- `blocker_reasons`
+- `safe_request_prefix_store_strategy`
+- `required_lower_level_work`
+- `benchmarks/python/cache_continuation_capabilities_probe.py`
+
+Live Qwen A3B validation:
+
+```text
+m22_continuation mlx_lm 0.30.7 entries 40 native_replay_free False supported 10 blocked 30 blocked_classes ArraysCache strategy split_prefill_or_async_build cache-continuation-capabilities-m22-qwen-a3b.json
+```
+
+Probe payload:
+
+```json
+{
+  "blocked_classes": ["ArraysCache"],
+  "blocked_entries": 30,
+  "blocker_reasons": ["arrays_cache_has_recurrent_state_without_offset_or_trim"],
+  "capability_classes": ["ArraysCache", "KVCache"],
+  "entry_count": 40,
+  "mlx_lm_version": "0.30.7",
+  "native_replay_free_prefix_store_supported": false,
+  "non_trimmable_entries": 30,
+  "replay_free_supported_entries": 10,
+  "required_lower_level_work": "model_specific_recurrent_state_continuation_for_arrays_cache",
+  "safe_request_prefix_store_strategy": "split_prefill_or_async_build"
+}
+```
+
+M22 result:
+
+- A generic lower-level replay-free prefix-store optimization is unsafe for the
+  Qwen3.5/Next cache stack because 30 of 40 cache entries are recurrent
+  `ArraysCache` entries without offset/trim semantics.
+- The safe engine strategy remains split-prefill, async build, and M21
+  pending-build waiting until model-specific recurrent continuation is designed.
+- M23 should package these controls into an operator-ready engine surface:
+  presets, documented settings, probes, and a concise readiness checklist for
+  the Mac local-inference product path.

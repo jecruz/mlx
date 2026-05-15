@@ -1417,3 +1417,34 @@
     cache hit instead of full-prefilling. This is the first path where pending
     async construction directly improves the duplicate request's prefill shape,
     not just background work duplication.
+- Completed M22 lower-level MLX cache continuation readiness:
+  - added `/health` and `/engine` report:
+    - `prompt_cache_continuation`
+    - `native_replay_free_prefix_store_supported`
+    - `replay_free_supported_entries`
+    - `blocked_entries`
+    - `blocked_classes`
+    - `blocker_reasons`
+    - `safe_request_prefix_store_strategy`
+    - `required_lower_level_work`
+  - added `benchmarks/python/cache_continuation_capabilities_probe.py`
+  - source inspection target:
+    - installed `mlx-lm` version: `0.30.7`
+    - `KVCache` exposes offset/update/trim semantics
+    - `ArraysCache` stores recurrent array state but has no offset or trim
+      semantics, so it is not safe for generic replay-free prefix slicing
+  - live Qwen A3B validation:
+    - entries: `40`
+    - replay-free supported entries: `10`
+    - blocked entries: `30`
+    - blocked class: `ArraysCache`
+    - blocker: `arrays_cache_has_recurrent_state_without_offset_or_trim`
+    - native replay-free prefix store supported: `False`
+    - safe strategy: `split_prefill_or_async_build`
+    - required lower-level work:
+      `model_specific_recurrent_state_continuation_for_arrays_cache`
+  - M22 conclusion: the current MLX/Qwen cache stack should not attempt a
+    generic lower-level replay-free prefix-store optimization. KV layers are
+    structurally compatible, but the 30 recurrent `ArraysCache` layers need
+    model-specific continuation semantics before we can avoid replaying the
+    matched prefix safely.
