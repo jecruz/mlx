@@ -1480,3 +1480,17 @@
     surface over lower-level cache/scheduler knobs
   - M24 conclusion: product/UI integration can target named runtime profiles
     instead of exposing raw implementation controls first.
+- Completed M25 UI/API integration contract:
+  - added `GET /engine/ui`
+  - added UI-facing snapshot sections:
+    - `readiness`
+    - `controls`
+    - `cache`
+    - `scheduler`
+    - `memory`
+    - `metrics`
+    - `profiles`
+  - added `benchmarks/python/ui_status_contract_probe.py`
+  - updated `engine-readiness.md` with the UI integration contract
+  - M25 conclusion: a UI or app integration can now consume one stable status
+    endpoint instead of composing low-level engine endpoints directly.

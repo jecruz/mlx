@@ -3580,6 +3580,108 @@ class EngineManager:
             **engine.metadata(),
         }
 
+    def ui_status(self) -> dict[str, Any]:
+        profiles = runtime_profile_catalog()
+        engine = self.engine
+        if engine is None:
+            metadata = self.metadata()
+            return {
+                "ok": True,
+                "loaded": False,
+                "model": metadata.get("model"),
+                "profile_path": metadata.get("profile_path"),
+                "runtime_profile": metadata.get("runtime_profile"),
+                "engine_preset": metadata.get("engine_preset"),
+                "profiles": profiles,
+                "readiness": {
+                    "loaded": False,
+                    "gpu_ready": False,
+                    "warm": False,
+                    "continuation_ready": False,
+                    "strategy": None,
+                    "blockers": ["no_model_loaded"],
+                },
+                "controls": {
+                    "can_reload": True,
+                    "can_unload": False,
+                    "can_configure": True,
+                    "can_generate": False,
+                },
+                "last_reload_error": self.last_reload_error,
+                "last_unloaded_at": self.last_unloaded_at,
+            }
+
+        health = engine.health()
+        device = health["device"]
+        warmup = health["warmup"]
+        continuation = health["prompt_cache_continuation"]
+        policy = health["prefix_cache_policy"]
+        scheduler = health["scheduler"]
+        memory = health["mlx_memory"]
+        metrics = health["metrics"]
+        return {
+            "ok": True,
+            "loaded": True,
+            "model": health["model"],
+            "backend": health["backend"],
+            "profile_path": health["profile_path"],
+            "runtime_profile": health["runtime_profile"],
+            "engine_preset": health["engine_preset"],
+            "profiles": profiles,
+            "readiness": {
+                "loaded": True,
+                "gpu_ready": bool(device.get("metal_available"))
+                and "gpu" in str(device.get("default_device")),
+                "warm": bool(warmup.get("completed")),
+                "warmup_running": bool(warmup.get("running")),
+                "continuation_ready": bool(
+                    continuation.get("native_replay_free_prefix_store_supported")
+                ),
+                "strategy": continuation.get("safe_request_prefix_store_strategy"),
+                "blockers": continuation.get("blocker_reasons") or [],
+                "required_lower_level_work": continuation.get(
+                    "required_lower_level_work"
+                ),
+            },
+            "controls": {
+                "can_reload": True,
+                "can_unload": True,
+                "can_configure": True,
+                "can_generate": True,
+            },
+            "cache": {
+                "population_mode": policy.get("population_mode"),
+                "pending_wait_ms": policy.get("pending_wait_ms"),
+                "pending_wait_hits": policy.get("pending_wait_hits"),
+                "pending_build_deduplications": policy.get(
+                    "pending_build_deduplications"
+                ),
+                "entries": health["prefix_kv_cache"].get("entries"),
+                "max_entries": health["prefix_kv_cache"].get("max_entries"),
+                "memory_limit_bytes": policy.get("memory_limit_bytes"),
+            },
+            "scheduler": {
+                "active_requests": scheduler.get("active_requests"),
+                "queued_requests": scheduler.get("queued_requests"),
+                "max_concurrent_requests": scheduler.get("max_concurrent_requests"),
+                "max_queued_requests": scheduler.get("max_queued_requests"),
+            },
+            "memory": {
+                "active_memory_bytes": memory.get("active_memory_bytes"),
+                "cache_memory_bytes": memory.get("cache_memory_bytes"),
+                "peak_memory_bytes": memory.get("peak_memory_bytes"),
+            },
+            "metrics": {
+                "total_requests": metrics.get("total_requests"),
+                "successful_requests": metrics.get("successful_requests"),
+                "failed_requests": metrics.get("failed_requests"),
+                "mean_run_ms": metrics.get("mean_run_ms"),
+                "cache_candidate_requests": metrics.get("cache_candidate_requests"),
+            },
+            "last_reload_error": self.last_reload_error,
+            "last_unloaded_at": self.last_unloaded_at,
+        }
+
     def planned_config_snapshot(self, config: dict[str, Any]) -> dict[str, Any]:
         metadata = self.metadata()
         scheduler = metadata.get("scheduler", {})
@@ -3927,6 +4029,10 @@ def create_app(manager: EngineManager):
     @app.get("/engine")
     def engine_metadata():
         return manager.metadata()
+
+    @app.get("/engine/ui")
+    def engine_ui_status():
+        return manager.ui_status()
 
     @app.post("/engine/config")
     def configure_engine(request: EngineConfigRequest):

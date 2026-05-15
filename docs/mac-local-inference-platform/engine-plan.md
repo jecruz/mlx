@@ -3005,3 +3005,44 @@ M24 result:
 - Product/UI integration can target named profiles instead of exposing raw
   prefix-cache and scheduler controls first.
 - Lower-level controls remain available for diagnostics and tuning.
+
+## M25 UI/API Integration Contract
+
+M25 adds the first UI-facing engine status contract.
+
+API:
+
+- `GET /engine/ui`
+
+The endpoint returns:
+
+- model and load state
+- current `runtime_profile` and `engine_preset`
+- full runtime profile catalog
+- readiness flags:
+  - loaded
+  - GPU ready
+  - warm
+  - continuation ready
+  - cache strategy
+  - blockers
+- controls:
+  - can reload
+  - can unload
+  - can configure
+  - can generate
+- cache state and counters
+- scheduler state
+- memory summary
+- request metrics
+
+Probe:
+
+- `benchmarks/python/ui_status_contract_probe.py`
+
+M25 result:
+
+- UI/Prowl/oMLX integration can consume one stable status payload instead of
+  stitching together `/health`, `/engine`, `/engine/profiles`, and metrics.
+- The endpoint deliberately hides low-level detail behind product-facing groups
+  while preserving enough diagnostic counters for an advanced settings panel.

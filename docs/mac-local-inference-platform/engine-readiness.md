@@ -38,6 +38,19 @@ without reloading the model:
 - `max_queued_requests`
 - `queue_timeout_ms`
 
+Use `/engine/ui` for UI and product integrations. It returns a single snapshot
+with:
+
+- model/load state
+- current `runtime_profile`
+- profile catalog
+- readiness flags
+- generation controls
+- cache strategy and counters
+- scheduler state
+- memory summary
+- request metrics
+
 Recommended product profiles:
 
 - Low-latency interactive:
@@ -68,6 +81,9 @@ python3 benchmarks/python/engine_readiness_probe.py \
 
 python3 benchmarks/python/runtime_profile_probe.py \
   --base-url http://127.0.0.1:8773
+
+python3 benchmarks/python/ui_status_contract_probe.py \
+  --base-url http://127.0.0.1:8773
 ```
 
 ## Go Criteria
@@ -87,6 +103,7 @@ python3 benchmarks/python/runtime_profile_probe.py \
 - `/engine/config` dry-run returns planned state for pending-wait controls
 - `/engine/profiles` returns all named runtime profiles
 - `/engine/config` can apply `runtime_profile=agent-workspace`
+- `/engine/ui` returns the stable UI integration contract
 
 ## Current Qwen Result
 
