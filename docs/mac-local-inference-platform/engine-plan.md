@@ -3101,3 +3101,32 @@ M27 result:
   blockers.
 - The live Qwen A3B server on port `8773` returned loaded/gpu-ready/can-generate
   status and the full runtime profile catalog through the Dax command.
+
+## M28 Dax Generation Path
+
+M28 adds real generation work to the Dax MLX command.
+
+Command:
+
+```bash
+dax mlx-engine --base-url http://127.0.0.1:8773 \
+  --prompt "Reply with exactly three words about MLX speed." \
+  --max-tokens 8
+
+dax mlx-engine --base-url http://127.0.0.1:8773 \
+  --prompt "MLX speed:" \
+  --max-tokens 6 \
+  --completion
+```
+
+Runtime path:
+
+- default: `POST /v1/chat/completions`
+- raw completion mode: `POST /v1/completions`
+
+M28 result:
+
+- Dax can now submit generation requests to the resident engine.
+- The integration still uses the OpenAI-compatible HTTP boundary.
+- Live validation against the Qwen A3B server returned completion text plus
+  prompt/completion/total token usage counters.

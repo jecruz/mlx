@@ -93,6 +93,9 @@ python3 benchmarks/python/ui_client_adapter_probe.py \
 
 cd /Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent
 npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --once
+npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
+  --prompt "Reply with exactly three words about MLX speed." \
+  --max-tokens 8
 ```
 
 ## Go Criteria
@@ -116,6 +119,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --once
 - `EngineUiClient.summary()` returns a normalized UI summary
 - `dax mlx-engine --once` displays live model, GPU, generation, cache, scheduler,
   metrics, and runtime-profile state from the resident engine
+- `dax mlx-engine --prompt ...` returns a non-streaming generation response and
+  usage counters through the resident engine HTTP API
 
 ## Current Qwen Result
 

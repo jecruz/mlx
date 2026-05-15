@@ -1521,3 +1521,16 @@
       `diagnostics`
   - M27 conclusion: the MLX engine control surface is now validated by a real
     terminal product consumer without coupling Dax to internal MLX engine code.
+- Completed M28 Dax generation path:
+  - extended `dax mlx-engine` with:
+    - `--prompt`
+    - `--max-tokens`
+    - `--completion`
+  - default generation path uses `POST /v1/chat/completions`
+  - `--completion` uses `POST /v1/completions`
+  - live Qwen A3B validation through Dax:
+    - chat completion returned usage `prompt=20 completion=8 total=28`
+    - raw text completion returned usage `prompt=4 completion=6 total=10`
+  - M28 conclusion: Dax is no longer only an engine monitor; it can now submit
+    real generation work to the resident MLX engine while still using the
+    OpenAI-compatible HTTP boundary.
