@@ -1684,3 +1684,16 @@
   - M39 conclusion: longer Dax MLX operator sessions can now recover prior
     prompts, responses, and command evidence without exporting or leaving the
     prompt panel.
+- Completed M40 interactive prompt history and recall:
+  - added in-panel commands:
+    - `/history`
+    - `/again [n]`
+  - prompt history records natural-language prompts, not operator commands
+  - `/history` appends recent prompts with stable history numbers
+  - `/again` reruns the latest prompt, and `/again <n>` reruns the numbered
+    prompt from history
+  - invalid recall arguments produce a usage message instead of attempting
+    generation
+  - added tests for history listing, numbered replay, and invalid recall
+  - M40 conclusion: longer Dax MLX sessions can rerun useful prompts without
+    relying on terminal arrow-key behavior.

@@ -155,6 +155,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   appends a compact engine summary to the transcript
 - inside the interactive panel, `/find <text>` searches prior transcript lines
   and appends compact recent matches or a no-match result
+- inside the interactive panel, `/history` lists recent natural-language
+  prompts and `/again [n]` reruns the latest or numbered prompt
 
 ## Current Qwen Result
 

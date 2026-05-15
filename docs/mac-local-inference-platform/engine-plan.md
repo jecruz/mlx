@@ -3441,6 +3441,34 @@ M39 result:
 - Search results are themselves part of the transcript and can be captured by
   the M34 `/export [path]` evidence artifact.
 
+## M40 Interactive Prompt History and Recall
+
+M40 adds explicit prompt history and replay inside the Dax MLX prompt panel.
+
+Panel commands:
+
+```text
+/history
+/again [n]
+```
+
+Behavior:
+
+- Natural-language prompts are recorded in prompt history.
+- Operator commands are not recorded as prompts.
+- `/history` appends recent prompts with stable history numbers.
+- `/again` reruns the latest prompt.
+- `/again <n>` reruns the numbered prompt from history.
+- Invalid recall arguments append a usage message instead of attempting
+  generation.
+
+M40 result:
+
+- Operators can rerun useful prompt experiments without relying on terminal
+  arrow-key handling.
+- History and replay events become part of the transcript and can be captured by
+  the M34 `/export [path]` evidence artifact.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
