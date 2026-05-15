@@ -153,6 +153,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   `/engine/ui`
 - inside the interactive panel, `/help` shows available controls and `/status`
   appends a compact engine summary to the transcript
+- inside the interactive panel, `/find <text>` searches prior transcript lines
+  and appends compact recent matches or a no-match result
 
 ## Current Qwen Result
 

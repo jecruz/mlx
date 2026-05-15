@@ -1674,3 +1674,13 @@
   - added tests for help discoverability and compact status rendering
   - M38 conclusion: the growing Dax operator surface is now discoverable from
     inside the prompt panel itself.
+- Completed M39 interactive transcript search:
+  - added in-panel command:
+    - `/find <text>`
+  - searches the current interactive transcript after stripping terminal color
+    sequences
+  - returns compact recent matches or an explicit no-match message
+  - added tests for prompt/response transcript matches and no-match behavior
+  - M39 conclusion: longer Dax MLX operator sessions can now recover prior
+    prompts, responses, and command evidence without exporting or leaving the
+    prompt panel.

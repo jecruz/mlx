@@ -3417,6 +3417,30 @@ M38 result:
 - Compact status can be exported through the M34 `/export [path]` evidence
   artifact alongside prompt transcripts and config/cache/lifecycle actions.
 
+## M39 Interactive Transcript Search
+
+M39 adds local transcript search inside the Dax MLX prompt panel.
+
+Panel command:
+
+```text
+/find <text>
+```
+
+Behavior:
+
+- `/find <text>` searches the current transcript after stripping terminal color
+  sequences.
+- It appends compact recent matches to the transcript.
+- If nothing matches, it appends an explicit no-match message.
+
+M39 result:
+
+- Operators can recover prior prompts, responses, and command evidence during
+  longer MLX sessions without exporting the transcript or leaving the TUI.
+- Search results are themselves part of the transcript and can be captured by
+  the M34 `/export [path]` evidence artifact.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
