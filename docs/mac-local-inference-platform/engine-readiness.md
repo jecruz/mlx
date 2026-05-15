@@ -139,6 +139,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   generation without exiting the TUI
 - inside the interactive panel, live engine status refresh shows active/queued
   requests, cache mode, failed requests, and total request count
+- inside the interactive panel, `/export [path]` writes an evidence JSON file
+  with the latest engine snapshot, profile catalog, mode, max token cap, and
+  plain-text transcript
 
 ## Current Qwen Result
 

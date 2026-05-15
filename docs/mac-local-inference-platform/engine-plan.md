@@ -3270,3 +3270,29 @@ M33 result:
 - Queue pressure, cache mode, and request failures are visible during prompt
   sessions.
 - This is the first real operator loop for local MLX coding-agent workflows.
+
+## M34 Interactive Transcript Export
+
+M34 adds evidence export from the Dax interactive panel.
+
+Panel command:
+
+```text
+/export [path]
+```
+
+Export payload:
+
+- `exported_at`
+- `mode`
+- `max_tokens`
+- latest `snapshot` from `/engine/ui`
+- runtime `profiles`
+- plain-text `transcript`
+
+M34 result:
+
+- Prompt sessions can be saved as reproducible local-inference evidence.
+- The default export path is a timestamped `mlx-engine-session-*.json` file.
+- Operators can provide an explicit path when they want to attach the artifact
+  to a benchmark, Redmine ticket, or debugging handoff.

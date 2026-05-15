@@ -1599,3 +1599,18 @@
   - added tests for refreshed active/queued/cache/failure rendering
   - M33 conclusion: the interactive Dax panel now behaves like a live operator
     surface instead of a static prompt shell.
+- Completed M34 interactive transcript export:
+  - added in-panel command:
+    - `/export [path]`
+  - default export path is a timestamped `mlx-engine-session-*.json` file in
+    the current working directory
+  - exported evidence JSON includes:
+    - export timestamp
+    - mode
+    - max token cap
+    - latest engine UI snapshot
+    - profile catalog
+    - plain-text transcript
+  - added tests for export file creation and transcript payload shape
+  - M34 conclusion: Dax prompt sessions can now be saved as reproducible local
+    inference evidence artifacts.
