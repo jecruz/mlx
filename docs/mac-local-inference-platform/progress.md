@@ -1584,3 +1584,18 @@
   - added tests for in-flight abort behavior and partial transcript retention
   - M32 conclusion: long or bad generations can be interrupted without killing
     the Dax MLX prompt panel.
+- Completed M33 interactive live engine refresh:
+  - the interactive panel now accepts refreshed `GET /engine/ui` snapshots
+  - interactive mode polls:
+    - `GET /engine/ui`
+    - `GET /engine/profiles`
+  - refresh cadence uses existing `--refresh-ms`
+  - the panel header now shows:
+    - active requests
+    - queued requests
+    - cache strategy/population mode
+    - failed request count
+    - total request count
+  - added tests for refreshed active/queued/cache/failure rendering
+  - M33 conclusion: the interactive Dax panel now behaves like a live operator
+    surface instead of a static prompt shell.

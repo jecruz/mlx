@@ -137,6 +137,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   next` list and apply runtime profiles without leaving the TUI
 - inside the interactive panel, the configured stop key aborts in-flight
   generation without exiting the TUI
+- inside the interactive panel, live engine status refresh shows active/queued
+  requests, cache mode, failed requests, and total request count
 
 ## Current Qwen Result
 

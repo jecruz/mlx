@@ -3243,3 +3243,30 @@ M32 result:
 - Long or unwanted generations can be stopped without exiting the TUI.
 - Partial output remains visible in the transcript.
 - The panel records `generation stopped` and returns to input mode.
+
+## M33 Interactive Live Engine Refresh
+
+M33 makes the Dax interactive prompt panel a live operator surface.
+
+Runtime path:
+
+- `GET /engine/ui`
+- `GET /engine/profiles`
+
+Behavior:
+
+- refresh cadence uses existing `--refresh-ms`
+- the panel updates while open without leaving prompt mode
+- the header shows:
+  - active requests
+  - queued requests
+  - cache strategy or population mode
+  - failed request count
+  - total request count
+
+M33 result:
+
+- The interactive panel now tracks live engine state while the user works.
+- Queue pressure, cache mode, and request failures are visible during prompt
+  sessions.
+- This is the first real operator loop for local MLX coding-agent workflows.
