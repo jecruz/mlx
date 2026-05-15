@@ -1334,3 +1334,30 @@
     eliminates full populate prefill and the separate background rebuild. The
     next performance test should repeat this at longer prompts where avoiding
     full populate prefill and background rebuild should matter more.
+- Completed M19 split-prefill length sweep:
+  - added `benchmarks/python/request_prefix_cache_length_sweep.py`
+  - swept Qwen A3B repeated-prefix shapes at `24`, `60`, and `120` shared
+    context repeats, corresponding to roughly `628`, `1531`, and `3031`
+    populate prompt tokens
+  - M19 live sweep results:
+    - repeats `24`: async populate `492.09 ms` with `628` actual prefill
+      tokens; request split-prefill populate `530.38 ms` with `9` actual
+      prefill tokens; delta `-38.29 ms`
+    - repeats `60`: async populate `832.92 ms` with `1531` actual prefill
+      tokens; request split-prefill populate `869.10 ms` with `9` actual
+      prefill tokens; delta `-36.18 ms`
+    - repeats `120`: async populate `1497.13 ms` with `3031` actual prefill
+      tokens; request split-prefill populate `1546.66 ms` with `9` actual
+      prefill tokens; delta `-49.52 ms`
+  - cache-hit behavior remained stable:
+    - async hit range: `203.18-223.24 ms`
+    - request hit range: `196.70-210.04 ms`
+  - M19 conclusion: split-prefill delivers the intended compute-shape change
+    by reducing populate-request prefill from full prompt length to suffix-only
+    `9` tokens and eliminating async rebuild scheduling. It still does not beat
+    async end-to-end through ~3k tokens because foreground prefix preparation is
+    effectively the same expensive work as the async full-prefill path. The
+    next optimization should target prefix-cache construction cost directly:
+    reuse the foreground prefix build across multiple waiting requests, move it
+    off the foreground path with admission-aware scheduling, or add lower-level
+    cache continuation that avoids reprocessing the matched prefix.

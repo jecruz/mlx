@@ -2720,3 +2720,47 @@ M18 result:
   rebuild runs outside the populate request path. Split-prefill should be
   retested at 1.5k, 4k, and 8k contexts where avoiding full populate prefill and
   avoiding a background rebuild should have more value.
+
+## M19 Split-Prefill Length Sweep
+
+M19 adds a repeatable length sweep for the request split-prefill path:
+
+- `benchmarks/python/request_prefix_cache_length_sweep.py`
+- runs async and request modes at multiple repeated-prefix sizes
+- writes per-request rows plus a per-length summary
+- reports actual populate prefill tokens, populate latency, and cache-hit
+  latency
+
+Live Qwen A3B sweep:
+
+```text
+m19_length 24 async_populate_ms 492.09 request_populate_ms 530.38 delta_ms -38.29 async_prefill 628 request_prefill 9
+m19_length 60 async_populate_ms 832.92 request_populate_ms 869.1 delta_ms -36.18 async_prefill 1531 request_prefill 9
+m19_length 120 async_populate_ms 1497.13 request_populate_ms 1546.66 delta_ms -49.52 async_prefill 3031 request_prefill 9
+m19_summary best_repeats 60 best_delta_ms -36.18 request-prefix-cache-length-sweep-m19-qwen-a3b.jsonl
+```
+
+Interpretation:
+
+- Split-prefill is doing the intended work-shape change: populate-request
+  `actual_prefill_tokens` stays at `9` while async full-prefills `628`, `1531`,
+  and `3031` tokens.
+- Cache-hit latency remains good and comparable after either population mode.
+- Split-prefill still does not win end-to-end through ~3k prompt tokens because
+  foreground prefix preparation costs nearly as much as the async path's full
+  populate prefill.
+- Async remains better for interactive populate latency, while split-prefill is
+  useful as a correctness and scheduling primitive because it avoids duplicate
+  background cache construction.
+
+M19 result:
+
+- No positive latency crossover was found through the tested Qwen A3B prompt
+  range.
+- The next performance target should be prefix-build amortization, not more
+  suffix trimming:
+  - share an in-flight prefix build across queued requests
+  - schedule prefix builds admission-aware so foreground requests do not absorb
+    the build cost
+  - investigate lower-level MLX cache continuation APIs that can store the
+    matched prefix without replaying it in foreground request handling
