@@ -90,6 +90,9 @@ python3 benchmarks/python/ui_status_contract_probe.py \
 
 python3 benchmarks/python/ui_client_adapter_probe.py \
   --base-url http://127.0.0.1:8773
+
+cd /Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent
+npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --once
 ```
 
 ## Go Criteria
@@ -111,6 +114,8 @@ python3 benchmarks/python/ui_client_adapter_probe.py \
 - `/engine/config` can apply `runtime_profile=agent-workspace`
 - `/engine/ui` returns the stable UI integration contract
 - `EngineUiClient.summary()` returns a normalized UI summary
+- `dax mlx-engine --once` displays live model, GPU, generation, cache, scheduler,
+  metrics, and runtime-profile state from the resident engine
 
 ## Current Qwen Result
 

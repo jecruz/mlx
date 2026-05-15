@@ -1502,3 +1502,22 @@
   - updated `engine-readiness.md` with the adapter validation command
   - M26 conclusion: Python CLI/TUI/product integrations can consume `/engine/ui`
     through a small stable adapter instead of binding directly to raw JSON.
+- Completed M27 Dax TUI consumer:
+  - added `dax mlx-engine` in
+    `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+  - Dax consumes:
+    - `GET /engine/ui`
+    - `GET /engine/profiles`
+    - `POST /engine/config`
+  - added a Dax TUI status panel plus `--once` and `--json` modes for scripts
+  - added profile dry-run/apply support through `--profile` and `--dry-run`
+  - live validation against the Qwen A3B server on port `8773` reported:
+    - loaded: `yes`
+    - model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+    - GPU ready: `yes`
+    - can generate: `yes`
+    - cache strategy: `split_prefill_or_async_build`
+    - profiles: `interactive`, `agent-workspace`, `memory-saver`,
+      `diagnostics`
+  - M27 conclusion: the MLX engine control surface is now validated by a real
+    terminal product consumer without coupling Dax to internal MLX engine code.

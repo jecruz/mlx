@@ -3070,3 +3070,34 @@ M26 result:
   contract without hand-rolling HTTP calls.
 - The adapter gives oMLX/Prowl integration a concrete normalized schema to
   mirror in Swift/TypeScript later.
+
+## M27 Dax TUI Consumer
+
+M27 validates the UI contract with a real terminal product consumer.
+
+Dax repo:
+
+- `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+
+Command:
+
+```bash
+dax mlx-engine --base-url http://127.0.0.1:8773 --once
+dax mlx-engine --base-url http://127.0.0.1:8773 --profile agent-workspace --dry-run --once
+dax mlx-engine --base-url http://127.0.0.1:8773
+```
+
+Dax consumes:
+
+- `GET /engine/ui`
+- `GET /engine/profiles`
+- `POST /engine/config`
+
+M27 result:
+
+- The engine remains a standalone resident HTTP service.
+- Dax is now a first real operator surface for model load state, GPU readiness,
+  runtime profiles, scheduler state, metrics, cache strategy, and cache
+  blockers.
+- The live Qwen A3B server on port `8773` returned loaded/gpu-ready/can-generate
+  status and the full runtime profile catalog through the Dax command.
