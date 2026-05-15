@@ -3351,6 +3351,47 @@ M36 result:
 - Cache actions are recorded in the transcript and can be captured by the M34
   `/export [path]` evidence artifact.
 
+## M37 Interactive Runtime Config Controls
+
+M37 adds guarded runtime configuration from the Dax interactive panel.
+
+Panel command:
+
+```text
+/config [--dry-run] key=value ...
+```
+
+Supported config keys:
+
+- `runtime_profile`
+- `engine_preset`
+- `max_concurrent_requests`
+- `max_queued_requests`
+- `queue_timeout_ms`
+- `prefix_cache_max_entries`
+- `prefix_cache_memory_limit_mb`
+- `prefix_cache_min_entries`
+- `prefix_cache_population_mode`
+- `prefix_cache_async_idle_timeout_ms`
+- `prefix_cache_async_idle_grace_ms`
+- `prefix_cache_pending_wait_ms`
+
+Config behavior:
+
+- `/config --dry-run ...` calls `POST /engine/config` with `dry_run=true` and
+  refreshes the panel from `GET /engine/ui`.
+- `/config ...` applies the patch through `POST /engine/config` and refreshes
+  the panel from `GET /engine/ui`.
+- Invalid keys and malformed numeric values are rejected locally before any
+  HTTP request is sent.
+
+M37 result:
+
+- Operators can tune runtime profile, engine preset, scheduler limits, and
+  prefix-cache policy from the Dax TUI.
+- Config actions are recorded in the transcript and can be captured by the M34
+  `/export [path]` evidence artifact.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

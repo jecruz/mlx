@@ -1641,3 +1641,21 @@
     rendering, and invalid target validation
   - M36 conclusion: the Dax prompt panel can now perform manual prefix-cache
     recovery without requiring a separate HTTP client.
+- Completed M37 interactive runtime config controls:
+  - added Dax client helper for:
+    - `POST /engine/config`
+  - added in-panel command:
+    - `/config [--dry-run] key=value ...`
+  - supported config keys include:
+    - `runtime_profile`
+    - `engine_preset`
+    - scheduler limits
+    - prefix-cache policy knobs
+  - config commands refresh the panel from `GET /engine/ui` after the config
+    request completes
+  - invalid keys and invalid numeric values are rejected in the panel before
+    any HTTP request is sent
+  - added tests for direct config calls, in-panel dry-run/apply behavior, and
+    invalid key validation
+  - M37 conclusion: the Dax prompt panel can now tune runtime profiles, engine
+    presets, scheduler policy, and prefix-cache policy without leaving the TUI.
