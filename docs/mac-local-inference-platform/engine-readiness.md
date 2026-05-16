@@ -162,6 +162,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   and transcript
 - snapshot export also writes an attach-ready Markdown sidecar with compact
   status, recent prompts, and recent transcript excerpt
+- `/snapshot --redact [path]` replaces prompt history and transcript content
+  with redaction markers while preserving engine status and configuration
+  context
 
 ## Current Qwen Result
 

@@ -1728,3 +1728,18 @@
   - added tests for Markdown sidecar creation and summary content
   - M42 conclusion: snapshot artifacts are now readable and attach-ready without
     requiring someone to inspect the raw JSON first.
+- Completed M43 redacted snapshot export:
+  - extended in-panel snapshot command:
+    - `/snapshot --redact [path]`
+  - redacted snapshots preserve:
+    - compact status lines
+    - raw engine UI snapshot
+    - runtime profile catalog
+    - artifact metadata
+  - redacted snapshots replace prompt history and transcript content with
+    deterministic redaction markers
+  - Markdown sidecar marks redacted snapshots with `Redacted: yes`
+  - added tests verifying prompt and response content are excluded from both
+    JSON and Markdown outputs
+  - M43 conclusion: Dax snapshot artifacts can now be shared more safely when
+    prompts or model responses may contain sensitive content.

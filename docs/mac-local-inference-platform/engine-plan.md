@@ -3525,6 +3525,32 @@ M42 result:
   debugging handoffs.
 - Reviewers can inspect the Markdown summary before opening the raw JSON.
 
+## M43 Redacted Snapshot Export
+
+M43 adds a sharing-safe snapshot option.
+
+Panel command:
+
+```text
+/snapshot --redact [path]
+```
+
+Redaction behavior:
+
+- Preserves artifact metadata, compact status, raw engine UI snapshot, and
+  runtime profile catalog.
+- Replaces prompt history with deterministic prompt redaction markers.
+- Replaces transcript lines with deterministic transcript redaction markers.
+- Marks JSON payloads with `redacted=true`.
+- Marks Markdown sidecars with `Redacted: yes`.
+
+M43 result:
+
+- Operators can produce shareable evidence artifacts when prompts or model
+  responses may contain sensitive content.
+- The redacted artifact still carries engine status and configuration context
+  needed for performance/debugging review.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
