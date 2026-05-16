@@ -3551,6 +3551,32 @@ M43 result:
 - The redacted artifact still carries engine status and configuration context
   needed for performance/debugging review.
 
+## M44 Safe Snapshot Export
+
+M44 adds a stricter diagnostic snapshot mode for handoffs and tickets.
+
+Panel command:
+
+```text
+/snapshot --safe [path]
+```
+
+Safe snapshot behavior:
+
+- Implies prompt history and transcript redaction.
+- Scrubs local filesystem-style paths from compact status lines.
+- Scrubs local filesystem-style paths from the raw engine UI snapshot payload.
+- Scrubs local filesystem-style paths from the runtime profile catalog.
+- Marks JSON payloads with `safe=true`.
+- Marks Markdown sidecars with `Safe: yes`.
+
+M44 result:
+
+- Operators can attach diagnostic bundles without exposing local model storage
+  layout or sensitive prompt/response content.
+- The artifact still preserves loaded state, profile/preset/cache/scheduler
+  shape, and failure counters needed for engine debugging.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

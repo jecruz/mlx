@@ -165,6 +165,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - `/snapshot --redact [path]` replaces prompt history and transcript content
   with redaction markers while preserving engine status and configuration
   context
+- `/snapshot --safe [path]` implies prompt/transcript redaction and also scrubs
+  local filesystem-style model paths from status, raw snapshot payloads,
+  profiles, and Markdown sidecars
 
 ## Current Qwen Result
 

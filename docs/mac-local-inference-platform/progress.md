@@ -1743,3 +1743,18 @@
     JSON and Markdown outputs
   - M43 conclusion: Dax snapshot artifacts can now be shared more safely when
     prompts or model responses may contain sensitive content.
+- Completed M44 safe snapshot export:
+  - extended in-panel snapshot command:
+    - `/snapshot --safe [path]`
+  - safe snapshots imply prompt/transcript redaction
+  - safe snapshots also scrub local filesystem-style model paths from:
+    - compact status lines
+    - raw engine UI snapshot payload
+    - runtime profile catalog
+    - Markdown sidecar
+  - JSON payloads now include `safe=true` for safe exports
+  - Markdown sidecars mark safe snapshots with `Safe: yes`
+  - added tests verifying local model paths and prompt/response content are
+    excluded from JSON and Markdown outputs
+  - M44 conclusion: Dax can now produce diagnostics suitable for external
+    tickets or shared handoffs without leaking local model paths.
