@@ -168,6 +168,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - `/snapshot --safe [path]` implies prompt/transcript redaction and also scrubs
   local filesystem-style model paths from status, raw snapshot payloads,
   profiles, and Markdown sidecars
+- `/snapshot --no-raw [path]` omits the raw engine snapshot payload while
+  preserving compact status, profiles, metadata, and prompt/transcript fields;
+  combine with `--safe` for compact external handoff artifacts
 
 ## Current Qwen Result
 

@@ -3577,6 +3577,40 @@ M44 result:
 - The artifact still preserves loaded state, profile/preset/cache/scheduler
   shape, and failure counters needed for engine debugging.
 
+## M45 Raw Snapshot Omission
+
+M45 adds a compact diagnostic snapshot mode.
+
+Panel command:
+
+```text
+/snapshot --no-raw [path]
+```
+
+Common attach-safe form:
+
+```text
+/snapshot --safe --no-raw [path]
+```
+
+No-raw behavior:
+
+- Omits the raw engine UI snapshot payload from the JSON artifact.
+- Preserves compact status lines for loaded/model/profile/cache/scheduler
+  context.
+- Preserves the runtime profile catalog.
+- Preserves prompt history and transcript content unless `--redact` or `--safe`
+  is also supplied.
+- Marks JSON payloads with `include_raw=false`.
+- Marks Markdown sidecars with `Raw snapshot: no`.
+
+M45 result:
+
+- Operators can produce smaller ticket artifacts when the full engine payload is
+  unnecessary or too sensitive.
+- `--safe --no-raw` is the recommended external handoff form because it removes
+  prompts, transcript content, local paths, and raw engine state.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

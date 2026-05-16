@@ -1758,3 +1758,21 @@
     excluded from JSON and Markdown outputs
   - M44 conclusion: Dax can now produce diagnostics suitable for external
     tickets or shared handoffs without leaking local model paths.
+- Completed M45 raw snapshot omission:
+  - extended in-panel snapshot command:
+    - `/snapshot --no-raw [path]`
+  - `--no-raw` can be combined with `--safe` for compact ticket artifacts
+  - JSON payloads now include `include_raw=false` when raw engine payloads are
+    omitted
+  - Markdown sidecars mark omitted raw snapshots with `Raw snapshot: no`
+  - no-raw snapshots preserve:
+    - artifact metadata
+    - compact status lines
+    - runtime profile catalog
+    - prompt history or prompt redaction markers
+    - transcript or transcript redaction markers
+  - added tests verifying `--safe --no-raw` excludes the raw engine snapshot,
+    local model paths, prompt content, and response content from JSON and
+    Markdown outputs
+  - M45 conclusion: Dax can now create compact, attach-safe diagnostics for
+    tickets and handoffs without carrying the full raw engine state payload.
