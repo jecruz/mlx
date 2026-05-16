@@ -3611,6 +3611,33 @@ M45 result:
 - `--safe --no-raw` is the recommended external handoff form because it removes
   prompts, transcript content, local paths, and raw engine state.
 
+## M46 Transcript View Controls
+
+M46 improves long-running operator sessions in the Dax prompt panel.
+
+Panel commands:
+
+```text
+/view recent
+/view all
+/clear
+```
+
+Behavior:
+
+- The default panel render remains a compact recent transcript window.
+- `/view all` renders the full current transcript.
+- `/view recent` returns to the compact recent transcript window.
+- `/clear` clears the current visible/exported transcript.
+- Prompt history is preserved after `/clear`, so `/history` and `/again [n]`
+  still work.
+
+M46 result:
+
+- Operators can keep the panel readable during long MLX tuning sessions.
+- Clearing noisy output does not discard prompt recall, which keeps iterative
+  benchmark and diagnostic workflows usable.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

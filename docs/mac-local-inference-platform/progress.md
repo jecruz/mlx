@@ -1776,3 +1776,17 @@
     Markdown outputs
   - M45 conclusion: Dax can now create compact, attach-safe diagnostics for
     tickets and handoffs without carrying the full raw engine state payload.
+- Completed M46 transcript view controls:
+  - added in-panel commands:
+    - `/view recent`
+    - `/view all`
+    - `/clear`
+  - default rendering remains a recent transcript window for long sessions
+  - `/view all` renders the full current transcript in the panel
+  - `/view recent` restores the compact recent transcript window
+  - `/clear` clears the current visible/exported transcript while preserving
+    prompt history for `/history` and `/again`
+  - added tests for recent/all rendering, invalid view usage, clear behavior,
+    and prompt-history preservation after clear
+  - M46 conclusion: long Dax MLX operator sessions are now easier to manage
+    without losing prompt recall.
