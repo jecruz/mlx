@@ -1813,3 +1813,17 @@
     interactive transcript
   - M48 conclusion: interactive MLX sessions now provide immediate performance
     feedback during prompt-processing and generation tuning.
+- Completed M49 structured generation metrics:
+  - Dax now stores per-generation metrics separately from transcript text:
+    - generation index
+    - elapsed milliseconds
+    - completion tokens per second, or `null` when unavailable
+    - usage counters when returned by the engine
+  - `/export` includes `generation_metrics`
+  - `/snapshot` includes `generation_metrics`
+  - Markdown snapshot sidecars include a recent generation metrics section
+  - metric records intentionally omit prompt text so ticket/safe snapshots can
+    carry performance evidence without leaking prompt content
+  - added tests verifying structured metrics are exported and summarized
+  - M49 conclusion: Dax diagnostic artifacts now carry machine-readable
+    performance evidence for later comparison.

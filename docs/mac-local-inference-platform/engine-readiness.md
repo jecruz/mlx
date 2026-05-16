@@ -135,6 +135,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   streams responses into a short terminal transcript
 - completed interactive generations append elapsed timing and completion
   tokens-per-second feedback when completion-token usage is available
+- `/export` and `/snapshot` include structured `generation_metrics` records for
+  elapsed milliseconds, completion throughput, and returned usage counters
 - inside the interactive panel, `/profiles`, `/profile <name>`, and `/profile
   next` list and apply runtime profiles without leaving the TUI
 - inside the interactive panel, the configured stop key aborts in-flight

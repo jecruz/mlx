@@ -3695,6 +3695,32 @@ M48 result:
 - This is not a replacement for benchmark sweeps, but it makes live tuning less
   blind and helps decide which run deserves a durable snapshot or benchmark.
 
+## M49 Structured Generation Metrics
+
+M49 makes the timing evidence machine-readable.
+
+Behavior:
+
+- Dax records one structured metric object for each completed generation.
+- Metric fields include:
+  - generation index
+  - elapsed milliseconds
+  - completion tokens per second, or `null` when unavailable
+  - usage counters when the engine returns them
+- `/export` includes `generation_metrics`.
+- `/snapshot` includes `generation_metrics`.
+- Markdown snapshot sidecars include a recent generation metrics section.
+- Metric records intentionally do not include prompt text.
+
+M49 result:
+
+- Safe/ticket snapshots can carry performance evidence without leaking prompt
+  content.
+- Benchmark notes and Redmine artifacts can compare generation behavior without
+  scraping transcript text.
+- This prepares the next lane: fresh prompt-processing benchmark runs with
+  attachable evidence.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
