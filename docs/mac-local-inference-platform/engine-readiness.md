@@ -173,6 +173,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - `/snapshot --no-raw [path]` omits the raw engine snapshot payload while
   preserving compact status, profiles, metadata, and prompt/transcript fields;
   combine with `--safe` for compact external handoff artifacts
+- `/snapshot ticket|internal|full [path]` provides named privacy presets:
+  `ticket` maps to `--safe --no-raw`, `internal` maps to `--redact`, and
+  `full` preserves the complete raw snapshot behavior
 
 ## Current Qwen Result
 

@@ -1790,3 +1790,16 @@
     and prompt-history preservation after clear
   - M46 conclusion: long Dax MLX operator sessions are now easier to manage
     without losing prompt recall.
+- Completed M47 snapshot presets:
+  - extended in-panel snapshot command with preset forms:
+    - `/snapshot ticket [path]`
+    - `/snapshot internal [path]`
+    - `/snapshot full [path]`
+  - `ticket` expands to `--safe --no-raw`
+  - `internal` expands to `--redact`
+  - `full` preserves the full raw snapshot behavior
+  - JSON payloads now include `preset` when a preset is used
+  - Markdown sidecars include the selected preset or `custom`
+  - added tests verifying ticket, internal, and full preset behavior
+  - M47 conclusion: operators can choose the right diagnostic privacy level
+    without remembering low-level flag combinations.

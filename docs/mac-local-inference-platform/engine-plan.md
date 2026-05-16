@@ -3638,6 +3638,36 @@ M46 result:
 - Clearing noisy output does not discard prompt recall, which keeps iterative
   benchmark and diagnostic workflows usable.
 
+## M47 Snapshot Presets
+
+M47 adds named snapshot privacy presets.
+
+Panel commands:
+
+```text
+/snapshot ticket [path]
+/snapshot internal [path]
+/snapshot full [path]
+```
+
+Preset behavior:
+
+- `ticket` expands to `--safe --no-raw`.
+- `internal` expands to `--redact`.
+- `full` preserves the full raw snapshot behavior.
+- JSON payloads include `preset` when a preset is used.
+- Markdown sidecars include the selected preset, or `custom` for flag-only
+  snapshots.
+
+M47 result:
+
+- Operators no longer need to remember flag combinations for common diagnostic
+  artifacts.
+- `ticket` is the recommended external/Redmine handoff form.
+- `internal` is useful when prompts/responses are sensitive but full engine
+  state is still needed.
+- `full` remains available for local debugging and low-risk internal evidence.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
