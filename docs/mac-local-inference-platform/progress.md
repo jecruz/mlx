@@ -1715,3 +1715,16 @@
     snapshot payload, and transcript payload
   - M41 conclusion: Dax can now produce a single debugging artifact that
     captures engine state and session context without leaving the prompt panel.
+- Completed M42 attach-ready snapshot summary:
+  - `/snapshot [path]` now writes a Markdown sidecar next to the JSON snapshot
+  - `.json` paths produce same-stem `.md` summaries
+  - non-JSON paths produce `<path>.md` summaries
+  - Markdown summary includes:
+    - export timestamp
+    - mode and max token cap
+    - compact status lines
+    - recent prompt history
+    - recent transcript excerpt
+  - added tests for Markdown sidecar creation and summary content
+  - M42 conclusion: snapshot artifacts are now readable and attach-ready without
+    requiring someone to inspect the raw JSON first.

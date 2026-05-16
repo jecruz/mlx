@@ -3499,6 +3499,32 @@ M41 result:
 - Explicit paths can be used for benchmark evidence, Redmine attachments, or
   debugging handoffs.
 
+## M42 Attach-Ready Snapshot Summary
+
+M42 adds a Markdown sidecar to the Dax MLX diagnostic snapshot.
+
+Behavior:
+
+- `/snapshot [path]` still writes the JSON diagnostic bundle.
+- If the JSON path ends in `.json`, the sidecar is written as the same stem with
+  `.md`.
+- If the path does not end in `.json`, the sidecar is written as `<path>.md`.
+
+Markdown summary content:
+
+- export timestamp
+- mode
+- max token cap
+- compact status lines
+- recent prompt history
+- recent transcript excerpt
+
+M42 result:
+
+- Snapshot artifacts are attach-ready for Redmine tickets, benchmark notes, and
+  debugging handoffs.
+- Reviewers can inspect the Markdown summary before opening the raw JSON.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

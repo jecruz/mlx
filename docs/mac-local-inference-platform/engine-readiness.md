@@ -160,6 +160,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
 - inside the interactive panel, `/snapshot [path]` writes a diagnostic JSON
   bundle with compact status, raw engine snapshot, profiles, prompt history,
   and transcript
+- snapshot export also writes an attach-ready Markdown sidecar with compact
+  status, recent prompts, and recent transcript excerpt
 
 ## Current Qwen Result
 
