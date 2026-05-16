@@ -3668,6 +3668,33 @@ M47 result:
   state is still needed.
 - `full` remains available for local debugging and low-risk internal evidence.
 
+## M48 Generation Timing Feedback
+
+M48 moves the Dax operator surface back toward performance work.
+
+Behavior:
+
+- Every completed interactive generation appends a timing line.
+- The timing line includes elapsed milliseconds.
+- When completion-token usage is available, the timing line also includes
+  completion tokens per second.
+- If completion-token usage is unavailable, throughput is reported as unknown
+  instead of fabricating a rate.
+
+Example transcript lines:
+
+```text
+usage: prompt=128 completion=32 total=160
+timing: elapsed=842ms completion_tps=38.00
+```
+
+M48 result:
+
+- Operators get immediate feedback while trying different prompts, runtime
+  profiles, cache modes, and model loads.
+- This is not a replacement for benchmark sweeps, but it makes live tuning less
+  blind and helps decide which run deserves a durable snapshot or benchmark.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

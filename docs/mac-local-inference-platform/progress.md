@@ -1803,3 +1803,13 @@
   - added tests verifying ticket, internal, and full preset behavior
   - M47 conclusion: operators can choose the right diagnostic privacy level
     without remembering low-level flag combinations.
+- Completed M48 generation timing feedback:
+  - every completed Dax MLX prompt now appends a timing line with:
+    - elapsed milliseconds
+    - completion tokens per second when completion-token usage is available
+  - usage counters remain visible when returned by the engine
+  - timing works without requiring any engine API changes
+  - added tests verifying usage and timing lines are recorded in the
+    interactive transcript
+  - M48 conclusion: interactive MLX sessions now provide immediate performance
+    feedback during prompt-processing and generation tuning.
