@@ -157,6 +157,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   and appends compact recent matches or a no-match result
 - inside the interactive panel, `/history` lists recent natural-language
   prompts and `/again [n]` reruns the latest or numbered prompt
+- inside the interactive panel, `/snapshot [path]` writes a diagnostic JSON
+  bundle with compact status, raw engine snapshot, profiles, prompt history,
+  and transcript
 
 ## Current Qwen Result
 

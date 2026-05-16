@@ -1697,3 +1697,21 @@
   - added tests for history listing, numbered replay, and invalid recall
   - M40 conclusion: longer Dax MLX sessions can rerun useful prompts without
     relying on terminal arrow-key behavior.
+- Completed M41 interactive diagnostic snapshot export:
+  - added in-panel command:
+    - `/snapshot [path]`
+  - default snapshot path is a timestamped `mlx-engine-snapshot-*.json` file in
+    the current working directory
+  - snapshot JSON includes:
+    - export timestamp
+    - artifact kind
+    - mode and max token cap
+    - compact status lines
+    - raw engine UI snapshot
+    - runtime profile catalog
+    - prompt history
+    - plain-text transcript
+  - added tests for snapshot file creation, status capture, prompt history, raw
+    snapshot payload, and transcript payload
+  - M41 conclusion: Dax can now produce a single debugging artifact that
+    captures engine state and session context without leaving the prompt panel.

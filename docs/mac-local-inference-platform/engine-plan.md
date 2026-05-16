@@ -3469,6 +3469,36 @@ M40 result:
 - History and replay events become part of the transcript and can be captured by
   the M34 `/export [path]` evidence artifact.
 
+## M41 Interactive Diagnostic Snapshot Export
+
+M41 adds a broader debugging artifact from the Dax MLX prompt panel.
+
+Panel command:
+
+```text
+/snapshot [path]
+```
+
+Snapshot payload:
+
+- `exported_at`
+- artifact `kind`
+- `mode`
+- `max_tokens`
+- compact `status` lines
+- raw engine UI `snapshot`
+- runtime `profiles`
+- `prompt_history`
+- plain-text `transcript`
+
+M41 result:
+
+- Operators can capture engine state and session context in a single JSON
+  artifact.
+- The default path is a timestamped `mlx-engine-snapshot-*.json` file.
+- Explicit paths can be used for benchmark evidence, Redmine attachments, or
+  debugging handoffs.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
