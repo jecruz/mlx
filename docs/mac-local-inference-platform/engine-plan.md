@@ -3974,6 +3974,59 @@ M56 result:
 - This makes the next cache-policy and cache-creation optimization milestones
   safer to evaluate.
 
+## M57 Cache-Create Regression Gate
+
+M57 adds guardrails for the cache-creation phase that M54 identified as the
+next prompt-processing optimization target.
+
+New `resident_regression_gate.py` thresholds:
+
+```text
+--max-cache-create-service-ms
+--max-cache-create-prepare-share
+```
+
+Default thresholds:
+
+- cache-create mean service time must be at most `750 ms`
+- cache-create cache-prepare share must be at most `0.80`
+
+`run_resident_regression_suite.py` forwards both thresholds into the gate.
+
+Validation:
+
+- `python3 -m py_compile benchmarks/python/resident_regression_gate.py benchmarks/python/run_resident_regression_suite.py`
+- synthetic PASS fixture produced:
+
+```text
+gate_check PASS cache_create.mean_service_request_ms 200.0 <= 750.0
+gate_check PASS cache_create.cache_prepare_share 0.25 <= 0.8
+gate_result PASS
+```
+
+- synthetic cache-create overhead fixture produced:
+
+```text
+gate_check FAIL cache_create.mean_service_request_ms 900.0 <= 750.0
+gate_check FAIL cache_create.cache_prepare_share 0.944 <= 0.8
+gate_result FAIL
+```
+
+- M54 real cache artifact passed:
+
+```text
+gate_check PASS cache_create.mean_service_request_ms 434.44 <= 750.0
+gate_check PASS cache_create.cache_prepare_share 0.422 <= 0.8
+```
+
+M57 result:
+
+- Cache-hit quality and cache-create cost are now separately gated.
+- Future cache-policy changes can fail if they preserve hits but make first
+  reuse too expensive.
+- This gives the next engine optimization pass a clear pass/fail contract for
+  reducing cache-creation overhead.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

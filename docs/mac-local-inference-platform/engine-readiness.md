@@ -214,6 +214,9 @@ Readiness interpretation:
   speedup and actual-prefill-token reduction versus full prefill, and
   `benchmarks/python/run_resident_regression_suite.py` exposes both thresholds
   as suite flags.
+- The same gate now separately checks cache-create mean service time and
+  cache-prepare share, so first-reuse overhead can regress independently of
+  cache-hit behavior.
 
 ## Current Qwen Result
 

@@ -93,6 +93,8 @@ def main() -> int:
     parser.add_argument("--prefill-artifact", type=Path, required=True)
     parser.add_argument("--max-cache-hit-service-ms", type=float, default=250.0)
     parser.add_argument("--max-cache-hit-prefill-tokens", type=float, default=16.0)
+    parser.add_argument("--max-cache-create-service-ms", type=float, default=750.0)
+    parser.add_argument("--max-cache-create-prepare-share", type=float, default=0.80)
     parser.add_argument("--max-warm-prefill-service-ms", type=float, default=550.0)
     parser.add_argument("--min-warm-prefill-tokens", type=float, default=500.0)
     parser.add_argument("--max-cold-to-warm-ratio", type=float, default=8.0)
@@ -116,6 +118,11 @@ def main() -> int:
     cache_hit = require_phase(
         summaries=cache_summaries,
         phase="cache_hit",
+        artifact=args.cache_artifact,
+    )
+    cache_create = require_phase(
+        summaries=cache_summaries,
+        phase="cache_create",
         artifact=args.cache_artifact,
     )
     full_prefill = require_phase(
@@ -144,6 +151,22 @@ def main() -> int:
         label="cache_hit.mean_actual_prefill_tokens",
         actual=float(cache_hit["mean_actual_prefill_tokens"]),
         threshold=args.max_cache_hit_prefill_tokens,
+        failures=failures,
+    )
+    check_le(
+        label="cache_create.mean_service_request_ms",
+        actual=float(cache_create["mean_service_request_ms"]),
+        threshold=args.max_cache_create_service_ms,
+        failures=failures,
+    )
+    cache_create_prepare_share = ratio(
+        float(cache_create["mean_cache_prepare_ms"]),
+        float(cache_create["mean_service_request_ms"]),
+    )
+    check_le(
+        label="cache_create.cache_prepare_share",
+        actual=cache_create_prepare_share,
+        threshold=args.max_cache_create_prepare_share,
         failures=failures,
     )
     check_le(

@@ -1933,3 +1933,24 @@
     - `git diff --check`
   - M56 conclusion: cache-hit regressions can now fail automatically even when
     absolute latency thresholds are relaxed.
+- Completed M57 cache-create regression gate:
+  - extended `benchmarks/python/resident_regression_gate.py` with:
+    - `--max-cache-create-service-ms`
+    - `--max-cache-create-prepare-share`
+  - default gate thresholds require:
+    - cache-create mean service time at most `750 ms`
+    - cache-create cache-prepare share at most `0.80`
+  - wired both thresholds through
+    `benchmarks/python/run_resident_regression_suite.py`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/resident_regression_gate.py benchmarks/python/run_resident_regression_suite.py`
+    - synthetic PASS fixture produced `gate_result PASS`
+    - synthetic cache-create overhead fixture failed both new checks
+    - M54 real cache artifact passed with
+      `cache_create.mean_service_request_ms=434.44` and
+      `cache_create.cache_prepare_share=0.422`
+    - regression suite help exposes both new threshold flags
+    - `git diff --check`
+  - M57 conclusion: cache-hit quality and cache-create cost are now separately
+    protected, which gives the next prompt-processing optimization pass a
+    concrete gate.

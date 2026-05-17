@@ -169,6 +169,8 @@ def main() -> int:
     parser.add_argument("--reload-warmup-prompt-tokens", default="64,512")
     parser.add_argument("--max-cache-hit-service-ms", type=float, default=250.0)
     parser.add_argument("--max-cache-hit-prefill-tokens", type=float, default=16.0)
+    parser.add_argument("--max-cache-create-service-ms", type=float, default=750.0)
+    parser.add_argument("--max-cache-create-prepare-share", type=float, default=0.80)
     parser.add_argument("--max-warm-prefill-service-ms", type=float, default=550.0)
     parser.add_argument("--min-warm-prefill-tokens", type=float, default=500.0)
     parser.add_argument("--max-cold-to-warm-ratio", type=float, default=8.0)
@@ -267,6 +269,10 @@ def main() -> int:
                 str(args.max_cache_hit_service_ms),
                 "--max-cache-hit-prefill-tokens",
                 str(args.max_cache_hit_prefill_tokens),
+                "--max-cache-create-service-ms",
+                str(args.max_cache_create_service_ms),
+                "--max-cache-create-prepare-share",
+                str(args.max_cache_create_prepare_share),
                 "--max-warm-prefill-service-ms",
                 str(args.max_warm_prefill_service_ms),
                 "--min-warm-prefill-tokens",
