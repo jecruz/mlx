@@ -139,8 +139,9 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   elapsed milliseconds, completion throughput, and returned usage counters
 - `/export` and `/snapshot` include `generation_metrics_summary` aggregates for
   count, elapsed milliseconds, and completion throughput
-- inside the interactive panel, `/metrics`, `/metrics all`, and `/metrics clear`
-  review or reset generation timing evidence without prompt text
+- inside the interactive panel, `/metrics`, `/metrics all`, `/metrics clear`,
+  and `/metrics export [path]` review, reset, or export generation timing
+  evidence without prompt text
 - inside the interactive panel, `/profiles`, `/profile <name>`, and `/profile
   next` list and apply runtime profiles without leaving the TUI
 - inside the interactive panel, the configured stop key aborts in-flight

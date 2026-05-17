@@ -3799,6 +3799,34 @@ M52 result:
 - The artifact format now has both detailed per-run rows and an immediately
   comparable summary.
 
+## M53 Metrics-Only Export
+
+M53 adds a lightweight metrics artifact path.
+
+Panel command:
+
+```text
+/metrics export [path]
+```
+
+Behavior:
+
+- Writes JSON only.
+- Default path is `mlx-engine-metrics-*.json`.
+- Artifact kind is `mlx-engine-generation-metrics`.
+- Includes mode and max token cap.
+- Includes `generation_metrics`.
+- Includes `generation_metrics_summary`.
+- Omits prompt history and transcript.
+- Omits raw engine snapshot payload.
+
+M53 result:
+
+- Operators can attach compact performance evidence without sharing prompts,
+  transcript content, or engine state.
+- The artifact is suitable for comparing quick profile/config experiments
+  before deciding whether a full snapshot is needed.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

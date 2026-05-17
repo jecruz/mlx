@@ -1864,3 +1864,17 @@
   - added tests verifying structured summary fields and Markdown summary output
   - M52 conclusion: Dax artifacts now support quick benchmark comparison
     without parsing every generation metric row.
+- Completed M53 metrics-only export:
+  - extended in-panel metrics command:
+    - `/metrics export [path]`
+  - exports a compact JSON artifact with:
+    - `kind=mlx-engine-generation-metrics`
+    - mode and max token cap
+    - `generation_metrics`
+    - `generation_metrics_summary`
+  - metrics-only exports intentionally omit prompt history and transcript
+  - default output path is `mlx-engine-metrics-*.json`
+  - added tests verifying metrics-only export content and absence of
+    prompt/transcript payloads
+  - M53 conclusion: Dax can now produce lightweight performance evidence
+    artifacts without full session or engine snapshot payloads.
