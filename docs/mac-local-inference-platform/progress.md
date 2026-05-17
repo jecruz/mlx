@@ -1978,3 +1978,25 @@
     - `git diff --check`
   - M58 conclusion: resident regression evidence is now directly consumable by
     CI, Dax, Redmine, or other operator tooling without scraping stdout.
+- Completed M59 regression suite manifest:
+  - `benchmarks/python/run_resident_regression_suite.py` now writes
+    `resident-regression-suite-<tag>.json`
+  - manifest includes:
+    - `type=resident_regression_suite`
+    - `verdict`
+    - `tag`
+    - `base_url`
+    - `output_dir`
+    - artifact entries for cache, prefill, gate, and cold-start outputs
+    - executed step flags
+    - embedded `gate_report` when the gate artifact exists
+  - validation passed:
+    - skipped-runtime manifest produced `verdict=PASS`, all runtime steps
+      disabled, and `gate_report=null`
+    - gate-enabled synthetic manifest produced `verdict=PASS`,
+      `artifacts.gate.exists=true`, embedded gate report `verdict=PASS`, `11`
+      checks, and `0` failures
+    - `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+    - `git diff --check`
+  - M59 conclusion: suite runs now produce one compact machine-readable index
+    for Dax, Redmine, CI, or future app surfaces to attach and compare.

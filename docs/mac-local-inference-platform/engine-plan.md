@@ -4096,6 +4096,63 @@ M58 result:
 - This creates a cleaner handoff point between the MLX benchmark harness and
   Dax/operator surfaces.
 
+## M59 Regression Suite Manifest
+
+M59 adds a suite-level manifest so automation can attach or archive one compact
+index for every resident regression run.
+
+`run_resident_regression_suite.py` now writes:
+
+```text
+resident-regression-suite-<tag>.json
+```
+
+Manifest schema:
+
+```json
+{
+  "type": "resident_regression_suite",
+  "verdict": "PASS",
+  "tag": "...",
+  "base_url": "...",
+  "output_dir": "...",
+  "artifacts": {},
+  "steps": {},
+  "gate_report": {}
+}
+```
+
+Artifact entries include:
+
+```json
+{
+  "kind": "resident_regression_gate",
+  "path": "...",
+  "enabled": true,
+  "exists": true
+}
+```
+
+Validation:
+
+- skipped-runtime manifest:
+  `type=resident_regression_suite`, `verdict=PASS`, `tag=m59-skip`, all
+  runtime steps disabled, `gate_report=null`
+- gate-enabled synthetic manifest:
+  `type=resident_regression_suite`, `verdict=PASS`, `tag=m59-gate`,
+  `artifacts.gate.exists=true`, embedded gate report `verdict=PASS`, `11`
+  checks, `0` failures
+- `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+- `git diff --check`
+
+M59 result:
+
+- A successful resident regression suite now has one machine-readable manifest
+  that names the benchmark artifacts, gate artifact, optional cold-start
+  artifact, executed steps, and embedded gate result.
+- Dax, Redmine, CI, or a future desktop app can ingest one JSON file instead of
+  reconstructing run state from filenames and console logs.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

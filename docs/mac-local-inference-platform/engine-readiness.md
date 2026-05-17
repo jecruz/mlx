@@ -220,6 +220,9 @@ Readiness interpretation:
 - `benchmarks/python/resident_regression_gate.py --output-json` emits a compact
   machine-readable report, and `benchmarks/python/run_resident_regression_suite.py`
   writes `resident-regression-gate-<tag>.json` next to the benchmark artifacts.
+- `benchmarks/python/run_resident_regression_suite.py` also writes
+  `resident-regression-suite-<tag>.json`, a suite manifest that records
+  artifact paths, executed steps, and the embedded gate report when available.
 
 ## Current Qwen Result
 

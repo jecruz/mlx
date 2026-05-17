@@ -40,6 +40,21 @@ def write_row(path: Path, row: dict[str, Any]) -> None:
         f.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+def read_json_if_exists(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    return json.loads(path.read_text())
+
+
+def artifact_entry(path: Path, *, kind: str, enabled: bool) -> dict[str, Any]:
+    return {
+        "kind": kind,
+        "path": str(path),
+        "enabled": enabled,
+        "exists": path.exists(),
+    }
+
+
 def run_lifecycle_reload(
     *,
     base_url: str,
@@ -193,6 +208,7 @@ def main() -> int:
     prefill_artifact = args.output_dir / f"resident-prefill-isolation-sync-safe-{tag}.jsonl"
     lifecycle_artifact = args.output_dir / f"resident-cold-start-sync-safe-{tag}.jsonl"
     gate_artifact = args.output_dir / f"resident-regression-gate-{tag}.json"
+    suite_manifest = args.output_dir / f"resident-regression-suite-{tag}.json"
 
     if args.cold_start:
         run_lifecycle_reload(
@@ -348,12 +364,59 @@ def main() -> int:
             cwd=cwd,
         )
 
+    artifacts = {
+        "cache": artifact_entry(
+            cache_artifact,
+            kind="resident_cache_benchmark",
+            enabled=not args.skip_benchmarks,
+        ),
+        "prefill": artifact_entry(
+            prefill_artifact,
+            kind="resident_prefill_isolation",
+            enabled=not args.skip_benchmarks,
+        ),
+        "gate": artifact_entry(
+            gate_artifact,
+            kind="resident_regression_gate",
+            enabled=not args.skip_gate,
+        ),
+        "cold_start": artifact_entry(
+            lifecycle_artifact,
+            kind="resident_cold_start_lifecycle",
+            enabled=args.cold_start,
+        ),
+    }
+    suite_report = {
+        "type": "resident_regression_suite",
+        "verdict": "PASS",
+        "tag": tag,
+        "base_url": args.base_url,
+        "output_dir": str(args.output_dir),
+        "artifacts": artifacts,
+        "steps": {
+            "benchmarks": not args.skip_benchmarks,
+            "compare": not args.skip_compare,
+            "gate": not args.skip_gate,
+            "cold_start": args.cold_start,
+            "generated_cache_safety": not args.skip_generated_cache_safety,
+            "generated_cache_edges": not args.skip_generated_cache_edges,
+            "concurrent_cancel_pressure": not args.skip_concurrent_cancel_pressure,
+            "async_cache_priority": not args.skip_async_cache_priority,
+        },
+        "gate_report": read_json_if_exists(gate_artifact),
+    }
+    suite_manifest.write_text(json.dumps(suite_report, indent=2, sort_keys=True) + "\n")
+
     if args.cold_start:
         print(
             "suite_result PASS",
             cache_artifact,
             prefill_artifact,
             lifecycle_artifact,
+            "gate_artifact=",
+            gate_artifact,
+            "suite_manifest=",
+            suite_manifest,
             "generated_cache_safety=",
             not args.skip_generated_cache_safety,
             "generated_cache_edges=",
@@ -368,6 +431,10 @@ def main() -> int:
             "suite_result PASS",
             cache_artifact,
             prefill_artifact,
+            "gate_artifact=",
+            gate_artifact,
+            "suite_manifest=",
+            suite_manifest,
             "generated_cache_safety=",
             not args.skip_generated_cache_safety,
             "generated_cache_edges=",
