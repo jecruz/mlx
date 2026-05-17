@@ -1827,3 +1827,14 @@
   - added tests verifying structured metrics are exported and summarized
   - M49 conclusion: Dax diagnostic artifacts now carry machine-readable
     performance evidence for later comparison.
+- Completed M50 live metrics review:
+  - added in-panel command:
+    - `/metrics`
+  - `/metrics` appends:
+    - total completed generation count
+    - average completion tokens per second when known
+    - recent generation metric rows with elapsed time, throughput, and usage
+  - no prompt text is included in metric rows
+  - added tests verifying the live metrics summary appears after a generation
+  - M50 conclusion: operators can inspect recent performance evidence without
+    leaving the Dax MLX prompt panel or exporting a snapshot.

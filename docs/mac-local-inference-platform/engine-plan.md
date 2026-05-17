@@ -3721,6 +3721,30 @@ M49 result:
 - This prepares the next lane: fresh prompt-processing benchmark runs with
   attachable evidence.
 
+## M50 Live Metrics Review
+
+M50 makes structured generation metrics visible inside the Dax prompt panel.
+
+Panel command:
+
+```text
+/metrics
+```
+
+Behavior:
+
+- Appends total completed generation count.
+- Appends average completion tokens per second when known.
+- Appends recent generation metric rows.
+- Rows include elapsed time, completion throughput, and usage counters.
+- Rows intentionally do not include prompt text.
+
+M50 result:
+
+- Operators can inspect live performance behavior without exporting a snapshot.
+- The panel now supports the loop needed for performance tuning:
+  prompt, observe timing, adjust profile/config, repeat, snapshot when useful.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
