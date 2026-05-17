@@ -3745,6 +3745,32 @@ M50 result:
 - The panel now supports the loop needed for performance tuning:
   prompt, observe timing, adjust profile/config, repeat, snapshot when useful.
 
+## M51 Metrics Window Controls
+
+M51 adds controls for long-running metric sessions.
+
+Panel commands:
+
+```text
+/metrics
+/metrics all
+/metrics clear
+```
+
+Behavior:
+
+- `/metrics` shows a recent metrics window.
+- `/metrics all` shows every recorded metric in the current panel session.
+- `/metrics clear` resets metric tracking.
+- Clearing metrics does not clear transcript or prompt history.
+- Invalid metrics arguments return usage guidance.
+
+M51 result:
+
+- Operators can keep metric output manageable during long tuning sessions.
+- Metrics can be reset between profile/config experiments without restarting
+  the panel or losing prompt recall.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

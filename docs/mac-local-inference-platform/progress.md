@@ -1838,3 +1838,16 @@
   - added tests verifying the live metrics summary appears after a generation
   - M50 conclusion: operators can inspect recent performance evidence without
     leaving the Dax MLX prompt panel or exporting a snapshot.
+- Completed M51 metrics window controls:
+  - extended in-panel metrics command:
+    - `/metrics`
+    - `/metrics all`
+    - `/metrics clear`
+  - default `/metrics` shows a recent metrics window
+  - `/metrics all` shows every recorded metric in the current session
+  - `/metrics clear` resets metric tracking without clearing transcript or
+    prompt history
+  - invalid metrics arguments return usage guidance
+  - added tests for all-metrics rendering, invalid usage, and metric reset
+  - M51 conclusion: operators can manage long-session performance evidence
+    without restarting the Dax MLX panel.

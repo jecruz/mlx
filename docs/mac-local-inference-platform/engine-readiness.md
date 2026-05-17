@@ -137,8 +137,8 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   tokens-per-second feedback when completion-token usage is available
 - `/export` and `/snapshot` include structured `generation_metrics` records for
   elapsed milliseconds, completion throughput, and returned usage counters
-- inside the interactive panel, `/metrics` appends a live summary of recent
-  generation timings and usage counters without prompt text
+- inside the interactive panel, `/metrics`, `/metrics all`, and `/metrics clear`
+  review or reset generation timing evidence without prompt text
 - inside the interactive panel, `/profiles`, `/profile <name>`, and `/profile
   next` list and apply runtime profiles without leaving the TUI
 - inside the interactive panel, the configured stop key aborts in-flight
