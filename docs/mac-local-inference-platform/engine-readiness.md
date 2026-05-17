@@ -206,6 +206,10 @@ Readiness interpretation:
   prompt-processing optimization target.
 - Dax operator metrics now have a concrete resident benchmark baseline to
   compare against future engine-profile and cache-policy changes.
+- `benchmarks/python/compare_resident_benchmarks.py` now reports derived
+  per-artifact service speedup, prefill-token reduction, and cache-prepare
+  share versus full prefill, so later runs can be compared without manual JSONL
+  parsing.
 
 ## Current Qwen Result
 

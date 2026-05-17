@@ -1899,3 +1899,19 @@
     coming from prefix-cache reuse; the next meaningful optimization target is
     reducing cache creation overhead and making cache-hit paths easier to
     trigger consistently from real operator workflows.
+- Completed M55 derived benchmark comparison:
+  - extended `benchmarks/python/compare_resident_benchmarks.py` with derived
+    per-artifact cache-reuse analysis
+  - new derived columns:
+    - `service_speedup_vs_full_prefill`
+    - `prefill_reduction_vs_full_prefill`
+    - `cache_prepare_share`
+  - verified against the M54 artifact:
+    - `cache_create`: `201.94x` service speedup, `97.0%` prefill reduction,
+      `42.2%` cache prepare share
+    - `cache_hit`: `399.27x` service speedup, `96.8%` prefill reduction,
+      `0.1%` cache prepare share
+  - verified against a deterministic synthetic JSONL fixture in `/private/tmp`
+  - M55 conclusion: benchmark comparison now surfaces the exact prompt
+    processing speedup and cache-creation overhead that matter for the next
+    optimization pass.

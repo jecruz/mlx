@@ -76,6 +76,18 @@ def speedup(baseline: float | None, candidate: float | None) -> float | None:
     return baseline / candidate
 
 
+def reduction_ratio(baseline: float | None, candidate: float | None) -> float | None:
+    if baseline is None or baseline == 0 or candidate is None:
+        return None
+    return (baseline - candidate) / baseline
+
+
+def percent(value: float | None) -> str:
+    if value is None:
+        return "-"
+    return f"{value * 100:.1f}%"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("jsonl", nargs="+", type=Path)
@@ -142,6 +154,38 @@ def main() -> None:
                 fmt(candidate_service),
                 fmt(row.get("mean_actual_prefill_tokens")),
                 fmt(speedup(baseline_service, candidate_service)),
+            )
+
+    print()
+    print(
+        "derived artifact phase service_speedup_vs_full_prefill "
+        "prefill_reduction_vs_full_prefill cache_prepare_share"
+    )
+    for summary in summaries:
+        full_service = phase_value(summary, "full_prefill", "mean_service_request_ms")
+        full_prefill_tokens = phase_value(
+            summary,
+            "full_prefill",
+            "mean_actual_prefill_tokens",
+        )
+        for phase in ("cache_scheduled", "cache_create", "cache_hit"):
+            row = summary["phase_rows"].get(phase)
+            if row is None:
+                continue
+            service = row.get("mean_service_request_ms")
+            prepare = row.get("mean_cache_prepare_ms")
+            prefill_tokens = row.get("mean_actual_prefill_tokens")
+            print(
+                "derived",
+                summary["path"],
+                phase,
+                fmt(speedup(full_service, service)),
+                percent(reduction_ratio(full_prefill_tokens, prefill_tokens)),
+                percent(
+                    float(prepare) / float(service)
+                    if prepare is not None and service not in (None, 0)
+                    else None
+                ),
             )
 
 

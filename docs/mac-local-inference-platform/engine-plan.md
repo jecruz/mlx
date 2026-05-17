@@ -3887,6 +3887,41 @@ M54 result:
   `m54-dax-evidence-resident-benchmark.jsonl`; it is intentionally ignored by
   the repo-wide `*.jsonl` rule.
 
+## M55 Derived Benchmark Comparison
+
+M55 makes the cache-reuse conclusion from resident benchmark artifacts
+repeatable by extending `benchmarks/python/compare_resident_benchmarks.py`.
+
+New derived output:
+
+```text
+derived artifact phase service_speedup_vs_full_prefill prefill_reduction_vs_full_prefill cache_prepare_share
+```
+
+The comparison script now reports, per artifact:
+
+- service-time speedup for `cache_scheduled`, `cache_create`, and `cache_hit`
+  versus that artifact's own `full_prefill` phase
+- actual-prefill-token reduction versus that artifact's own `full_prefill`
+  phase
+- cache-prepare share of service time
+
+M54 artifact output after M55:
+
+```text
+derived m54-dax-evidence-resident-benchmark.jsonl cache_create 201.94 97.0% 42.2%
+derived m54-dax-evidence-resident-benchmark.jsonl cache_hit 399.27 96.8% 0.1%
+```
+
+M55 result:
+
+- Benchmark comparison now exposes the prompt-processing win directly instead
+  of requiring manual math from JSONL rows.
+- The M54 local evidence point becomes easier to compare against later profile,
+  cache-policy, and engine-configuration runs.
+- Cache creation overhead is now visible as a percent of service time, which
+  keeps the next optimization target measurable.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
