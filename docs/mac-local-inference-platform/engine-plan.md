@@ -4027,6 +4027,75 @@ M57 result:
 - This gives the next engine optimization pass a clear pass/fail contract for
   reducing cache-creation overhead.
 
+## M58 Machine-Readable Gate Reports
+
+M58 makes resident regression gate results ingestible by CI, Dax, Redmine, or
+other operator tooling.
+
+New `resident_regression_gate.py` option:
+
+```text
+--output-json PATH
+```
+
+Report schema:
+
+```json
+{
+  "type": "resident_regression_gate",
+  "verdict": "PASS",
+  "cache_artifact": "...",
+  "prefill_artifact": "...",
+  "checks": [],
+  "failures": []
+}
+```
+
+Each scalar gate check records:
+
+```json
+{
+  "label": "cache_hit.mean_service_request_ms",
+  "verdict": "PASS",
+  "actual": 100.0,
+  "operator": "<=",
+  "threshold": 250.0
+}
+```
+
+Each row-count gate check records:
+
+```json
+{
+  "label": "cache_hit_rows_reuse_suffix",
+  "verdict": "PASS",
+  "passed_rows": 1,
+  "total_rows": 1
+}
+```
+
+`run_resident_regression_suite.py` now writes:
+
+```text
+resident-regression-gate-<tag>.json
+```
+
+Validation:
+
+- PASS report: `type=resident_regression_gate`, `verdict=PASS`, `11` checks,
+  `0` failures.
+- FAIL report: `type=resident_regression_gate`, `verdict=FAIL`, `11` checks,
+  `2` failures.
+- The failing run still writes the JSON report before returning non-zero.
+
+M58 result:
+
+- Gate results are no longer console-only.
+- Automation can attach the compact JSON report directly to a ticket or compare
+  it across benchmark runs.
+- This creates a cleaner handoff point between the MLX benchmark harness and
+  Dax/operator surfaces.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

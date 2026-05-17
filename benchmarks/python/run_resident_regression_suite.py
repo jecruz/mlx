@@ -192,6 +192,7 @@ def main() -> int:
     cache_artifact = args.output_dir / f"resident-benchmark-sync-safe-{tag}.jsonl"
     prefill_artifact = args.output_dir / f"resident-prefill-isolation-sync-safe-{tag}.jsonl"
     lifecycle_artifact = args.output_dir / f"resident-cold-start-sync-safe-{tag}.jsonl"
+    gate_artifact = args.output_dir / f"resident-regression-gate-{tag}.json"
 
     if args.cold_start:
         run_lifecycle_reload(
@@ -265,6 +266,8 @@ def main() -> int:
                 str(cache_artifact),
                 "--prefill-artifact",
                 str(prefill_artifact),
+                "--output-json",
+                str(gate_artifact),
                 "--max-cache-hit-service-ms",
                 str(args.max_cache_hit_service_ms),
                 "--max-cache-hit-prefill-tokens",

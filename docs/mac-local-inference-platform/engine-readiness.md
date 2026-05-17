@@ -217,6 +217,9 @@ Readiness interpretation:
 - The same gate now separately checks cache-create mean service time and
   cache-prepare share, so first-reuse overhead can regress independently of
   cache-hit behavior.
+- `benchmarks/python/resident_regression_gate.py --output-json` emits a compact
+  machine-readable report, and `benchmarks/python/run_resident_regression_suite.py`
+  writes `resident-regression-gate-<tag>.json` next to the benchmark artifacts.
 
 ## Current Qwen Result
 

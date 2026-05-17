@@ -61,11 +61,18 @@ def check_le(
     actual: float,
     threshold: float,
     failures: list[str],
-) -> None:
+) -> dict[str, Any]:
     verdict = "PASS" if actual <= threshold else "FAIL"
     print("gate_check", verdict, label, round(actual, 3), "<=", threshold)
     if verdict == "FAIL":
         failures.append(f"{label}: {actual:.3f} > {threshold:.3f}")
+    return {
+        "label": label,
+        "verdict": verdict,
+        "actual": actual,
+        "operator": "<=",
+        "threshold": threshold,
+    }
 
 
 def check_ge(
@@ -74,11 +81,18 @@ def check_ge(
     actual: float,
     threshold: float,
     failures: list[str],
-) -> None:
+) -> dict[str, Any]:
     verdict = "PASS" if actual >= threshold else "FAIL"
     print("gate_check", verdict, label, round(actual, 3), ">=", threshold)
     if verdict == "FAIL":
         failures.append(f"{label}: {actual:.3f} < {threshold:.3f}")
+    return {
+        "label": label,
+        "verdict": verdict,
+        "actual": actual,
+        "operator": ">=",
+        "threshold": threshold,
+    }
 
 
 def ratio(numerator: float, denominator: float) -> float:
@@ -91,6 +105,12 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-artifact", type=Path, required=True)
     parser.add_argument("--prefill-artifact", type=Path, required=True)
+    parser.add_argument(
+        "--output-json",
+        type=Path,
+        default=None,
+        help="Optional machine-readable gate result artifact.",
+    )
     parser.add_argument("--max-cache-hit-service-ms", type=float, default=250.0)
     parser.add_argument("--max-cache-hit-prefill-tokens", type=float, default=16.0)
     parser.add_argument("--max-cache-create-service-ms", type=float, default=750.0)
@@ -112,6 +132,7 @@ def main() -> int:
     args = parser.parse_args()
 
     failures: list[str] = []
+    checks: list[dict[str, Any]] = []
     cache_summaries = summary_by_phase(args.cache_artifact)
     prefill_summaries = summary_by_phase(args.prefill_artifact)
 
@@ -141,66 +162,82 @@ def main() -> int:
         artifact=args.prefill_artifact,
     )
 
-    check_le(
-        label="cache_hit.mean_service_request_ms",
-        actual=float(cache_hit["mean_service_request_ms"]),
-        threshold=args.max_cache_hit_service_ms,
-        failures=failures,
+    checks.append(
+        check_le(
+            label="cache_hit.mean_service_request_ms",
+            actual=float(cache_hit["mean_service_request_ms"]),
+            threshold=args.max_cache_hit_service_ms,
+            failures=failures,
+        )
     )
-    check_le(
-        label="cache_hit.mean_actual_prefill_tokens",
-        actual=float(cache_hit["mean_actual_prefill_tokens"]),
-        threshold=args.max_cache_hit_prefill_tokens,
-        failures=failures,
+    checks.append(
+        check_le(
+            label="cache_hit.mean_actual_prefill_tokens",
+            actual=float(cache_hit["mean_actual_prefill_tokens"]),
+            threshold=args.max_cache_hit_prefill_tokens,
+            failures=failures,
+        )
     )
-    check_le(
-        label="cache_create.mean_service_request_ms",
-        actual=float(cache_create["mean_service_request_ms"]),
-        threshold=args.max_cache_create_service_ms,
-        failures=failures,
+    checks.append(
+        check_le(
+            label="cache_create.mean_service_request_ms",
+            actual=float(cache_create["mean_service_request_ms"]),
+            threshold=args.max_cache_create_service_ms,
+            failures=failures,
+        )
     )
     cache_create_prepare_share = ratio(
         float(cache_create["mean_cache_prepare_ms"]),
         float(cache_create["mean_service_request_ms"]),
     )
-    check_le(
-        label="cache_create.cache_prepare_share",
-        actual=cache_create_prepare_share,
-        threshold=args.max_cache_create_prepare_share,
-        failures=failures,
+    checks.append(
+        check_le(
+            label="cache_create.cache_prepare_share",
+            actual=cache_create_prepare_share,
+            threshold=args.max_cache_create_prepare_share,
+            failures=failures,
+        )
     )
-    check_le(
-        label="prefill_warm.mean_service_request_ms",
-        actual=float(warm_prefill["mean_service_request_ms"]),
-        threshold=args.max_warm_prefill_service_ms,
-        failures=failures,
+    checks.append(
+        check_le(
+            label="prefill_warm.mean_service_request_ms",
+            actual=float(warm_prefill["mean_service_request_ms"]),
+            threshold=args.max_warm_prefill_service_ms,
+            failures=failures,
+        )
     )
-    check_ge(
-        label="prefill_warm.mean_actual_prefill_tokens",
-        actual=float(warm_prefill["mean_actual_prefill_tokens"]),
-        threshold=args.min_warm_prefill_tokens,
-        failures=failures,
+    checks.append(
+        check_ge(
+            label="prefill_warm.mean_actual_prefill_tokens",
+            actual=float(warm_prefill["mean_actual_prefill_tokens"]),
+            threshold=args.min_warm_prefill_tokens,
+            failures=failures,
+        )
     )
 
     cold_to_warm = float(cold_prefill["mean_service_request_ms"]) / float(
         warm_prefill["mean_service_request_ms"]
     )
-    check_le(
-        label="prefill_cold_to_warm_ratio",
-        actual=cold_to_warm,
-        threshold=args.max_cold_to_warm_ratio,
-        failures=failures,
+    checks.append(
+        check_le(
+            label="prefill_cold_to_warm_ratio",
+            actual=cold_to_warm,
+            threshold=args.max_cold_to_warm_ratio,
+            failures=failures,
+        )
     )
 
     cache_hit_speedup = ratio(
         float(full_prefill["mean_service_request_ms"]),
         float(cache_hit["mean_service_request_ms"]),
     )
-    check_ge(
-        label="cache_hit.service_speedup_vs_full_prefill",
-        actual=cache_hit_speedup,
-        threshold=args.min_cache_hit_speedup_vs_full_prefill,
-        failures=failures,
+    checks.append(
+        check_ge(
+            label="cache_hit.service_speedup_vs_full_prefill",
+            actual=cache_hit_speedup,
+            threshold=args.min_cache_hit_speedup_vs_full_prefill,
+            failures=failures,
+        )
     )
 
     full_prefill_tokens = float(full_prefill["mean_actual_prefill_tokens"])
@@ -209,11 +246,13 @@ def main() -> int:
         full_prefill_tokens - cache_hit_prefill_tokens,
         full_prefill_tokens,
     )
-    check_ge(
-        label="cache_hit.prefill_reduction_vs_full_prefill",
-        actual=prefill_reduction,
-        threshold=args.min_cache_hit_prefill_reduction_vs_full_prefill,
-        failures=failures,
+    checks.append(
+        check_ge(
+            label="cache_hit.prefill_reduction_vs_full_prefill",
+            actual=prefill_reduction,
+            threshold=args.min_cache_hit_prefill_reduction_vs_full_prefill,
+            failures=failures,
+        )
     )
 
     cache_hit_requests = request_rows_by_phase(args.cache_artifact, "cache_hit")
@@ -231,6 +270,14 @@ def main() -> int:
         len(cache_hit_requests) - len(bad_cache_rows),
         "/",
         len(cache_hit_requests),
+    )
+    checks.append(
+        {
+            "label": "cache_hit_rows_reuse_suffix",
+            "verdict": "PASS" if not bad_cache_rows else "FAIL",
+            "passed_rows": len(cache_hit_requests) - len(bad_cache_rows),
+            "total_rows": len(cache_hit_requests),
+        }
     )
     if bad_cache_rows:
         failures.append(f"cache_hit rows failed suffix reuse: {len(bad_cache_rows)}")
@@ -250,8 +297,28 @@ def main() -> int:
         "/",
         len(warm_rows),
     )
+    checks.append(
+        {
+            "label": "prefill_warm_rows_no_cache_full_prefill",
+            "verdict": "PASS" if not bad_warm_rows else "FAIL",
+            "passed_rows": len(warm_rows) - len(bad_warm_rows),
+            "total_rows": len(warm_rows),
+        }
+    )
     if bad_warm_rows:
         failures.append(f"prefill_warm rows failed full-prefill isolation: {len(bad_warm_rows)}")
+
+    report = {
+        "type": "resident_regression_gate",
+        "verdict": "FAIL" if failures else "PASS",
+        "cache_artifact": str(args.cache_artifact),
+        "prefill_artifact": str(args.prefill_artifact),
+        "checks": checks,
+        "failures": failures,
+    }
+    if args.output_json is not None:
+        args.output_json.parent.mkdir(parents=True, exist_ok=True)
+        args.output_json.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
 
     if failures:
         print("gate_result FAIL")

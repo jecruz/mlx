@@ -1954,3 +1954,27 @@
   - M57 conclusion: cache-hit quality and cache-create cost are now separately
     protected, which gives the next prompt-processing optimization pass a
     concrete gate.
+- Completed M58 machine-readable gate reports:
+  - added `--output-json PATH` to
+    `benchmarks/python/resident_regression_gate.py`
+  - report includes:
+    - `type=resident_regression_gate`
+    - `verdict`
+    - `cache_artifact`
+    - `prefill_artifact`
+    - structured `checks`
+    - `failures`
+  - scalar checks include label, verdict, actual, operator, and threshold
+  - row-count checks include label, verdict, passed rows, and total rows
+  - `benchmarks/python/run_resident_regression_suite.py` now writes
+    `resident-regression-gate-<tag>.json` beside the benchmark JSONL artifacts
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/resident_regression_gate.py benchmarks/python/run_resident_regression_suite.py`
+    - synthetic PASS report contained `verdict=PASS`, `11` checks, `0`
+      failures
+    - synthetic FAIL report contained `verdict=FAIL`, `11` checks, `2`
+      failures
+    - failing gate still wrote the JSON report before returning non-zero
+    - `git diff --check`
+  - M58 conclusion: resident regression evidence is now directly consumable by
+    CI, Dax, Redmine, or other operator tooling without scraping stdout.
