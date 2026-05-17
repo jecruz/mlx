@@ -186,6 +186,27 @@ npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 \
   `ticket` maps to `--safe --no-raw`, `internal` maps to `--redact`, and
   `full` preserves the complete raw snapshot behavior
 
+## Latest Resident Benchmark Evidence
+
+M54 captured a live resident benchmark against
+`Qwen3.6-35B-A3B-UD-MLX-4bit` on `Device(gpu, 0)`.
+
+Key result:
+
+- Full prefill path: 247 actual prefill tokens, 87728.97 ms service time.
+- Prefix cache create path: 7.5 mean actual prefill tokens, 434.44 ms mean
+  service time.
+- Prefix cache hit path: 8 actual prefill tokens, 219.72 ms service time.
+
+Readiness interpretation:
+
+- The current resident engine can turn repeated long-context prompt processing
+  from tens of seconds into hundreds of milliseconds when prefix reuse hits.
+- Cache creation remains a visible cost and should be treated as the next
+  prompt-processing optimization target.
+- Dax operator metrics now have a concrete resident benchmark baseline to
+  compare against future engine-profile and cache-policy changes.
+
 ## Current Qwen Result
 
 - In-flight async prefix builds are deduplicated.

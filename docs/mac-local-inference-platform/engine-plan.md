@@ -3827,6 +3827,66 @@ M53 result:
 - The artifact is suitable for comparing quick profile/config experiments
   before deciding whether a full snapshot is needed.
 
+## M54 Resident Benchmark Evidence
+
+M54 captures a real resident-engine benchmark run against the current live MLX
+server instead of adding another UI-only operator surface.
+
+Run:
+
+```text
+python3 benchmarks/python/resident_benchmark_harness.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-jsonl m54-dax-evidence-resident-benchmark.jsonl \
+  --reset-cache \
+  --requests 3 \
+  --prefix-repeats 8 \
+  --max-tokens 6 \
+  --policy memory_saver
+```
+
+Environment:
+
+- Date: 2026-05-17
+- Run ID: `1779028782-39295f84`
+- Model:
+  `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+- Device: `Device(gpu, 0)`
+- Engine preset: `custom`
+- Prefix cache population: `sync`
+- Prefix cache was manually pruned before the run.
+
+Observed benchmark summary:
+
+| Phase | Count | Mean service request ms | Mean actual prefill tokens | Mean cache prepare ms |
+| --- | ---: | ---: | ---: | ---: |
+| `full_prefill` | 1 | 87728.97 | 247.0 | 0.00 |
+| `cache_create` | 2 | 434.44 | 7.5 | 183.32 |
+| `cache_hit` | 1 | 219.72 | 8.0 | 0.21 |
+
+Representative request rows:
+
+- Full prefill: 247 prompt tokens, 247 actual prefill tokens, 87728.97 ms.
+- Cache create: 247 prompt tokens, 8 actual prefill tokens, 423.01 ms,
+  0.968 prefix reuse ratio.
+- Cache hit: 247 prompt tokens, 8 actual prefill tokens, 219.72 ms,
+  0.968 prefix reuse ratio.
+
+M54 result:
+
+- The resident harness now has a concrete local evidence point for Dax-facing
+  metric work.
+- Prefix-cache reuse is the dominant prompt-processing win in this run:
+  repeated-context service time fell from about 87.7 seconds to about 0.22
+  seconds once the prefix was cached.
+- Cache creation still has measurable overhead, about 183 ms of cache prepare
+  time in this run, so the next optimization target is reducing first reuse
+  setup cost and making cache hit behavior easier to trigger from operator
+  workflows.
+- The raw JSONL artifact is local-only at
+  `m54-dax-evidence-resident-benchmark.jsonl`; it is intentionally ignored by
+  the repo-wide `*.jsonl` rule.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

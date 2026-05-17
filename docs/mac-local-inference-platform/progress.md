@@ -1878,3 +1878,24 @@
     prompt/transcript payloads
   - M53 conclusion: Dax can now produce lightweight performance evidence
     artifacts without full session or engine snapshot payloads.
+- Completed M54 resident benchmark evidence:
+  - ran the resident benchmark harness against the live MLX server on
+    `http://127.0.0.1:8773`
+  - live engine reported:
+    - model:
+      `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+    - device: `Device(gpu, 0)`
+    - engine preset: `custom`
+    - prefix cache population: `sync`
+  - command used:
+    - `python3 benchmarks/python/resident_benchmark_harness.py --base-url http://127.0.0.1:8773 --output-jsonl m54-dax-evidence-resident-benchmark.jsonl --reset-cache --requests 3 --prefix-repeats 8 --max-tokens 6 --policy memory_saver`
+  - observed request phases:
+    - `full_prefill`: 247 actual prefill tokens, 87728.97 ms service time
+    - `cache_create`: 7.5 mean actual prefill tokens, 434.44 ms mean service
+      time, 183.32 ms mean cache prepare time
+    - `cache_hit`: 8 actual prefill tokens, 219.72 ms service time, 0.21 ms
+      cache prepare time
+  - M54 conclusion: the biggest measured prompt-processing speedup is already
+    coming from prefix-cache reuse; the next meaningful optimization target is
+    reducing cache creation overhead and making cache-hit paths easier to
+    trigger consistently from real operator workflows.
