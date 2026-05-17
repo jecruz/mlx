@@ -3771,6 +3771,34 @@ M51 result:
 - Metrics can be reset between profile/config experiments without restarting
   the panel or losing prompt recall.
 
+## M52 Generation Metrics Summary
+
+M52 adds aggregate metrics to Dax artifacts.
+
+Artifact fields:
+
+```text
+generation_metrics_summary.count
+generation_metrics_summary.elapsed_ms.min|avg|max
+generation_metrics_summary.completion_tps.min|avg|max
+```
+
+Behavior:
+
+- `/export` includes `generation_metrics_summary`.
+- `/snapshot` includes `generation_metrics_summary`.
+- Markdown snapshot sidecars include the aggregate summary above recent metric
+  rows.
+- Missing completion throughput is represented as `null` in JSON and `unknown`
+  in Markdown.
+
+M52 result:
+
+- Operators can compare quick benchmark artifacts without parsing each
+  generation metric row.
+- The artifact format now has both detailed per-run rows and an immediately
+  comparable summary.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

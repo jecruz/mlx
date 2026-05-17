@@ -1851,3 +1851,16 @@
   - added tests for all-metrics rendering, invalid usage, and metric reset
   - M51 conclusion: operators can manage long-session performance evidence
     without restarting the Dax MLX panel.
+- Completed M52 generation metrics summary:
+  - Dax exports and snapshots now include `generation_metrics_summary`
+  - summary includes:
+    - generation count
+    - elapsed milliseconds min/average/max
+    - completion tokens-per-second min/average/max when known
+  - Markdown snapshot sidecars include the same aggregate summary above recent
+    metric rows
+  - summary handles missing throughput by using `null`/`unknown` instead of
+    fabricating a value
+  - added tests verifying structured summary fields and Markdown summary output
+  - M52 conclusion: Dax artifacts now support quick benchmark comparison
+    without parsing every generation metric row.
