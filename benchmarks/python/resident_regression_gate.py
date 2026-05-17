@@ -81,6 +81,12 @@ def check_ge(
         failures.append(f"{label}: {actual:.3f} < {threshold:.3f}")
 
 
+def ratio(numerator: float, denominator: float) -> float:
+    if denominator == 0:
+        raise AssertionError("cannot compute ratio with zero denominator")
+    return numerator / denominator
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-artifact", type=Path, required=True)
@@ -90,6 +96,17 @@ def main() -> int:
     parser.add_argument("--max-warm-prefill-service-ms", type=float, default=550.0)
     parser.add_argument("--min-warm-prefill-tokens", type=float, default=500.0)
     parser.add_argument("--max-cold-to-warm-ratio", type=float, default=8.0)
+    parser.add_argument(
+        "--min-cache-hit-speedup-vs-full-prefill",
+        type=float,
+        default=4.0,
+    )
+    parser.add_argument(
+        "--min-cache-hit-prefill-reduction-vs-full-prefill",
+        type=float,
+        default=0.90,
+        help="Minimum fractional actual-prefill-token reduction for cache hits.",
+    )
     args = parser.parse_args()
 
     failures: list[str] = []
@@ -99,6 +116,11 @@ def main() -> int:
     cache_hit = require_phase(
         summaries=cache_summaries,
         phase="cache_hit",
+        artifact=args.cache_artifact,
+    )
+    full_prefill = require_phase(
+        summaries=cache_summaries,
+        phase="full_prefill",
         artifact=args.cache_artifact,
     )
     warm_prefill = require_phase(
@@ -144,6 +166,30 @@ def main() -> int:
         label="prefill_cold_to_warm_ratio",
         actual=cold_to_warm,
         threshold=args.max_cold_to_warm_ratio,
+        failures=failures,
+    )
+
+    cache_hit_speedup = ratio(
+        float(full_prefill["mean_service_request_ms"]),
+        float(cache_hit["mean_service_request_ms"]),
+    )
+    check_ge(
+        label="cache_hit.service_speedup_vs_full_prefill",
+        actual=cache_hit_speedup,
+        threshold=args.min_cache_hit_speedup_vs_full_prefill,
+        failures=failures,
+    )
+
+    full_prefill_tokens = float(full_prefill["mean_actual_prefill_tokens"])
+    cache_hit_prefill_tokens = float(cache_hit["mean_actual_prefill_tokens"])
+    prefill_reduction = ratio(
+        full_prefill_tokens - cache_hit_prefill_tokens,
+        full_prefill_tokens,
+    )
+    check_ge(
+        label="cache_hit.prefill_reduction_vs_full_prefill",
+        actual=prefill_reduction,
+        threshold=args.min_cache_hit_prefill_reduction_vs_full_prefill,
         failures=failures,
     )
 

@@ -3922,6 +3922,58 @@ M55 result:
 - Cache creation overhead is now visible as a percent of service time, which
   keeps the next optimization target measurable.
 
+## M56 Cache-Reuse Regression Gate
+
+M56 turns the derived benchmark comparison into an automated regression gate.
+
+New `resident_regression_gate.py` thresholds:
+
+```text
+--min-cache-hit-speedup-vs-full-prefill
+--min-cache-hit-prefill-reduction-vs-full-prefill
+```
+
+Default thresholds:
+
+- cache-hit service speedup versus full prefill must be at least `4.0x`
+- cache-hit actual-prefill-token reduction versus full prefill must be at least
+  `0.90`
+
+`run_resident_regression_suite.py` forwards both thresholds into the gate, so
+full regression suite runs can tune or tighten them without editing scripts.
+
+Validation:
+
+```text
+python3 -m py_compile \
+  benchmarks/python/resident_regression_gate.py \
+  benchmarks/python/run_resident_regression_suite.py
+```
+
+Synthetic PASS fixture:
+
+```text
+gate_check PASS cache_hit.service_speedup_vs_full_prefill 10.0 >= 4.0
+gate_check PASS cache_hit.prefill_reduction_vs_full_prefill 0.95 >= 0.9
+gate_result PASS
+```
+
+Synthetic FAIL fixture:
+
+```text
+gate_check FAIL cache_hit.service_speedup_vs_full_prefill 1.111 >= 4.0
+gate_check FAIL cache_hit.prefill_reduction_vs_full_prefill 0.5 >= 0.9
+gate_result FAIL
+```
+
+M56 result:
+
+- Cache-hit regressions are now machine-checkable.
+- A run can pass absolute latency limits but still fail if it does not preserve
+  the expected full-prefill avoidance behavior.
+- This makes the next cache-policy and cache-creation optimization milestones
+  safer to evaluate.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

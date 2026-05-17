@@ -1915,3 +1915,21 @@
   - M55 conclusion: benchmark comparison now surfaces the exact prompt
     processing speedup and cache-creation overhead that matter for the next
     optimization pass.
+- Completed M56 cache-reuse regression gate:
+  - extended `benchmarks/python/resident_regression_gate.py` with:
+    - `--min-cache-hit-speedup-vs-full-prefill`
+    - `--min-cache-hit-prefill-reduction-vs-full-prefill`
+  - default gate thresholds require:
+    - cache-hit service speedup at least `4.0x` versus full prefill
+    - cache-hit actual-prefill-token reduction at least `0.90` versus full
+      prefill
+  - wired both thresholds through
+    `benchmarks/python/run_resident_regression_suite.py`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/resident_regression_gate.py benchmarks/python/run_resident_regression_suite.py`
+    - synthetic PASS fixture produced `gate_result PASS`
+    - synthetic FAIL fixture produced failures for both derived cache-hit gates
+    - regression suite help exposes both new threshold flags
+    - `git diff --check`
+  - M56 conclusion: cache-hit regressions can now fail automatically even when
+    absolute latency thresholds are relaxed.

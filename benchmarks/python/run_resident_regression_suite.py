@@ -172,6 +172,16 @@ def main() -> int:
     parser.add_argument("--max-warm-prefill-service-ms", type=float, default=550.0)
     parser.add_argument("--min-warm-prefill-tokens", type=float, default=500.0)
     parser.add_argument("--max-cold-to-warm-ratio", type=float, default=8.0)
+    parser.add_argument(
+        "--min-cache-hit-speedup-vs-full-prefill",
+        type=float,
+        default=4.0,
+    )
+    parser.add_argument(
+        "--min-cache-hit-prefill-reduction-vs-full-prefill",
+        type=float,
+        default=0.90,
+    )
     args = parser.parse_args()
 
     cwd = Path.cwd()
@@ -263,6 +273,10 @@ def main() -> int:
                 str(args.min_warm_prefill_tokens),
                 "--max-cold-to-warm-ratio",
                 str(args.max_cold_to_warm_ratio),
+                "--min-cache-hit-speedup-vs-full-prefill",
+                str(args.min_cache_hit_speedup_vs_full_prefill),
+                "--min-cache-hit-prefill-reduction-vs-full-prefill",
+                str(args.min_cache_hit_prefill_reduction_vs_full_prefill),
             ],
             cwd=cwd,
         )

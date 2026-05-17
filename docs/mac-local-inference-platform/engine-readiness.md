@@ -210,6 +210,10 @@ Readiness interpretation:
   per-artifact service speedup, prefill-token reduction, and cache-prepare
   share versus full prefill, so later runs can be compared without manual JSONL
   parsing.
+- `benchmarks/python/resident_regression_gate.py` now gates cache-hit service
+  speedup and actual-prefill-token reduction versus full prefill, and
+  `benchmarks/python/run_resident_regression_suite.py` exposes both thresholds
+  as suite flags.
 
 ## Current Qwen Result
 
