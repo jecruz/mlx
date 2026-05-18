@@ -2000,3 +2000,24 @@
     - `git diff --check`
   - M59 conclusion: suite runs now produce one compact machine-readable index
     for Dax, Redmine, CI, or future app surfaces to attach and compare.
+- Completed M60 failure suite manifest:
+  - `benchmarks/python/run_resident_regression_suite.py` now keeps active suite
+    context during child subprocess execution
+  - if a child subprocess fails, the suite writes
+    `resident-regression-suite-<tag>.json` with:
+    - `verdict=FAIL`
+    - artifact paths and existence flags
+    - executed step flags
+    - embedded `gate_report` when available
+    - failure type, command, and return code
+  - suite exits with the child return code without a Python traceback
+  - validation passed:
+    - skipped-runtime PASS manifest still wrote `failure=null`
+    - forced synthetic gate failure wrote `verdict=FAIL`,
+      `failure.type=subprocess`, `failure.returncode=1`,
+      `gate_report.verdict=FAIL`, `2` gate failures, and
+      `artifacts.gate.exists=true`
+    - `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+    - `git diff --check`
+  - M60 conclusion: failed suite runs now leave durable machine-readable
+    evidence for CI, Redmine, Dax, or future app surfaces.

@@ -4153,6 +4153,51 @@ M59 result:
 - Dax, Redmine, CI, or a future desktop app can ingest one JSON file instead of
   reconstructing run state from filenames and console logs.
 
+## M60 Failure Suite Manifest
+
+M60 makes the suite manifest durable on subprocess failure.
+
+Behavior:
+
+- `run_resident_regression_suite.py` keeps active suite context while running
+  child probes.
+- If a child process fails, the suite writes
+  `resident-regression-suite-<tag>.json` before exiting.
+- The failure manifest records:
+  - `verdict=FAIL`
+  - artifact paths and `exists` flags
+  - executed step flags
+  - embedded gate report when the gate wrote one
+  - failure type, command, and return code
+- The suite exits with the child return code without printing a Python
+  traceback.
+
+Validation:
+
+- PASS skipped-runtime run still wrote `verdict=PASS`, `failure=null`, and
+  `steps.gate=false`.
+- Forced gate failure wrote:
+
+```text
+verdict=FAIL
+failure.type=subprocess
+failure.returncode=1
+gate_report.verdict=FAIL
+gate_report.failures=2
+artifacts.gate.exists=true
+```
+
+- `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+- `git diff --check`
+
+M60 result:
+
+- Suite failure evidence is now durable instead of being console-only.
+- Automation can still attach a complete manifest when the regression gate or
+  another child probe fails.
+- This makes the benchmark pipeline safer to run unattended from CI, Redmine
+  hooks, Dax, or a future desktop app.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

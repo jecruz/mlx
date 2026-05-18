@@ -223,6 +223,9 @@ Readiness interpretation:
 - `benchmarks/python/run_resident_regression_suite.py` also writes
   `resident-regression-suite-<tag>.json`, a suite manifest that records
   artifact paths, executed steps, and the embedded gate report when available.
+- Failed suite subprocesses now write a `verdict=FAIL` suite manifest before
+  exiting, preserving the failing command, return code, artifact existence
+  state, and embedded gate report when available.
 
 ## Current Qwen Result
 

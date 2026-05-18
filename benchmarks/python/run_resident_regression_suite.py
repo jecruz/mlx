@@ -13,9 +13,32 @@ from pathlib import Path
 from typing import Any
 
 
+ACTIVE_SUITE_CONTEXT: dict[str, Any] | None = None
+
+
 def run(cmd: list[str], *, cwd: Path) -> None:
     print("suite_cmd", " ".join(cmd), flush=True)
-    subprocess.run(cmd, cwd=cwd, check=True)
+    try:
+        subprocess.run(cmd, cwd=cwd, check=True)
+    except subprocess.CalledProcessError as exc:
+        if ACTIVE_SUITE_CONTEXT is not None:
+            write_suite_manifest(
+                verdict="FAIL",
+                failure={
+                    "type": "subprocess",
+                    "command": cmd,
+                    "returncode": exc.returncode,
+                },
+                **ACTIVE_SUITE_CONTEXT,
+            )
+            print(
+                "suite_result FAIL",
+                "returncode=",
+                exc.returncode,
+                "suite_manifest=",
+                ACTIVE_SUITE_CONTEXT["suite_manifest"],
+            )
+        raise SystemExit(exc.returncode) from None
 
 
 def request_json(
@@ -53,6 +76,56 @@ def artifact_entry(path: Path, *, kind: str, enabled: bool) -> dict[str, Any]:
         "enabled": enabled,
         "exists": path.exists(),
     }
+
+
+def write_suite_manifest(
+    *,
+    verdict: str,
+    tag: str,
+    base_url: str,
+    output_dir: Path,
+    suite_manifest: Path,
+    cache_artifact: Path,
+    prefill_artifact: Path,
+    gate_artifact: Path,
+    lifecycle_artifact: Path,
+    steps: dict[str, bool],
+    failure: dict[str, Any] | None = None,
+) -> None:
+    artifacts = {
+        "cache": artifact_entry(
+            cache_artifact,
+            kind="resident_cache_benchmark",
+            enabled=steps["benchmarks"],
+        ),
+        "prefill": artifact_entry(
+            prefill_artifact,
+            kind="resident_prefill_isolation",
+            enabled=steps["benchmarks"],
+        ),
+        "gate": artifact_entry(
+            gate_artifact,
+            kind="resident_regression_gate",
+            enabled=steps["gate"],
+        ),
+        "cold_start": artifact_entry(
+            lifecycle_artifact,
+            kind="resident_cold_start_lifecycle",
+            enabled=steps["cold_start"],
+        ),
+    }
+    suite_report = {
+        "type": "resident_regression_suite",
+        "verdict": verdict,
+        "tag": tag,
+        "base_url": base_url,
+        "output_dir": str(output_dir),
+        "artifacts": artifacts,
+        "steps": steps,
+        "gate_report": read_json_if_exists(gate_artifact),
+        "failure": failure,
+    }
+    suite_manifest.write_text(json.dumps(suite_report, indent=2, sort_keys=True) + "\n")
 
 
 def run_lifecycle_reload(
@@ -209,6 +282,28 @@ def main() -> int:
     lifecycle_artifact = args.output_dir / f"resident-cold-start-sync-safe-{tag}.jsonl"
     gate_artifact = args.output_dir / f"resident-regression-gate-{tag}.json"
     suite_manifest = args.output_dir / f"resident-regression-suite-{tag}.json"
+    steps = {
+        "benchmarks": not args.skip_benchmarks,
+        "compare": not args.skip_compare,
+        "gate": not args.skip_gate,
+        "cold_start": args.cold_start,
+        "generated_cache_safety": not args.skip_generated_cache_safety,
+        "generated_cache_edges": not args.skip_generated_cache_edges,
+        "concurrent_cancel_pressure": not args.skip_concurrent_cancel_pressure,
+        "async_cache_priority": not args.skip_async_cache_priority,
+    }
+    global ACTIVE_SUITE_CONTEXT
+    ACTIVE_SUITE_CONTEXT = {
+        "tag": tag,
+        "base_url": args.base_url,
+        "output_dir": args.output_dir,
+        "suite_manifest": suite_manifest,
+        "cache_artifact": cache_artifact,
+        "prefill_artifact": prefill_artifact,
+        "gate_artifact": gate_artifact,
+        "lifecycle_artifact": lifecycle_artifact,
+        "steps": steps,
+    }
 
     if args.cold_start:
         run_lifecycle_reload(
@@ -364,48 +459,7 @@ def main() -> int:
             cwd=cwd,
         )
 
-    artifacts = {
-        "cache": artifact_entry(
-            cache_artifact,
-            kind="resident_cache_benchmark",
-            enabled=not args.skip_benchmarks,
-        ),
-        "prefill": artifact_entry(
-            prefill_artifact,
-            kind="resident_prefill_isolation",
-            enabled=not args.skip_benchmarks,
-        ),
-        "gate": artifact_entry(
-            gate_artifact,
-            kind="resident_regression_gate",
-            enabled=not args.skip_gate,
-        ),
-        "cold_start": artifact_entry(
-            lifecycle_artifact,
-            kind="resident_cold_start_lifecycle",
-            enabled=args.cold_start,
-        ),
-    }
-    suite_report = {
-        "type": "resident_regression_suite",
-        "verdict": "PASS",
-        "tag": tag,
-        "base_url": args.base_url,
-        "output_dir": str(args.output_dir),
-        "artifacts": artifacts,
-        "steps": {
-            "benchmarks": not args.skip_benchmarks,
-            "compare": not args.skip_compare,
-            "gate": not args.skip_gate,
-            "cold_start": args.cold_start,
-            "generated_cache_safety": not args.skip_generated_cache_safety,
-            "generated_cache_edges": not args.skip_generated_cache_edges,
-            "concurrent_cancel_pressure": not args.skip_concurrent_cancel_pressure,
-            "async_cache_priority": not args.skip_async_cache_priority,
-        },
-        "gate_report": read_json_if_exists(gate_artifact),
-    }
-    suite_manifest.write_text(json.dumps(suite_report, indent=2, sort_keys=True) + "\n")
+    write_suite_manifest(verdict="PASS", failure=None, **ACTIVE_SUITE_CONTEXT)
 
     if args.cold_start:
         print(
