@@ -4298,6 +4298,87 @@ M63 result:
 - Failed suite runs now surface the useful summary immediately without requiring
   a follow-up command.
 
+## M64 Real Suite Evidence
+
+M64 ran the resident regression suite against the live MLX server:
+
+```text
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m64-real-suite \
+  --tag m64-qwen-a3b \
+  --requests 3 \
+  --prefill-runs 3 \
+  --prefix-repeats 8 \
+  --max-tokens 6 \
+  --prefill-max-tokens 2 \
+  --max-cache-hit-service-ms 300 \
+  --max-cache-hit-prefill-tokens 16 \
+  --max-cache-create-service-ms 900 \
+  --max-cache-create-prepare-share 0.85 \
+  --max-warm-prefill-service-ms 5000 \
+  --min-warm-prefill-tokens 80 \
+  --max-cold-to-warm-ratio 30 \
+  --min-cache-hit-speedup-vs-full-prefill 4 \
+  --min-cache-hit-prefill-reduction-vs-full-prefill 0.90 \
+  --skip-generated-cache-safety \
+  --skip-generated-cache-edges \
+  --skip-concurrent-cancel-pressure \
+  --skip-async-cache-priority \
+  --print-manifest-summary
+```
+
+Environment:
+
+- Model:
+  `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+- Device: `Device(gpu, 0)`
+- Base URL: `http://127.0.0.1:8773`
+- Suite tag: `m64-qwen-a3b`
+- Runtime preset applied by the harness: `sync-safe`
+
+Artifacts:
+
+- `artifacts/m64-real-suite/resident-benchmark-sync-safe-m64-qwen-a3b.jsonl`
+  local ignored raw benchmark JSONL
+- `artifacts/m64-real-suite/resident-prefill-isolation-sync-safe-m64-qwen-a3b.jsonl`
+  local ignored raw prefill JSONL
+- `artifacts/m64-real-suite/resident-regression-gate-m64-qwen-a3b.json`
+- `artifacts/m64-real-suite/resident-regression-suite-m64-qwen-a3b.json`
+
+Measured summary:
+
+| Phase | Count | Mean service request ms | Mean actual prefill tokens |
+| --- | ---: | ---: | ---: |
+| `full_prefill` | 1 | 4256.93 | 246.0 |
+| `cache_create` | 2 | 420.22 | 7.5 |
+| `cache_hit` | 1 | 236.74 | 8.0 |
+| `prefill_cold` | 1 | 386.06 | 252.0 |
+| `prefill_warm` | 2 | 351.43 | 252.0 |
+
+Derived comparison:
+
+- `cache_create`: `10.13x` faster than full prefill, `97.0%` prefill-token
+  reduction, `43.9%` cache-prepare share
+- `cache_hit`: `17.98x` faster than full prefill, `96.7%` prefill-token
+  reduction, `0.1%` cache-prepare share
+
+Gate result:
+
+- Suite verdict: `PASS`
+- Gate verdict: `PASS`
+- Gate checks: `11`
+- Gate failures: `0`
+
+M64 result:
+
+- The benchmark/gate/manifest pipeline works against the live Qwen resident
+  engine.
+- Prefix-cache reuse remains the confirmed prompt-processing win under the
+  current `sync-safe` run.
+- The next milestone should package the manifest and small tracked artifacts
+  into a repeatable evidence handoff.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

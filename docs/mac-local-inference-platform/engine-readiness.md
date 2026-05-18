@@ -236,6 +236,10 @@ Readiness interpretation:
 - `benchmarks/python/run_resident_regression_suite.py --print-manifest-summary`
   prints the same suite manifest summary inline on success and after child
   subprocess failure, while preserving existing output unless the flag is set.
+- M64 real suite evidence passed against the live Qwen3.6-35B-A3B resident
+  engine on `Device(gpu, 0)`: suite verdict `PASS`, gate verdict `PASS`, `11`
+  checks, `0` failures, `cache_hit` mean service `236.74 ms`, and `cache_hit`
+  service speedup `17.98x` versus full prefill.
 
 ## Current Qwen Result
 

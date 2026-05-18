@@ -1,0 +1,128 @@
+{
+  "artifacts": {
+    "cache": {
+      "enabled": true,
+      "exists": true,
+      "kind": "resident_cache_benchmark",
+      "path": "artifacts/m64-real-suite/resident-benchmark-sync-safe-m64-qwen-a3b.jsonl"
+    },
+    "cold_start": {
+      "enabled": false,
+      "exists": false,
+      "kind": "resident_cold_start_lifecycle",
+      "path": "artifacts/m64-real-suite/resident-cold-start-sync-safe-m64-qwen-a3b.jsonl"
+    },
+    "gate": {
+      "enabled": true,
+      "exists": true,
+      "kind": "resident_regression_gate",
+      "path": "artifacts/m64-real-suite/resident-regression-gate-m64-qwen-a3b.json"
+    },
+    "prefill": {
+      "enabled": true,
+      "exists": true,
+      "kind": "resident_prefill_isolation",
+      "path": "artifacts/m64-real-suite/resident-prefill-isolation-sync-safe-m64-qwen-a3b.jsonl"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "failure": null,
+  "gate_report": {
+    "cache_artifact": "artifacts/m64-real-suite/resident-benchmark-sync-safe-m64-qwen-a3b.jsonl",
+    "checks": [
+      {
+        "actual": 236.74345901235938,
+        "label": "cache_hit.mean_service_request_ms",
+        "operator": "<=",
+        "threshold": 300.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 8.0,
+        "label": "cache_hit.mean_actual_prefill_tokens",
+        "operator": "<=",
+        "threshold": 16.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 420.2206879854202,
+        "label": "cache_create.mean_service_request_ms",
+        "operator": "<=",
+        "threshold": 900.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 0.4394627853753686,
+        "label": "cache_create.cache_prepare_share",
+        "operator": "<=",
+        "threshold": 0.85,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 351.4311460312456,
+        "label": "prefill_warm.mean_service_request_ms",
+        "operator": "<=",
+        "threshold": 5000.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 252.0,
+        "label": "prefill_warm.mean_actual_prefill_tokens",
+        "operator": ">=",
+        "threshold": 80.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 1.0985497083279823,
+        "label": "prefill_cold_to_warm_ratio",
+        "operator": "<=",
+        "threshold": 30.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 17.98119319809208,
+        "label": "cache_hit.service_speedup_vs_full_prefill",
+        "operator": ">=",
+        "threshold": 4.0,
+        "verdict": "PASS"
+      },
+      {
+        "actual": 0.967479674796748,
+        "label": "cache_hit.prefill_reduction_vs_full_prefill",
+        "operator": ">=",
+        "threshold": 0.9,
+        "verdict": "PASS"
+      },
+      {
+        "label": "cache_hit_rows_reuse_suffix",
+        "passed_rows": 1,
+        "total_rows": 1,
+        "verdict": "PASS"
+      },
+      {
+        "label": "prefill_warm_rows_no_cache_full_prefill",
+        "passed_rows": 2,
+        "total_rows": 2,
+        "verdict": "PASS"
+      }
+    ],
+    "failures": [],
+    "prefill_artifact": "artifacts/m64-real-suite/resident-prefill-isolation-sync-safe-m64-qwen-a3b.jsonl",
+    "type": "resident_regression_gate",
+    "verdict": "PASS"
+  },
+  "output_dir": "artifacts/m64-real-suite",
+  "steps": {
+    "async_cache_priority": false,
+    "benchmarks": true,
+    "cold_start": false,
+    "compare": true,
+    "concurrent_cancel_pressure": false,
+    "gate": true,
+    "generated_cache_edges": false,
+    "generated_cache_safety": false
+  },
+  "tag": "m64-qwen-a3b",
+  "type": "resident_regression_suite",
+  "verdict": "PASS"
+}

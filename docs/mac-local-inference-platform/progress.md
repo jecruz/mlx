@@ -2072,3 +2072,39 @@
     - `git diff --check`
   - M63 conclusion: a single suite command can now produce both durable JSON
     evidence and immediately readable terminal evidence.
+- Completed M64 real suite evidence:
+  - ran `benchmarks/python/run_resident_regression_suite.py` against the live
+    server at `http://127.0.0.1:8773`
+  - live model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+  - suite tag: `m64-qwen-a3b`
+  - runtime preset applied by the harness: `sync-safe`
+  - optional long stress probes were skipped for this bounded evidence run:
+    generated-cache safety, generated-cache edges, concurrent cancel pressure,
+    and async cache priority
+  - artifacts:
+    - `artifacts/m64-real-suite/resident-benchmark-sync-safe-m64-qwen-a3b.jsonl`
+      local ignored raw benchmark JSONL
+    - `artifacts/m64-real-suite/resident-prefill-isolation-sync-safe-m64-qwen-a3b.jsonl`
+      local ignored raw prefill JSONL
+    - `artifacts/m64-real-suite/resident-regression-gate-m64-qwen-a3b.json`
+    - `artifacts/m64-real-suite/resident-regression-suite-m64-qwen-a3b.json`
+  - measured summary:
+    - `full_prefill`: `4256.93 ms`, `246` actual prefill tokens
+    - `cache_create`: `420.22 ms`, `7.5` mean actual prefill tokens
+    - `cache_hit`: `236.74 ms`, `8` actual prefill tokens
+    - `prefill_cold`: `386.06 ms`, `252` actual prefill tokens
+    - `prefill_warm`: `351.43 ms`, `252` actual prefill tokens
+  - derived comparison:
+    - `cache_create`: `10.13x` service speedup, `97.0%` prefill reduction,
+      `43.9%` cache prepare share
+    - `cache_hit`: `17.98x` service speedup, `96.7%` prefill reduction,
+      `0.1%` cache prepare share
+  - gate result:
+    - suite verdict `PASS`
+    - gate verdict `PASS`
+    - `11` checks
+    - `0` failures
+  - M64 conclusion: the benchmark/gate/manifest pipeline works against the live
+    Qwen resident engine, and prefix-cache reuse remains the confirmed
+    prompt-processing win.
