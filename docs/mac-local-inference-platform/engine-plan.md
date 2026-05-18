@@ -4423,6 +4423,63 @@ M65 result:
 - Ignored raw JSONL files remain local-run artifacts, but the package helper
   can still collect them when they exist.
 
+## M66 Dax Suite Manifest Ingestion
+
+M66 makes the resident suite manifest readable from the Dax MLX TUI surface.
+
+Dax repo:
+
+- `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+- commit: `3f967990 Add MLX resident suite manifest summary`
+
+Added Dax behavior:
+
+- exported `readResidentSuiteManifest(path)`
+- exported `formatResidentSuiteManifestSummary(manifest)`
+- added interactive command:
+
+```text
+/bench summary <resident-regression-suite.json>
+```
+
+The TUI summary reports:
+
+- suite verdict, tag, and base URL
+- executed/skipped suite steps
+- artifact enabled/existence flags and paths
+- embedded regression gate verdict, check count, and failure count
+- individual gate failures
+- failing subprocess type, return code, and command when present
+
+Validation:
+
+```text
+npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts
+```
+
+Result:
+
+```text
+Test Files  1 passed (1)
+Tests  27 passed (27)
+```
+
+Pre-commit gate also passed:
+
+```text
+biome check --write --error-on-warnings .
+tsgo --noEmit
+node scripts/check-browser-smoke.mjs
+packages/web-ui check
+```
+
+M66 result:
+
+- Dax can now inspect `resident-regression-suite-*.json` directly from the
+  operator panel.
+- The M64/M65 evidence path is now connected to a product-facing terminal UI
+  instead of remaining a Python-only artifact workflow.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

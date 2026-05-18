@@ -243,6 +243,9 @@ Readiness interpretation:
 - `benchmarks/python/package_resident_suite_evidence.py` packages a suite
   manifest and all existing referenced artifacts into one handoff directory
   with a `resident-suite-evidence-index.json` index.
+- Dax commit `3f967990` adds `/bench summary <resident-regression-suite.json>`
+  so the operator panel can read resident suite manifests and show suite
+  verdicts, gate failures, and referenced artifact paths.
 
 ## Current Qwen Result
 

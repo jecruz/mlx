@@ -2124,3 +2124,22 @@
     - `git diff --check`
   - M65 conclusion: M64 evidence can now be packaged into one handoff directory
     for Redmine, Dax, CI, or future app surfaces.
+- Completed M66 Dax suite manifest ingestion:
+  - updated Dax in
+    `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+  - Dax commit: `3f967990 Add MLX resident suite manifest summary`
+  - added Dax helpers:
+    - `readResidentSuiteManifest(path)`
+    - `formatResidentSuiteManifestSummary(manifest)`
+  - added Dax TUI command:
+    `/bench summary <resident-regression-suite.json>`
+  - the Dax panel now shows suite verdict, tag, base URL, executed steps,
+    artifact paths, gate verdict, gate failure count, individual gate failures,
+    and failing subprocess details
+  - validation passed:
+    - `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+    - `27` focused tests passed
+    - Dax pre-commit checks passed: Biome, `tsgo --noEmit`,
+      browser-smoke check, and web-ui checks
+  - M66 conclusion: resident suite evidence is now consumable inside the Dax
+    operator panel rather than only by Python scripts.
