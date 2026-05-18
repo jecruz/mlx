@@ -175,7 +175,17 @@ python3 benchmarks/python/calibrate_resident_thresholds.py \
 ```
 
 Apply the emitted threshold flags to future `run_resident_regression_suite.py`
-runs after enough repeated evidence exists for the target model and preset.
+runs after enough repeated evidence exists for the target model and preset, or
+pass the calibration JSON directly:
+
+```bash
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/calibrated-suite \
+  --tag qwen-a3b-calibrated \
+  --threshold-calibration-json artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json \
+  --print-manifest-summary
+```
 
 ## Current M64 Baseline
 

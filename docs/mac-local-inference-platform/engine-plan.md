@@ -4873,6 +4873,56 @@ M73 result:
 - The next gate should focus on async maturation and foreground cache-create
   cost without requiring every profile to produce cache-create rows.
 
+## M74 Calibrated Suite Gate Mode
+
+M74 wires threshold calibration output back into the resident suite runner:
+
+```text
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir /private/tmp/m74-calibrated-suite \
+  --tag m64-qwen-a3b \
+  --skip-benchmarks \
+  --skip-compare \
+  --skip-generated-cache-safety \
+  --skip-generated-cache-edges \
+  --skip-concurrent-cancel-pressure \
+  --skip-async-cache-priority \
+  --threshold-calibration-json artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json \
+  --print-manifest-summary
+```
+
+Implementation:
+
+- added `--threshold-calibration-json`
+- validates calibration type `resident_threshold_calibration`
+- applies calibrated thresholds before invoking
+  `resident_regression_gate.py`
+- prints the applied threshold map as `suite_threshold_calibration`
+
+Validation:
+
+```text
+python3 -m py_compile \
+  benchmarks/python/run_resident_regression_suite.py \
+  benchmarks/python/calibrate_resident_thresholds.py
+```
+
+Calibrated validation result against copied M64 artifacts:
+
+```text
+suite_threshold_calibration artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json applied {...}
+gate_result PASS
+gate PASS checks 11 failures 0
+suite_result PASS /private/tmp/m74-calibrated-suite/resident-benchmark-sync-safe-m64-qwen-a3b.jsonl /private/tmp/m74-calibrated-suite/resident-prefill-isolation-sync-safe-m64-qwen-a3b.jsonl
+```
+
+M74 result:
+
+- Future resident suite runs can consume measured threshold calibration directly.
+- The gate path no longer requires manually copying calibrated values into a
+  long command line.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

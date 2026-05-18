@@ -2271,3 +2271,16 @@
   - M73 conclusion: `request-derived` is not a good default for Qwen A3B;
     `sync-safe` remains the reliable profile, while async needs maturation or
     pending-wait tuning before promotion.
+- Completed M74 calibrated suite gate mode:
+  - added `--threshold-calibration-json` to
+    `benchmarks/python/run_resident_regression_suite.py`
+  - the suite validates `resident_threshold_calibration` JSON and applies
+    calibrated gate thresholds before invoking
+    `benchmarks/python/resident_regression_gate.py`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/calibrate_resident_thresholds.py`
+    - copied M64 benchmark/prefill artifacts into `/private/tmp/m74-calibrated-suite`
+    - ran the suite with `--threshold-calibration-json artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json`
+    - calibrated gate passed all `11` checks
+  - M74 conclusion: measured threshold calibration can now be consumed directly
+    by future suite runs.

@@ -76,6 +76,48 @@ def read_json_if_exists(path: Path) -> dict[str, Any] | None:
     return json.loads(path.read_text())
 
 
+def apply_threshold_calibration(args: argparse.Namespace) -> None:
+    if args.threshold_calibration_json is None:
+        return
+    payload = json.loads(args.threshold_calibration_json.read_text())
+    if payload.get("type") != "resident_threshold_calibration":
+        raise ValueError(
+            "threshold calibration JSON must have type resident_threshold_calibration"
+        )
+    thresholds = payload.get("thresholds") or {}
+    mapping = {
+        "max_cache_hit_service_ms": "max_cache_hit_service_ms",
+        "max_cache_hit_prefill_tokens": "max_cache_hit_prefill_tokens",
+        "max_cache_create_service_ms": "max_cache_create_service_ms",
+        "max_cache_create_prepare_share": "max_cache_create_prepare_share",
+        "max_warm_prefill_service_ms": "max_warm_prefill_service_ms",
+        "min_warm_prefill_tokens": "min_warm_prefill_tokens",
+        "max_cold_to_warm_ratio": "max_cold_to_warm_ratio",
+        "min_cache_hit_speedup_vs_full_prefill": (
+            "min_cache_hit_speedup_vs_full_prefill"
+        ),
+        "min_cache_hit_prefill_reduction_vs_full_prefill": (
+            "min_cache_hit_prefill_reduction_vs_full_prefill"
+        ),
+    }
+    applied: dict[str, float] = {}
+    for key, attr in mapping.items():
+        if key not in thresholds:
+            continue
+        value = thresholds[key]
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"invalid calibrated threshold {key}: {value!r}")
+        setattr(args, attr, float(value))
+        applied[key] = float(value)
+    print(
+        "suite_threshold_calibration",
+        args.threshold_calibration_json,
+        "applied",
+        json.dumps(applied, sort_keys=True),
+        flush=True,
+    )
+
+
 def artifact_entry(path: Path, *, kind: str, enabled: bool) -> dict[str, Any]:
     return {
         "kind": kind,
@@ -280,7 +322,9 @@ def main() -> int:
         type=float,
         default=0.90,
     )
+    parser.add_argument("--threshold-calibration-json", type=Path)
     args = parser.parse_args()
+    apply_threshold_calibration(args)
 
     cwd = Path.cwd()
     args.output_dir.mkdir(parents=True, exist_ok=True)

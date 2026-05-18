@@ -271,6 +271,8 @@ Readiness interpretation:
   `sync-safe PASS`, `async-experimental SKIP`, and `request-derived FAIL`.
   `request-derived` should not be promoted for this model stack; `sync-safe`
   remains the reliable baseline while async needs maturation/pending-wait work.
+- M74 adds `--threshold-calibration-json` to the resident regression suite, so
+  calibrated thresholds can be applied directly to future gate runs.
 
 ## Current Qwen Result
 
