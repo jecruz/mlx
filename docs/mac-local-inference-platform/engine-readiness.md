@@ -273,6 +273,8 @@ Readiness interpretation:
   remains the reliable baseline while async needs maturation/pending-wait work.
 - M74 adds `--threshold-calibration-json` to the resident regression suite, so
   calibrated thresholds can be applied directly to future gate runs.
+- Dax commit `91bcc93a` adds `/bench profiles <runtime-profile-comparison.json>`
+  so the operator panel can inspect M73 profile comparison evidence directly.
 
 ## Current Qwen Result
 

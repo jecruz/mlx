@@ -2284,3 +2284,22 @@
     - calibrated gate passed all `11` checks
   - M74 conclusion: measured threshold calibration can now be consumed directly
     by future suite runs.
+- Completed M75 Dax profile comparison ingestion:
+  - updated Dax in
+    `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+  - Dax commit: `91bcc93a Add MLX profile comparison summaries`
+  - added Dax helpers:
+    - `readRuntimeProfileComparisonReport(path)`
+    - `formatRuntimeProfileComparisonSummary(report)`
+  - added Dax TUI command:
+    `/bench profiles <runtime-profile-comparison.json>`
+  - Dax now shows per-profile benchmark/probe status, prepare share,
+    cache-hit speedup, service means, missing phases, probe failures, and
+    artifact paths
+  - validation passed:
+    - `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+    - `29` focused tests passed
+    - Dax pre-commit checks passed: Biome, `tsgo --noEmit`,
+      browser-smoke check, and web-ui checks
+  - M75 conclusion: Dax can now inspect M73 runtime profile comparison
+    evidence directly from the operator panel.

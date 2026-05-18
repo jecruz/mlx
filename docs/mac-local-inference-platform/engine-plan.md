@@ -4923,6 +4923,65 @@ M74 result:
 - The gate path no longer requires manually copying calibrated values into a
   long command line.
 
+## M75 Dax Profile Comparison Ingestion
+
+M75 adds Dax support for runtime profile comparison reports.
+
+Dax repo:
+
+- `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+- commit: `91bcc93a Add MLX profile comparison summaries`
+
+Added Dax behavior:
+
+- exported `readRuntimeProfileComparisonReport(path)`
+- exported `formatRuntimeProfileComparisonSummary(report)`
+- added interactive command:
+
+```text
+/bench profiles <runtime-profile-comparison.json>
+```
+
+The Dax panel now shows:
+
+- profile comparison verdict, tag, and base URL
+- compared presets
+- per-profile benchmark/probe return status
+- cache-create prepare share
+- cache-hit speedup
+- cache-create and cache-hit service means
+- missing phases such as async profiles without cache hits
+- probe failures such as `request-derived` underperforming full prefill
+- benchmark and probe artifact paths
+
+Validation:
+
+```text
+npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts
+```
+
+Result:
+
+```text
+Test Files  1 passed (1)
+Tests  29 passed (29)
+```
+
+Pre-commit gate also passed:
+
+```text
+biome check --write --error-on-warnings .
+tsgo --noEmit
+node scripts/check-browser-smoke.mjs
+packages/web-ui check
+```
+
+M75 result:
+
+- Dax can now consume the M73 profile-comparison manifest directly.
+- The operator UI can show why `request-derived` should not be promoted for
+  Qwen A3B and why async needs maturation before becoming the default.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

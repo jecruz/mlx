@@ -119,6 +119,12 @@ Inside the panel:
 /bench summary /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m64-real-suite/resident-regression-suite-m64-qwen-a3b.json
 ```
 
+Inspect runtime profile comparison evidence:
+
+```text
+/bench profiles /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json
+```
+
 Run a bounded suite from Dax:
 
 ```text
