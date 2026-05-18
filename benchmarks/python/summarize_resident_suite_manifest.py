@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -21,9 +22,14 @@ def load_manifest(path: Path) -> dict[str, Any]:
     return manifest
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
+    parser.add_argument(
+        "--fail-on-fail",
+        action="store_true",
+        help="Exit non-zero when the suite manifest verdict is not PASS.",
+    )
     args = parser.parse_args()
 
     manifest = load_manifest(args.manifest)
@@ -79,7 +85,10 @@ def main() -> None:
             "command",
             " ".join(failure.get("command") or []),
         )
+    if args.fail_on_fail and manifest.get("verdict") != "PASS":
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -4231,6 +4231,36 @@ M61 result:
 - CI, Dax, Redmine notes, or terminal workflows can consume stable line-based
   output while the full JSON remains available for structured ingestion.
 
+## M62 Suite Summary CI Exit
+
+M62 adds an opt-in CI failure mode to the suite manifest summarizer:
+
+```text
+python3 benchmarks/python/summarize_resident_suite_manifest.py \
+  --fail-on-fail resident-regression-suite-<tag>.json
+```
+
+Behavior:
+
+- default summary mode still exits `0` for valid manifests, including failed
+  suite manifests
+- `--fail-on-fail` exits `1` when `manifest.verdict != PASS`
+- output remains unchanged, so CI logs still contain the same line-based
+  summary
+
+Validation:
+
+- PASS manifest with `--fail-on-fail` exited `0`
+- FAIL manifest without `--fail-on-fail` exited `0`
+- FAIL manifest with `--fail-on-fail` exited `1`
+- `python3 -m py_compile benchmarks/python/summarize_resident_suite_manifest.py`
+- `git diff --check`
+
+M62 result:
+
+- The summarizer can now be used directly as a CI/assertion step.
+- Operators can still use the default mode for non-failing inspection.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

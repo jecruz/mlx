@@ -230,6 +230,9 @@ Readiness interpretation:
   line-based summary for `resident-regression-suite-<tag>.json` manifests,
   including suite verdict, artifact existence, gate failures, and failing
   subprocess details.
+- `benchmarks/python/summarize_resident_suite_manifest.py --fail-on-fail` exits
+  non-zero when the suite manifest verdict is not `PASS`, making the summary
+  tool usable as a CI assertion step.
 
 ## Current Qwen Result
 

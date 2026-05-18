@@ -2039,3 +2039,17 @@
     - `git diff --check`
   - M61 conclusion: operators and automation can inspect suite manifests
     without parsing raw JSON manually.
+- Completed M62 suite summary CI exit:
+  - added `--fail-on-fail` to
+    `benchmarks/python/summarize_resident_suite_manifest.py`
+  - default summary behavior still exits `0` for valid manifests, including
+    failed suite manifests
+  - `--fail-on-fail` exits `1` when the suite manifest verdict is not `PASS`
+  - validation passed:
+    - PASS manifest with `--fail-on-fail` exited `0`
+    - FAIL manifest without `--fail-on-fail` exited `0`
+    - FAIL manifest with `--fail-on-fail` exited `1`
+    - `python3 -m py_compile benchmarks/python/summarize_resident_suite_manifest.py`
+    - `git diff --check`
+  - M62 conclusion: the manifest summarizer can now be used directly as a CI
+    assertion step while remaining safe for manual inspection by default.
