@@ -261,6 +261,8 @@ Readiness interpretation:
   calibration sets cache-hit service at `295.93 ms`, cache-create service at
   `525.28 ms`, cache-create prepare share at `0.549`, and cache-hit speedup at
   `13.49x`.
+- `docs/mac-local-inference-platform/resident-operator-runbook.md` is the
+  current reproduction path for the M64-M70 operator workflow.
 
 ## Current Qwen Result
 

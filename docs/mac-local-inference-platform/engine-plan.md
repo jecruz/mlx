@@ -4700,6 +4700,41 @@ M70 result:
   and is suitable as the next baseline for cache-hit and cache-create
   regression checks.
 
+## M71 Resident Operator Runbook
+
+M71 adds an operator-facing runbook:
+
+- `docs/mac-local-inference-platform/resident-operator-runbook.md`
+
+The runbook covers:
+
+- starting or verifying the resident MLX engine
+- running the bounded resident regression suite
+- summarizing suite manifests
+- packaging suite evidence
+- using Dax `/bench summary`
+- using Dax `/bench run`
+- running the cache-create optimization probe
+- running the runtime profile comparison suite
+- calibrating regression thresholds
+- current M64 Qwen A3B baseline numbers
+- the next performance target
+
+Validation:
+
+```text
+python3 -m py_compile \
+  benchmarks/python/cache_create_optimization_probe.py \
+  benchmarks/python/runtime_profile_comparison_suite.py \
+  benchmarks/python/calibrate_resident_thresholds.py
+```
+
+M71 result:
+
+- The current operator workflow is no longer spread across chat and progress
+  notes.
+- A future operator can reproduce M64-M70 validation from one document.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

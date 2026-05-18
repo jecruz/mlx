@@ -2211,3 +2211,15 @@
     - `python3 -m json.tool artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json`
   - M70 conclusion: regression thresholds can now be recalibrated from measured
     evidence with explicit headroom instead of being hand-tuned constants.
+- Completed M71 resident operator runbook:
+  - added
+    `docs/mac-local-inference-platform/resident-operator-runbook.md`
+  - runbook covers engine readiness, bounded suite execution, suite manifest
+    summary, evidence packaging, Dax `/bench summary`, Dax `/bench run`,
+    cache-create optimization probing, runtime profile comparison, threshold
+    calibration, current M64 baseline values, and the next foreground
+    cache-create optimization target
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/cache_create_optimization_probe.py benchmarks/python/runtime_profile_comparison_suite.py benchmarks/python/calibrate_resident_thresholds.py`
+    - `git diff --check`
+  - M71 conclusion: M64-M70 can now be reproduced from one operator document.
