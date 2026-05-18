@@ -2468,3 +2468,27 @@
     - best-hit actual prefill `18` tokens
   - M84 conclusion: automatic Dax coding-agent generation realizes mature
     prefix-cache reuse under repeated shared-context usage.
+- Completed M85 Dax repeated context regression gate:
+  - added `benchmarks/python/dax_repeated_context_gate.py`
+  - gate checks the M84 benchmark report for:
+    - source verdict `PASS`
+    - minimum cache-hit count
+    - minimum best-hit speedup
+    - minimum baseline prefill tokens
+    - maximum best-hit prefill tokens
+    - maximum best-hit service latency
+  - wrote artifact:
+    - `artifacts/m85-dax-repeated-context-gate/dax-repeated-context-gate-qwen-a3b-m85.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/dax_repeated_context_gate.py`
+    - M85 gate with `--fail-on-fail`
+    - report parsed with `python3 -m json.tool`
+  - M85 result:
+    - verdict `PASS`
+    - cache-hit turns `2 >= 1`
+    - best-hit speedup `7.12x >= 2.0x`
+    - baseline prefill `2092 >= 512` tokens
+    - best-hit prefill `18 <= 32` tokens
+    - best-hit service `234.69 <= 400.0 ms`
+  - M85 conclusion: the automatic Dax coding-agent product path now has an
+    explicit regression gate for repeated shared-context cache reuse.

@@ -5373,6 +5373,45 @@ M84 decision:
 - The measured end-to-end behavior matches the M79/M80 expectation: first
   turns build/mature the cache, later turns reuse it with suffix-only prefill.
 
+## M85 Dax Repeated Context Regression Gate
+
+M85 adds a gate around the M84 repeated-context benchmark:
+
+- gate script:
+  `benchmarks/python/dax_repeated_context_gate.py`
+- gate artifact:
+  `artifacts/m85-dax-repeated-context-gate/dax-repeated-context-gate-qwen-a3b-m85.json`
+
+Gate command:
+
+```text
+python3 benchmarks/python/dax_repeated_context_gate.py \
+  artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.json \
+  --output-json artifacts/m85-dax-repeated-context-gate/dax-repeated-context-gate-qwen-a3b-m85.json \
+  --min-hit-count 1 \
+  --min-speedup 2.0 \
+  --min-baseline-prefill-tokens 512 \
+  --max-hit-prefill-tokens 32 \
+  --max-hit-service-ms 400 \
+  --fail-on-fail
+```
+
+Gate result:
+
+- verdict: `PASS`
+- cache-hit count: `2 >= 1`
+- speedup: `7.12x >= 2.0x`
+- baseline prefill: `2092 >= 512` tokens
+- best-hit prefill: `18 <= 32` tokens
+- best-hit service: `234.69 <= 400 ms`
+
+M85 decision:
+
+- The product-path repeated-context cache reuse now has a reproducible
+  regression gate.
+- Future product/UI changes can run the M84 benchmark plus M85 gate instead of
+  manually inspecting JSON metrics.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

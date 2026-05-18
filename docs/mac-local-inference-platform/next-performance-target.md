@@ -307,7 +307,40 @@ Decision:
 - The automatic Dax coding-agent path realizes mature cache reuse in repeated
   shared-context usage.
 
+## M85 Result
+
+M85 added a regression gate around the repeated-context Dax benchmark.
+
+Added:
+
+- `benchmarks/python/dax_repeated_context_gate.py`
+- `artifacts/m85-dax-repeated-context-gate/dax-repeated-context-gate-qwen-a3b-m85.json`
+
+Gate thresholds:
+
+- source benchmark verdict must be `PASS`
+- cache-hit turns must be at least `1`
+- best-hit speedup must be at least `2.0x`
+- baseline prefill must be at least `512` tokens
+- best-hit prefill must be at most `32` tokens
+- best-hit service latency must be at most `400.0 ms`
+
+Result:
+
+- verdict: `PASS`
+- cache-hit turns: `2`
+- best-hit speedup: `7.12x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service latency: `234.69 ms`
+
+Decision:
+
+- The automatic Dax coding-agent product path now has an explicit regression
+  gate for repeated shared-context cache reuse.
+
 Next target:
 
-- Add a regression gate around the repeated-context Dax benchmark so this
-  product-path cache reuse is checked automatically with explicit thresholds.
+- Fold the M84 benchmark and M85 gate into a repeatable resident/operator suite
+  command so future Dax, TUI, and UI changes can run this product-path
+  regression without hand-assembling commands.

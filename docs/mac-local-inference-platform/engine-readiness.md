@@ -342,6 +342,13 @@ Readiness interpretation:
   - result: `PASS`
   - service speedup: `7.12x`
   - actual prefill reduced from `2092` tokens to `18` tokens on the best hit
+- M85 adds an explicit regression gate for the M84 product path:
+  - artifact:
+    `artifacts/m85-dax-repeated-context-gate/dax-repeated-context-gate-qwen-a3b-m85.json`
+  - result: `PASS`
+  - requires at least `1` cache-hit turn, at least `2.0x` best-hit speedup,
+    baseline prefill of at least `512` tokens, hit prefill at most `32`
+    tokens, and hit service latency at most `400.0 ms`
 
 ## Current Qwen Result
 
