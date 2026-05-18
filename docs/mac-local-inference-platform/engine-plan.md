@@ -4808,6 +4808,71 @@ M72 result:
 - The next milestone can compare `sync-safe`, `async-experimental`, and
   `request-derived` with the same live evidence shape.
 
+## M73 Live Runtime Profile Sweep
+
+M73 ran the live profile comparison suite against the Qwen A3B resident server:
+
+```text
+python3 benchmarks/python/runtime_profile_comparison_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m73-profile-comparison \
+  --tag qwen-a3b-m73b \
+  --presets sync-safe,async-experimental,request-derived \
+  --requests 3 \
+  --prefix-repeats 8 \
+  --max-tokens 6 \
+  --min-prepare-share 0.0
+```
+
+The comparison suite was adjusted so cache-create probes are non-fatal by
+default:
+
+- missing `cache_create` / `cache_hit` phases now produce a `SKIP` report when
+  `--allow-missing-phases` is used
+- `runtime_profile_comparison_suite.py` fails the profile comparison only when
+  the benchmark command fails, unless `--strict-probes` is requested
+
+Live result:
+
+```text
+runtime_profile_comparison PASS presets sync-safe,async-experimental,request-derived manifest artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json
+```
+
+Profile findings:
+
+| Preset | Probe verdict | Cache-create prepare share | Cache-hit speedup |
+| --- | --- | ---: | ---: |
+| `sync-safe` | `PASS` | `0.437` | `3.704x` |
+| `async-experimental` | `SKIP` | n/a | n/a |
+| `request-derived` | `FAIL` | `0.550` | `0.951x` |
+
+Interpretation:
+
+- `sync-safe` still provides the most reliable cache-hit behavior for this
+  bounded Qwen A3B shape.
+- `async-experimental` avoids foreground cache-create work in this short run,
+  but the cache build did not mature soon enough to produce a cache hit.
+- `request-derived` is not suitable as the default for this Qwen A3B cache stack
+  because the safe fallback path still pays foreground split-prefill cost and
+  the measured cache hit was slower than full prefill in this sample.
+
+Tracked M73 artifacts:
+
+- `artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json`
+- `artifacts/m73-profile-comparison/resident-benchmark-sync-safe-qwen-a3b-m73b.jsonl`
+- `artifacts/m73-profile-comparison/resident-benchmark-async-experimental-qwen-a3b-m73b.jsonl`
+- `artifacts/m73-profile-comparison/resident-benchmark-request-derived-qwen-a3b-m73b.jsonl`
+- `artifacts/m73-profile-comparison/cache-create-optimization-sync-safe-qwen-a3b-m73b.json`
+- `artifacts/m73-profile-comparison/cache-create-optimization-async-experimental-qwen-a3b-m73b.json`
+- `artifacts/m73-profile-comparison/cache-create-optimization-request-derived-qwen-a3b-m73b.json`
+
+M73 result:
+
+- Runtime profile comparison is now live, not only dry-run.
+- The evidence argues against promoting `request-derived` for Qwen A3B.
+- The next gate should focus on async maturation and foreground cache-create
+  cost without requiring every profile to produce cache-create rows.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

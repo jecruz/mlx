@@ -267,6 +267,10 @@ Readiness interpretation:
   `prefix_cache_population_mode=request` to derive reusable prefixes from the
   foreground request cache when safe. Live comparison is the next required
   evidence step.
+- M73 live comparison on Qwen A3B produced:
+  `sync-safe PASS`, `async-experimental SKIP`, and `request-derived FAIL`.
+  `request-derived` should not be promoted for this model stack; `sync-safe`
+  remains the reliable baseline while async needs maturation/pending-wait work.
 
 ## Current Qwen Result
 

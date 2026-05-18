@@ -2246,3 +2246,28 @@
     listening on `127.0.0.1:8773` during this milestone
   - M72 conclusion: the engine now exposes a concrete lower-foreground
     cache-create mode ready for live profile comparison.
+- Completed M73 live runtime profile sweep:
+  - adjusted `benchmarks/python/cache_create_optimization_probe.py` with
+    `--allow-missing-phases`, allowing async profile artifacts that produce no
+    `cache_create`/`cache_hit` rows to be recorded as `SKIP`
+  - adjusted `benchmarks/python/runtime_profile_comparison_suite.py` so probe
+    failures are comparison evidence by default and only fail the suite when
+    `--strict-probes` is requested
+  - ran live profile comparison against the Qwen A3B resident server on
+    `http://127.0.0.1:8773`
+  - output manifest:
+    `artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json`
+  - result:
+    `runtime_profile_comparison PASS presets sync-safe,async-experimental,request-derived`
+  - findings:
+    - `sync-safe`: probe `PASS`, prepare share `0.437`, cache-hit speedup
+      `3.704x`
+    - `async-experimental`: probe `SKIP`; no `cache_create` or `cache_hit`
+      rows matured in the short run
+    - `request-derived`: probe `FAIL`, prepare share `0.550`, cache-hit
+      speedup `0.951x`
+  - validation passed:
+    - all M73 JSON reports parsed with `python3 -m json.tool`
+  - M73 conclusion: `request-derived` is not a good default for Qwen A3B;
+    `sync-safe` remains the reliable profile, while async needs maturation or
+    pending-wait tuning before promotion.

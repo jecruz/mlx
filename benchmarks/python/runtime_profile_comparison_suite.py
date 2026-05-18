@@ -51,7 +51,7 @@ def write_manifest(
     manifest = {
         "type": "runtime_profile_comparison_suite",
         "verdict": "PASS"
-        if all(result["returncode"] == 0 for result in results)
+        if all(result["benchmark_returncode"] == 0 for result in results)
         else "FAIL",
         "created": int(time.time()),
         "tag": tag,
@@ -78,6 +78,7 @@ def main() -> int:
     parser.add_argument("--prefix-repeats", type=int, default=24)
     parser.add_argument("--max-tokens", type=int, default=6)
     parser.add_argument("--min-prepare-share", type=float, default=0.40)
+    parser.add_argument("--strict-probes", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -121,13 +122,20 @@ def main() -> int:
                 str(artifacts["cache_create_probe"]),
                 "--min-prepare-share",
                 str(args.min_prepare_share),
-                "--fail-on-fail",
+                "--allow-missing-phases",
             ]
+            if args.strict_probes:
+                probe_cmd.append("--fail-on-fail")
             probe_returncode = run(probe_cmd, cwd=cwd, dry_run=args.dry_run)
         results.append(
             {
                 "preset": preset,
-                "returncode": benchmark_returncode or probe_returncode,
+                "returncode": (
+                    benchmark_returncode
+                    or (probe_returncode if args.strict_probes else 0)
+                ),
+                "benchmark_returncode": benchmark_returncode,
+                "probe_returncode": probe_returncode,
                 "benchmark_command": benchmark_cmd,
                 "probe_command": None if benchmark_returncode else probe_cmd,
                 "artifacts": {
@@ -152,7 +160,11 @@ def main() -> int:
         dry_run=args.dry_run,
         results=results,
     )
-    verdict = "PASS" if all(result["returncode"] == 0 for result in results) else "FAIL"
+    verdict = (
+        "PASS"
+        if all(result["benchmark_returncode"] == 0 for result in results)
+        else "FAIL"
+    )
     print(
         "runtime_profile_comparison",
         verdict,

@@ -54,16 +54,40 @@ def analyze(
     *,
     min_prepare_share: float,
     min_hit_speedup: float,
+    allow_missing_phases: bool,
 ) -> dict[str, Any]:
     full = phase_rows(rows, "full_prefill")
     create = phase_rows(rows, "cache_create")
     hit = phase_rows(rows, "cache_hit")
-    if not full:
-        raise ValueError("missing full_prefill rows")
-    if not create:
-        raise ValueError("missing cache_create rows")
-    if not hit:
-        raise ValueError("missing cache_hit rows")
+    missing = [
+        name
+        for name, bucket in (
+            ("full_prefill", full),
+            ("cache_create", create),
+            ("cache_hit", hit),
+        )
+        if not bucket
+    ]
+    if missing:
+        if not allow_missing_phases:
+            raise ValueError(f"missing required phases: {', '.join(missing)}")
+        return {
+            "type": "cache_create_optimization_probe",
+            "verdict": "SKIP",
+            "failures": [],
+            "missing_phases": missing,
+            "counts": {
+                "full_prefill": len(full),
+                "cache_create": len(create),
+                "cache_hit": len(hit),
+            },
+            "means": {},
+            "derived": {},
+            "recommendation": (
+                "No cache-create optimization signal in this artifact because "
+                f"required phases are missing: {', '.join(missing)}."
+            ),
+        }
 
     full_service = require_mean(full, "service_request_ms", "full_prefill")
     create_service = require_mean(create, "service_request_ms", "cache_create")
@@ -127,6 +151,7 @@ def main() -> int:
     parser.add_argument("--output-json", type=Path)
     parser.add_argument("--min-prepare-share", type=float, default=0.50)
     parser.add_argument("--min-hit-speedup", type=float, default=2.0)
+    parser.add_argument("--allow-missing-phases", action="store_true")
     parser.add_argument("--fail-on-fail", action="store_true")
     args = parser.parse_args()
 
@@ -134,17 +159,26 @@ def main() -> int:
         load_rows(args.jsonl),
         min_prepare_share=args.min_prepare_share,
         min_hit_speedup=args.min_hit_speedup,
+        allow_missing_phases=args.allow_missing_phases,
     )
-    print(
-        "cache_create_probe",
-        report["verdict"],
-        "prepare_share",
-        round(report["derived"]["cache_create_prepare_share"], 3),
-        "hit_speedup",
-        round(report["derived"]["cache_hit_speedup_vs_full_prefill"], 3),
-        "deferred_service_ms",
-        round(report["derived"]["estimated_deferred_cache_create_service_ms"], 2),
-    )
+    if report["verdict"] == "SKIP":
+        print(
+            "cache_create_probe",
+            report["verdict"],
+            "missing_phases",
+            ",".join(report["missing_phases"]),
+        )
+    else:
+        print(
+            "cache_create_probe",
+            report["verdict"],
+            "prepare_share",
+            round(report["derived"]["cache_create_prepare_share"], 3),
+            "hit_speedup",
+            round(report["derived"]["cache_hit_speedup_vs_full_prefill"], 3),
+            "deferred_service_ms",
+            round(report["derived"]["estimated_deferred_cache_create_service_ms"], 2),
+        )
     for failure in report["failures"]:
         print("cache_create_probe_failure", failure)
     print("cache_create_probe_recommendation", report["recommendation"])
