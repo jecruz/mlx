@@ -12,8 +12,11 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from summarize_resident_suite_manifest import print_manifest_summary
+
 
 ACTIVE_SUITE_CONTEXT: dict[str, Any] | None = None
+ACTIVE_PRINT_MANIFEST_SUMMARY = False
 
 
 def run(cmd: list[str], *, cwd: Path) -> None:
@@ -38,6 +41,10 @@ def run(cmd: list[str], *, cwd: Path) -> None:
                 "suite_manifest=",
                 ACTIVE_SUITE_CONTEXT["suite_manifest"],
             )
+            if ACTIVE_PRINT_MANIFEST_SUMMARY:
+                manifest = read_json_if_exists(ACTIVE_SUITE_CONTEXT["suite_manifest"])
+                if manifest is not None:
+                    print_manifest_summary(manifest)
         raise SystemExit(exc.returncode) from None
 
 
@@ -246,6 +253,7 @@ def main() -> int:
     parser.add_argument("--skip-generated-cache-edges", action="store_true")
     parser.add_argument("--skip-concurrent-cancel-pressure", action="store_true")
     parser.add_argument("--skip-async-cache-priority", action="store_true")
+    parser.add_argument("--print-manifest-summary", action="store_true")
     parser.add_argument("--generated-cache-long-max-tokens", type=int, default=32)
     parser.add_argument("--generated-cache-stream-max-tokens", type=int, default=12)
     parser.add_argument("--generated-cache-cancel-repeats", type=int, default=96)
@@ -293,6 +301,7 @@ def main() -> int:
         "async_cache_priority": not args.skip_async_cache_priority,
     }
     global ACTIVE_SUITE_CONTEXT
+    global ACTIVE_PRINT_MANIFEST_SUMMARY
     ACTIVE_SUITE_CONTEXT = {
         "tag": tag,
         "base_url": args.base_url,
@@ -304,6 +313,7 @@ def main() -> int:
         "lifecycle_artifact": lifecycle_artifact,
         "steps": steps,
     }
+    ACTIVE_PRINT_MANIFEST_SUMMARY = args.print_manifest_summary
 
     if args.cold_start:
         run_lifecycle_reload(
@@ -460,6 +470,10 @@ def main() -> int:
         )
 
     write_suite_manifest(verdict="PASS", failure=None, **ACTIVE_SUITE_CONTEXT)
+    if args.print_manifest_summary:
+        manifest = read_json_if_exists(suite_manifest)
+        if manifest is not None:
+            print_manifest_summary(manifest)
 
     if args.cold_start:
         print(

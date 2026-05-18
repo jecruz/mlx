@@ -233,6 +233,9 @@ Readiness interpretation:
 - `benchmarks/python/summarize_resident_suite_manifest.py --fail-on-fail` exits
   non-zero when the suite manifest verdict is not `PASS`, making the summary
   tool usable as a CI assertion step.
+- `benchmarks/python/run_resident_regression_suite.py --print-manifest-summary`
+  prints the same suite manifest summary inline on success and after child
+  subprocess failure, while preserving existing output unless the flag is set.
 
 ## Current Qwen Result
 

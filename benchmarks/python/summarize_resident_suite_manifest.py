@@ -22,17 +22,7 @@ def load_manifest(path: Path) -> dict[str, Any]:
     return manifest
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("manifest", type=Path)
-    parser.add_argument(
-        "--fail-on-fail",
-        action="store_true",
-        help="Exit non-zero when the suite manifest verdict is not PASS.",
-    )
-    args = parser.parse_args()
-
-    manifest = load_manifest(args.manifest)
+def print_manifest_summary(manifest: dict[str, Any]) -> None:
     gate_report = manifest.get("gate_report") or {}
     failure = manifest.get("failure") or {}
 
@@ -85,6 +75,20 @@ def main() -> int:
             "command",
             " ".join(failure.get("command") or []),
         )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("manifest", type=Path)
+    parser.add_argument(
+        "--fail-on-fail",
+        action="store_true",
+        help="Exit non-zero when the suite manifest verdict is not PASS.",
+    )
+    args = parser.parse_args()
+
+    manifest = load_manifest(args.manifest)
+    print_manifest_summary(manifest)
     if args.fail_on_fail and manifest.get("verdict") != "PASS":
         return 1
     return 0

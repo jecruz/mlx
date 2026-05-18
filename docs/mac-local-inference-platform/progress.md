@@ -2053,3 +2053,22 @@
     - `git diff --check`
   - M62 conclusion: the manifest summarizer can now be used directly as a CI
     assertion step while remaining safe for manual inspection by default.
+- Completed M63 inline suite manifest summary:
+  - added `--print-manifest-summary` to
+    `benchmarks/python/run_resident_regression_suite.py`
+  - refactored `benchmarks/python/summarize_resident_suite_manifest.py` so the
+    suite reuses the same formatter
+  - success path prints the manifest summary before the existing
+    `suite_result PASS` line when the flag is set
+  - subprocess failure path prints the failure manifest summary after the
+    existing `suite_result FAIL` line and exits with the child return code
+  - validation passed:
+    - PASS skipped-runtime run printed `suite PASS`, artifact existence flags,
+      and `gate none`
+    - forced synthetic gate failure exited `1` and printed `suite FAIL`,
+      `gate FAIL checks 11 failures 2`, both cache-create failures, and the
+      failing subprocess command
+    - `python3 -m py_compile benchmarks/python/summarize_resident_suite_manifest.py benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+    - `git diff --check`
+  - M63 conclusion: a single suite command can now produce both durable JSON
+    evidence and immediately readable terminal evidence.

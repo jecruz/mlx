@@ -4261,6 +4261,43 @@ M62 result:
 - The summarizer can now be used directly as a CI/assertion step.
 - Operators can still use the default mode for non-failing inspection.
 
+## M63 Inline Suite Manifest Summary
+
+M63 lets the resident regression suite print the suite manifest summary itself:
+
+```text
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --print-manifest-summary ...
+```
+
+Behavior:
+
+- `--print-manifest-summary` reuses
+  `summarize_resident_suite_manifest.py` formatting.
+- On success, the suite writes the manifest and prints the summary before the
+  existing `suite_result PASS` line.
+- On child subprocess failure, the suite writes the failure manifest, prints the
+  existing `suite_result FAIL` line, then prints the same manifest summary
+  before exiting with the child return code.
+- Existing suite output remains unchanged unless the flag is set.
+
+Validation:
+
+- PASS skipped-runtime run with `--print-manifest-summary` printed `suite PASS`,
+  artifact existence flags, and `gate none`.
+- Forced synthetic gate failure with `--print-manifest-summary` exited `1` and
+  printed `suite FAIL`, `gate FAIL checks 11 failures 2`, both cache-create
+  failures, and the failing subprocess command.
+- `python3 -m py_compile benchmarks/python/summarize_resident_suite_manifest.py benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+- `git diff --check`
+
+M63 result:
+
+- Operators can get an attachable manifest and a readable summary from a single
+  suite command.
+- Failed suite runs now surface the useful summary immediately without requiring
+  a follow-up command.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
