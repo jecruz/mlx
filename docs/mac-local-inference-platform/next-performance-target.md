@@ -246,3 +246,38 @@ Next target:
 - Measure the end-to-end coding-agent prompt path with automatic
   `agent-workspace-async` selection and compare it against the prior manual
   profile flow.
+
+## M83 Result
+
+M83 measured automatic coding-agent intent against the explicit/manual flows.
+
+Added:
+
+- `benchmarks/python/dax_workload_intent_prompt_bench.py`
+- `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.json`
+- `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.jsonl`
+
+Compared:
+
+- automatic: `dax mlx-engine --prompt ...`
+- explicit intent: `dax mlx-engine --intent coding-agent --prompt ...`
+- manual profile: `dax mlx-engine --profile agent-workspace-async --prompt ...`
+
+Result:
+
+- verdict: `PASS`
+- all paths applied `agent-workspace-async`
+- auto/manual-profile wall-time ratio: `0.998`
+- auto/explicit-intent wall-time ratio: `1.000`
+
+Decision:
+
+- Keep automatic coding-agent intent enabled.
+- It is operationally simpler and equivalent to the manual profile flow in the
+  measured end-to-end path.
+
+Next target:
+
+- Measure repeated coding-agent prompts with shared context to verify the
+  automatic path realizes M79 mature-cache reuse under realistic multi-turn
+  usage.

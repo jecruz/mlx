@@ -2423,3 +2423,27 @@
   - M82 conclusion: coding-agent generation now uses
     `agent-workspace-async` by default without requiring the user to remember
     `--intent coding-agent`.
+- Completed M83 Dax automatic intent prompt benchmark:
+  - added `benchmarks/python/dax_workload_intent_prompt_bench.py`
+  - benchmark compares:
+    - automatic Dax prompt path
+    - explicit `--intent coding-agent`
+    - manual `--profile agent-workspace-async`
+  - wrote artifacts:
+    - `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.json`
+    - `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.jsonl`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/dax_workload_intent_prompt_bench.py`
+    - report parsed with `python3 -m json.tool`
+    - resident server restored to `interactive`
+  - M83 result:
+    - verdict `PASS`
+    - `3` repeats per path
+    - all paths applied `agent-workspace-async`
+    - mean wall time: auto `2134.78 ms`, explicit intent `2133.75 ms`,
+      manual profile `2139.64 ms`
+    - auto/manual-profile ratio `0.998`
+    - auto/explicit-intent ratio `1.000`
+  - M83 conclusion: automatic coding-agent intent adds no measurable
+    end-to-end penalty compared with explicit intent or manual profile
+    selection.

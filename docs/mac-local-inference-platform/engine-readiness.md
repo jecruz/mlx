@@ -329,6 +329,13 @@ Readiness interpretation:
 - M82 makes Dax generation sessions apply `coding-agent` intent automatically
   for `--prompt` and `--interactive`, while status-only inspection remains
   read-only.
+- M83 measures the automatic Dax prompt path against explicit intent and manual
+  profile selection:
+  - artifact:
+    `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.json`
+  - result: `PASS`
+  - auto/manual-profile wall-time ratio: `0.998`
+  - auto/explicit-intent wall-time ratio: `1.000`
 
 ## Current Qwen Result
 

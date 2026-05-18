@@ -5290,6 +5290,51 @@ M82 decision:
   default.
 - Operators can still override with `--profile` or `--intent`.
 
+## M83 Dax Automatic Intent Prompt Benchmark
+
+M83 measures the end-to-end Dax prompt path after automatic coding-agent intent
+selection:
+
+- benchmark script:
+  `benchmarks/python/dax_workload_intent_prompt_bench.py`
+- report:
+  `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.json`
+- rows:
+  `artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.jsonl`
+
+Compared paths:
+
+- `auto`: `dax mlx-engine --prompt ...`
+- `explicit-intent`: `dax mlx-engine --intent coding-agent --prompt ...`
+- `manual-profile`: `dax mlx-engine --profile agent-workspace-async --prompt ...`
+
+Benchmark controls:
+
+- unmeasured Dax warmup before timed rows
+- rotated case ordering across repeats
+- engine restored to `interactive` before each row
+- each row verified it applied `agent-workspace-async`
+
+Result:
+
+- verdict: `PASS`
+- repeats per case: `3`
+- all paths applied `agent-workspace-async`
+- all paths used async cache population with `pending_wait_ms=0`
+- mean wall time:
+  - auto: `2134.78 ms`
+  - explicit intent: `2133.75 ms`
+  - manual profile: `2139.64 ms`
+- auto/manual-profile ratio: `0.998`
+- auto/explicit-intent ratio: `1.000`
+
+M83 decision:
+
+- Automatic coding-agent intent adds no measurable end-to-end penalty compared
+  with the manual profile flow.
+- The product path can keep the automatic default and reserve explicit profile
+  flags for diagnostics and experiments.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

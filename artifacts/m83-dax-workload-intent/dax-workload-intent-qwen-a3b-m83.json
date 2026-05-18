@@ -1,0 +1,50 @@
+{
+  "auto_vs_explicit_intent_wall_ratio": 1.0004840788067055,
+  "auto_vs_manual_profile_wall_ratio": 0.9977319160788677,
+  "base_url": "http://127.0.0.1:8773",
+  "dax_dir": "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent",
+  "max_tokens": 4,
+  "output_jsonl": "artifacts/m83-dax-workload-intent/dax-workload-intent-qwen-a3b-m83.jsonl",
+  "prompt": "Reply with exactly four short words about MLX prompt reuse.",
+  "repeats": 3,
+  "summaries": {
+    "auto": {
+      "max_wall_ms": 2153.3915419131517,
+      "mean_wall_ms": 2134.7834169864655,
+      "min_wall_ms": 2102.5169170461595,
+      "population_modes": [
+        "async"
+      ],
+      "runs": 3,
+      "runtime_profiles": [
+        "agent-workspace-async"
+      ]
+    },
+    "explicit-intent": {
+      "max_wall_ms": 2205.309374956414,
+      "mean_wall_ms": 2133.7505135840424,
+      "min_wall_ms": 2096.4237907901406,
+      "population_modes": [
+        "async"
+      ],
+      "runs": 3,
+      "runtime_profiles": [
+        "agent-workspace-async"
+      ]
+    },
+    "manual-profile": {
+      "max_wall_ms": 2190.0100419297814,
+      "mean_wall_ms": 2139.636291656643,
+      "min_wall_ms": 2083.9886250905693,
+      "population_modes": [
+        "async"
+      ],
+      "runs": 3,
+      "runtime_profiles": [
+        "agent-workspace-async"
+      ]
+    }
+  },
+  "type": "dax_workload_intent_prompt_bench",
+  "verdict": "PASS"
+}
