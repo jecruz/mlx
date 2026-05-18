@@ -4735,6 +4735,79 @@ M71 result:
   notes.
 - A future operator can reproduce M64-M70 validation from one document.
 
+## M72 Foreground Cache-Create Reduction
+
+M72 adds a first-class request-derived prefix-cache mode:
+
+- engine preset: `request-derived`
+- runtime profile: `agent-workspace-request`
+- prefix-cache population mode: `request`
+
+Purpose:
+
+- avoid the separate synchronous foreground cache-build pass used by `sync`
+  cache creation when the prompt-cache stack can be safely trimmed
+- derive the reusable prefix cache from the foreground request's own prompt
+  cache
+- preserve existing safe fallback behavior for non-trimmable prompt-cache
+  stacks, including `ArraysCache`
+
+Implementation:
+
+- `mlx_engine/resident_service.py`
+  - added `request-derived` to `EnginePresetName`
+  - added `agent-workspace-request` to `RuntimeProfileName`
+  - added preset defaults with `prefix_cache_population_mode=request`
+  - exposed the new profile in `/engine/profiles`
+- updated profile/status probes to expect the new profile:
+  - `benchmarks/python/runtime_profile_probe.py`
+  - `benchmarks/python/ui_client_adapter_probe.py`
+  - `benchmarks/python/ui_status_contract_probe.py`
+- updated config-policy probing to validate applying `request-derived`
+- updated the operator runbook profile-comparison examples to include
+  `request-derived`
+
+Validation:
+
+```text
+python3 -m py_compile \
+  mlx_engine/resident_service.py \
+  benchmarks/python/runtime_profile_probe.py \
+  benchmarks/python/ui_client_adapter_probe.py \
+  benchmarks/python/ui_status_contract_probe.py \
+  benchmarks/python/config_policy_probe.py \
+  benchmarks/python/request_prefix_cache_probe.py
+```
+
+Dry-run profile comparison coverage:
+
+```text
+python3 benchmarks/python/runtime_profile_comparison_suite.py \
+  --dry-run \
+  --output-dir /private/tmp/m72-profile-suite \
+  --tag request-derived-dryrun \
+  --presets sync-safe,async-experimental,request-derived \
+  --base-url http://127.0.0.1:8773
+```
+
+Result:
+
+```text
+runtime_profile_comparison PASS presets sync-safe,async-experimental,request-derived manifest /private/tmp/m72-profile-suite/runtime-profile-comparison-request-derived-dryrun.json
+```
+
+Live validation status:
+
+- `127.0.0.1:8773` was not listening during this milestone.
+- M73 should run the live profile sweep once the resident service is started
+  from a terminal context with model-volume permission.
+
+M72 result:
+
+- The engine now exposes a concrete lower-foreground-cache-create profile.
+- The next milestone can compare `sync-safe`, `async-experimental`, and
+  `request-derived` with the same live evidence shape.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

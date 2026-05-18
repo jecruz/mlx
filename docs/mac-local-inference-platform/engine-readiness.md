@@ -263,6 +263,10 @@ Readiness interpretation:
   `13.49x`.
 - `docs/mac-local-inference-platform/resident-operator-runbook.md` is the
   current reproduction path for the M64-M70 operator workflow.
+- M72 adds `request-derived` plus `agent-workspace-request`, using
+  `prefix_cache_population_mode=request` to derive reusable prefixes from the
+  foreground request cache when safe. Live comparison is the next required
+  evidence step.
 
 ## Current Qwen Result
 

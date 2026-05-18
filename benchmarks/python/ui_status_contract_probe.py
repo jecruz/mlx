@@ -84,6 +84,7 @@ def main() -> int:
     expected_profiles = {
         "interactive",
         "agent-workspace",
+        "agent-workspace-request",
         "memory-saver",
         "diagnostics",
     }

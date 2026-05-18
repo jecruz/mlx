@@ -2223,3 +2223,26 @@
     - `python3 -m py_compile benchmarks/python/cache_create_optimization_probe.py benchmarks/python/runtime_profile_comparison_suite.py benchmarks/python/calibrate_resident_thresholds.py`
     - `git diff --check`
   - M71 conclusion: M64-M70 can now be reproduced from one operator document.
+- Completed M72 foreground cache-create reduction:
+  - added first-class `request-derived` engine preset in
+    `mlx_engine/resident_service.py`
+  - added first-class `agent-workspace-request` runtime profile exposed through
+    `/engine/profiles`
+  - the new preset uses `prefix_cache_population_mode=request`, which derives
+    reusable prefix caches from the foreground request cache when the
+    prompt-cache stack is safely trimmable, avoiding a separate synchronous
+    foreground cache-build pass
+  - preserved existing safe fallback behavior for non-trimmable cache stacks,
+    including `ArraysCache`
+  - updated runtime profile, UI status, UI adapter, and config-policy probes to
+    include the new profile/preset
+  - updated the operator runbook to include `request-derived` in profile
+    comparison commands
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/runtime_profile_probe.py benchmarks/python/ui_client_adapter_probe.py benchmarks/python/ui_status_contract_probe.py benchmarks/python/config_policy_probe.py benchmarks/python/request_prefix_cache_probe.py`
+    - dry-run runtime profile comparison for
+      `sync-safe,async-experimental,request-derived`
+  - live validation was deferred to M73 because no resident service was
+    listening on `127.0.0.1:8773` during this milestone
+  - M72 conclusion: the engine now exposes a concrete lower-foreground
+    cache-create mode ready for live profile comparison.

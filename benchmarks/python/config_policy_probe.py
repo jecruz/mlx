@@ -113,6 +113,26 @@ def main() -> None:
     print_state("apply_async", async_health)
     print("apply_async_changes", ",".join(sorted(async_result["changes"].keys())))
 
+    request_result = request_json(
+        "POST",
+        f"{base_url}/engine/config",
+        {"engine_preset": "request-derived"},
+    )
+    request_health = request_json("GET", f"{base_url}/health")
+    assert_state(
+        request_health,
+        preset="request-derived",
+        population_mode="request",
+        max_entries=16,
+        memory_limit_bytes=None,
+        max_queued_requests=16,
+    )
+    print_state("apply_request_derived", request_health)
+    print(
+        "apply_request_derived_changes",
+        ",".join(sorted(request_result["changes"].keys())),
+    )
+
     memory_result = request_json(
         "POST",
         f"{base_url}/engine/config",

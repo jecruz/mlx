@@ -149,7 +149,7 @@ python3 benchmarks/python/runtime_profile_comparison_suite.py \
   --base-url http://127.0.0.1:8773 \
   --output-dir artifacts/profile-comparison \
   --tag qwen-a3b-profile-sweep \
-  --presets sync-safe,async-experimental
+  --presets sync-safe,async-experimental,request-derived
 ```
 
 This runs the same benchmark under each preset and attaches a cache-create
@@ -162,7 +162,7 @@ python3 benchmarks/python/runtime_profile_comparison_suite.py \
   --dry-run \
   --output-dir /private/tmp/m69-profile-suite \
   --tag dryrun \
-  --presets sync-safe,async-experimental \
+  --presets sync-safe,async-experimental,request-derived \
   --base-url http://127.0.0.1:8773
 ```
 
@@ -196,6 +196,7 @@ M64 bounded Qwen A3B baseline:
 The next engine optimization should reduce foreground cache-create cost:
 
 - prefer async/deferred prefix construction for cache candidates
+- use `request-derived` when the prompt-cache stack can be trimmed safely
 - deduplicate pending builds for duplicate or near-duplicate prompts
 - keep cache-hit correctness and suffix-only prefill as non-negotiable gates
 - compare presets through `runtime_profile_comparison_suite.py`

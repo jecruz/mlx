@@ -37,11 +37,13 @@ EnginePresetName = Literal[
     "custom",
     "sync-safe",
     "async-experimental",
+    "request-derived",
     "memory-saver",
 ]
 RuntimeProfileName = Literal[
     "interactive",
     "agent-workspace",
+    "agent-workspace-request",
     "memory-saver",
     "diagnostics",
 ]
@@ -72,6 +74,18 @@ def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
             "prefix_cache_memory_limit_mb": 0.0,
             "prefix_cache_min_entries": 0,
             "prefix_cache_population_mode": "async",
+            "prefix_cache_async_idle_timeout_ms": 30000,
+            "prefix_cache_async_idle_grace_ms": 50,
+            "prefix_cache_pending_wait_ms": 0,
+        },
+        "request-derived": {
+            "max_concurrent_requests": 1,
+            "max_queued_requests": 16,
+            "queue_timeout_ms": 30000,
+            "prefix_cache_max_entries": 16,
+            "prefix_cache_memory_limit_mb": 0.0,
+            "prefix_cache_min_entries": 0,
+            "prefix_cache_population_mode": "request",
             "prefix_cache_async_idle_timeout_ms": 30000,
             "prefix_cache_async_idle_grace_ms": 50,
             "prefix_cache_pending_wait_ms": 0,
@@ -125,6 +139,17 @@ def runtime_profile_defaults(name: RuntimeProfileName) -> dict[str, Any]:
                 "prefix_cache_pending_wait_ms": 1500,
             },
         },
+        "agent-workspace-request": {
+            "description": (
+                "Repeated coding-agent context; derive reusable prefixes from "
+                "the foreground request cache when safe, avoiding a separate "
+                "foreground cache-create pass."
+            ),
+            "config": {
+                **engine_preset_defaults("request-derived"),
+                "engine_preset": "request-derived",
+            },
+        },
         "memory-saver": {
             "description": "Lower-memory Macs; keep a smaller cache and prune earlier.",
             "config": {
@@ -156,6 +181,7 @@ def runtime_profile_catalog() -> dict[str, dict[str, Any]]:
     names: tuple[RuntimeProfileName, ...] = (
         "interactive",
         "agent-workspace",
+        "agent-workspace-request",
         "memory-saver",
         "diagnostics",
     )

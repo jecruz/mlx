@@ -48,7 +48,13 @@ def main() -> int:
     base_url = args.base_url.rstrip("/")
     catalog = request_json("GET", f"{base_url}/engine/profiles")
     profiles = catalog["profiles"]
-    expected = {"interactive", "agent-workspace", "memory-saver", "diagnostics"}
+    expected = {
+        "interactive",
+        "agent-workspace",
+        "agent-workspace-request",
+        "memory-saver",
+        "diagnostics",
+    }
     if set(profiles) != expected:
         raise RuntimeError(f"unexpected runtime profile catalog: {profiles.keys()}")
 
@@ -61,6 +67,9 @@ def main() -> int:
     diagnostics_policy = planned["diagnostics"]["planned_state"][
         "prefix_cache_policy"
     ]
+    request_policy = planned["agent-workspace-request"]["planned_state"][
+        "prefix_cache_policy"
+    ]
     if agent_policy["pending_wait_ms"] <= 0:
         raise RuntimeError(f"agent-workspace did not plan pending wait: {agent_policy}")
     if interactive_policy["pending_wait_ms"] != 0:
@@ -71,6 +80,10 @@ def main() -> int:
         raise RuntimeError(f"memory-saver memory limit mismatch: {memory_policy}")
     if diagnostics_policy["population_mode"] != "sync":
         raise RuntimeError(f"diagnostics should use sync cache mode: {diagnostics_policy}")
+    if request_policy["population_mode"] != "request":
+        raise RuntimeError(
+            f"agent-workspace-request should use request cache mode: {request_policy}"
+        )
 
     applied = request_json(
         "POST",
@@ -97,6 +110,7 @@ def main() -> int:
         "interactive_pending_wait_ms": interactive_policy["pending_wait_ms"],
         "memory_saver_memory_limit_bytes": memory_policy["memory_limit_bytes"],
         "diagnostics_population_mode": diagnostics_policy["population_mode"],
+        "agent_workspace_request_population_mode": request_policy["population_mode"],
         "applied_runtime_profile": applied["engine"]["runtime_profile"],
         "restored_runtime_profile": restored["runtime_profile"],
     }
