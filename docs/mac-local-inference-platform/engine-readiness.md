@@ -256,6 +256,11 @@ Readiness interpretation:
 - `benchmarks/python/runtime_profile_comparison_suite.py` can now run the same
   resident benchmark across multiple engine presets and attach the
   cache-create optimization report for each preset.
+- `benchmarks/python/calibrate_resident_thresholds.py` generates stricter
+  regression thresholds from measured gate reports. The M64 Qwen A3B
+  calibration sets cache-hit service at `295.93 ms`, cache-create service at
+  `525.28 ms`, cache-create prepare share at `0.549`, and cache-hit speedup at
+  `13.49x`.
 
 ## Current Qwen Result
 

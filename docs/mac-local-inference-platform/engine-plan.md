@@ -4649,6 +4649,57 @@ M69 result:
 - Future profile tuning can compare sync, async, memory, and diagnostics
   behavior with the same cache-create and cache-hit evidence surfaces.
 
+## M70 Threshold Calibration
+
+M70 adds a threshold calibration helper:
+
+```text
+python3 benchmarks/python/calibrate_resident_thresholds.py \
+  artifacts/m64-real-suite/resident-regression-gate-m64-qwen-a3b.json \
+  --output-json artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json
+```
+
+The helper reads one or more `resident_regression_gate` JSON reports and emits
+recommended `run_resident_regression_suite.py` threshold flags with explicit
+headroom:
+
+- higher-is-worse checks use `actual * high_headroom`
+- lower-is-worse checks use `actual * low_headroom`
+- minimum practical floors keep critical thresholds from becoming too fragile
+
+M64-derived output:
+
+```text
+threshold --max-cache-create-prepare-share 0.549328
+threshold --max-cache-create-service-ms 525.27586
+threshold --max-cache-hit-prefill-tokens 16.0
+threshold --max-cache-hit-service-ms 295.929324
+threshold --max-cold-to-warm-ratio 1.373187
+threshold --max-warm-prefill-service-ms 439.288933
+threshold --min-cache-hit-prefill-reduction-vs-full-prefill 0.8
+threshold --min-cache-hit-speedup-vs-full-prefill 13.485895
+threshold --min-warm-prefill-tokens 189.0
+```
+
+Validation:
+
+```text
+python3 -m py_compile benchmarks/python/calibrate_resident_thresholds.py
+python3 -m json.tool artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json
+```
+
+Tracked report:
+
+- `artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json`
+
+M70 result:
+
+- Regression thresholds can now be recalibrated from measured evidence instead
+  of being tuned by hand.
+- The M64 calibration is much stricter than the bounded one-off suite command
+  and is suitable as the next baseline for cache-hit and cache-create
+  regression checks.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

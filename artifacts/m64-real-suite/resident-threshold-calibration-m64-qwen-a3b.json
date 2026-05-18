@@ -1,0 +1,70 @@
+{
+  "details": {
+    "cache_create.cache_prepare_share": {
+      "baseline": 0.4394627853753686,
+      "count": 1,
+      "mean": 0.4394627853753686,
+      "threshold": 0.5493284817192108
+    },
+    "cache_create.mean_service_request_ms": {
+      "baseline": 420.2206879854202,
+      "count": 1,
+      "mean": 420.2206879854202,
+      "threshold": 525.2758599817753
+    },
+    "cache_hit.mean_actual_prefill_tokens": {
+      "baseline": 8.0,
+      "count": 1,
+      "mean": 8.0,
+      "threshold": 16.0
+    },
+    "cache_hit.mean_service_request_ms": {
+      "baseline": 236.74345901235938,
+      "count": 1,
+      "mean": 236.74345901235938,
+      "threshold": 295.9293237654492
+    },
+    "cache_hit.prefill_reduction_vs_full_prefill": {
+      "baseline": 0.967479674796748,
+      "count": 1,
+      "mean": 0.967479674796748,
+      "threshold": 0.8
+    },
+    "cache_hit.service_speedup_vs_full_prefill": {
+      "baseline": 17.98119319809208,
+      "count": 1,
+      "mean": 17.98119319809208,
+      "threshold": 13.48589489856906
+    },
+    "prefill_cold_to_warm_ratio": {
+      "baseline": 1.0985497083279823,
+      "count": 1,
+      "mean": 1.0985497083279823,
+      "threshold": 1.3731871354099778
+    },
+    "prefill_warm.mean_actual_prefill_tokens": {
+      "baseline": 252.0,
+      "count": 1,
+      "mean": 252.0,
+      "threshold": 189.0
+    },
+    "prefill_warm.mean_service_request_ms": {
+      "baseline": 351.4311460312456,
+      "count": 1,
+      "mean": 351.4311460312456,
+      "threshold": 439.288932539057
+    }
+  },
+  "thresholds": {
+    "max_cache_create_prepare_share": 0.5493284817192108,
+    "max_cache_create_service_ms": 525.2758599817753,
+    "max_cache_hit_prefill_tokens": 16.0,
+    "max_cache_hit_service_ms": 295.9293237654492,
+    "max_cold_to_warm_ratio": 1.3731871354099778,
+    "max_warm_prefill_service_ms": 439.288932539057,
+    "min_cache_hit_prefill_reduction_vs_full_prefill": 0.8,
+    "min_cache_hit_speedup_vs_full_prefill": 13.48589489856906,
+    "min_warm_prefill_tokens": 189.0
+  },
+  "type": "resident_threshold_calibration"
+}

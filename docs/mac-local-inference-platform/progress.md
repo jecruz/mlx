@@ -2194,3 +2194,20 @@
     - dry-run manifest passed `python3 -m json.tool`
   - M69 conclusion: runtime preset comparisons now have a repeatable suite
     entry point instead of being ad hoc benchmark invocations.
+- Completed M70 threshold calibration:
+  - added `benchmarks/python/calibrate_resident_thresholds.py`
+  - the helper reads one or more `resident_regression_gate` reports and emits
+    calibrated `run_resident_regression_suite.py` threshold flags
+  - wrote M64 calibration:
+    `artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json`
+  - M64-derived thresholds include:
+    - `--max-cache-hit-service-ms 295.929324`
+    - `--max-cache-create-service-ms 525.27586`
+    - `--max-cache-create-prepare-share 0.549328`
+    - `--min-cache-hit-speedup-vs-full-prefill 13.485895`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/calibrate_resident_thresholds.py`
+    - calibration command against the M64 gate report
+    - `python3 -m json.tool artifacts/m64-real-suite/resident-threshold-calibration-m64-qwen-a3b.json`
+  - M70 conclusion: regression thresholds can now be recalibrated from measured
+    evidence with explicit headroom instead of being hand-tuned constants.
