@@ -161,6 +161,16 @@ python3 benchmarks/python/runtime_profile_comparison_suite.py \
 This runs the same benchmark under each preset and attaches a cache-create
 optimization report for each result.
 
+Gate a profile comparison result:
+
+```bash
+python3 benchmarks/python/runtime_profile_comparison_gate.py \
+  artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json \
+  --include-presets sync-safe \
+  --output-json artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json \
+  --fail-on-fail
+```
+
 Dry-run the planned commands without touching the engine:
 
 ```bash

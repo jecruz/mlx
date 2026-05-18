@@ -2303,3 +2303,19 @@
       browser-smoke check, and web-ui checks
   - M75 conclusion: Dax can now inspect M73 runtime profile comparison
     evidence directly from the operator panel.
+- Completed M76 runtime profile comparison gate:
+  - added `benchmarks/python/runtime_profile_comparison_gate.py`
+  - gate reads `runtime_profile_comparison_suite` manifests and checks:
+    cache-create prepare share, estimated deferred cache-create service time,
+    cache-create/cache-hit service ratio, and cache-hit speedup versus full
+    prefill
+  - wrote gate report:
+    `artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/runtime_profile_comparison_gate.py`
+    - positive control: `sync-safe` passed all `4` checks
+    - negative control: `request-derived` failed
+      `cache_hit_speedup_vs_full_prefill`
+    - gate report parsed with `python3 -m json.tool`
+  - M76 conclusion: profile comparison evidence now has a machine-readable
+    gate, and it catches the observed `request-derived` regression.

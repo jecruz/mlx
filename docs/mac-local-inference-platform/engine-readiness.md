@@ -275,6 +275,9 @@ Readiness interpretation:
   calibrated thresholds can be applied directly to future gate runs.
 - Dax commit `91bcc93a` adds `/bench profiles <runtime-profile-comparison.json>`
   so the operator panel can inspect M73 profile comparison evidence directly.
+- `benchmarks/python/runtime_profile_comparison_gate.py` gates profile
+  comparison reports. On M73 it passed `sync-safe` and failed
+  `request-derived` on cache-hit speedup, matching the live evidence.
 
 ## Current Qwen Result
 

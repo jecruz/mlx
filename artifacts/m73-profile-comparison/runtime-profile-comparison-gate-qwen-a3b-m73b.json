@@ -1,0 +1,41 @@
+{
+  "allow_skip": false,
+  "checks": [
+    {
+      "actual": 0.43691890028113395,
+      "label": "sync-safe.cache_create_prepare_share",
+      "operator": "<=",
+      "threshold": 0.6,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 244.8004580801353,
+      "label": "sync-safe.estimated_deferred_cache_create_service_ms",
+      "operator": "<=",
+      "threshold": 300.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 1.7994543189733863,
+      "label": "sync-safe.cache_create_service_ratio_vs_cache_hit",
+      "operator": "<=",
+      "threshold": 2.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 3.7039210682221126,
+      "label": "sync-safe.cache_hit_speedup_vs_full_prefill",
+      "operator": ">=",
+      "threshold": 2.0,
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "include_presets": [
+    "sync-safe"
+  ],
+  "skipped_presets": [],
+  "source_tag": "qwen-a3b-m73b",
+  "type": "runtime_profile_comparison_gate",
+  "verdict": "PASS"
+}

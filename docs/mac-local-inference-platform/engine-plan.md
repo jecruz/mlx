@@ -4982,6 +4982,58 @@ M75 result:
 - The operator UI can show why `request-derived` should not be promoted for
   Qwen A3B and why async needs maturation before becoming the default.
 
+## M76 Runtime Profile Comparison Gate
+
+M76 adds a gate for runtime profile comparison reports:
+
+```text
+python3 benchmarks/python/runtime_profile_comparison_gate.py \
+  artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json \
+  --include-presets sync-safe \
+  --output-json artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json \
+  --fail-on-fail
+```
+
+The gate checks:
+
+- cache-create prepare share
+- estimated deferred cache-create service time
+- cache-create service ratio versus cache hit
+- cache-hit speedup versus full prefill
+
+Validation:
+
+```text
+python3 -m py_compile benchmarks/python/runtime_profile_comparison_gate.py
+```
+
+Positive control on `sync-safe`:
+
+```text
+profile_gate_check PASS sync-safe.cache_create_prepare_share 0.43691890028113395 <= 0.6
+profile_gate_check PASS sync-safe.estimated_deferred_cache_create_service_ms 244.8004580801353 <= 300.0
+profile_gate_check PASS sync-safe.cache_create_service_ratio_vs_cache_hit 1.7994543189733863 <= 2.0
+profile_gate_check PASS sync-safe.cache_hit_speedup_vs_full_prefill 3.7039210682221126 >= 2.0
+profile_gate_result PASS
+```
+
+Negative control on `request-derived`:
+
+```text
+profile_gate_check FAIL request-derived.cache_hit_speedup_vs_full_prefill 0.9514485689453271 >= 2.0
+profile_gate_result FAIL
+```
+
+Tracked report:
+
+- `artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json`
+
+M76 result:
+
+- Runtime profile comparisons now have a machine-readable regression gate.
+- The gate catches the exact reason `request-derived` should not be promoted
+  for the current Qwen A3B stack.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
