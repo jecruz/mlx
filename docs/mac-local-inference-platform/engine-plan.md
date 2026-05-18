@@ -4379,6 +4379,50 @@ M64 result:
 - The next milestone should package the manifest and small tracked artifacts
   into a repeatable evidence handoff.
 
+## M65 Evidence Package Helper
+
+M65 adds a helper to package resident suite evidence into one handoff directory:
+
+```text
+python3 benchmarks/python/package_resident_suite_evidence.py \
+  artifacts/m64-real-suite/resident-regression-suite-m64-qwen-a3b.json \
+  --output-dir /private/tmp/mlx-m65-evidence-package
+```
+
+Behavior:
+
+- validates that the input is a `resident_regression_suite` manifest
+- copies the suite manifest
+- copies all existing artifact paths referenced by the manifest
+- writes `resident-suite-evidence-index.json`
+- records missing referenced artifacts separately
+
+Validation against M64:
+
+```text
+evidence_package PASS copied 4 missing 1 /private/tmp/mlx-m65-evidence-package/resident-suite-evidence-index.json
+```
+
+Copied files:
+
+- `resident-benchmark-sync-safe-m64-qwen-a3b.jsonl`
+- `resident-prefill-isolation-sync-safe-m64-qwen-a3b.jsonl`
+- `resident-regression-gate-m64-qwen-a3b.json`
+- `resident-regression-suite-m64-qwen-a3b.json`
+
+Index:
+
+```text
+resident_suite_evidence_package PASS m64-qwen-a3b 4 {'cold_start': 'artifacts/m64-real-suite/resident-cold-start-sync-safe-m64-qwen-a3b.jsonl'}
+```
+
+M65 result:
+
+- Redmine/Dax/CI handoff can now use one evidence directory instead of asking
+  operators to find every referenced artifact manually.
+- Ignored raw JSONL files remain local-run artifacts, but the package helper
+  can still collect them when they exist.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

@@ -240,6 +240,9 @@ Readiness interpretation:
   engine on `Device(gpu, 0)`: suite verdict `PASS`, gate verdict `PASS`, `11`
   checks, `0` failures, `cache_hit` mean service `236.74 ms`, and `cache_hit`
   service speedup `17.98x` versus full prefill.
+- `benchmarks/python/package_resident_suite_evidence.py` packages a suite
+  manifest and all existing referenced artifacts into one handoff directory
+  with a `resident-suite-evidence-index.json` index.
 
 ## Current Qwen Result
 

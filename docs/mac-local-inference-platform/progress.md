@@ -2108,3 +2108,19 @@
   - M64 conclusion: the benchmark/gate/manifest pipeline works against the live
     Qwen resident engine, and prefix-cache reuse remains the confirmed
     prompt-processing win.
+- Completed M65 evidence package helper:
+  - added `benchmarks/python/package_resident_suite_evidence.py`
+  - helper validates `resident_regression_suite` manifests
+  - helper copies the suite manifest and every existing artifact referenced by
+    the manifest into a handoff directory
+  - helper writes `resident-suite-evidence-index.json` with copied files and
+    missing artifact paths
+  - validation against M64 passed:
+    - command copied `4` files and recorded `1` missing disabled cold-start
+      artifact
+    - copied cache JSONL, prefill JSONL, gate JSON, and suite JSON
+    - index reported `resident_suite_evidence_package PASS m64-qwen-a3b`
+    - `python3 -m py_compile benchmarks/python/package_resident_suite_evidence.py`
+    - `git diff --check`
+  - M65 conclusion: M64 evidence can now be packaged into one handoff directory
+    for Redmine, Dax, CI, or future app surfaces.
