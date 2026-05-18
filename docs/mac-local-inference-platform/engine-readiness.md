@@ -281,6 +281,9 @@ Readiness interpretation:
 - `benchmarks/python/package_runtime_profile_evidence.py` packages M73/M76
   comparison evidence into `artifacts/m77-runtime-profile-evidence` with an
   index and zero missing artifacts.
+- M78 selects async cache maturation and pending-wait tuning as the next
+  performance target. `sync-safe` remains the reliable baseline, and
+  `request-derived` is not recommended for Qwen A3B.
 
 ## Current Qwen Result
 

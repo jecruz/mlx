@@ -2331,3 +2331,16 @@
     - `python3 -m json.tool artifacts/m77-runtime-profile-evidence/runtime-profile-evidence-index.json`
   - M77 conclusion: M72-M76 profile comparison evidence is packaged for
     Redmine, Dax, review, or future app surfaces.
+- Completed M78 next performance target selection:
+  - added
+    `docs/mac-local-inference-platform/next-performance-target.md`
+  - selected next target:
+    async cache maturation and pending-wait tuning
+  - documented why `sync-safe` remains the reliable baseline
+  - documented why `request-derived` should not be promoted for Qwen A3B
+  - ranked deferred alternatives:
+    foreground sync cache-create reduction, JIT/warmup reduction,
+    tokenizer/chat-template overhead, paged KV, and native service packaging
+  - proposed M79 async maturation sweep with acceptance criteria
+  - M78 conclusion: the next phase is to make async produce useful cache hits,
+    not merely schedule background builds.

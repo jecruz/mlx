@@ -228,11 +228,16 @@ M64 bounded Qwen A3B baseline:
 
 ## Next Performance Target
 
-The next engine optimization should reduce foreground cache-create cost:
+The next engine optimization should make async cache construction useful for
+the next related request:
 
-- prefer async/deferred prefix construction for cache candidates
-- use `request-derived` when the prompt-cache stack can be trimmed safely
-- deduplicate pending builds for duplicate or near-duplicate prompts
+- tune `prefix_cache_async_idle_grace_ms`
+- tune `prefix_cache_pending_wait_ms`
+- prove async turns scheduled builds into real cache hits
 - keep cache-hit correctness and suffix-only prefill as non-negotiable gates
 - compare presets through `runtime_profile_comparison_suite.py`
 - recalibrate thresholds after each stable model/preset baseline
+
+See:
+
+- `docs/mac-local-inference-platform/next-performance-target.md`

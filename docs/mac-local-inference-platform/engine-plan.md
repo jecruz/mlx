@@ -5078,6 +5078,43 @@ M77 result:
 - The package index records comparison verdict, gate verdict, copied files, and
   missing artifacts.
 
+## M78 Next Performance Target Selection
+
+M78 records the next target decision:
+
+- `docs/mac-local-inference-platform/next-performance-target.md`
+
+Decision:
+
+- Next target: async cache maturation and pending-wait tuning.
+- Keep `sync-safe` as the reliable baseline.
+- Do not promote `request-derived` for Qwen A3B.
+
+Reason:
+
+- M73 showed `async-experimental` avoided foreground cache-create rows but did
+  not mature a cache hit in the short profile sweep.
+- M73/M76 showed `request-derived` fails for Qwen A3B because cache-hit speedup
+  was `0.951x`, worse than full prefill.
+- M76 showed `sync-safe` passes the comparison gate and remains the best
+  baseline.
+
+Proposed M79:
+
+- async maturation sweep over:
+  - `prefix_cache_async_idle_grace_ms`
+  - `prefix_cache_pending_wait_ms`
+- gate on:
+  - cache-hit creation under async
+  - cache-hit speedup
+  - pending-wait overhead
+  - profile comparison gate pass
+
+M78 result:
+
+- The next phase is evidence-driven and focused: make async useful, not merely
+  scheduled.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
