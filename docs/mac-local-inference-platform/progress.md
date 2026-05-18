@@ -2319,3 +2319,15 @@
     - gate report parsed with `python3 -m json.tool`
   - M76 conclusion: profile comparison evidence now has a machine-readable
     gate, and it catches the observed `request-derived` regression.
+- Completed M77 runtime profile evidence package:
+  - added `benchmarks/python/package_runtime_profile_evidence.py`
+  - packaged M73 comparison evidence and M76 gate evidence into
+    `artifacts/m77-runtime-profile-evidence`
+  - package copied `8` artifacts and reported `0` missing
+  - package index:
+    `artifacts/m77-runtime-profile-evidence/runtime-profile-evidence-index.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/package_runtime_profile_evidence.py`
+    - `python3 -m json.tool artifacts/m77-runtime-profile-evidence/runtime-profile-evidence-index.json`
+  - M77 conclusion: M72-M76 profile comparison evidence is packaged for
+    Redmine, Dax, review, or future app surfaces.

@@ -1,0 +1,17 @@
+{
+  "counts": {
+    "cache_create": 0,
+    "cache_hit": 0,
+    "full_prefill": 3
+  },
+  "derived": {},
+  "failures": [],
+  "means": {},
+  "missing_phases": [
+    "cache_create",
+    "cache_hit"
+  ],
+  "recommendation": "No cache-create optimization signal in this artifact because required phases are missing: cache_create, cache_hit.",
+  "type": "cache_create_optimization_probe",
+  "verdict": "SKIP"
+}

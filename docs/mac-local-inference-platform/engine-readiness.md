@@ -278,6 +278,9 @@ Readiness interpretation:
 - `benchmarks/python/runtime_profile_comparison_gate.py` gates profile
   comparison reports. On M73 it passed `sync-safe` and failed
   `request-derived` on cache-hit speedup, matching the live evidence.
+- `benchmarks/python/package_runtime_profile_evidence.py` packages M73/M76
+  comparison evidence into `artifacts/m77-runtime-profile-evidence` with an
+  index and zero missing artifacts.
 
 ## Current Qwen Result
 

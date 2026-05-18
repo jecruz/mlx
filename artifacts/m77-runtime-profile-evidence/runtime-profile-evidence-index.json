@@ -1,0 +1,48 @@
+{
+  "comparison_tag": "qwen-a3b-m73b",
+  "comparison_verdict": "PASS",
+  "copied": [
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/runtime-profile-comparison-qwen-a3b-m73b.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/runtime-profile-comparison-gate-qwen-a3b-m73b.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/resident-benchmark-sync-safe-qwen-a3b-m73b.jsonl",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/resident-benchmark-sync-safe-qwen-a3b-m73b.jsonl"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/cache-create-optimization-sync-safe-qwen-a3b-m73b.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/cache-create-optimization-sync-safe-qwen-a3b-m73b.json"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/resident-benchmark-async-experimental-qwen-a3b-m73b.jsonl",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/resident-benchmark-async-experimental-qwen-a3b-m73b.jsonl"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/cache-create-optimization-async-experimental-qwen-a3b-m73b.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/cache-create-optimization-async-experimental-qwen-a3b-m73b.json"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/resident-benchmark-request-derived-qwen-a3b-m73b.jsonl",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/resident-benchmark-request-derived-qwen-a3b-m73b.jsonl"
+    },
+    {
+      "copied_to": "artifacts/m77-runtime-profile-evidence/cache-create-optimization-request-derived-qwen-a3b-m73b.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m73-profile-comparison/cache-create-optimization-request-derived-qwen-a3b-m73b.json"
+    }
+  ],
+  "copied_count": 8,
+  "gate_verdict": "PASS",
+  "missing": [],
+  "missing_count": 0,
+  "presets": [
+    "sync-safe",
+    "async-experimental",
+    "request-derived"
+  ],
+  "type": "runtime_profile_evidence_package"
+}

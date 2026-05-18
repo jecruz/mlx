@@ -171,6 +171,15 @@ python3 benchmarks/python/runtime_profile_comparison_gate.py \
   --fail-on-fail
 ```
 
+Package profile comparison evidence:
+
+```bash
+python3 benchmarks/python/package_runtime_profile_evidence.py \
+  artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json \
+  --gate-report artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json \
+  --output-dir artifacts/m77-runtime-profile-evidence
+```
+
 Dry-run the planned commands without touching the engine:
 
 ```bash

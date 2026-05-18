@@ -5034,6 +5034,50 @@ M76 result:
 - The gate catches the exact reason `request-derived` should not be promoted
   for the current Qwen A3B stack.
 
+## M77 Runtime Profile Evidence Package
+
+M77 packages the M73-M76 profile comparison evidence into a single handoff
+directory:
+
+```text
+python3 benchmarks/python/package_runtime_profile_evidence.py \
+  artifacts/m73-profile-comparison/runtime-profile-comparison-qwen-a3b-m73b.json \
+  --gate-report artifacts/m73-profile-comparison/runtime-profile-comparison-gate-qwen-a3b-m73b.json \
+  --output-dir artifacts/m77-runtime-profile-evidence
+```
+
+Package result:
+
+```text
+runtime_profile_evidence_package PASS copied 8 missing 0 artifacts/m77-runtime-profile-evidence/runtime-profile-evidence-index.json
+```
+
+Package contents:
+
+- `runtime-profile-comparison-qwen-a3b-m73b.json`
+- `runtime-profile-comparison-gate-qwen-a3b-m73b.json`
+- `cache-create-optimization-sync-safe-qwen-a3b-m73b.json`
+- `cache-create-optimization-async-experimental-qwen-a3b-m73b.json`
+- `cache-create-optimization-request-derived-qwen-a3b-m73b.json`
+- `resident-benchmark-sync-safe-qwen-a3b-m73b.jsonl`
+- `resident-benchmark-async-experimental-qwen-a3b-m73b.jsonl`
+- `resident-benchmark-request-derived-qwen-a3b-m73b.jsonl`
+- `runtime-profile-evidence-index.json`
+
+Validation:
+
+```text
+python3 -m py_compile benchmarks/python/package_runtime_profile_evidence.py
+python3 -m json.tool artifacts/m77-runtime-profile-evidence/runtime-profile-evidence-index.json
+```
+
+M77 result:
+
+- The live profile comparison evidence is now packaged for Redmine, Dax,
+  review, or future app surfaces.
+- The package index records comparison verdict, gate verdict, copied files, and
+  missing artifacts.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
