@@ -2409,3 +2409,17 @@
       `npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --intent coding-agent --dry-run --json`
   - M81 conclusion: product surfaces can now select `coding-agent` workload
     intent instead of exposing raw prefix-cache policy knobs.
+- Completed M82 automatic coding-agent intent:
+  - updated Dax `mlx-engine` so generation sessions auto-apply `coding-agent`
+    intent when neither `--profile` nor `--intent` is supplied
+  - automatic sessions:
+    - `dax mlx-engine --prompt ...`
+    - `dax mlx-engine --interactive`
+  - status-only inspection remains read-only and does not auto-apply a profile
+  - explicit `--profile` and `--intent` still take precedence
+  - validation passed:
+    - `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+    - `npx tsgo -p tsconfig.build.json --noEmit`
+  - M82 conclusion: coding-agent generation now uses
+    `agent-workspace-async` by default without requiring the user to remember
+    `--intent coding-agent`.

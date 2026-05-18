@@ -5261,6 +5261,35 @@ M81 decision:
   profile.
 - Raw `--profile` remains available for diagnostics and operator experiments.
 
+## M82 Automatic Coding-Agent Intent
+
+M82 makes Dax apply the coding-agent workload intent automatically for
+generation sessions:
+
+- `dax mlx-engine --prompt ...`
+- `dax mlx-engine --interactive`
+
+Defaulting rules:
+
+- If `--profile` is provided, use the explicit profile.
+- If `--intent` is provided, use the explicit intent.
+- If neither is provided and the session generates text, apply
+  `coding-agent`, which maps to `agent-workspace-async`.
+- Status-only inspection remains read-only and does not auto-apply a profile.
+
+Validation:
+
+- Dax focused test:
+  `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+- Dax typecheck:
+  `npx tsgo -p tsconfig.build.json --noEmit`
+
+M82 decision:
+
+- Coding-agent generation sessions now get the M79/M80 async reuse profile by
+  default.
+- Operators can still override with `--profile` or `--intent`.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

@@ -224,3 +224,25 @@ Next target:
 
 - Use the intent signal automatically for coding-agent sessions instead of
   requiring an explicit `--intent coding-agent` flag.
+
+## M82 Result
+
+M82 makes the Dax coding-agent path automatic.
+
+Behavior:
+
+- `dax mlx-engine --prompt ...` auto-applies `coding-agent` intent.
+- `dax mlx-engine --interactive` auto-applies `coding-agent` intent.
+- `dax mlx-engine --once` and other status-only inspection remain read-only.
+- Explicit `--profile` and `--intent` override the automatic default.
+
+Validated:
+
+- Dax focused test passed.
+- Dax typecheck passed.
+
+Next target:
+
+- Measure the end-to-end coding-agent prompt path with automatic
+  `agent-workspace-async` selection and compare it against the prior manual
+  profile flow.

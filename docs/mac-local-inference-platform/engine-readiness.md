@@ -64,6 +64,9 @@ Python integrations can select workload intent instead of raw profile names:
 Dax integrations can use:
 
 - `dax mlx-engine --intent coding-agent`
+- `dax mlx-engine --prompt ...` and `dax mlx-engine --interactive` apply the
+  `coding-agent` intent automatically unless `--profile` or `--intent` is
+  supplied.
 
 Recommended product profiles:
 
@@ -323,6 +326,9 @@ Readiness interpretation:
   - `coding-agent` maps to `agent-workspace-async`
   - Python integrations use `EngineUiClient.apply_workload_intent`
   - Dax uses `dax mlx-engine --intent coding-agent`
+- M82 makes Dax generation sessions apply `coding-agent` intent automatically
+  for `--prompt` and `--interactive`, while status-only inspection remains
+  read-only.
 
 ## Current Qwen Result
 
