@@ -4539,6 +4539,64 @@ M67 result:
 - The local operator loop is now: run suite, write artifacts, summarize
   verdicts, and inspect gate failures from one TUI surface.
 
+## M68 Cache-Create Optimization Probe
+
+M68 adds a deterministic analyzer for the remaining foreground cache-create
+cost:
+
+```text
+python3 benchmarks/python/cache_create_optimization_probe.py \
+  artifacts/m64-real-suite/resident-benchmark-sync-safe-m64-qwen-a3b.jsonl \
+  --output-json artifacts/m64-real-suite/cache-create-optimization-m64-qwen-a3b.json \
+  --min-prepare-share 0.40 \
+  --fail-on-fail
+```
+
+The probe reads `prefix_latency_sweep.py` or resident benchmark JSONL rows and
+reports:
+
+- full-prefill mean service time
+- cache-create mean service time
+- cache-create prepare time
+- cache-create prepare share
+- cache-hit mean service time
+- cache-hit speedup versus full prefill
+- estimated foreground service time if cache preparation were moved off the
+  request path
+
+Validation:
+
+```text
+python3 -m py_compile benchmarks/python/cache_create_optimization_probe.py
+```
+
+Synthetic prepare-dominated sample:
+
+```text
+cache_create_probe PASS prepare_share 0.703 hit_speedup 3.211 deferred_service_ms 190.0
+cache_create_probe_recommendation Prioritize moving cache creation off the foreground request path.
+```
+
+M64 real-suite analysis:
+
+```text
+cache_create_probe PASS prepare_share 0.439 hit_speedup 17.981 deferred_service_ms 235.55
+cache_create_probe_recommendation Prioritize moving cache creation off the foreground request path.
+```
+
+Tracked report:
+
+- `artifacts/m64-real-suite/cache-create-optimization-m64-qwen-a3b.json`
+
+M68 result:
+
+- We now have a stable cache-create optimization signal separate from cache-hit
+  success.
+- The next implementation target is reducing foreground cache-create service
+  time, primarily by async/deferred prefix construction or by using an existing
+  pending build instead of synchronously preparing the cache on the user
+  request path.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

@@ -2162,3 +2162,21 @@
       browser-smoke check, and web-ui checks
   - M67 conclusion: Dax can now run the resident regression suite and summarize
     the result from the same operator panel.
+- Completed M68 cache-create optimization probe:
+  - added `benchmarks/python/cache_create_optimization_probe.py`
+  - the probe reads resident benchmark or prefix-latency JSONL and computes:
+    full-prefill service mean, cache-create service mean, cache-create prepare
+    share, cache-hit service mean, cache-hit speedup, and estimated deferred
+    cache-create service time
+  - wrote real M64 analysis:
+    `artifacts/m64-real-suite/cache-create-optimization-m64-qwen-a3b.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/cache_create_optimization_probe.py`
+    - synthetic prepare-dominated sample:
+      `cache_create_probe PASS prepare_share 0.703 hit_speedup 3.211`
+    - M64 real-suite sample with calibrated threshold:
+      `cache_create_probe PASS prepare_share 0.439 hit_speedup 17.981 deferred_service_ms 235.55`
+    - `python3 -m json.tool artifacts/m64-real-suite/cache-create-optimization-m64-qwen-a3b.json`
+  - M68 conclusion: cache-create overhead is now independently measurable, so
+    future async/deferred cache-build work can be gated separately from cache
+    hit correctness.

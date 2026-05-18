@@ -1,0 +1,26 @@
+{
+  "counts": {
+    "cache_create": 3,
+    "cache_hit": 2,
+    "full_prefill": 2
+  },
+  "derived": {
+    "cache_create_prepare_share": 0.4394627853753686,
+    "cache_create_service_ratio_vs_cache_hit": 1.7750044277399963,
+    "cache_hit_speedup_vs_full_prefill": 17.98119319809208,
+    "estimated_deferred_cache_create_service_ms": 235.54933397099376,
+    "estimated_deferred_cache_create_speedup": 1.7840028706562483
+  },
+  "failures": [],
+  "means": {
+    "cache_create_prepare_ms": 184.67135401442647,
+    "cache_create_run_ms": 234.95216656010598,
+    "cache_create_service_request_ms": 420.2206879854202,
+    "cache_hit_prepare_ms": 0.1924589741975069,
+    "cache_hit_service_request_ms": 236.74345901235938,
+    "full_prefill_service_request_ms": 4256.929874885827
+  },
+  "recommendation": "Prioritize moving cache creation off the foreground request path.",
+  "type": "cache_create_optimization_probe",
+  "verdict": "PASS"
+}

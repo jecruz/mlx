@@ -249,6 +249,10 @@ Readiness interpretation:
 - Dax commit `36252308` adds `/bench run <mlx-worktree> [output-dir] [tag]`
   so the operator panel can launch the bounded resident regression suite and
   summarize the generated manifest.
+- `benchmarks/python/cache_create_optimization_probe.py` isolates the
+  cache-create overhead signal. On the M64 Qwen A3B suite it measured
+  `prepare_share=0.439`, `cache_hit_speedup=17.981`, and estimated foreground
+  cache-create service after deferred preparation at `235.55 ms`.
 
 ## Current Qwen Result
 
