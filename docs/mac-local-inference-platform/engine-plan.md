@@ -5335,6 +5335,44 @@ M83 decision:
 - The product path can keep the automatic default and reserve explicit profile
   flags for diagnostics and experiments.
 
+## M84 Dax Repeated Context Cache Reuse
+
+M84 measures repeated automatic Dax coding-agent prompts with a shared long
+context:
+
+- benchmark script:
+  `benchmarks/python/dax_repeated_context_bench.py`
+- report:
+  `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.json`
+- rows:
+  `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.jsonl`
+
+Benchmark shape:
+
+- `dax mlx-engine --prompt ... --json`
+- no explicit `--intent` or `--profile`
+- automatic `coding-agent` intent maps to `agent-workspace-async`
+- cache is pruned before the sequence
+- four repeated turns share the same long context
+- engine is restored to `interactive` afterward
+
+Result:
+
+- verdict: `PASS`
+- cache-hit turns: `2`
+- baseline service: `1670.83 ms`
+- best hit service: `234.69 ms`
+- speedup: `7.12x`
+- baseline actual prefill: `2092` tokens
+- best-hit actual prefill: `18` tokens
+
+M84 decision:
+
+- The automatic Dax coding-agent path realizes mature prefix-cache reuse under
+  repeated shared-context usage.
+- The measured end-to-end behavior matches the M79/M80 expectation: first
+  turns build/mature the cache, later turns reuse it with suffix-only prefill.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

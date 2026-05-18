@@ -2447,3 +2447,24 @@
   - M83 conclusion: automatic coding-agent intent adds no measurable
     end-to-end penalty compared with explicit intent or manual profile
     selection.
+- Completed M84 Dax repeated context cache reuse:
+  - added `benchmarks/python/dax_repeated_context_bench.py`
+  - benchmark drives `dax mlx-engine --prompt ... --json` without explicit
+    profile flags, so it exercises the automatic `coding-agent` intent path
+  - wrote artifacts:
+    - `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.json`
+    - `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.jsonl`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/dax_repeated_context_bench.py`
+    - report parsed with `python3 -m json.tool`
+    - resident server restored to `interactive`
+  - M84 result:
+    - verdict `PASS`
+    - `2` cache-hit turns
+    - baseline service `1670.83 ms`
+    - best hit service `234.69 ms`
+    - speedup `7.12x`
+    - baseline actual prefill `2092` tokens
+    - best-hit actual prefill `18` tokens
+  - M84 conclusion: automatic Dax coding-agent generation realizes mature
+    prefix-cache reuse under repeated shared-context usage.

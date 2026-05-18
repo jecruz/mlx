@@ -281,3 +281,33 @@ Next target:
 - Measure repeated coding-agent prompts with shared context to verify the
   automatic path realizes M79 mature-cache reuse under realistic multi-turn
   usage.
+
+## M84 Result
+
+M84 measured repeated automatic Dax coding-agent prompts with shared context.
+
+Added:
+
+- `benchmarks/python/dax_repeated_context_bench.py`
+- `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.json`
+- `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.jsonl`
+
+Result:
+
+- verdict: `PASS`
+- cache-hit turns: `2`
+- baseline service: `1670.83 ms`
+- best hit service: `234.69 ms`
+- speedup: `7.12x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+
+Decision:
+
+- The automatic Dax coding-agent path realizes mature cache reuse in repeated
+  shared-context usage.
+
+Next target:
+
+- Add a regression gate around the repeated-context Dax benchmark so this
+  product-path cache reuse is checked automatically with explicit thresholds.

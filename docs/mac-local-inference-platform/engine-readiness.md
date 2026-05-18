@@ -336,6 +336,12 @@ Readiness interpretation:
   - result: `PASS`
   - auto/manual-profile wall-time ratio: `0.998`
   - auto/explicit-intent wall-time ratio: `1.000`
+- M84 measures repeated automatic Dax coding-agent prompts with shared context:
+  - artifact:
+    `artifacts/m84-dax-repeated-context/dax-repeated-context-qwen-a3b-m84.json`
+  - result: `PASS`
+  - service speedup: `7.12x`
+  - actual prefill reduced from `2092` tokens to `18` tokens on the best hit
 
 ## Current Qwen Result
 
