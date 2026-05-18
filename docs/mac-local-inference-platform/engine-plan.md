@@ -5115,6 +5115,65 @@ M78 result:
 - The next phase is evidence-driven and focused: make async useful, not merely
   scheduled.
 
+## M79 Async Cache Maturation Sweep
+
+M79 adds a dedicated async maturation sweep:
+
+- `benchmarks/python/async_maturation_sweep.py`
+- artifact JSON:
+  `artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json`
+- artifact JSONL:
+  `artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.jsonl`
+
+Stable Qwen A3B run:
+
+```text
+python3 benchmarks/python/async_maturation_sweep.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-jsonl artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.jsonl \
+  --output-json artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json \
+  --grace-ms 0,25,50,100 \
+  --pending-wait-ms 0,250,500,1000,1500 \
+  --prefix-repeats 64 \
+  --max-tokens 6 \
+  --min-speedup 2.0
+```
+
+Result:
+
+- verdict: `PASS`
+- combinations: `20`
+- first-hit cache conversions: `8`
+- mature-cache hits: `17`
+- best steady-state mature reuse: `grace=0`, `wait=0`
+  - full-prefill baseline: `1713.12 ms`
+  - mature hit: `248.66 ms`
+  - speedup: `6.89x`
+  - actual prefill: `9` tokens
+- best first-hit conversion: `grace=0`, `wait=1000`
+  - pending wait: `801.01 ms`
+  - first-hit actual prefill: `10` tokens
+  - first-hit latency: roughly break-even at `0.98x` versus full prefill
+
+Important finding:
+
+- Async cache maturation works for repeated long prompts: completed cache reuse
+  cuts actual prefill from about `1890` tokens to `9-10` tokens.
+- Pending wait converts first reuse into a hit at about `1000 ms`, but it is
+  not a first-request latency win yet because the wait cost offsets the
+  prefill savings.
+- `250 ms` async idle grace destabilized the full matrix on this run, so the
+  tracked stable sweep excludes that high-grace setting.
+
+M79 decision:
+
+- `sync-safe` remains the default profile.
+- `async-experimental` is now proven useful for steady-state repeated agent
+  context reuse.
+- Do not enable pending wait globally for interactive chat.
+- For an `Agent Workspace` profile, use async maturation with a bounded
+  pending wait only when repeated coding-agent context reuse is expected.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

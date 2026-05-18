@@ -2344,3 +2344,29 @@
   - proposed M79 async maturation sweep with acceptance criteria
   - M78 conclusion: the next phase is to make async produce useful cache hits,
     not merely schedule background builds.
+- Completed M79 async cache maturation sweep:
+  - added `benchmarks/python/async_maturation_sweep.py`
+  - the sweep applies `async-experimental`, varies async idle grace and pending
+    wait, prunes prefix cache between combinations, sends baseline/schedule/
+    wait-hit/mature-hit requests, records policy deltas, and restores
+    `sync-safe` afterward
+  - stable Qwen A3B run:
+    `artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/async_maturation_sweep.py`
+    - `python3 -m json.tool artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json`
+  - M79 result:
+    - verdict `PASS`
+    - `20` stable combinations
+    - `8` first-hit conversions
+    - `17` mature-cache hits
+    - best steady-state mature reuse: `grace=0`, `wait=0`,
+      `1713.12 ms` full-prefill baseline to `248.66 ms` mature hit,
+      `6.89x` speedup, actual prefill `9` tokens
+    - best first-hit conversion: `grace=0`, `wait=1000`,
+      pending wait `801.01 ms`, actual prefill `10` tokens, roughly
+      break-even first-hit latency at `0.98x`
+  - M79 conclusion: async is now proven useful for steady-state repeated
+    coding-agent context reuse, but pending wait is not yet a universal
+    interactive-latency win. Keep `sync-safe` as default and reserve tuned
+    async pending wait for agent-workspace profiles.

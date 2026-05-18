@@ -284,6 +284,18 @@ Readiness interpretation:
 - M78 selects async cache maturation and pending-wait tuning as the next
   performance target. `sync-safe` remains the reliable baseline, and
   `request-derived` is not recommended for Qwen A3B.
+- M79 adds `benchmarks/python/async_maturation_sweep.py` and proves async
+  maturation on Qwen A3B repeated long prompts:
+  - stable report:
+    `artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json`
+  - result: `PASS`, `20` combinations, `8` first-hit conversions, `17`
+    mature-cache hits
+  - best steady-state reuse: `grace=0`, `wait=0`, `6.89x` speedup, actual
+    prefill reduced to `9` tokens
+  - best first-hit conversion: `grace=0`, `wait=1000`, pending wait
+    `801.01 ms`, roughly break-even first-hit latency
+  - decision: keep `sync-safe` as default, but use tuned async for repeated
+    agent-workspace context reuse.
 
 ## Current Qwen Result
 

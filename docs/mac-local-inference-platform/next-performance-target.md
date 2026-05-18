@@ -113,3 +113,44 @@ Future product profile mapping:
 - `Memory Saver`: existing memory-saver profile.
 - `Request Derived`: keep experimental and model-dependent; do not expose as a
   recommended profile for Qwen A3B.
+
+## M79 Result
+
+M79 is complete for the stable Qwen A3B matrix.
+
+Tracked artifacts:
+
+- `benchmarks/python/async_maturation_sweep.py`
+- `artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json`
+- `artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.jsonl`
+
+Result summary:
+
+- verdict: `PASS`
+- stable combinations: `20`
+- first-hit cache conversions: `8`
+- mature-cache hits: `17`
+- best steady-state mature reuse: `grace=0`, `wait=0`
+  - baseline: `1713.12 ms`
+  - mature hit: `248.66 ms`
+  - speedup: `6.89x`
+  - actual prefill: `9` tokens
+- best first-hit conversion: `grace=0`, `wait=1000`
+  - pending wait: `801.01 ms`
+  - actual prefill: `10` tokens
+  - first-hit speedup: `0.98x`, effectively break-even
+
+Decision:
+
+- `sync-safe` remains the default.
+- `async-experimental` is useful for completed-cache reuse in repeated
+  coding-agent context.
+- Pending wait should not be enabled globally for interactive chat yet.
+- The `Agent Workspace` profile should use tuned async only when repeated
+  context reuse is expected.
+
+Next target:
+
+- Convert the M79 result into a named `agent-workspace-async` profile and a
+  profile gate that verifies mature-cache reuse without requiring ad hoc sweep
+  interpretation.
