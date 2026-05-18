@@ -4198,6 +4198,39 @@ M60 result:
 - This makes the benchmark pipeline safer to run unattended from CI, Redmine
   hooks, Dax, or a future desktop app.
 
+## M61 Suite Manifest Summarizer
+
+M61 adds a terminal-friendly reader for suite manifests:
+
+```text
+python3 benchmarks/python/summarize_resident_suite_manifest.py \
+  resident-regression-suite-<tag>.json
+```
+
+Output sections:
+
+- `suite`: overall verdict, tag, and base URL
+- `steps`: executed step flags
+- `artifact`: artifact kind, enabled state, existence state, and path
+- `gate`: gate verdict, check count, and failure count
+- `gate_failure`: each gate failure line
+- `failure`: failing subprocess type, return code, and command
+
+Validation:
+
+- PASS manifest summary printed `suite PASS`, disabled steps, artifact
+  existence flags, and `gate none`.
+- FAIL manifest summary printed `suite FAIL`, `gate FAIL checks 11 failures 2`,
+  both cache-create gate failures, and the failing subprocess command.
+- `python3 -m py_compile benchmarks/python/summarize_resident_suite_manifest.py benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+- `git diff --check`
+
+M61 result:
+
+- Operators can inspect one suite manifest without opening raw JSON.
+- CI, Dax, Redmine notes, or terminal workflows can consume stable line-based
+  output while the full JSON remains available for structured ingestion.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

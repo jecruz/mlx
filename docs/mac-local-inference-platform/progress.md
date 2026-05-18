@@ -2021,3 +2021,21 @@
     - `git diff --check`
   - M60 conclusion: failed suite runs now leave durable machine-readable
     evidence for CI, Redmine, Dax, or future app surfaces.
+- Completed M61 suite manifest summarizer:
+  - added `benchmarks/python/summarize_resident_suite_manifest.py`
+  - summarizer prints stable line-based sections:
+    - `suite`
+    - `steps`
+    - `artifact`
+    - `gate`
+    - `gate_failure`
+    - `failure`
+  - validation passed:
+    - PASS manifest summary printed `suite PASS`, disabled steps, artifact
+      existence flags, and `gate none`
+    - FAIL manifest summary printed `suite FAIL`, `gate FAIL checks 11 failures
+      2`, both cache-create gate failures, and the failing subprocess command
+    - `python3 -m py_compile benchmarks/python/summarize_resident_suite_manifest.py benchmarks/python/run_resident_regression_suite.py benchmarks/python/resident_regression_gate.py`
+    - `git diff --check`
+  - M61 conclusion: operators and automation can inspect suite manifests
+    without parsing raw JSON manually.

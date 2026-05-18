@@ -226,6 +226,10 @@ Readiness interpretation:
 - Failed suite subprocesses now write a `verdict=FAIL` suite manifest before
   exiting, preserving the failing command, return code, artifact existence
   state, and embedded gate report when available.
+- `benchmarks/python/summarize_resident_suite_manifest.py` prints a stable
+  line-based summary for `resident-regression-suite-<tag>.json` manifests,
+  including suite verdict, artifact existence, gate failures, and failing
+  subprocess details.
 
 ## Current Qwen Result
 
