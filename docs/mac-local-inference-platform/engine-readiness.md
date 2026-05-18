@@ -246,6 +246,9 @@ Readiness interpretation:
 - Dax commit `3f967990` adds `/bench summary <resident-regression-suite.json>`
   so the operator panel can read resident suite manifests and show suite
   verdicts, gate failures, and referenced artifact paths.
+- Dax commit `36252308` adds `/bench run <mlx-worktree> [output-dir] [tag]`
+  so the operator panel can launch the bounded resident regression suite and
+  summarize the generated manifest.
 
 ## Current Qwen Result
 

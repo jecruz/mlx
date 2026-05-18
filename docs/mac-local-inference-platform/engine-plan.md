@@ -4480,6 +4480,65 @@ M66 result:
 - The M64/M65 evidence path is now connected to a product-facing terminal UI
   instead of remaining a Python-only artifact workflow.
 
+## M67 Dax Suite Runner
+
+M67 lets the Dax MLX TUI launch a bounded resident regression suite and then
+summarize the resulting suite manifest.
+
+Dax repo:
+
+- `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+- commit: `36252308 Add MLX resident suite runner to Dax`
+
+Added Dax behavior:
+
+- exported `runResidentRegressionSuite(options)`
+- added interactive command:
+
+```text
+/bench run <mlx-worktree> [output-dir] [tag]
+```
+
+The runner:
+
+- invokes `python3 benchmarks/python/run_resident_regression_suite.py`
+- uses the Dax panel's current MLX engine base URL
+- writes artifacts under the requested output directory
+- uses bounded M64-style defaults for quick operator validation
+- skips the longer stress probes by default
+- enables `--print-manifest-summary`
+- reads the generated `resident-regression-suite-<tag>.json`
+- prints the same suite/gate/artifact summary in the Dax panel
+
+Validation:
+
+```text
+npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts
+```
+
+Result:
+
+```text
+Test Files  1 passed (1)
+Tests  28 passed (28)
+```
+
+Pre-commit gate also passed:
+
+```text
+biome check --write --error-on-warnings .
+tsgo --noEmit
+node scripts/check-browser-smoke.mjs
+packages/web-ui check
+```
+
+M67 result:
+
+- Dax can now drive the resident regression suite instead of only reading
+  existing suite JSON.
+- The local operator loop is now: run suite, write artifacts, summarize
+  verdicts, and inspect gate failures from one TUI surface.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
