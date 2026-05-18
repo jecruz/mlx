@@ -2180,3 +2180,17 @@
   - M68 conclusion: cache-create overhead is now independently measurable, so
     future async/deferred cache-build work can be gated separately from cache
     hit correctness.
+- Completed M69 runtime profile comparison suite:
+  - added `benchmarks/python/runtime_profile_comparison_suite.py`
+  - the suite runs `resident_benchmark_harness.py` once per requested engine
+    preset, then runs `cache_create_optimization_probe.py` against each
+    per-preset benchmark artifact
+  - writes `runtime-profile-comparison-<tag>.json` with commands, artifact
+    paths, return codes, and embedded cache-create probe reports when present
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/runtime_profile_comparison_suite.py`
+    - dry-run command emitted benchmark/probe commands for
+      `sync-safe,async-experimental`
+    - dry-run manifest passed `python3 -m json.tool`
+  - M69 conclusion: runtime preset comparisons now have a repeatable suite
+    entry point instead of being ad hoc benchmark invocations.

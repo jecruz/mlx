@@ -253,6 +253,9 @@ Readiness interpretation:
   cache-create overhead signal. On the M64 Qwen A3B suite it measured
   `prepare_share=0.439`, `cache_hit_speedup=17.981`, and estimated foreground
   cache-create service after deferred preparation at `235.55 ms`.
+- `benchmarks/python/runtime_profile_comparison_suite.py` can now run the same
+  resident benchmark across multiple engine presets and attach the
+  cache-create optimization report for each preset.
 
 ## Current Qwen Result
 

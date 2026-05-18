@@ -4597,6 +4597,58 @@ M68 result:
   pending build instead of synchronously preparing the cache on the user
   request path.
 
+## M69 Runtime Profile Comparison Suite
+
+M69 adds a comparison harness for running the same resident benchmark across
+multiple engine presets:
+
+```text
+python3 benchmarks/python/runtime_profile_comparison_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/profile-comparison \
+  --tag profile-sweep \
+  --presets sync-safe,async-experimental
+```
+
+For each preset the suite:
+
+- runs `benchmarks/python/resident_benchmark_harness.py`
+- applies the requested `--engine-preset`
+- resets the prefix cache before the benchmark
+- writes a per-preset benchmark JSONL
+- runs `benchmarks/python/cache_create_optimization_probe.py` on that JSONL
+- writes a `runtime-profile-comparison-<tag>.json` manifest
+
+Dry-run validation:
+
+```text
+python3 benchmarks/python/runtime_profile_comparison_suite.py \
+  --dry-run \
+  --output-dir /private/tmp/m69-profile-suite \
+  --tag dryrun \
+  --presets sync-safe,async-experimental \
+  --base-url http://127.0.0.1:8773
+```
+
+Result:
+
+```text
+runtime_profile_comparison PASS presets sync-safe,async-experimental manifest /private/tmp/m69-profile-suite/runtime-profile-comparison-dryrun.json
+```
+
+Validation:
+
+```text
+python3 -m py_compile benchmarks/python/runtime_profile_comparison_suite.py
+python3 -m json.tool /private/tmp/m69-profile-suite/runtime-profile-comparison-dryrun.json
+```
+
+M69 result:
+
+- Runtime preset comparisons now have one repeatable entry point.
+- Future profile tuning can compare sync, async, memory, and diagnostics
+  behavior with the same cache-create and cache-hit evidence surfaces.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
