@@ -1,7 +1,7 @@
 # MLX Engine Readiness
 
 This checklist captures the current operator-facing readiness surface for the
-resident MLX engine work through M23.
+resident MLX engine work through M80.
 
 ## Runtime Target
 
@@ -20,6 +20,8 @@ Use `/engine/profiles` to discover product-facing runtime profiles:
 
 - `interactive`
 - `agent-workspace`
+- `agent-workspace-async`
+- `agent-workspace-request`
 - `memory-saver`
 - `diagnostics`
 
@@ -58,8 +60,12 @@ Recommended product profiles:
 
 - Low-latency interactive:
   `runtime_profile=interactive`
-- Repeated-agent-context:
+- Repeated-agent-context with pending-wait experiments:
   `runtime_profile=agent-workspace`
+- Repeated-agent-context with M79-proven mature async reuse:
+  `runtime_profile=agent-workspace-async`
+- Request-derived cache experiments:
+  `runtime_profile=agent-workspace-request`
 - Memory constrained:
   `runtime_profile=memory-saver`
 - Operational diagnostics:
@@ -296,6 +302,14 @@ Readiness interpretation:
     `801.01 ms`, roughly break-even first-hit latency
   - decision: keep `sync-safe` as default, but use tuned async for repeated
     agent-workspace context reuse.
+- M80 adds `agent-workspace-async` and
+  `benchmarks/python/async_maturation_gate.py`:
+  - gate report:
+    `artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json`
+  - profile settings: `async-experimental`, `prefix_cache_async_idle_grace_ms=0`,
+    `prefix_cache_pending_wait_ms=0`
+  - gate result: `PASS`, with `17` mature hits, `6.89x` mature speedup,
+    `9` mature prefill tokens, and `248.66 ms` mature service time
 
 ## Current Qwen Result
 
@@ -316,7 +330,10 @@ For a fast Mac local-inference product, expose these controls as named profiles
 instead of raw internals:
 
 - `Interactive`: prioritize immediate foreground latency.
-- `Agent Workspace`: wait briefly for repeated context prefix builds.
+- `Agent Workspace Async`: use M79-proven steady-state async cache reuse for
+  repeated coding-agent context.
+- `Agent Workspace`: wait briefly for repeated context prefix builds when
+  explicitly testing first-hit conversion.
 - `Memory Saver`: cap cache entries and prune aggressively.
 - `Diagnostics`: run the readiness probes and show cache continuation blockers.
 

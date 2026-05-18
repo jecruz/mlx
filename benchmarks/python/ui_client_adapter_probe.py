@@ -31,6 +31,7 @@ def main() -> int:
     expected_profiles = {
         "interactive",
         "agent-workspace",
+        "agent-workspace-async",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",
@@ -44,6 +45,19 @@ def main() -> int:
         raise RuntimeError(f"dry-run did not plan agent-workspace: {planned}")
     if planned["prefix_cache_policy"]["pending_wait_ms"] <= 0:
         raise RuntimeError(f"agent-workspace pending wait missing: {planned}")
+
+    async_dry_run = client.apply_profile("agent-workspace-async", dry_run=True)
+    async_planned = async_dry_run["planned_state"]
+    if async_planned["runtime_profile"] != "agent-workspace-async":
+        raise RuntimeError(
+            f"dry-run did not plan agent-workspace-async: {async_planned}"
+        )
+    if async_planned["prefix_cache_policy"]["population_mode"] != "async":
+        raise RuntimeError(f"agent-workspace-async mode mismatch: {async_planned}")
+    if async_planned["prefix_cache_policy"]["pending_wait_ms"] != 0:
+        raise RuntimeError(
+            f"agent-workspace-async should not wait by default: {async_planned}"
+        )
 
     summary = client.summary()
     if not summary.loaded:
@@ -65,6 +79,9 @@ def main() -> int:
         "agent_workspace_pending_wait_ms": planned["prefix_cache_policy"][
             "pending_wait_ms"
         ],
+        "agent_workspace_async_pending_wait_ms": async_planned[
+            "prefix_cache_policy"
+        ]["pending_wait_ms"],
     }
     args.output_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(

@@ -2370,3 +2370,20 @@
     coding-agent context reuse, but pending wait is not yet a universal
     interactive-latency win. Keep `sync-safe` as default and reserve tuned
     async pending wait for agent-workspace profiles.
+- Completed M80 agent workspace async profile gate:
+  - added `agent-workspace-async` to the resident runtime profile catalog
+  - profile uses `async-experimental` with `prefix_cache_async_idle_grace_ms=0`
+    and `prefix_cache_pending_wait_ms=0`, matching the M79 steady-state winner
+  - preserved existing `agent-workspace` pending-wait behavior for explicit
+    first-hit experiments
+  - added `benchmarks/python/async_maturation_gate.py`
+  - wrote gate report:
+    `artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/async_maturation_gate.py benchmarks/python/runtime_profile_probe.py benchmarks/python/ui_client_adapter_probe.py benchmarks/python/ui_status_contract_probe.py`
+    - M80 gate passed against the M79 stable artifact with `20` combos,
+      `17` mature hits, `6.89x` mature speedup, `9` mature prefill tokens,
+      `248.66 ms` mature service time, and `8` first-hit conversions
+  - M80 conclusion: `agent-workspace-async` is the product-facing profile for
+    repeated coding-agent context reuse; `sync-safe` remains the default until
+    workload-intent profile selection is wired into the product surface.

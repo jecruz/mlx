@@ -1,0 +1,20 @@
+{
+  "agent_workspace_async_idle_grace_ms": 0,
+  "agent_workspace_async_pending_wait_ms": 0,
+  "agent_workspace_pending_wait_ms": 1500,
+  "agent_workspace_request_population_mode": "request",
+  "applied_runtime_profile": "agent-workspace",
+  "diagnostics_population_mode": "sync",
+  "interactive_pending_wait_ms": 0,
+  "memory_saver_memory_limit_bytes": 67108864,
+  "ok": true,
+  "profiles": [
+    "agent-workspace",
+    "agent-workspace-async",
+    "agent-workspace-request",
+    "diagnostics",
+    "interactive",
+    "memory-saver"
+  ],
+  "restored_runtime_profile": "interactive"
+}

@@ -1,0 +1,18 @@
+{
+  "can_generate": true,
+  "engine_preset": "custom",
+  "gpu_ready": true,
+  "loaded": true,
+  "ok": true,
+  "profiles": [
+    "agent-workspace",
+    "agent-workspace-async",
+    "agent-workspace-request",
+    "diagnostics",
+    "interactive",
+    "memory-saver"
+  ],
+  "runtime_profile": null,
+  "strategy": "split_prefill_or_async_build",
+  "warm": true
+}

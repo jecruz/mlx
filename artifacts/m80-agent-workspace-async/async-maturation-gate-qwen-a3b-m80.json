@@ -1,0 +1,109 @@
+{
+  "best": {
+    "async_idle_grace_ms": 0,
+    "baseline_service_request_ms": 1713.1243331823498,
+    "cache_hit": false,
+    "cache_hit_speedup_vs_baseline": 0.913143039190472,
+    "cache_pending_wait_ms": 0.0,
+    "cache_pending_wait_result": null,
+    "combo_id": "grace0-wait0-9d397f83",
+    "created": 1779076145,
+    "mature_cache_hit": true,
+    "mature_cache_hit_speedup_vs_baseline": 6.889396947855158,
+    "mature_hit_actual_prefill_tokens": 9,
+    "mature_hit_service_request_ms": 248.66099981591105,
+    "pending_wait_ms": 0,
+    "policy_deltas": {
+      "async_builds_completed": 1,
+      "async_builds_failed": 0,
+      "async_builds_skipped": 0,
+      "async_builds_started": 1,
+      "pending_build_deduplications": 1,
+      "pending_wait_hits": 0,
+      "pending_wait_misses": 0,
+      "pending_wait_timeouts": 0,
+      "pending_waits": 0
+    },
+    "type": "combo_summary",
+    "wait_hit_actual_prefill_tokens": 1893,
+    "wait_hit_service_request_ms": 1876.074458938092
+  },
+  "checks": [
+    {
+      "actual": 20,
+      "label": "combo_count",
+      "operator": ">=",
+      "threshold": 20,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 17,
+      "label": "mature_hit_count",
+      "operator": ">=",
+      "threshold": 10,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 6.889396947855158,
+      "label": "mature_cache_hit_speedup_vs_baseline",
+      "operator": ">=",
+      "threshold": 2.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 9,
+      "label": "mature_hit_actual_prefill_tokens",
+      "operator": "<=",
+      "threshold": 16.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 248.66099981591105,
+      "label": "mature_hit_service_request_ms",
+      "operator": "<=",
+      "threshold": 300.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 8,
+      "label": "hit_count",
+      "operator": ">=",
+      "threshold": 1,
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "first_hit_best": {
+    "async_idle_grace_ms": 0,
+    "baseline_service_request_ms": 1026.50108281523,
+    "cache_hit": true,
+    "cache_hit_speedup_vs_baseline": 0.979853289628234,
+    "cache_pending_wait_ms": 801.0062498506159,
+    "cache_pending_wait_result": "hit",
+    "combo_id": "grace0-wait1000-983ec176",
+    "created": 1779076157,
+    "mature_cache_hit": true,
+    "mature_cache_hit_speedup_vs_baseline": 4.311898938834208,
+    "mature_hit_actual_prefill_tokens": 9,
+    "mature_hit_service_request_ms": 238.06241690181196,
+    "pending_wait_ms": 1000,
+    "policy_deltas": {
+      "async_builds_completed": 1,
+      "async_builds_failed": 0,
+      "async_builds_skipped": 0,
+      "async_builds_started": 1,
+      "pending_build_deduplications": 1,
+      "pending_wait_hits": 1,
+      "pending_wait_misses": 0,
+      "pending_wait_timeouts": 0,
+      "pending_waits": 1
+    },
+    "type": "combo_summary",
+    "wait_hit_actual_prefill_tokens": 10,
+    "wait_hit_service_request_ms": 1047.6069159340113
+  },
+  "source_output_jsonl": "artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.jsonl",
+  "source_verdict": "PASS",
+  "type": "async_maturation_gate",
+  "verdict": "PASS"
+}

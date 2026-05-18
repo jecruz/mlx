@@ -154,3 +154,40 @@ Next target:
 - Convert the M79 result into a named `agent-workspace-async` profile and a
   profile gate that verifies mature-cache reuse without requiring ad hoc sweep
   interpretation.
+
+## M80 Result
+
+M80 completed the M79 follow-through.
+
+Added:
+
+- `agent-workspace-async` runtime profile
+- `benchmarks/python/async_maturation_gate.py`
+- `artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json`
+
+Profile settings:
+
+- `engine_preset=async-experimental`
+- `prefix_cache_async_idle_grace_ms=0`
+- `prefix_cache_pending_wait_ms=0`
+
+Gate result:
+
+- verdict: `PASS`
+- mature hits: `17`
+- mature speedup: `6.89x`
+- mature prefill: `9` tokens
+- mature service: `248.66 ms`
+- first-hit conversions present: `8`
+
+Decision:
+
+- Use `agent-workspace-async` for repeated coding-agent context where mature
+  cache reuse is expected.
+- Keep `agent-workspace` for explicit pending-wait experiments.
+- Keep `sync-safe` as the default until product profile selection is wired.
+
+Next target:
+
+- Wire workload-intent profile selection into the product/UI layer so coding
+  agent sessions can choose `agent-workspace-async` without raw cache flags.

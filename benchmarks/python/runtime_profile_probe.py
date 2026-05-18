@@ -51,6 +51,7 @@ def main() -> int:
     expected = {
         "interactive",
         "agent-workspace",
+        "agent-workspace-async",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",
@@ -60,6 +61,9 @@ def main() -> int:
 
     planned = {name: planned_profile(base_url, name) for name in sorted(expected)}
     agent_policy = planned["agent-workspace"]["planned_state"]["prefix_cache_policy"]
+    agent_async_policy = planned["agent-workspace-async"]["planned_state"][
+        "prefix_cache_policy"
+    ]
     interactive_policy = planned["interactive"]["planned_state"][
         "prefix_cache_policy"
     ]
@@ -72,6 +76,18 @@ def main() -> int:
     ]
     if agent_policy["pending_wait_ms"] <= 0:
         raise RuntimeError(f"agent-workspace did not plan pending wait: {agent_policy}")
+    if agent_async_policy["population_mode"] != "async":
+        raise RuntimeError(
+            f"agent-workspace-async should use async cache mode: {agent_async_policy}"
+        )
+    if agent_async_policy["pending_wait_ms"] != 0:
+        raise RuntimeError(
+            f"agent-workspace-async should not wait by default: {agent_async_policy}"
+        )
+    if agent_async_policy["async_idle_grace_ms"] != 0:
+        raise RuntimeError(
+            f"agent-workspace-async should use M79 zero grace: {agent_async_policy}"
+        )
     if interactive_policy["pending_wait_ms"] != 0:
         raise RuntimeError(
             f"interactive should not wait for pending builds: {interactive_policy}"
@@ -107,6 +123,12 @@ def main() -> int:
         "ok": True,
         "profiles": sorted(profiles),
         "agent_workspace_pending_wait_ms": agent_policy["pending_wait_ms"],
+        "agent_workspace_async_pending_wait_ms": agent_async_policy[
+            "pending_wait_ms"
+        ],
+        "agent_workspace_async_idle_grace_ms": agent_async_policy[
+            "async_idle_grace_ms"
+        ],
         "interactive_pending_wait_ms": interactive_policy["pending_wait_ms"],
         "memory_saver_memory_limit_bytes": memory_policy["memory_limit_bytes"],
         "diagnostics_population_mode": diagnostics_policy["population_mode"],

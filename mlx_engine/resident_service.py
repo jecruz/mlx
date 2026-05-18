@@ -43,6 +43,7 @@ EnginePresetName = Literal[
 RuntimeProfileName = Literal[
     "interactive",
     "agent-workspace",
+    "agent-workspace-async",
     "agent-workspace-request",
     "memory-saver",
     "diagnostics",
@@ -139,6 +140,18 @@ def runtime_profile_defaults(name: RuntimeProfileName) -> dict[str, Any]:
                 "prefix_cache_pending_wait_ms": 1500,
             },
         },
+        "agent-workspace-async": {
+            "description": (
+                "Repeated coding-agent context; mature async prefix caches for "
+                "steady-state reuse without blocking the first duplicate request."
+            ),
+            "config": {
+                **engine_preset_defaults("async-experimental"),
+                "engine_preset": "async-experimental",
+                "prefix_cache_async_idle_grace_ms": 0,
+                "prefix_cache_pending_wait_ms": 0,
+            },
+        },
         "agent-workspace-request": {
             "description": (
                 "Repeated coding-agent context; derive reusable prefixes from "
@@ -181,6 +194,7 @@ def runtime_profile_catalog() -> dict[str, dict[str, Any]]:
     names: tuple[RuntimeProfileName, ...] = (
         "interactive",
         "agent-workspace",
+        "agent-workspace-async",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",

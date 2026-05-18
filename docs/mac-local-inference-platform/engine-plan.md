@@ -5174,6 +5174,56 @@ M79 decision:
 - For an `Agent Workspace` profile, use async maturation with a bounded
   pending wait only when repeated coding-agent context reuse is expected.
 
+## M80 Agent Workspace Async Profile Gate
+
+M80 converts the M79 result into an operator-facing profile and gate:
+
+- runtime profile: `agent-workspace-async`
+- gate script: `benchmarks/python/async_maturation_gate.py`
+- gate artifact:
+  `artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json`
+
+Profile behavior:
+
+- uses `async-experimental`
+- sets `prefix_cache_async_idle_grace_ms=0`
+- sets `prefix_cache_pending_wait_ms=0`
+- targets steady-state repeated coding-agent context reuse without adding
+  first-duplicate pending-wait latency
+
+Gate command:
+
+```text
+python3 benchmarks/python/async_maturation_gate.py \
+  artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json \
+  --output-json artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json \
+  --min-combos 20 \
+  --min-mature-hits 10 \
+  --min-mature-speedup 2.0 \
+  --max-mature-prefill-tokens 16 \
+  --max-mature-service-ms 300 \
+  --require-first-hit \
+  --fail-on-fail
+```
+
+Gate result:
+
+- verdict: `PASS`
+- mature hits: `17 >= 10`
+- mature speedup: `6.89x >= 2.0x`
+- mature actual prefill: `9 <= 16` tokens
+- mature service time: `248.66 <= 300 ms`
+- first-hit conversions: `8 >= 1`
+
+M80 decision:
+
+- `agent-workspace-async` is the recommended async profile for repeated agent
+  context reuse.
+- Existing `agent-workspace` remains available for explicit pending-wait
+  experiments.
+- `sync-safe` remains the default until the product layer can choose profiles
+  by workload intent.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
