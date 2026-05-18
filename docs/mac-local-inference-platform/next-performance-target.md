@@ -191,3 +191,36 @@ Next target:
 
 - Wire workload-intent profile selection into the product/UI layer so coding
   agent sessions can choose `agent-workspace-async` without raw cache flags.
+
+## M81 Result
+
+M81 adds workload intent selection.
+
+Added:
+
+- `runtime_profile_for_intent` in `mlx_engine/ui_client.py`
+- `EngineUiClient.apply_workload_intent`
+- Dax `mlx-engine --intent <intent>`
+
+Intent mapping:
+
+- `coding-agent` -> `agent-workspace-async`
+- `agent-workspace` -> `agent-workspace-async`
+- `interactive` -> `interactive`
+- `memory-saver` -> `memory-saver`
+- `diagnostics` -> `diagnostics`
+
+Validated:
+
+- MLX UI client probe:
+  `artifacts/m81-workload-intent/ui-client-adapter-m81.json`
+- Dax focused test: `29` tests passed
+- Dax typecheck passed
+- Live Dax dry-run with `--intent coding-agent` returned the profile catalog
+  including `agent-workspace-async` and left the active profile unchanged
+  because `--dry-run` was used.
+
+Next target:
+
+- Use the intent signal automatically for coding-agent sessions instead of
+  requiring an explicit `--intent coding-agent` flag.

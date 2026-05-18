@@ -5224,6 +5224,43 @@ M80 decision:
 - `sync-safe` remains the default until the product layer can choose profiles
   by workload intent.
 
+## M81 Workload Intent Profile Selection
+
+M81 adds workload-intent selection above raw runtime profile names:
+
+- Python client helper:
+  `mlx_engine.ui_client.runtime_profile_for_intent`
+- Python client method:
+  `EngineUiClient.apply_workload_intent`
+- Dax CLI flag:
+  `dax mlx-engine --intent coding-agent`
+
+Intent mapping:
+
+| Intent | Runtime profile |
+| --- | --- |
+| `interactive` | `interactive` |
+| `coding-agent` | `agent-workspace-async` |
+| `agent-workspace` | `agent-workspace-async` |
+| `memory-saver` | `memory-saver` |
+| `diagnostics` | `diagnostics` |
+
+Validation:
+
+- `python3 -m py_compile mlx_engine/ui_client.py benchmarks/python/ui_client_adapter_probe.py`
+- `python3 benchmarks/python/ui_client_adapter_probe.py --base-url http://127.0.0.1:8773 --output-json artifacts/m81-workload-intent/ui-client-adapter-m81.json`
+- `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+- `npx tsgo -p tsconfig.build.json --noEmit`
+- live Dax dry-run:
+  `npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --intent coding-agent --dry-run --json`
+
+M81 decision:
+
+- Product/UI layers should select workload intent, not low-level cache flags.
+- `coding-agent` now routes to the M79/M80-proven `agent-workspace-async`
+  profile.
+- Raw `--profile` remains available for diagnostics and operator experiments.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

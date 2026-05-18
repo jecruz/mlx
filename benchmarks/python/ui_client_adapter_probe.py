@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from mlx_engine.ui_client import EngineUiClient
+from mlx_engine.ui_client import EngineUiClient, runtime_profile_for_intent
 
 
 def main() -> int:
@@ -59,6 +59,13 @@ def main() -> int:
             f"agent-workspace-async should not wait by default: {async_planned}"
         )
 
+    if runtime_profile_for_intent("coding-agent") != "agent-workspace-async":
+        raise RuntimeError("coding-agent intent did not map to agent-workspace-async")
+    intent_dry_run = client.apply_workload_intent("coding-agent", dry_run=True)
+    intent_planned = intent_dry_run["planned_state"]
+    if intent_planned["runtime_profile"] != "agent-workspace-async":
+        raise RuntimeError(f"coding-agent intent planned wrong profile: {intent_planned}")
+
     summary = client.summary()
     if not summary.loaded:
         raise RuntimeError(f"engine not loaded: {summary}")
@@ -82,7 +89,9 @@ def main() -> int:
         "agent_workspace_async_pending_wait_ms": async_planned[
             "prefix_cache_policy"
         ]["pending_wait_ms"],
+        "coding_agent_intent_profile": intent_planned["runtime_profile"],
     }
+    args.output_json.parent.mkdir(parents=True, exist_ok=True)
     args.output_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(
         "m26_ui_client",

@@ -7,7 +7,28 @@ from __future__ import annotations
 import json
 import urllib.request
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
+
+
+WorkloadIntent = Literal[
+    "interactive",
+    "coding-agent",
+    "agent-workspace",
+    "memory-saver",
+    "diagnostics",
+]
+
+WORKLOAD_INTENT_PROFILES: dict[WorkloadIntent, str] = {
+    "interactive": "interactive",
+    "coding-agent": "agent-workspace-async",
+    "agent-workspace": "agent-workspace-async",
+    "memory-saver": "memory-saver",
+    "diagnostics": "diagnostics",
+}
+
+
+def runtime_profile_for_intent(intent: WorkloadIntent) -> str:
+    return WORKLOAD_INTENT_PROFILES[intent]
 
 
 @dataclass(frozen=True)
@@ -69,6 +90,14 @@ class EngineUiClient:
                 "runtime_profile": runtime_profile,
             },
         )
+
+    def apply_workload_intent(
+        self,
+        intent: WorkloadIntent,
+        *,
+        dry_run: bool = False,
+    ) -> dict[str, Any]:
+        return self.apply_profile(runtime_profile_for_intent(intent), dry_run=dry_run)
 
     def summary(self) -> EngineUiSummary:
         status = self.status()

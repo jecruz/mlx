@@ -2387,3 +2387,25 @@
   - M80 conclusion: `agent-workspace-async` is the product-facing profile for
     repeated coding-agent context reuse; `sync-safe` remains the default until
     workload-intent profile selection is wired into the product surface.
+- Completed M81 workload intent profile selection:
+  - added `runtime_profile_for_intent` and
+    `EngineUiClient.apply_workload_intent` to `mlx_engine/ui_client.py`
+  - added Dax `mlx-engine --intent <intent>` support in
+    `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+  - intent mapping:
+    - `coding-agent` -> `agent-workspace-async`
+    - `agent-workspace` -> `agent-workspace-async`
+    - `interactive` -> `interactive`
+    - `memory-saver` -> `memory-saver`
+    - `diagnostics` -> `diagnostics`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/ui_client.py benchmarks/python/ui_client_adapter_probe.py`
+    - live `ui_client_adapter_probe.py` wrote
+      `artifacts/m81-workload-intent/ui-client-adapter-m81.json`
+    - Dax focused test: `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+      passed `29` tests when run with local-listener permissions
+    - Dax typecheck: `npx tsgo -p tsconfig.build.json --noEmit`
+    - live Dax dry-run:
+      `npx tsx src/cli.ts mlx-engine --base-url http://127.0.0.1:8773 --intent coding-agent --dry-run --json`
+  - M81 conclusion: product surfaces can now select `coding-agent` workload
+    intent instead of exposing raw prefix-cache policy knobs.

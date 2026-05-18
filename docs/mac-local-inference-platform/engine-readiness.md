@@ -56,6 +56,15 @@ with:
 Python integrations can use `mlx_engine.ui_client.EngineUiClient` to consume the
 same contract and normalize it into `EngineUiSummary`.
 
+Python integrations can select workload intent instead of raw profile names:
+
+- `EngineUiClient.apply_workload_intent("coding-agent")`
+- `runtime_profile_for_intent("coding-agent") == "agent-workspace-async"`
+
+Dax integrations can use:
+
+- `dax mlx-engine --intent coding-agent`
+
 Recommended product profiles:
 
 - Low-latency interactive:
@@ -310,6 +319,10 @@ Readiness interpretation:
     `prefix_cache_pending_wait_ms=0`
   - gate result: `PASS`, with `17` mature hits, `6.89x` mature speedup,
     `9` mature prefill tokens, and `248.66 ms` mature service time
+- M81 adds workload-intent selection:
+  - `coding-agent` maps to `agent-workspace-async`
+  - Python integrations use `EngineUiClient.apply_workload_intent`
+  - Dax uses `dax mlx-engine --intent coding-agent`
 
 ## Current Qwen Result
 

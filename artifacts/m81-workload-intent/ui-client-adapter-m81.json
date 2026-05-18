@@ -1,0 +1,31 @@
+{
+  "agent_workspace_async_pending_wait_ms": 0,
+  "agent_workspace_pending_wait_ms": 1500,
+  "coding_agent_intent_profile": "agent-workspace-async",
+  "ok": true,
+  "profiles": [
+    "agent-workspace",
+    "agent-workspace-async",
+    "agent-workspace-request",
+    "diagnostics",
+    "interactive",
+    "memory-saver"
+  ],
+  "summary": {
+    "active_requests": 0,
+    "cache_blockers": [
+      "arrays_cache_has_recurrent_state_without_offset_or_trim"
+    ],
+    "cache_strategy": "split_prefill_or_async_build",
+    "can_generate": true,
+    "engine_preset": "async-experimental",
+    "failed_requests": 0,
+    "gpu_ready": true,
+    "loaded": true,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "queued_requests": 0,
+    "runtime_profile": "interactive",
+    "total_requests": 0,
+    "warm": true
+  }
+}
