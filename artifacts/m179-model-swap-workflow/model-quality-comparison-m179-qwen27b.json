@@ -1,0 +1,105 @@
+{
+  "failures": [],
+  "models": [
+    {
+      "artifacts": {
+        "cache-quality-m170-current-a3b": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 314.334,
+          "path": "artifacts/m170-model-quality-comparison/current-a3b/cache-quality-m170-current-a3b.json",
+          "row_count": 3,
+          "tag": "m170-current-a3b",
+          "type": "cache_quality_comparison",
+          "verdict": "PASS"
+        },
+        "deterministic-quality-m170-current-a3b": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 283.354,
+          "path": "artifacts/m170-model-quality-comparison/current-a3b/deterministic-quality-m170-current-a3b.json",
+          "row_count": 8,
+          "tag": "m170-current-a3b",
+          "type": "deterministic_quality_regression",
+          "verdict": "PASS"
+        },
+        "long-context-quality-m170-current-a3b": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 481.828,
+          "path": "artifacts/m170-model-quality-comparison/current-a3b/long-context-quality-m170-current-a3b.json",
+          "row_count": 1,
+          "tag": "m170-current-a3b",
+          "type": "long_context_rope_imrope_quality",
+          "verdict": "PASS"
+        },
+        "loop-quality-m170-current-a3b": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 275.734,
+          "path": "artifacts/m170-model-quality-comparison/current-a3b/loop-quality-m170-current-a3b.json",
+          "row_count": 9,
+          "tag": "m170-current-a3b",
+          "type": "loop_repetition_quality_gate",
+          "verdict": "PASS"
+        }
+      },
+      "failures": [],
+      "label": "qwen35b-a3b-ud-4bit",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "verdict": "PASS"
+    },
+    {
+      "artifacts": {
+        "cache-quality-m170-qwen27b-ud-4bit": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 2691.897,
+          "path": "artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/cache-quality-m170-qwen27b-ud-4bit.json",
+          "row_count": 3,
+          "tag": "m170-qwen27b-ud-4bit",
+          "type": "cache_quality_comparison",
+          "verdict": "PASS"
+        },
+        "deterministic-quality-m170-qwen27b-ud-4bit": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 649.049,
+          "path": "artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/deterministic-quality-m170-qwen27b-ud-4bit.json",
+          "row_count": 8,
+          "tag": "m170-qwen27b-ud-4bit",
+          "type": "deterministic_quality_regression",
+          "verdict": "PASS"
+        },
+        "long-context-quality-m170-qwen27b-ud-4bit": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 6792.323,
+          "path": "artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/long-context-quality-m170-qwen27b-ud-4bit.json",
+          "row_count": 1,
+          "tag": "m170-qwen27b-ud-4bit",
+          "type": "long_context_rope_imrope_quality",
+          "verdict": "PASS"
+        },
+        "loop-quality-m170-qwen27b-ud-4bit": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 3377.165,
+          "path": "artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/loop-quality-m170-qwen27b-ud-4bit.json",
+          "row_count": 9,
+          "tag": "m170-qwen27b-ud-4bit",
+          "type": "loop_repetition_quality_gate",
+          "verdict": "PASS"
+        }
+      },
+      "failures": [],
+      "label": "qwen27b-ud-4bit",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      "verdict": "PASS"
+    }
+  ],
+  "readiness": "model-quality-comparable",
+  "tag": "m179-qwen27b",
+  "type": "model_quality_comparison",
+  "verdict": "PASS"
+}

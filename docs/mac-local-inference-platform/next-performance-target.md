@@ -2072,3 +2072,25 @@ Decision:
 - M177 is now runtime-proven. Future lower-memory suite runs should no longer
   need `/health` fallback when they are run against a server started from this
   commit or later.
+
+## M179 Result
+
+M179 creates a one-command model swap artifact workflow.
+
+Artifact:
+
+- `artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json`
+
+Result:
+
+- workflow verdict: `PASS`
+- swap decision: `REJECT`
+- model comparison: `PASS`
+- quality threshold: `PASS`
+- blocker: candidate speed
+- candidate slowdown ratio: `9.968977`
+
+Decision:
+
+- Keep the active A3B model. The 27B dense model is quality-compatible but not a
+  performance upgrade.

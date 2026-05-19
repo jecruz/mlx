@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "model_quality_comparison": {
+      "path": "artifacts/m179-model-swap-workflow/model-quality-comparison-m179-qwen27b.json",
+      "verdict": "PASS"
+    },
+    "model_swap_acceptance": {
+      "path": "artifacts/m179-model-swap-workflow/model-swap-acceptance-m179-qwen27b.json",
+      "swap_decision": "REJECT",
+      "verdict": "PASS"
+    },
+    "quality_threshold_gate": {
+      "path": "artifacts/m179-model-swap-workflow/quality-threshold-gate-m179-qwen27b.json",
+      "readiness": "ci-quality-ready",
+      "verdict": "PASS"
+    }
+  },
+  "blockers": [
+    "candidate_speed: slowdown_ratio=9.968977, threshold=1.0"
+  ],
+  "readiness": "swap-blocked",
+  "swap_decision": "REJECT",
+  "tag": "m179-qwen27b",
+  "type": "model_swap_workflow",
+  "verdict": "PASS"
+}

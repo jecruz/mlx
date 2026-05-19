@@ -1758,3 +1758,28 @@ Decision:
 - The running resident server now emits per-request memory metrics, so
   lower-memory gates can use request-local `active_memory_gb` instead of relying
   on process-level `/health` fallback.
+
+## M179 Model Swap Workflow
+
+M179 adds a one-command artifact workflow for model swap decisions.
+
+Artifacts:
+
+- `artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json`
+- `artifacts/m179-model-swap-workflow/model-swap-acceptance-m179-qwen27b.md`
+
+Result:
+
+- workflow verdict: `PASS`
+- model comparison: `PASS`
+- quality threshold: `PASS`
+- swap decision: `REJECT`
+- readiness: `swap-blocked`
+- blocker: `candidate_speed`
+- candidate slowdown ratio: `9.968977`
+
+Decision:
+
+- Model swap evaluation is now reproducible as a single artifact workflow. The
+  tested 27B dense model remains rejected because it is slower despite passing
+  quality gates.

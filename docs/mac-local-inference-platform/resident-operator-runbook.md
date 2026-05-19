@@ -608,3 +608,33 @@ Expected result:
 - `request_memory_metrics_live_probe PASS`
 - non-stream `engine_metrics` include all request memory fields
 - stream final `engine_metrics` include all request memory fields
+
+Run the model swap workflow:
+
+```bash
+python3 benchmarks/python/model_swap_workflow.py \
+  --current-label qwen35b-a3b-ud-4bit \
+  --current-model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit \
+  --current-artifact artifacts/m170-model-quality-comparison/current-a3b/deterministic-quality-m170-current-a3b.json \
+  --current-artifact artifacts/m170-model-quality-comparison/current-a3b/cache-quality-m170-current-a3b.json \
+  --current-artifact artifacts/m170-model-quality-comparison/current-a3b/long-context-quality-m170-current-a3b.json \
+  --current-artifact artifacts/m170-model-quality-comparison/current-a3b/loop-quality-m170-current-a3b.json \
+  --candidate-label qwen27b-ud-4bit \
+  --candidate-model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit \
+  --candidate-artifact artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/deterministic-quality-m170-qwen27b-ud-4bit.json \
+  --candidate-artifact artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/cache-quality-m170-qwen27b-ud-4bit.json \
+  --candidate-artifact artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/long-context-quality-m170-qwen27b-ud-4bit.json \
+  --candidate-artifact artifacts/m170-model-quality-comparison/qwen27b-ud-4bit/loop-quality-m170-qwen27b-ud-4bit.json \
+  --quality-artifact artifacts/m175-live-expanded-quality-suite/deterministic-quality-m175-qwen-a3b.json \
+  --quality-artifact artifacts/m175-live-expanded-quality-suite/loop-quality-m175-qwen-a3b.json \
+  --operator-bundle-json artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json \
+  --output-dir artifacts/m179-model-swap-workflow \
+  --tag m179-qwen27b \
+  --allow-warnings
+```
+
+Expected result:
+
+- `model_swap_workflow PASS`
+- `swap_decision=REJECT` for the tested 27B dense candidate
+- the blocker should be `candidate_speed`

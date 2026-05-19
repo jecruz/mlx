@@ -1,0 +1,62 @@
+{
+  "blockers": [
+    "candidate_speed: slowdown_ratio=9.968977, threshold=1.0"
+  ],
+  "candidate": {
+    "label": "qwen27b-ud-4bit",
+    "mean_quality_gate_ms": 3377.609,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+    "verdict": "PASS"
+  },
+  "checks": [
+    {
+      "detail": "verdict='PASS'",
+      "label": "model_comparison",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "quality_threshold",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "current_quality",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "candidate_quality",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "slowdown_ratio=9.968977, threshold=1.0",
+      "label": "candidate_speed",
+      "verdict": "FAIL"
+    }
+  ],
+  "current": {
+    "label": "qwen35b-a3b-ud-4bit",
+    "mean_quality_gate_ms": 338.812,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "verdict": "PASS"
+  },
+  "derived": {
+    "candidate_slowdown_ratio": 9.968977,
+    "max_candidate_slowdown_ratio": 1.0
+  },
+  "model_comparison": {
+    "path": "artifacts/m179-model-swap-workflow/model-quality-comparison-m179-qwen27b.json",
+    "verdict": "PASS"
+  },
+  "quality_threshold": {
+    "path": "artifacts/m179-model-swap-workflow/quality-threshold-gate-m179-qwen27b.json",
+    "readiness": "ci-quality-ready",
+    "verdict": "PASS"
+  },
+  "readiness": "swap-blocked",
+  "swap_decision": "REJECT",
+  "tag": "m179-qwen27b",
+  "type": "model_swap_acceptance_gate",
+  "verdict": "PASS"
+}
