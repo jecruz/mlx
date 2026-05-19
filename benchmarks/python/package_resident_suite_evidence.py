@@ -72,6 +72,31 @@ def dax_repeated_context_summary(
     }
 
 
+def dax_first_hit_summary(report: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not report:
+        return None
+    derived = report.get("derived") or {}
+    return {
+        "verdict": report.get("verdict"),
+        "profile": report.get("dax_profile"),
+        "benchmark_verdict": report.get("benchmark_verdict"),
+        "gate_verdict": report.get("gate_verdict"),
+        "conversion_turn": derived.get("conversion_turn"),
+        "conversion_actual_prefill_tokens": derived.get(
+            "conversion_actual_prefill_tokens"
+        ),
+        "conversion_ratio_vs_baseline": derived.get(
+            "conversion_ratio_vs_baseline"
+        ),
+        "mature_hit_speedup_vs_baseline": derived.get(
+            "mature_hit_speedup_vs_baseline"
+        ),
+        "mature_hit_actual_prefill_tokens": derived.get(
+            "mature_hit_actual_prefill_tokens"
+        ),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
@@ -106,6 +131,9 @@ def main() -> None:
             manifest.get("dax_repeated_context_report"),
             manifest.get("dax_repeated_context_gate_report"),
         ),
+        "dax_first_hit": dax_first_hit_summary(
+            manifest.get("dax_first_hit_summary_report")
+        ),
     }
     index_path = args.output_dir / "resident-suite-evidence-index.json"
     index_path.write_text(json.dumps(evidence_index, indent=2, sort_keys=True) + "\n")
@@ -123,6 +151,8 @@ def main() -> None:
         ((evidence_index["dax_repeated_context"] or {}).get("gate") or {}).get(
             "verdict"
         ),
+        "dax_first_hit",
+        (evidence_index["dax_first_hit"] or {}).get("verdict"),
         index_path,
     )
 

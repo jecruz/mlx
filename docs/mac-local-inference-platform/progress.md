@@ -2708,3 +2708,33 @@
     regression gate. The live artifact used `agent-workspace-request` because
     the resident server predates the new `agent-workspace-first-hit` profile
     name.
+- Completed M94 resident suite first-hit product integration:
+  - updated `benchmarks/python/run_resident_regression_suite.py` with
+    `--include-dax-first-hit` and `--dax-first-hit-profile`
+  - updated `benchmarks/python/summarize_resident_suite_manifest.py` to print
+    first-hit product gate metrics
+  - updated `benchmarks/python/package_resident_suite_evidence.py` to package
+    and summarize `dax_first_hit`
+  - wrote artifacts:
+    - `artifacts/m94-suite-first-hit-product/resident-regression-suite-m94-qwen-a3b-first-hit-product.json`
+    - `artifacts/m94-suite-first-hit-product/dax-product-first-hit-summary-m94-qwen-a3b-first-hit-product.json`
+    - `artifacts/m94-suite-first-hit-product/dax-product-first-hit-gate-m94-qwen-a3b-first-hit-product.json`
+    - `artifacts/m94-suite-first-hit-product/dax-product-first-hit-m94-qwen-a3b-first-hit-product.json`
+    - `artifacts/m94-suite-first-hit-product/dax-product-first-hit-m94-qwen-a3b-first-hit-product.jsonl`
+    - `artifacts/m94-suite-first-hit-product-evidence-package/resident-suite-evidence-index.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/summarize_resident_suite_manifest.py benchmarks/python/package_resident_suite_evidence.py benchmarks/python/dax_product_first_hit_gate.py`
+    - minimal resident suite with `--include-dax-first-hit` passed against
+      `http://127.0.0.1:8773`
+    - package helper copied first-hit artifacts and indexed `dax_first_hit=PASS`
+    - suite manifest and evidence index parsed with `python3 -m json.tool`
+  - M94 result:
+    - suite verdict `PASS`
+    - `dax_first_hit` verdict `PASS`
+    - conversion turn `2`
+    - conversion prefill `18` tokens
+    - conversion ratio vs baseline `0.837`
+    - mature hit speedup `3.052x`
+    - mature hit prefill `18` tokens
+  - M94 conclusion: first-hit product validation is now part of the resident
+    suite manifest/evidence path, not just a standalone benchmark command.

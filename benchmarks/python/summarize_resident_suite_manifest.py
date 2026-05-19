@@ -25,6 +25,7 @@ def load_manifest(path: Path) -> dict[str, Any]:
 def print_manifest_summary(manifest: dict[str, Any]) -> None:
     gate_report = manifest.get("gate_report") or {}
     dax_gate_report = manifest.get("dax_repeated_context_gate_report") or {}
+    dax_first_hit_report = manifest.get("dax_first_hit_summary_report") or {}
     failure = manifest.get("failure") or {}
 
     print(
@@ -80,6 +81,25 @@ def print_manifest_summary(manifest: dict[str, Any]) -> None:
             print("dax_repeated_context_gate_failure", failure_text)
     else:
         print("dax_repeated_context_gate", "none")
+
+    if dax_first_hit_report:
+        derived = dax_first_hit_report.get("derived") or {}
+        print(
+            "dax_first_hit",
+            dax_first_hit_report.get("verdict"),
+            "profile",
+            dax_first_hit_report.get("dax_profile"),
+            "conversion_prefill",
+            derived.get("conversion_actual_prefill_tokens"),
+            "conversion_ratio",
+            derived.get("conversion_ratio_vs_baseline"),
+            "mature_speedup",
+            derived.get("mature_hit_speedup_vs_baseline"),
+        )
+        for failure_text in dax_first_hit_report.get("failures") or []:
+            print("dax_first_hit_failure", failure_text)
+    else:
+        print("dax_first_hit", "none")
 
     if failure:
         print(

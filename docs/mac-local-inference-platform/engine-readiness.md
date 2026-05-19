@@ -413,6 +413,16 @@ Readiness interpretation:
     `18` tokens
   - implication: Dax/product validation can now fail specifically when the
     second repeated-context turn regresses to full prefill.
+- M94 integrates first-hit product validation into the resident suite:
+  - suite option: `--include-dax-first-hit`
+  - profile option: `--dax-first-hit-profile`
+  - suite artifact:
+    `artifacts/m94-suite-first-hit-product/resident-regression-suite-m94-qwen-a3b-first-hit-product.json`
+  - evidence package:
+    `artifacts/m94-suite-first-hit-product-evidence-package/resident-suite-evidence-index.json`
+  - result: suite `PASS`, `dax_first_hit` `PASS`, conversion turn `2`,
+    conversion prefill `18` tokens, conversion ratio `0.837`, mature hit
+    speedup `3.052x`, mature hit prefill `18` tokens
 
 ## Current Qwen Result
 

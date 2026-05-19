@@ -1,0 +1,56 @@
+{
+  "copied": {
+    "dax_first_hit_benchmark": {
+      "bytes": 107332,
+      "path": "artifacts/m94-suite-first-hit-product-evidence-package/dax-product-first-hit-m94-qwen-a3b-first-hit-product.json",
+      "source": "artifacts/m94-suite-first-hit-product/dax-product-first-hit-m94-qwen-a3b-first-hit-product.json"
+    },
+    "dax_first_hit_gate": {
+      "bytes": 54443,
+      "path": "artifacts/m94-suite-first-hit-product-evidence-package/dax-product-first-hit-gate-m94-qwen-a3b-first-hit-product.json",
+      "source": "artifacts/m94-suite-first-hit-product/dax-product-first-hit-gate-m94-qwen-a3b-first-hit-product.json"
+    },
+    "dax_first_hit_jsonl": {
+      "bytes": 66786,
+      "path": "artifacts/m94-suite-first-hit-product-evidence-package/dax-product-first-hit-m94-qwen-a3b-first-hit-product.jsonl",
+      "source": "artifacts/m94-suite-first-hit-product/dax-product-first-hit-m94-qwen-a3b-first-hit-product.jsonl"
+    },
+    "dax_first_hit_summary": {
+      "bytes": 1091,
+      "path": "artifacts/m94-suite-first-hit-product-evidence-package/dax-product-first-hit-summary-m94-qwen-a3b-first-hit-product.json",
+      "source": "artifacts/m94-suite-first-hit-product/dax-product-first-hit-summary-m94-qwen-a3b-first-hit-product.json"
+    },
+    "suite_manifest": {
+      "bytes": 169063,
+      "path": "artifacts/m94-suite-first-hit-product-evidence-package/resident-regression-suite-m94-qwen-a3b-first-hit-product.json",
+      "source": "artifacts/m94-suite-first-hit-product/resident-regression-suite-m94-qwen-a3b-first-hit-product.json"
+    }
+  },
+  "dax_first_hit": {
+    "benchmark_verdict": "PASS",
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.836986318249413,
+    "conversion_turn": 2,
+    "gate_verdict": "PASS",
+    "mature_hit_actual_prefill_tokens": 18.0,
+    "mature_hit_speedup_vs_baseline": 3.0520987658330228,
+    "profile": "agent-workspace-request",
+    "verdict": "PASS"
+  },
+  "dax_repeated_context": null,
+  "gate": null,
+  "missing": {
+    "cache": "artifacts/m94-suite-first-hit-product/resident-benchmark-sync-safe-m94-qwen-a3b-first-hit-product.jsonl",
+    "cold_start": "artifacts/m94-suite-first-hit-product/resident-cold-start-sync-safe-m94-qwen-a3b-first-hit-product.jsonl",
+    "dax_repeated_context": "artifacts/m94-suite-first-hit-product/dax-repeated-context-m94-qwen-a3b-first-hit-product.json",
+    "dax_repeated_context_gate": "artifacts/m94-suite-first-hit-product/dax-repeated-context-gate-m94-qwen-a3b-first-hit-product.json",
+    "dax_repeated_context_jsonl": "artifacts/m94-suite-first-hit-product/dax-repeated-context-m94-qwen-a3b-first-hit-product.jsonl",
+    "gate": "artifacts/m94-suite-first-hit-product/resident-regression-gate-m94-qwen-a3b-first-hit-product.json",
+    "prefill": "artifacts/m94-suite-first-hit-product/resident-prefill-isolation-sync-safe-m94-qwen-a3b-first-hit-product.jsonl"
+  },
+  "output_dir": "artifacts/m94-suite-first-hit-product-evidence-package",
+  "source_manifest": "artifacts/m94-suite-first-hit-product/resident-regression-suite-m94-qwen-a3b-first-hit-product.json",
+  "suite_tag": "m94-qwen-a3b-first-hit-product",
+  "suite_verdict": "PASS",
+  "type": "resident_suite_evidence_package"
+}

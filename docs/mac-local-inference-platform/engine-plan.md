@@ -5838,6 +5838,77 @@ M93 decision:
 - M94 should wire Dax product mode to select the first-hit profile when the
   workflow prioritizes immediate second-turn latency.
 
+## M94 Resident Suite First-Hit Product Integration
+
+M94 wires the first-hit product gate into the resident regression suite
+manifest path so product-mode validation can carry first-hit evidence alongside
+the existing steady-state repeated-context gate.
+
+Changes:
+
+- `benchmarks/python/run_resident_regression_suite.py`
+  - added `--include-dax-first-hit`
+  - added `--dax-first-hit-profile`
+  - records first-hit benchmark, gate, summary, and JSONL artifacts in the
+    suite manifest
+- `benchmarks/python/summarize_resident_suite_manifest.py`
+  - prints `dax_first_hit` verdict, profile, conversion prefill, conversion
+    ratio, and mature-hit speedup
+- `benchmarks/python/package_resident_suite_evidence.py`
+  - packages and summarizes `dax_first_hit` evidence
+
+Artifacts:
+
+- `artifacts/m94-suite-first-hit-product/resident-regression-suite-m94-qwen-a3b-first-hit-product.json`
+- `artifacts/m94-suite-first-hit-product/dax-product-first-hit-summary-m94-qwen-a3b-first-hit-product.json`
+- `artifacts/m94-suite-first-hit-product/dax-product-first-hit-gate-m94-qwen-a3b-first-hit-product.json`
+- `artifacts/m94-suite-first-hit-product/dax-product-first-hit-m94-qwen-a3b-first-hit-product.json`
+- `artifacts/m94-suite-first-hit-product/dax-product-first-hit-m94-qwen-a3b-first-hit-product.jsonl`
+- `artifacts/m94-suite-first-hit-product-evidence-package/resident-suite-evidence-index.json`
+
+Command:
+
+```text
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m94-suite-first-hit-product \
+  --tag m94-qwen-a3b-first-hit-product \
+  --skip-benchmarks \
+  --skip-compare \
+  --skip-gate \
+  --skip-generated-cache-safety \
+  --skip-generated-cache-edges \
+  --skip-concurrent-cancel-pressure \
+  --skip-async-cache-priority \
+  --include-dax-first-hit \
+  --dax-first-hit-profile agent-workspace-request \
+  --print-manifest-summary
+```
+
+The suite option defaults to `agent-workspace-first-hit`; this run used
+`agent-workspace-request` because the live server had not been restarted with
+the new profile catalog.
+
+Result:
+
+- suite verdict: `PASS`
+- `dax_first_hit`: `PASS`
+- conversion turn: `2`
+- conversion prefill: `18` tokens
+- conversion ratio vs baseline: `0.837`
+- mature hit speedup: `3.052x`
+- mature hit prefill: `18` tokens
+- evidence package: `dax_first_hit` summary copied and indexed
+
+M94 decision:
+
+- Product suite validation can now include first-hit conversion without relying
+  on an ad hoc standalone command.
+- Dax product mode can expose this as a suite option or product run mode while
+  still preserving the mature repeated-context path.
+- M95 should add and validate a lower-memory product profile so first-hit and
+  steady-state behavior remain usable on smaller-memory Macs.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

@@ -141,6 +141,10 @@ def write_suite_manifest(
     dax_repeated_context_artifact: Path,
     dax_repeated_context_jsonl: Path,
     dax_repeated_context_gate_artifact: Path,
+    dax_first_hit_summary_artifact: Path,
+    dax_first_hit_benchmark_artifact: Path,
+    dax_first_hit_jsonl: Path,
+    dax_first_hit_gate_artifact: Path,
     steps: dict[str, bool],
     failure: dict[str, Any] | None = None,
 ) -> None:
@@ -180,6 +184,26 @@ def write_suite_manifest(
             kind="dax_repeated_context_gate",
             enabled=steps["dax_repeated_context"],
         ),
+        "dax_first_hit_summary": artifact_entry(
+            dax_first_hit_summary_artifact,
+            kind="dax_product_first_hit_gate_summary",
+            enabled=steps["dax_first_hit"],
+        ),
+        "dax_first_hit_benchmark": artifact_entry(
+            dax_first_hit_benchmark_artifact,
+            kind="dax_repeated_context_bench",
+            enabled=steps["dax_first_hit"],
+        ),
+        "dax_first_hit_jsonl": artifact_entry(
+            dax_first_hit_jsonl,
+            kind="dax_repeated_context_rows",
+            enabled=steps["dax_first_hit"],
+        ),
+        "dax_first_hit_gate": artifact_entry(
+            dax_first_hit_gate_artifact,
+            kind="dax_first_hit_conversion_gate",
+            enabled=steps["dax_first_hit"],
+        ),
     }
     suite_report = {
         "type": "resident_regression_suite",
@@ -195,6 +219,15 @@ def write_suite_manifest(
         ),
         "dax_repeated_context_gate_report": read_json_if_exists(
             dax_repeated_context_gate_artifact
+        ),
+        "dax_first_hit_summary_report": read_json_if_exists(
+            dax_first_hit_summary_artifact
+        ),
+        "dax_first_hit_benchmark_report": read_json_if_exists(
+            dax_first_hit_benchmark_artifact
+        ),
+        "dax_first_hit_gate_report": read_json_if_exists(
+            dax_first_hit_gate_artifact
         ),
         "failure": failure,
     }
@@ -320,6 +353,7 @@ def main() -> int:
     parser.add_argument("--skip-concurrent-cancel-pressure", action="store_true")
     parser.add_argument("--skip-async-cache-priority", action="store_true")
     parser.add_argument("--include-dax-repeated-context", action="store_true")
+    parser.add_argument("--include-dax-first-hit", action="store_true")
     parser.add_argument(
         "--dax-dir",
         type=Path,
@@ -339,6 +373,10 @@ def main() -> int:
         default=512,
     )
     parser.add_argument("--dax-repeated-max-hit-service-ms", type=float, default=400.0)
+    parser.add_argument("--dax-first-hit-profile", default="agent-workspace-first-hit")
+    parser.add_argument("--dax-first-hit-max-conversion-ratio", type=float, default=0.85)
+    parser.add_argument("--dax-first-hit-max-prefill-tokens", type=int, default=32)
+    parser.add_argument("--dax-first-hit-min-mature-speedup", type=float, default=2.0)
     parser.add_argument("--print-manifest-summary", action="store_true")
     parser.add_argument("--generated-cache-long-max-tokens", type=int, default=32)
     parser.add_argument("--generated-cache-stream-max-tokens", type=int, default=12)
@@ -386,6 +424,16 @@ def main() -> int:
     dax_repeated_context_gate_artifact = (
         args.output_dir / f"dax-repeated-context-gate-{tag}.json"
     )
+    dax_first_hit_summary_artifact = (
+        args.output_dir / f"dax-product-first-hit-summary-{tag}.json"
+    )
+    dax_first_hit_benchmark_artifact = (
+        args.output_dir / f"dax-product-first-hit-{tag}.json"
+    )
+    dax_first_hit_jsonl = args.output_dir / f"dax-product-first-hit-{tag}.jsonl"
+    dax_first_hit_gate_artifact = (
+        args.output_dir / f"dax-product-first-hit-gate-{tag}.json"
+    )
     suite_manifest = args.output_dir / f"resident-regression-suite-{tag}.json"
     steps = {
         "benchmarks": not args.skip_benchmarks,
@@ -397,6 +445,7 @@ def main() -> int:
         "concurrent_cancel_pressure": not args.skip_concurrent_cancel_pressure,
         "async_cache_priority": not args.skip_async_cache_priority,
         "dax_repeated_context": args.include_dax_repeated_context,
+        "dax_first_hit": args.include_dax_first_hit,
     }
     global ACTIVE_SUITE_CONTEXT
     global ACTIVE_PRINT_MANIFEST_SUMMARY
@@ -412,6 +461,10 @@ def main() -> int:
         "dax_repeated_context_artifact": dax_repeated_context_artifact,
         "dax_repeated_context_jsonl": dax_repeated_context_jsonl,
         "dax_repeated_context_gate_artifact": dax_repeated_context_gate_artifact,
+        "dax_first_hit_summary_artifact": dax_first_hit_summary_artifact,
+        "dax_first_hit_benchmark_artifact": dax_first_hit_benchmark_artifact,
+        "dax_first_hit_jsonl": dax_first_hit_jsonl,
+        "dax_first_hit_gate_artifact": dax_first_hit_gate_artifact,
         "steps": steps,
     }
     ACTIVE_PRINT_MANIFEST_SUMMARY = args.print_manifest_summary
@@ -619,6 +672,40 @@ def main() -> int:
             cwd=cwd,
         )
 
+    if args.include_dax_first_hit:
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/dax_product_first_hit_gate.py",
+                "--base-url",
+                args.base_url,
+                "--dax-dir",
+                str(args.dax_dir),
+                "--output-dir",
+                str(args.output_dir),
+                "--tag",
+                tag,
+                "--dax-profile",
+                args.dax_first_hit_profile,
+                "--turns",
+                str(args.dax_repeated_turns),
+                "--shared-repeats",
+                str(args.dax_repeated_shared_repeats),
+                "--max-tokens",
+                str(args.dax_repeated_max_tokens),
+                "--max-conversion-prefill-tokens",
+                str(args.dax_first_hit_max_prefill_tokens),
+                "--max-conversion-ratio",
+                str(args.dax_first_hit_max_conversion_ratio),
+                "--min-mature-hit-speedup",
+                str(args.dax_first_hit_min_mature_speedup),
+                "--max-mature-hit-prefill-tokens",
+                str(args.dax_repeated_max_hit_prefill_tokens),
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+
     write_suite_manifest(verdict="PASS", failure=None, **ACTIVE_SUITE_CONTEXT)
     if args.print_manifest_summary:
         manifest = read_json_if_exists(suite_manifest)
@@ -645,6 +732,8 @@ def main() -> int:
             not args.skip_async_cache_priority,
             "dax_repeated_context=",
             args.include_dax_repeated_context,
+            "dax_first_hit=",
+            args.include_dax_first_hit,
         )
     else:
         print(
@@ -665,6 +754,8 @@ def main() -> int:
             not args.skip_async_cache_priority,
             "dax_repeated_context=",
             args.include_dax_repeated_context,
+            "dax_first_hit=",
+            args.include_dax_first_hit,
         )
     return 0
 

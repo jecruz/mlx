@@ -590,3 +590,34 @@ Decision:
 - Next target is M94: route Dax product mode to the first-hit profile when the
   product wants immediate second-turn latency rather than pure steady-state
   async reuse.
+
+## M94 Result
+
+M94 integrates first-hit product validation into the resident suite manifest and
+evidence-package path.
+
+Added:
+
+- `run_resident_regression_suite.py --include-dax-first-hit`
+- `run_resident_regression_suite.py --dax-first-hit-profile`
+- manifest fields for first-hit benchmark, gate, summary, and JSONL artifacts
+- suite summary output for `dax_first_hit`
+- evidence-package summary for `dax_first_hit`
+
+Result:
+
+- suite verdict: `PASS`
+- `dax_first_hit`: `PASS`
+- conversion turn: `2`
+- conversion actual prefill: `18` tokens
+- conversion ratio vs baseline: `0.837`
+- mature hit speedup: `3.052x`
+- mature hit actual prefill: `18` tokens
+
+Decision:
+
+- Product validation can now include first-hit conversion from the resident
+  suite, not only from standalone scripts.
+- The first-hit gate remains opt-in so lower-level resident regression runs do
+  not require Dax.
+- Next target is M95: lower-memory product profile validation.
