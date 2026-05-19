@@ -5512,6 +5512,60 @@ M87 decision:
 - The package still preserves the raw benchmark, JSONL rows, gate report, and
   suite manifest for deeper debugging.
 
+## M88 Dax Product Bench Mode
+
+M88 exposes the M86 product-path suite from the Dax TUI without requiring the
+operator to know the raw resident-suite flags.
+
+Dax repo:
+
+- path: `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+- commit: `e8f5da12 Add MLX product bench mode`
+
+Added Dax behavior:
+
+```text
+/bench run product <mlx-worktree> [output-dir] [tag]
+```
+
+Compatibility:
+
+- existing resident-suite command still works:
+  `/bench run <mlx-worktree> [output-dir] [tag]`
+- explicit resident mode also works:
+  `/bench run resident <mlx-worktree> [output-dir] [tag]`
+
+Product mode maps internally to:
+
+- `run_resident_regression_suite.py --include-dax-repeated-context`
+- skipped lower-level resident probes
+- skipped lower-level resident gate
+- product-path manifest summary rendering
+
+Dax summary rendering now includes:
+
+- `bench dax product gate: PASS|FAIL checks=<n> failures=<n>`
+- `bench dax product metrics: hits=<n> speedup=<x> best_hit_ms=<ms> baseline_prefill=<n> best_hit_prefill=<n>`
+
+Validation:
+
+- `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+  passed `30` tests
+- `npx tsgo -p tsconfig.build.json --noEmit` passed from
+  `packages/coding-agent`
+- Dax pre-commit checks passed:
+  - Biome
+  - root `tsgo --noEmit`
+  - browser smoke
+  - web-ui Biome and TypeScript checks
+
+M88 decision:
+
+- Dax now has a named product-path benchmark mode instead of exposing raw
+  suite-runner internals to the operator.
+- This completes the path from MLX engine optimization evidence to a usable
+  terminal operator workflow.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

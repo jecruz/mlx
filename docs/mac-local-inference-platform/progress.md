@@ -2558,3 +2558,26 @@
   - M87 conclusion: product-path suite evidence is now packaged with a compact,
     machine-readable summary plus the raw benchmark, rows, gate, and suite
     manifest.
+- Completed M88 Dax product bench mode:
+  - updated Dax in
+    `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo`
+  - Dax commit: `e8f5da12 Add MLX product bench mode`
+  - added named product-path suite command:
+    - `/bench run product <mlx-worktree> [output-dir] [tag]`
+  - preserved existing resident-suite behavior:
+    - `/bench run <mlx-worktree> [output-dir] [tag]`
+    - `/bench run resident <mlx-worktree> [output-dir] [tag]`
+  - product mode maps to `run_resident_regression_suite.py` with
+    `--include-dax-repeated-context` and skips the lower-level resident probes
+  - Dax suite summaries now render:
+    - `bench dax product gate: PASS|FAIL checks=<n> failures=<n>`
+    - `bench dax product metrics: hits=<n> speedup=<x> best_hit_ms=<ms> baseline_prefill=<n> best_hit_prefill=<n>`
+  - validation passed:
+    - `npm --prefix packages/coding-agent test -- mlx-engine-status.test.ts`
+      passed `30` tests
+    - `npx tsgo -p tsconfig.build.json --noEmit` passed from
+      `packages/coding-agent`
+    - Dax pre-commit checks passed: Biome, root `tsgo --noEmit`, browser
+      smoke, web-ui Biome, and web-ui TypeScript checks
+  - M88 conclusion: Dax now exposes product-path benchmark coverage as a named
+    operator mode instead of leaking raw suite-runner flags.

@@ -363,6 +363,11 @@ Readiness interpretation:
   - result: suite `PASS`, Dax gate `PASS`, copied `4` artifacts, and exposes
     cache-hit count, best-hit speedup, prefill reduction, and best-hit service
     latency in the package index
+- M88 exposes product-path coverage through Dax:
+  - Dax commit: `e8f5da12 Add MLX product bench mode`
+  - TUI command: `/bench run product <mlx-worktree> [output-dir] [tag]`
+  - existing resident-suite command remains compatible
+  - Dax summaries now show product gate verdict and product-path cache metrics
 
 ## Current Qwen Result
 

@@ -408,8 +408,40 @@ Decision:
 - Raw benchmark, JSONL rows, gate report, and suite manifest are still copied
   for deeper debugging.
 
+## M88 Result
+
+M88 exposed the product-path suite from Dax as a named benchmark mode.
+
+Dax commit:
+
+- `e8f5da12 Add MLX product bench mode`
+
+Command:
+
+```text
+/bench run product <mlx-worktree> [output-dir] [tag]
+```
+
+Compatibility:
+
+- `/bench run <mlx-worktree> [output-dir] [tag]` still runs the resident suite.
+- `/bench run resident <mlx-worktree> [output-dir] [tag]` explicitly runs the
+  resident suite.
+
+Validation:
+
+- Dax focused MLX test: `30` tests passed.
+- Dax coding-agent typecheck passed.
+- Dax pre-commit checks passed.
+
+Decision:
+
+- Product-path benchmark coverage is now reachable from the TUI as an operator
+  mode instead of as raw suite-runner flags.
+
 Next target:
 
-- Decide and implement whether Dax `/bench run` should expose the opt-in
-  product-path suite flag directly, likely as a named mode rather than a raw
-  pile of suite-runner flags.
+- Use the Dax product mode against the live Qwen A3B resident server once from
+  the operator surface, then decide whether the next performance milestone
+  should target first-hit latency, async build scheduling, or lower-memory
+  product profiles.

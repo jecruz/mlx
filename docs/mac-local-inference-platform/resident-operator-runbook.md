@@ -179,6 +179,16 @@ Run a bounded suite from Dax:
 Dax will run the resident suite, write artifacts, then summarize the generated
 manifest in the operator panel.
 
+Run the product-path Dax repeated-context suite from Dax:
+
+```text
+/bench run product /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench /private/tmp/dax-product-suite dax-qwen-a3b-product
+```
+
+This maps to the resident suite's `--include-dax-repeated-context` mode and
+prints the product gate verdict plus cache-hit speedup, prefill reduction, and
+best-hit latency in the operator panel.
+
 ## Cache-Create Optimization Probe
 
 ```bash
