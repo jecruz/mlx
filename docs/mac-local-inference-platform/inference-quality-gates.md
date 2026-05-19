@@ -155,6 +155,7 @@ performance:
 - `M181` live resident model swap lifecycle probe
 - `M182` operator readiness bundle with quality, memory, and model-swap status
 - `M183` UI/TUI contract for consuming operator readiness bundles
+- `M184` shared renderer for operator readiness bundle status cards
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport

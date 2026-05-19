@@ -2202,3 +2202,27 @@ Decision:
   `status_card`, `runtime`, `model_decision`, `memory`, `warnings`, and
   `failures`. They should not independently stitch M171/M179/M180/M181 unless
   the operator opens a details view.
+
+## M184 Result
+
+M184 adds a shared renderer for the operator readiness bundle.
+
+Artifacts:
+
+- `benchmarks/python/operator_readiness_render.py`
+- `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.json`
+- `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.txt`
+
+Result:
+
+- renderer ran successfully
+- source bundle verdict: `PASS`
+- active model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+- candidate model: `Qwen3.6-27B-UD-MLX-4bit`
+- swap decision: `REJECT`
+- candidate swap remains a warning, not a runtime failure
+
+Decision:
+
+- The next UI/TUI integration can consume the M184 renderer JSON/text directly
+  instead of duplicating readiness formatting logic in each client.

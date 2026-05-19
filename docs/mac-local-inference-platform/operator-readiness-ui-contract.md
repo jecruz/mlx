@@ -7,6 +7,7 @@ Validated by:
 
 - `benchmarks/python/operator_readiness_bundle.py`
 - `benchmarks/python/operator_readiness_contract_probe.py`
+- `benchmarks/python/operator_readiness_render.py`
 
 Current artifact:
 
@@ -15,6 +16,11 @@ Current artifact:
 Current contract probe:
 
 - `artifacts/m183-operator-readiness-contract/operator-readiness-contract-m183-qwen-a3b.json`
+
+Current renderer artifacts:
+
+- `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.json`
+- `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.txt`
 
 ## Scope
 
@@ -179,6 +185,34 @@ Recommended compact display:
 - Model swap badge: `candidate_swap`
 - Warnings section: list `warnings`
 - Failures section: list `failures`
+
+## Shared Renderer
+
+Clients that only need a terminal or compact card view can use the shared
+renderer instead of formatting the readiness bundle directly:
+
+```bash
+python3 benchmarks/python/operator_readiness_render.py \
+  --bundle-json artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json \
+  --output-json artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.json \
+  --output-text artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.txt \
+  --format text \
+  --fail-on-fail
+```
+
+The text output is intentionally stable and compact:
+
+```text
+MLX Operator Readiness: PASS
+operator-readiness-ready | Qwen3.6-35B-A3B-UD-MLX-4bit
+runtime=PASS quality=PASS live_suite=PASS lower_memory=PASS memory_source=PASS live_model_swap=PASS candidate_swap=WARN
+profile=interactive preset=async-experimental strategy=split_prefill_or_async_build
+memory=request_metrics active=21.02259841GB peak=22.31961337GB
+active=Qwen3.6-35B-A3B-UD-MLX-4bit candidate=Qwen3.6-27B-UD-MLX-4bit swap=REJECT
+```
+
+The JSON renderer output provides the same normalized display strings plus the
+model names, memory values, warnings, failures, and swap blockers.
 
 ## Validation Command
 

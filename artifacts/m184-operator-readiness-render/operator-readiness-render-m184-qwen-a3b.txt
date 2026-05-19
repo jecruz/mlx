@@ -1,0 +1,10 @@
+MLX Operator Readiness: PASS
+operator-readiness-ready | Qwen3.6-35B-A3B-UD-MLX-4bit
+runtime=PASS quality=PASS live_suite=PASS lower_memory=PASS memory_source=PASS live_model_swap=PASS candidate_swap=WARN
+profile=interactive preset=async-experimental strategy=split_prefill_or_async_build
+memory=request_metrics active=21.02259841GB peak=22.31961337GB
+active=Qwen3.6-35B-A3B-UD-MLX-4bit candidate=Qwen3.6-27B-UD-MLX-4bit swap=REJECT
+swap_blockers:
+- candidate_speed: slowdown_ratio=9.968977, threshold=1.0
+warnings:
+- model swap decision is REJECT

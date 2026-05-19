@@ -742,3 +742,22 @@ Consumer contract:
 - Use `/engine/ui` for live controls and immediate state.
 - Use the readiness bundle for release-quality readiness, warnings, model
   decision, and evidence links.
+
+Render the operator readiness bundle for terminal/UI display:
+
+```bash
+python3 benchmarks/python/operator_readiness_render.py \
+  --bundle-json artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json \
+  --output-json artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.json \
+  --output-text artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.txt \
+  --format text \
+  --fail-on-fail
+```
+
+Expected result:
+
+- first line: `MLX Operator Readiness: PASS`
+- status line includes `runtime=PASS`, `quality=PASS`, `live_suite=PASS`,
+  `lower_memory=PASS`, `memory_source=PASS`, `live_model_swap=PASS`, and
+  `candidate_swap=WARN`
+- model line shows the active model, tested candidate, and swap decision

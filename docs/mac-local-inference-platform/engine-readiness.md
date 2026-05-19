@@ -1893,3 +1893,28 @@ Decision:
   bundle as the primary readiness source and use `/engine/ui` for live controls.
   `candidate_swap=WARN` is displayable as a non-blocking warning when the active
   model remains ready.
+
+## M184 Operator Readiness Renderer
+
+M184 adds a reusable renderer for the operator readiness bundle.
+
+Artifacts:
+
+- `benchmarks/python/operator_readiness_render.py`
+- `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.json`
+- `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.txt`
+
+Result:
+
+- render verdict: `PASS`
+- active model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+- candidate model: `Qwen3.6-27B-UD-MLX-4bit`
+- swap decision: `REJECT`
+- status line includes runtime, quality, live suite, lower-memory,
+  request-metrics memory source, live model swap, and candidate-swap warning.
+
+Decision:
+
+- Dax/Prowl/TUI clients can reuse the renderer output for compact status cards
+  instead of reimplementing readiness formatting. The JSON renderer artifact is
+  the stable bridge for richer UI presentation.
