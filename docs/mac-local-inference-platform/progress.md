@@ -2844,3 +2844,25 @@
   - M98 conclusion: the lower-memory product profile works directly by name
     after server restart; compatibility `memory-saver` routing is no longer
     required for this path.
+- Completed M99 Dax product routing:
+  - updated Dax product CLI/TUI routing in commit `167cac48`
+  - added workload intent routing:
+    - `--intent first-hit` -> `agent-workspace-first-hit`
+    - `--intent coding-agent-first-hit` -> `agent-workspace-first-hit`
+    - `--intent low-memory` -> `agent-workspace-low-memory`
+    - `--intent coding-agent-low-memory` -> `agent-workspace-low-memory`
+  - added product benchmark modes:
+    - `/bench run product-first-hit ...`
+    - `/bench run product-low-memory ...`
+  - product-first-hit uses `agent-workspace-first-hit` with split-prefill
+    conversion acceptance
+  - product-low-memory uses `agent-workspace-low-memory` with bounded
+    `any` conversion acceptance
+  - Dax validation passed:
+    - `./node_modules/.bin/vitest --run packages/coding-agent/test/mlx-engine-status.test.ts`
+    - `./node_modules/.bin/tsgo --noEmit`
+    - `./node_modules/.bin/biome check packages/coding-agent/src/cli/mlx-engine-status.ts packages/coding-agent/test/mlx-engine-status.test.ts`
+    - `git diff --check -- packages/coding-agent/src/cli/mlx-engine-status.ts packages/coding-agent/test/mlx-engine-status.test.ts`
+  - M99 conclusion: the engine profile decisions from M96-M98 are now
+    reachable from Dax product/operator commands instead of being artifact-only
+    recommendations.

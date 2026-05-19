@@ -722,3 +722,35 @@ Decision:
 - `agent-workspace-low-memory` is now live-validated by name.
 - Next target is M99: wire product/Dax routing so operators can select async,
   first-hit, or low-memory profile modes intentionally.
+
+## M99 Result
+
+M99 wires the profile decisions into Dax product/operator commands.
+
+Added in Dax commit `167cac48`:
+
+- workload intents:
+  - `first-hit` -> `agent-workspace-first-hit`
+  - `coding-agent-first-hit` -> `agent-workspace-first-hit`
+  - `low-memory` -> `agent-workspace-low-memory`
+  - `coding-agent-low-memory` -> `agent-workspace-low-memory`
+- benchmark modes:
+  - `/bench run product-first-hit ...`
+  - `/bench run product-low-memory ...`
+- manifest summary support for `dax_first_hit_summary_report`
+
+Validation:
+
+- Dax MLX status test file: `31 passed`
+- Dax typecheck: `tsgo --noEmit` passed
+- Dax Biome check on changed files passed
+- Dax diff whitespace check passed
+
+Decision:
+
+- Operators can now intentionally select steady-state async, first-hit, and
+  lower-memory product paths from Dax instead of manually mapping raw MLX
+  profiles.
+- Next target is M100: produce an end-to-end operator wall-time report so
+  service-time improvements are compared against actual command/operator
+  elapsed time.

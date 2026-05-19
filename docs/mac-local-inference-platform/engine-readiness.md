@@ -455,6 +455,18 @@ Readiness interpretation:
   - result: `agent-workspace-low-memory` direct gate `PASS`, suite path
     `PASS`, conversion turn `2`, conversion prefill `18` tokens, direct
     conversion ratio `0.776`, suite conversion ratio `0.797`
+- M99 wires the validated profiles into Dax product routing:
+  - Dax commit: `167cac48`
+  - `--intent first-hit` and `--intent coding-agent-first-hit` route to
+    `agent-workspace-first-hit`
+  - `--intent low-memory` and `--intent coding-agent-low-memory` route to
+    `agent-workspace-low-memory`
+  - `/bench run product-first-hit ...` runs the resident suite first-hit path
+    with `agent-workspace-first-hit`
+  - `/bench run product-low-memory ...` runs the resident suite first-hit path
+    with `agent-workspace-low-memory`
+  - Dax validation passed: focused MLX status tests, typecheck, Biome check,
+    and diff whitespace check
 
 ## Current Qwen Result
 
@@ -477,9 +489,12 @@ instead of raw internals:
 - `Interactive`: prioritize immediate foreground latency.
 - `Agent Workspace Async`: use M79-proven steady-state async cache reuse for
   repeated coding-agent context.
-- `Agent Workspace`: wait briefly for repeated context prefix builds when
-  explicitly testing first-hit conversion.
-- `Memory Saver`: cap cache entries and prune aggressively.
+- `Agent Workspace First Hit`: use request-derived split-prefill conversion
+  when the second repeated-context turn must become responsive immediately.
+- `Agent Workspace Low Memory`: cap cache entries and memory while still
+  accepting bounded first-hit conversion for smaller-memory Macs.
+- `Memory Saver`: keep as a generic conservative profile, not the preferred
+  coding-agent lower-memory product route.
 - `Diagnostics`: run the readiness probes and show cache continuation blockers.
 
 ## Tensor Parallelism Note
