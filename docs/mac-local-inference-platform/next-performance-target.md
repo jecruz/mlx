@@ -466,10 +466,36 @@ Decision:
   operator-facing Dax command path.
 - Steady-state repeated-context reuse is no longer the weakest link.
 
+## M90 Result
+
+M90 added a focused gate for first-hit latency and async build scheduling.
+
+Added:
+
+- `benchmarks/python/dax_first_hit_latency_gate.py`
+- `artifacts/m90-first-hit-latency/dax-first-hit-latency-gate-m90-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- scheduled pre-hit service: `1386.49 ms`
+- scheduled pre-hit ratio vs baseline: `0.318`
+- scheduled pre-hit prefill: `2092` tokens
+- first-hit speedup vs baseline: `19.20x`
+- first-hit prefill: `18` tokens
+
+Decision:
+
+- The first-hit/cache-build turn is now separately measurable and gateable.
+- The current bottleneck is not mature reuse. It is the scheduled pre-hit turn
+  that still performs full prefill before the next request can benefit.
+
 Next target:
 
-- Target first-hit latency and async build scheduling. The concrete goal is to
-  reduce the second-turn full-prefill/cache-build cost before the mature cache
-  hit appears, without regressing the `~18` token mature-hit behavior.
+- Tune async build scheduling to reduce the scheduled pre-hit cost below the
+  current `1386.49 ms` baseline or convert the scheduled pre-hit turn into a
+  bounded pending-wait hit.
+- Preserve the mature-hit target: `<= 32` actual prefill tokens, with current
+  evidence at `18` tokens.
 - Keep lower-memory product profiles as the next product track after first-hit
   latency is bounded.

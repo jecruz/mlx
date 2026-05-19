@@ -5610,6 +5610,55 @@ M89 decision:
   performance milestone should focus on first-hit latency and async build
   scheduling, while lower-memory profiles remain a parallel product track.
 
+## M90 First-Hit Latency Gate
+
+M90 adds a focused gate for the expensive pre-hit/cache-build turn in Dax
+repeated-context reports.
+
+Script:
+
+- `benchmarks/python/dax_first_hit_latency_gate.py`
+
+Artifact:
+
+- `artifacts/m90-first-hit-latency/dax-first-hit-latency-gate-m90-qwen-a3b.json`
+
+Source report:
+
+- `artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.json`
+
+Gate command:
+
+```text
+python3 benchmarks/python/dax_first_hit_latency_gate.py \
+  artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.json \
+  --output-json artifacts/m90-first-hit-latency/dax-first-hit-latency-gate-m90-qwen-a3b.json \
+  --max-scheduled-pre-hit-ms 1600 \
+  --max-scheduled-pre-hit-ratio 0.50 \
+  --min-scheduled-pre-hit-prefill-tokens 512 \
+  --min-first-hit-speedup 2.0 \
+  --max-first-hit-prefill-tokens 32 \
+  --fail-on-fail
+```
+
+Result:
+
+- verdict: `PASS`
+- scheduled pre-hit service: `1386.49 ms <= 1600 ms`
+- scheduled pre-hit ratio vs baseline: `0.318 <= 0.50`
+- scheduled pre-hit prefill: `2092 >= 512` tokens
+- first-hit speedup vs baseline: `19.20x >= 2.0x`
+- first-hit prefill: `18 <= 32` tokens
+
+M90 decision:
+
+- First-hit work now has an explicit gate separate from mature-cache reuse.
+- The current bottleneck is confirmed: the scheduled pre-hit turn still performs
+  a full `2092` token prefill before the next turn can reuse the mature cache.
+- The next optimization should reduce the scheduled pre-hit service time or
+  convert that turn into a bounded pending wait/hit without regressing the
+  `18` token mature-hit path.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

@@ -376,6 +376,12 @@ Readiness interpretation:
   - result: suite `PASS`, Dax gate `PASS`, `2` cache-hit turns,
     `19.20x` best-hit speedup, best-hit prefill `18` tokens, and best-hit
     service latency `227.23 ms`
+- M90 adds a first-hit latency gate:
+  - artifact:
+    `artifacts/m90-first-hit-latency/dax-first-hit-latency-gate-m90-qwen-a3b.json`
+  - result: `PASS`, scheduled pre-hit service `1386.49 ms`, scheduled pre-hit
+    prefill `2092` tokens, first-hit speedup `19.20x`, and first-hit prefill
+    `18` tokens
 
 ## Current Qwen Result
 

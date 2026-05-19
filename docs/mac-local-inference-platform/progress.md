@@ -2610,3 +2610,25 @@
   - M89 conclusion: the optimized repeated-context path is now proven through
     the Dax operator command path; next performance work should target
     first-hit latency and async build scheduling.
+- Completed M90 first-hit latency gate:
+  - added `benchmarks/python/dax_first_hit_latency_gate.py`
+  - the gate analyzes Dax repeated-context reports and isolates:
+    - baseline full-prefill row
+    - scheduled pre-hit/cache-build row
+    - first mature cache-hit row
+  - wrote artifact:
+    - `artifacts/m90-first-hit-latency/dax-first-hit-latency-gate-m90-qwen-a3b.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/dax_first_hit_latency_gate.py`
+    - gate passed with `--fail-on-fail`
+    - report parsed with `python3 -m json.tool`
+  - M90 result:
+    - verdict `PASS`
+    - scheduled pre-hit service `1386.49 <= 1600 ms`
+    - scheduled pre-hit ratio vs baseline `0.318 <= 0.50`
+    - scheduled pre-hit prefill `2092 >= 512` tokens
+    - first-hit speedup `19.20x >= 2.0x`
+    - first-hit prefill `18 <= 32` tokens
+  - M90 conclusion: first-hit latency now has its own regression gate; the
+    current optimization target is the scheduled pre-hit turn that still does a
+    full `2092` token prefill before mature-cache reuse appears.
