@@ -124,6 +124,40 @@ def run_dax_prompt(
     return response, wall_ms, cmd
 
 
+def runtime_profile_for_intent(intent: str | None) -> str | None:
+    if intent is None:
+        return None
+    return {
+        "interactive": "interactive",
+        "coding-agent": "agent-workspace-async",
+        "agent-workspace": "agent-workspace-async",
+        "coding-agent-first-hit": "agent-workspace-first-hit",
+        "first-hit": "agent-workspace-first-hit",
+        "coding-agent-low-memory": "agent-workspace-low-memory",
+        "low-memory": "agent-workspace-low-memory",
+        "memory-saver": "memory-saver",
+        "diagnostics": "diagnostics",
+    }.get(intent)
+
+
+def run_resident_prompt(
+    *,
+    base_url: str,
+    prompt: str,
+    max_tokens: int,
+) -> tuple[dict[str, Any], float, list[str]]:
+    payload = {
+        "model": "resident-dax-client",
+        "prompt": prompt,
+        "max_tokens": max_tokens,
+        "policy": "auto",
+    }
+    started = time.perf_counter()
+    response = request_json("POST", f"{base_url}/v1/completions", payload)
+    wall_ms = (time.perf_counter() - started) * 1000.0
+    return response, wall_ms, ["POST", f"{base_url}/v1/completions"]
+
+
 def metric(response: dict[str, Any], key: str) -> Any:
     return (response.get("engine_metrics") or {}).get(key)
 
@@ -136,15 +170,22 @@ def row_for_response(
     command: list[str],
     after: dict[str, Any],
 ) -> dict[str, Any]:
+    service_request_ms = metric(response, "service_request_ms")
+    overhead_ms = (
+        wall_ms - float(service_request_ms)
+        if isinstance(service_request_ms, (int, float))
+        else None
+    )
     return {
         "type": "dax_repeated_context_bench_row",
         "turn": turn,
         "wall_ms": wall_ms,
+        "overhead_ms": overhead_ms,
         "command": command,
         "finish_reason": response["choices"][0].get("finish_reason"),
         "usage": response.get("usage"),
         "engine_metrics": response.get("engine_metrics"),
-        "service_request_ms": metric(response, "service_request_ms"),
+        "service_request_ms": service_request_ms,
         "cache_hit": bool(metric(response, "cache_hit")),
         "cache_scheduled": bool(metric(response, "cache_scheduled")),
         "cache_pending": bool(metric(response, "cache_pending")),
@@ -211,6 +252,7 @@ def main() -> int:
     parser.add_argument("--max-tokens", type=int, default=4)
     parser.add_argument("--dax-profile")
     parser.add_argument("--dax-intent")
+    parser.add_argument("--client-mode", choices=("cli", "resident"), default="cli")
     parser.add_argument("--min-speedup", type=float, default=2.0)
     parser.add_argument("--max-hit-prefill-tokens", type=int, default=32)
     parser.add_argument("--fail-on-fail", action="store_true")
@@ -223,8 +265,14 @@ def main() -> int:
     args.output_jsonl.parent.mkdir(parents=True, exist_ok=True)
     args.output_jsonl.write_text("")
 
+    target_profile = args.dax_profile or runtime_profile_for_intent(args.dax_intent)
+    if args.client_mode == "resident" and args.dax_intent and target_profile is None:
+        raise ValueError(f"unknown --dax-intent for resident client mode: {args.dax_intent}")
+
     configure_profile(base_url, "interactive")
     prune_cache(base_url)
+    if args.client_mode == "resident" and target_profile:
+        configure_profile(base_url, target_profile)
     rows: list[dict[str, Any]] = []
     try:
         for turn in range(1, args.turns + 1):
@@ -233,14 +281,21 @@ def main() -> int:
                 shared_repeats=args.shared_repeats,
                 turn=turn,
             )
-            response, wall_ms, command = run_dax_prompt(
-                dax_dir=args.dax_dir,
-                base_url=base_url,
-                prompt=prompt,
-                max_tokens=args.max_tokens,
-                dax_profile=args.dax_profile,
-                dax_intent=args.dax_intent,
-            )
+            if args.client_mode == "resident":
+                response, wall_ms, command = run_resident_prompt(
+                    base_url=base_url,
+                    prompt=prompt,
+                    max_tokens=args.max_tokens,
+                )
+            else:
+                response, wall_ms, command = run_dax_prompt(
+                    dax_dir=args.dax_dir,
+                    base_url=base_url,
+                    prompt=prompt,
+                    max_tokens=args.max_tokens,
+                    dax_profile=args.dax_profile,
+                    dax_intent=args.dax_intent,
+                )
             after = health_summary(base_url)
             row = row_for_response(
                 turn=turn,
@@ -287,6 +342,7 @@ def main() -> int:
         "max_tokens": args.max_tokens,
         "dax_profile": args.dax_profile,
         "dax_intent": args.dax_intent,
+        "client_mode": args.client_mode,
         "min_speedup": args.min_speedup,
         "max_hit_prefill_tokens": args.max_hit_prefill_tokens,
         "rows": rows,

@@ -1019,3 +1019,31 @@ Next implementation lane:
 - Run extended prompt sweep across `512/1024/2048/4096` prompt tokens.
 - Add lower-memory peak-memory and cache-limit gates.
 - Use auto-selection policy in the product control surface.
+
+## M109 Result
+
+M109 implements the resident Dax client benchmark path:
+
+- updated script: `benchmarks/python/dax_repeated_context_bench.py`
+- readiness script: `benchmarks/python/dax_resident_client_readiness_report.py`
+- artifact:
+  `artifacts/m109-resident-dax-client/resident-dax-client-m109-qwen-a3b.json`
+
+Result:
+
+- readiness verdict: `PASS`
+- checks: `5`
+- failures: `0`
+- new mode: `--client-mode resident`
+- fallback mode: `--client-mode cli`
+- direct endpoint: `/v1/completions`
+- benchmark rows now include `overhead_ms`
+
+Decision:
+
+- The harness can now bypass per-request Dax CLI startup for product-path
+  timing.
+- Live timing validation requires the resident MLX server to be running on
+  `127.0.0.1:8773`.
+- Next target is M110: add an overhead gate around the new `overhead_ms` row
+  field.

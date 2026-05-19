@@ -3034,3 +3034,20 @@
     the next implementation phase: resident Dax client, overhead gate, extended
     prompt sweep, lower-memory peak-memory gates, and auto-selection
     integration.
+- Completed M109 resident Dax client benchmark path:
+  - updated `benchmarks/python/dax_repeated_context_bench.py`
+  - added `--client-mode resident` to call the resident MLX
+    `/v1/completions` endpoint directly
+  - preserved `--client-mode cli` as the fallback Dax CLI path
+  - added `overhead_ms` to product benchmark rows
+  - added `benchmarks/python/dax_resident_client_readiness_report.py`
+  - generated artifact:
+    `artifacts/m109-resident-dax-client/resident-dax-client-m109-qwen-a3b.json`
+  - validation passed:
+    - readiness verdict `PASS`
+    - `5` checks, `0` failures
+    - `python3 -m py_compile benchmarks/python/dax_repeated_context_bench.py benchmarks/python/dax_resident_client_readiness_report.py`
+    - `git diff --check`
+  - M109 conclusion: the benchmark harness now has a hot resident-client path;
+    live timing validation is blocked only by the resident server not currently
+    running on `127.0.0.1:8773`.

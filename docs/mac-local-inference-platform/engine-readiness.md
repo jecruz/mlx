@@ -534,6 +534,13 @@ Readiness interpretation:
     `artifacts/m108-product-readiness-bundle/product-readiness-bundle-m108-qwen-a3b.json`
   - result: `PASS`, readiness `ready-for-next-implementation-lane`
   - bundle contains `9` passing evidence artifacts and `0` failures
+- M109 adds the resident Dax client benchmark path:
+  - `benchmarks/python/dax_repeated_context_bench.py --client-mode resident`
+  - direct endpoint: `/v1/completions`
+  - fallback: `--client-mode cli`
+  - product benchmark rows now include `overhead_ms`
+  - readiness artifact:
+    `artifacts/m109-resident-dax-client/resident-dax-client-m109-qwen-a3b.json`
 
 ## Current Qwen Result
 

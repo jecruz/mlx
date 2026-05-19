@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "name": "client_mode_argument",
+      "passed": true
+    },
+    {
+      "name": "direct_resident_completion_call",
+      "passed": true
+    },
+    {
+      "name": "overhead_ms_row_field",
+      "passed": true
+    },
+    {
+      "name": "intent_profile_mapping",
+      "passed": true
+    },
+    {
+      "name": "m105_fast_path_passed",
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "implemented_path": {
+    "endpoint": "/v1/completions",
+    "fallback": "--client-mode cli",
+    "mode": "--client-mode resident",
+    "script": "benchmarks/python/dax_repeated_context_bench.py"
+  },
+  "next_live_validation": "Run dax_repeated_context_bench.py with --client-mode resident against a loaded resident MLX server and gate overhead_ms <= 500.",
+  "tag": "m109-qwen-a3b",
+  "type": "dax_resident_client_readiness_report",
+  "verdict": "PASS"
+}
