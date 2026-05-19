@@ -83,6 +83,11 @@ def main() -> int:
     auto_json = args.output_dir / f"dax-auto-selected-{args.tag}.json"
     request_profile_json = args.output_dir / f"live-request-profile-metadata-{args.tag}.json"
     dax_request_metadata_json = args.output_dir / f"dax-request-metadata-smoke-{args.tag}.json"
+    cache_admission_json = args.output_dir / f"request-scoped-cache-admission-{args.tag}.json"
+    request_scoped_gates_dir = args.output_dir / f"request-scoped-gates-{args.tag}"
+    request_scoped_gates_json = (
+        request_scoped_gates_dir / f"request-scoped-performance-gates-{args.tag}.json"
+    )
     suite_json = args.output_dir / f"live-product-regression-suite-{args.tag}.json"
 
     try:
@@ -251,6 +256,38 @@ def main() -> int:
             ],
             cwd=cwd,
         )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/request_scoped_cache_admission_probe.py",
+                "--base-url",
+                args.base_url,
+                "--output-json",
+                str(cache_admission_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/request_scoped_performance_gates.py",
+                "--admission",
+                str(cache_admission_json),
+                "--repeated",
+                str(resident_json),
+                "--low-memory",
+                str(low_memory_json),
+                "--output-dir",
+                str(request_scoped_gates_dir),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
         artifacts = {
             "resident_client": evidence_entry(resident_json),
             "overhead_gate": evidence_entry(overhead_json),
@@ -261,6 +298,8 @@ def main() -> int:
             "auto_selected_client": evidence_entry(auto_json),
             "request_profile_metadata": evidence_entry(request_profile_json),
             "dax_request_metadata_smoke": evidence_entry(dax_request_metadata_json),
+            "request_scoped_cache_admission": evidence_entry(cache_admission_json),
+            "request_scoped_performance_gates": evidence_entry(request_scoped_gates_json),
         }
         failures = [
             f"{name}: verdict={entry.get('verdict')!r}"
@@ -284,6 +323,12 @@ def main() -> int:
                 "M123",
                 "M124",
                 "M131",
+                "M135",
+                "M136",
+                "M137",
+                "M138",
+                "M139",
+                "M140",
             ],
             "artifacts": artifacts,
             "failures": failures,
@@ -306,6 +351,12 @@ def main() -> int:
                 "M123",
                 "M124",
                 "M131",
+                "M135",
+                "M136",
+                "M137",
+                "M138",
+                "M139",
+                "M140",
             ],
             "artifacts": {},
             "failures": [

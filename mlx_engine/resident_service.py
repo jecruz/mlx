@@ -12,6 +12,7 @@ import threading
 import time
 import uuid
 from collections import deque
+from contextlib import contextmanager
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Literal
@@ -1960,10 +1961,112 @@ class ResidentEngine:
             **prefix_analysis,
         }
 
+    def runtime_config_snapshot(self) -> dict[str, Any]:
+        scheduler = self.scheduler.snapshot()
+        cache = self.prefix_kv_cache.snapshot()
+        return {
+            "runtime_profile": self.runtime_profile,
+            "engine_preset": self.engine_preset,
+            "max_concurrent_requests": scheduler["max_concurrent_requests"],
+            "max_queued_requests": scheduler["max_queued_requests"],
+            "queue_timeout_ms": scheduler["queue_timeout_ms"],
+            "prefix_cache_max_entries": cache["max_entries"],
+            "prefix_cache_memory_limit_bytes": self.prefix_cache_memory_limit_bytes,
+            "prefix_cache_min_entries": self.prefix_cache_min_entries,
+            "prefix_cache_population_mode": self.prefix_cache_population_mode,
+            "prefix_cache_async_idle_timeout_ms": self.prefix_cache_async_idle_timeout_ms,
+            "prefix_cache_async_idle_grace_ms": self.prefix_cache_async_idle_grace_ms,
+            "prefix_cache_pending_wait_ms": self.prefix_cache_pending_wait_ms,
+        }
+
+    def restore_runtime_config(self, snapshot: dict[str, Any]) -> None:
+        self.runtime_profile = snapshot["runtime_profile"]
+        self.engine_preset = snapshot["engine_preset"]
+        self.scheduler.configure(
+            max_concurrent_requests=snapshot["max_concurrent_requests"],
+            max_queued_requests=snapshot["max_queued_requests"],
+            queue_timeout_ms=snapshot["queue_timeout_ms"],
+        )
+        self.prefix_kv_cache.configure(max_entries=snapshot["prefix_cache_max_entries"])
+        with self.prefix_cache_build_lock:
+            self.prefix_cache_memory_limit_bytes = snapshot[
+                "prefix_cache_memory_limit_bytes"
+            ]
+            self.prefix_cache_min_entries = snapshot["prefix_cache_min_entries"]
+            self.prefix_cache_population_mode = snapshot[
+                "prefix_cache_population_mode"
+            ]
+            self.prefix_cache_async_idle_timeout_ms = snapshot[
+                "prefix_cache_async_idle_timeout_ms"
+            ]
+            self.prefix_cache_async_idle_grace_ms = snapshot[
+                "prefix_cache_async_idle_grace_ms"
+            ]
+            self.prefix_cache_pending_wait_ms = snapshot[
+                "prefix_cache_pending_wait_ms"
+            ]
+
+    @contextmanager
+    def request_runtime_profile_scope(
+        self,
+        request: RequestProfileHints,
+    ):
+        profile, reason = select_runtime_profile_for_request(
+            manual_profile=request.runtime_profile,
+            workload_intent=request.workload_intent,
+            diagnostics=request.diagnostics_workload,
+            interactive=request.interactive_workload,
+            agentic=request.agentic_workload,
+            repeated_workspace=request.repeated_workspace,
+            immediate_second_turn=request.immediate_second_turn,
+            low_memory=request.low_memory,
+            memory_class_gb=request.memory_class_gb,
+        )
+        if profile is None:
+            yield {
+                "request_runtime_profile": self.runtime_profile,
+                "request_runtime_profile_source": "engine_default",
+                "request_runtime_profile_reason": None,
+                "request_runtime_profile_applied": False,
+                "workload_intent": request.workload_intent,
+                "memory_class_gb": request.memory_class_gb,
+                "immediate_second_turn": request.immediate_second_turn,
+                "low_memory": request.low_memory,
+                "diagnostics_workload": request.diagnostics_workload,
+                "interactive_workload": request.interactive_workload,
+                "agentic_workload": request.agentic_workload,
+                "repeated_workspace": request.repeated_workspace,
+            }
+            return
+
+        snapshot = self.runtime_config_snapshot()
+        config = runtime_profile_defaults(profile)["config"]
+        config["runtime_profile"] = profile
+        self.configure_runtime(config)
+        try:
+            yield {
+                "request_runtime_profile": profile,
+                "request_runtime_profile_source": "request_metadata",
+                "request_runtime_profile_reason": reason,
+                "request_runtime_profile_applied": True,
+                "request_runtime_profile_scoped": True,
+                "workload_intent": request.workload_intent,
+                "memory_class_gb": request.memory_class_gb,
+                "immediate_second_turn": request.immediate_second_turn,
+                "low_memory": request.low_memory,
+                "diagnostics_workload": request.diagnostics_workload,
+                "interactive_workload": request.interactive_workload,
+                "agentic_workload": request.agentic_workload,
+                "repeated_workspace": request.repeated_workspace,
+            }
+        finally:
+            self.restore_runtime_config(snapshot)
+
     def apply_request_runtime_profile(
         self,
         request: RequestProfileHints,
     ) -> dict[str, Any]:
+        """Compatibility path for streaming routes until they move to scoped use."""
         profile, reason = select_runtime_profile_for_request(
             manual_profile=request.runtime_profile,
             workload_intent=request.workload_intent,
@@ -1981,6 +2084,7 @@ class ResidentEngine:
                 "request_runtime_profile_source": "engine_default",
                 "request_runtime_profile_reason": None,
                 "request_runtime_profile_applied": False,
+                "request_runtime_profile_scoped": False,
                 "workload_intent": request.workload_intent,
                 "memory_class_gb": request.memory_class_gb,
                 "immediate_second_turn": request.immediate_second_turn,
@@ -1999,6 +2103,7 @@ class ResidentEngine:
             "request_runtime_profile_source": "request_metadata",
             "request_runtime_profile_reason": reason,
             "request_runtime_profile_applied": True,
+            "request_runtime_profile_scoped": False,
             "workload_intent": request.workload_intent,
             "memory_class_gb": request.memory_class_gb,
             "immediate_second_turn": request.immediate_second_turn,
@@ -3148,80 +3253,80 @@ class ResidentEngine:
     def generate(self, request: GenerateRequest):
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
-            profile_selection = self.apply_request_runtime_profile(request)
-            metadata = self.request_metadata(
-                prompt=request.prompt,
-                policy=request.policy,
-                prefill_step_size_override=request.prefill_step_size,
-                profile_selection=profile_selection,
-            )
-            run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
-                metadata=metadata,
-            )
-            self.request_registry.begin(
-                request_id=metadata["request_id"],
-                route="/generate",
-                prompt_tokens=metadata["prompt_tokens_estimate"],
-                policy=metadata["effective_policy"],
-                prefill_step_size=metadata["prefill_step_size"],
-            )
-            try:
-                row = self._run(
-                    prompt=run_prompt,
-                    max_tokens=request.max_tokens,
-                    prefill_step_size=metadata["prefill_step_size"],
-                    stop=request.stop,
-                    request_id=metadata["request_id"],
-                    prompt_cache=prompt_cache,
+            with self.request_runtime_profile_scope(request) as profile_selection:
+                metadata = self.request_metadata(
+                    prompt=request.prompt,
+                    policy=request.policy,
+                    prefill_step_size_override=request.prefill_step_size,
+                    profile_selection=profile_selection,
                 )
-                actual_prefill_tokens = row["prompt_tokens"]
-                generated_token_ids = row.pop("_generated_token_ids", [])
-                row_prompt_cache = row.pop("_prompt_cache", None)
-                row.pop("_owned_prompt_cache", None)
-                request_cache_info = self.store_request_prefix_cache(
-                    cache_info=cache_info,
-                    prompt_cache=row_prompt_cache,
-                    generated_token_count=len(generated_token_ids),
-                )
-                row.update(self.public_metadata(metadata))
-                row.update(cache_info)
-                row.update(request_cache_info)
-                row.update(admission)
-                row["actual_prefill_tokens"] = actual_prefill_tokens
-                row["prompt_tokens"] = metadata["prompt_tokens_estimate"]
-                row["service_request_ms"] = 1e3 * (time.perf_counter() - request_t0)
-                self.record_prefix_prompt(metadata)
-                full_generated_tokens, generated_cache_info = self.record_generated_prefix_prompt(
+                run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
                     metadata=metadata,
-                    text=row["text"],
-                    generated_token_ids=generated_token_ids,
                 )
-                row.update(generated_cache_info)
-                if full_generated_tokens is not None:
-                    row.update(
-                        self.store_generated_prefix_cache(
-                            metadata=metadata,
-                            full_tokens=full_generated_tokens,
-                            prompt_cache=row_prompt_cache,
-                        )
+                self.request_registry.begin(
+                    request_id=metadata["request_id"],
+                    route="/generate",
+                    prompt_tokens=metadata["prompt_tokens_estimate"],
+                    policy=metadata["effective_policy"],
+                    prefill_step_size=metadata["prefill_step_size"],
+                )
+                try:
+                    row = self._run(
+                        prompt=run_prompt,
+                        max_tokens=request.max_tokens,
+                        prefill_step_size=metadata["prefill_step_size"],
+                        stop=request.stop,
+                        request_id=metadata["request_id"],
+                        prompt_cache=prompt_cache,
                     )
-                row = self.schedule_deferred_prefix_cache_build(row)
-                row.update(self.maybe_apply_memory_pressure_policy(reason="request"))
-                self.metrics.record_success(row)
-                self.request_registry.finish(
-                    metadata["request_id"],
-                    status="completed",
-                    service_request_ms=row["service_request_ms"],
-                    generation_tokens=row["generation_tokens"],
-                )
-                return row
-            except RequestCancelled:
-                self.request_registry.finish(
-                    metadata["request_id"],
-                    status="cancelled",
-                    service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                )
-                raise
+                    actual_prefill_tokens = row["prompt_tokens"]
+                    generated_token_ids = row.pop("_generated_token_ids", [])
+                    row_prompt_cache = row.pop("_prompt_cache", None)
+                    row.pop("_owned_prompt_cache", None)
+                    request_cache_info = self.store_request_prefix_cache(
+                        cache_info=cache_info,
+                        prompt_cache=row_prompt_cache,
+                        generated_token_count=len(generated_token_ids),
+                    )
+                    row.update(self.public_metadata(metadata))
+                    row.update(cache_info)
+                    row.update(request_cache_info)
+                    row.update(admission)
+                    row["actual_prefill_tokens"] = actual_prefill_tokens
+                    row["prompt_tokens"] = metadata["prompt_tokens_estimate"]
+                    row["service_request_ms"] = 1e3 * (time.perf_counter() - request_t0)
+                    self.record_prefix_prompt(metadata)
+                    full_generated_tokens, generated_cache_info = self.record_generated_prefix_prompt(
+                        metadata=metadata,
+                        text=row["text"],
+                        generated_token_ids=generated_token_ids,
+                    )
+                    row.update(generated_cache_info)
+                    if full_generated_tokens is not None:
+                        row.update(
+                            self.store_generated_prefix_cache(
+                                metadata=metadata,
+                                full_tokens=full_generated_tokens,
+                                prompt_cache=row_prompt_cache,
+                            )
+                        )
+                    row = self.schedule_deferred_prefix_cache_build(row)
+                    row.update(self.maybe_apply_memory_pressure_policy(reason="request"))
+                    self.metrics.record_success(row)
+                    self.request_registry.finish(
+                        metadata["request_id"],
+                        status="completed",
+                        service_request_ms=row["service_request_ms"],
+                        generation_tokens=row["generation_tokens"],
+                    )
+                    return row
+                except RequestCancelled:
+                    self.request_registry.finish(
+                        metadata["request_id"],
+                        status="cancelled",
+                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                    )
+                    raise
 
     def stream_generate_jsonl(self, request: GenerateRequest):
         request_t0 = time.perf_counter()

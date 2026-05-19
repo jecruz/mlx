@@ -1,0 +1,11 @@
+{
+  "baseline_actual_prefill_tokens": 2082,
+  "baseline_service_request_ms": 1516.3215829525143,
+  "best_hit_actual_prefill_tokens": 11,
+  "best_hit_service_request_ms": 209.1239169239998,
+  "best_hit_speedup_vs_baseline": 7.250828146565267,
+  "failures": [],
+  "tag": "m136-m139-qwen-a3b",
+  "type": "first_reusable_turn_latency_gate",
+  "verdict": "PASS"
+}

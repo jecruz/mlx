@@ -1,0 +1,43 @@
+{
+  "decision": "continue request-scoped prompt-processing automation; next lane should target first reusable-turn latency and scoped streaming parity",
+  "failures": [],
+  "inputs": {
+    "dax_product_mode_commit": "efb3cc78",
+    "m135_admission": "artifacts/m135-request-scoped-cache-admission/request-scoped-cache-admission-m135-qwen-a3b.json",
+    "m140_gates": "artifacts/m140-live-product-regression-suite/request-scoped-gates-m140-qwen-a3b/request-scoped-performance-gates-m140-qwen-a3b.json",
+    "m140_suite": "artifacts/m140-live-product-regression-suite/live-product-regression-suite-m140-qwen-a3b.json"
+  },
+  "next_recommended_milestones": [
+    "streaming request-profile scope parity",
+    "first reusable-turn latency reduction",
+    "cache-admission threshold tuning",
+    "Dax product-mode docs and smoke commands"
+  ],
+  "summary": {
+    "admission_rows": 5,
+    "covered_milestones": [
+      "M115",
+      "M116",
+      "M117",
+      "M118",
+      "M119",
+      "M121",
+      "M123",
+      "M124",
+      "M131",
+      "M135",
+      "M136",
+      "M137",
+      "M138",
+      "M139",
+      "M140"
+    ],
+    "gate_verdict": "PASS",
+    "suite_artifacts": 11,
+    "suite_failures": 0,
+    "suite_verdict": "PASS"
+  },
+  "tag": "m142-qwen-a3b",
+  "type": "performance_checkpoint",
+  "verdict": "PASS"
+}

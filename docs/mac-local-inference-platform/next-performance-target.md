@@ -1630,3 +1630,52 @@ Deferred:
 - tensor parallelism
 - image/VLM expansion
 - broad UI work
+
+## M135-M142 Result
+
+The next performance lane moved from planning to measured request-scoped
+product-routing gates.
+
+Completed:
+
+- M135 request-scoped cache admission probe
+- M136 async prefix-build scheduling profile
+- M137 first reusable-turn latency gate
+- M138 memory-pressure bounded cache policy gate
+- M139 request-scoped routing isolation start
+- M140 expanded live product regression suite
+- M141 Dax product mode shortcuts
+- M142 performance checkpoint
+
+Key artifacts:
+
+- `artifacts/m135-request-scoped-cache-admission/request-scoped-cache-admission-m135-qwen-a3b.json`
+- `artifacts/m136-m139-request-scoped-gates/request-scoped-performance-gates-m136-m139-qwen-a3b.json`
+- `artifacts/m140-live-product-regression-suite/live-product-regression-suite-m140-qwen-a3b.json`
+- `artifacts/m142-performance-checkpoint/performance-checkpoint-m142-qwen-a3b.md`
+
+Key commits:
+
+- MLX: request-scoped service/gates/docs in the M135-M142 batch
+- Dax: `efb3cc78 Add MLX product mode shortcuts to Dax`
+
+M140 live suite:
+
+- verdict: `PASS`
+- artifacts: `11`
+- failures: `0`
+- covered milestones: `M115`, `M116`, `M117`, `M118`, `M119`, `M121`,
+  `M123`, `M124`, `M131`, `M135`, `M136`, `M137`, `M138`, `M139`, `M140`
+
+Decision:
+
+- Continue the request-scoped prompt-processing lane.
+- The next target should be streaming request-profile scope parity, then first
+  reusable-turn latency reduction and cache-admission threshold tuning.
+
+Important limitation:
+
+- Non-stream generation now uses `request_runtime_profile_scope(...)`.
+- Streaming routes still use the compatibility path and should be converted in
+  the next milestone batch before claiming complete concurrency-safe request
+  profile isolation.

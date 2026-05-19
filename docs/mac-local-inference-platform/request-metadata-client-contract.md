@@ -207,6 +207,16 @@ Dax intent mapping:
 | `--intent diagnostics` | `workload_intent=diagnostics`, `diagnostics_workload=true` |
 | `--profile <name>` with generation | `runtime_profile=<name>` |
 
+Product-mode shortcuts:
+
+| Dax Option | Request Metadata Intent |
+| --- | --- |
+| `--product-mode chat` | `interactive` |
+| `--product-mode coding-agent` | `coding-agent` |
+| `--product-mode coding-agent-first-hit` | `first-hit` |
+| `--product-mode coding-agent-low-memory` | `low-memory` |
+| `--product-mode diagnostics` | `diagnostics` |
+
 Operator distinction:
 
 - `--prompt` and `--interactive` use request metadata.

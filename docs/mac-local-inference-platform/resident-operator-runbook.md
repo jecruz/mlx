@@ -195,6 +195,8 @@ Generation routing:
   `repeated_workspace=true`.
 - `--intent first-hit`, `--intent low-memory`, `--intent interactive`, and
   `--intent diagnostics` are request-level product hints for generation.
+- `--product-mode chat|coding-agent|coding-agent-first-hit|coding-agent-low-memory|diagnostics`
+  is the product-facing shortcut for those request-level hints.
 - `--profile <name>` with generation is sent as a request-level
   `runtime_profile` override.
 - status-only `--profile` and `--intent` still mutate `/engine/config` for

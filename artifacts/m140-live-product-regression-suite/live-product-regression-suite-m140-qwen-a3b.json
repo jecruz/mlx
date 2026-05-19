@@ -1,0 +1,115 @@
+{
+  "artifacts": {
+    "auto_selected_client": {
+      "auto_selected_profile": "agent-workspace-first-hit",
+      "best_hit_speedup_vs_baseline": 5.276317127872244,
+      "hit_count": 2,
+      "path": "artifacts/m140-live-product-regression-suite/dax-auto-selected-m140-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "auto_selection_gate": {
+      "path": "artifacts/m140-live-product-regression-suite/auto-selection-runtime-gate-m140-qwen-a3b.json",
+      "row_count": 0,
+      "type": "profile_auto_selection_runtime_gate",
+      "verdict": "PASS"
+    },
+    "dax_request_metadata_smoke": {
+      "path": "artifacts/m140-live-product-regression-suite/dax-request-metadata-smoke-m140-qwen-a3b.json",
+      "readiness": "dax-request-metadata-live",
+      "row_count": 0,
+      "type": "dax_request_metadata_smoke",
+      "verdict": "PASS"
+    },
+    "low_memory_client": {
+      "best_hit_speedup_vs_baseline": 5.852837713009063,
+      "hit_count": 2,
+      "path": "artifacts/m140-live-product-regression-suite/dax-low-memory-live-m140-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "low_memory_gate": {
+      "metrics": {
+        "conversion_prefill_tokens": 11.0,
+        "max_cache_memory_limit_mb": 64.0,
+        "max_peak_memory_gb": 24.054007214,
+        "mean_peak_memory_gb": 24.054007214
+      },
+      "path": "artifacts/m140-live-product-regression-suite/lower-memory-live-gate-m140-qwen-a3b.json",
+      "row_count": 4,
+      "type": "lower_memory_runtime_gate",
+      "verdict": "PASS"
+    },
+    "overhead_gate": {
+      "metrics": {
+        "max_overhead_ms": 4.961791913956404,
+        "mean_overhead_ms": 4.540989932138473,
+        "min_overhead_ms": 4.300292115658522,
+        "p95_overhead_ms": 4.961791913956404
+      },
+      "path": "artifacts/m140-live-product-regression-suite/fast-path-overhead-gate-m140-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_operator_overhead_gate",
+      "verdict": "PASS"
+    },
+    "prompt_transport_sweep": {
+      "path": "artifacts/m140-live-product-regression-suite/live-prompt-transport-sweep-m140-qwen-a3b.json",
+      "row_count": 4,
+      "type": "live_prompt_transport_sweep",
+      "verdict": "PASS"
+    },
+    "request_profile_metadata": {
+      "path": "artifacts/m140-live-product-regression-suite/live-request-profile-metadata-m140-qwen-a3b.json",
+      "row_count": 3,
+      "type": "live_request_profile_metadata_probe",
+      "verdict": "PASS"
+    },
+    "request_scoped_cache_admission": {
+      "path": "artifacts/m140-live-product-regression-suite/request-scoped-cache-admission-m140-qwen-a3b.json",
+      "readiness": "cache-admission-measured",
+      "row_count": 5,
+      "type": "request_scoped_cache_admission_probe",
+      "verdict": "PASS"
+    },
+    "request_scoped_performance_gates": {
+      "path": "artifacts/m140-live-product-regression-suite/request-scoped-gates-m140-qwen-a3b/request-scoped-performance-gates-m140-qwen-a3b.json",
+      "row_count": 0,
+      "type": "request_scoped_performance_gates",
+      "verdict": "PASS"
+    },
+    "resident_client": {
+      "best_hit_speedup_vs_baseline": 7.176852952173803,
+      "hit_count": 2,
+      "path": "artifacts/m140-live-product-regression-suite/dax-resident-client-m140-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "covered_milestones": [
+    "M115",
+    "M116",
+    "M117",
+    "M118",
+    "M119",
+    "M121",
+    "M123",
+    "M124",
+    "M131",
+    "M135",
+    "M136",
+    "M137",
+    "M138",
+    "M139",
+    "M140"
+  ],
+  "failures": [],
+  "output_dir": "artifacts/m140-live-product-regression-suite",
+  "readiness": "live-regression-passing",
+  "tag": "m140-qwen-a3b",
+  "type": "live_product_regression_suite",
+  "verdict": "PASS"
+}

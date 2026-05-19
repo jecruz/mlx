@@ -1058,3 +1058,171 @@ Rationale:
   class
 - product wins are dominated by avoiding repeated prefill and making the right
   request-scoped routing decision automatically
+
+## M135 Request-Scoped Cache Admission Probe
+
+M135 measures request-metadata-routed cache admission across product modes.
+
+Added:
+
+- `benchmarks/python/request_scoped_cache_admission_probe.py`
+
+Live artifact:
+
+- `artifacts/m135-request-scoped-cache-admission/request-scoped-cache-admission-m135-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- rows: `5`
+- failures: `0`
+
+Covered cases:
+
+- `coding_agent`
+- `first_hit`
+- `low_memory`
+- `interactive`
+- `diagnostics`
+
+## M136 Async Prefix-Build Scheduling Profile
+
+M136 gates the M135 admission rows for observed async and request-derived cache
+population behavior.
+
+Artifact:
+
+- `artifacts/m136-m139-request-scoped-gates/m136_async_prefix_build_scheduling-m136-m139-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- async and request-derived modes were both observed.
+
+## M137 First Reusable-Turn Latency Gate
+
+M137 gates first reusable-turn behavior using the repeated-context product
+path.
+
+Artifact:
+
+- `artifacts/m136-m139-request-scoped-gates/m137_first_reusable_turn_latency-m136-m139-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- M124 repeated-context speedup remains above threshold.
+- best-hit prefill remains bounded at `11` tokens.
+
+## M138 Memory-Pressure Bounded Cache Policy
+
+M138 validates that lower-memory product routing still keeps repeated-context
+reuse.
+
+Artifact:
+
+- `artifacts/m136-m139-request-scoped-gates/m138_memory_bounded_cache_policy-m136-m139-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- lower-memory metadata selects `agent-workspace-low-memory`
+- lower-memory repeated-context speedup remains above threshold.
+
+## M139 Request-Scoped Routing Isolation
+
+M139 starts isolating request metadata routing from persistent global profile
+state.
+
+Code change:
+
+- `mlx_engine/resident_service.py`
+- non-stream generation now applies request profile defaults inside
+  `request_runtime_profile_scope(...)`
+- the runtime configuration snapshot is restored after the request
+- response metrics include `request_runtime_profile_scoped=true` for scoped
+  non-stream calls
+
+Gate artifact:
+
+- `artifacts/m136-m139-request-scoped-gates/m139_request_scoped_routing_isolation-m136-m139-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- all request-metadata cases routed through `request_metadata`
+
+Remaining follow-up:
+
+- streaming routes still use the compatibility path and should be moved to the
+  scoped context in the next lane.
+
+## M140 Live Product Regression Expansion
+
+M140 expands the one-command live product regression suite with:
+
+- request-scoped cache admission
+- async/request-derived scheduling gate
+- first reusable-turn latency gate
+- lower-memory cache policy gate
+- request-scoped routing isolation gate
+
+Suite artifact:
+
+- `artifacts/m140-live-product-regression-suite/live-product-regression-suite-m140-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `11`
+- failures: `0`
+- covered milestones include `M135` through `M140`
+
+## M141 Dax Product Mode Controls
+
+Dax now exposes product-mode shortcuts for MLX routing.
+
+Dax commit:
+
+- `efb3cc78 Add MLX product mode shortcuts to Dax`
+
+Added CLI option:
+
+- `--product-mode <mode>`
+
+Supported modes:
+
+- `chat`
+- `coding-agent`
+- `coding-agent-first-hit`
+- `coding-agent-low-memory`
+- `diagnostics`
+
+Validation:
+
+- Dax focused MLX test: `34` passed
+- Dax coding-agent build: passed
+- Dax pre-commit checks: passed
+
+## M142 Performance Checkpoint
+
+M142 packages the M135-M141 decision point.
+
+Artifacts:
+
+- `artifacts/m142-performance-checkpoint/performance-checkpoint-m142-qwen-a3b.json`
+- `artifacts/m142-performance-checkpoint/performance-checkpoint-m142-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- live suite verdict: `PASS`
+- request-scoped gates: `PASS`
+
+Decision:
+
+- Continue request-scoped prompt-processing automation.
+- Next lane should prioritize streaming request-profile scope parity, first
+  reusable-turn latency reduction, cache-admission threshold tuning, and Dax
+  product-mode docs/smokes.
