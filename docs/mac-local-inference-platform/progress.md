@@ -3128,3 +3128,79 @@
   - M114 conclusion: the runtime readiness suite is assembled and passing.
     The next live step is to start the resident MLX server, run
     `--client-mode resident`, and enforce the `<=500 ms` overhead target.
+- Completed M115 live resident Dax client validation:
+  - generated artifacts:
+    - `artifacts/m115-live-resident-client/dax-resident-client-m115-qwen-a3b.jsonl`
+    - `artifacts/m115-live-resident-client/dax-resident-client-m115-qwen-a3b.json`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+  - validation passed:
+    - benchmark verdict `PASS`
+    - hit count `2`
+    - best hit speedup `6.899x`
+    - observed runtime profile `agent-workspace-first-hit`
+  - M115 conclusion: the resident client path is live and converts repeated
+    coding-agent context into fast cache-hit turns.
+- Completed M116 live fast-path overhead gate:
+  - generated artifact:
+    `artifacts/m116-fast-path-overhead/fast-path-overhead-gate-m116-qwen-a3b.json`
+  - validation passed:
+    - gate verdict `PASS`
+    - rows `4`
+    - mean overhead `4.598 ms`
+    - max overhead `4.980 ms`
+    - threshold `<=500 ms`
+  - M116 conclusion: resident transport removes the CLI process overhead from
+    the hot path.
+- Completed M117 live extended prompt transport sweep:
+  - added `benchmarks/python/live_prompt_transport_sweep.py`
+  - generated artifacts:
+    - `artifacts/m117-live-extended-prompt-sweep/live-prompt-transport-sweep-m117-qwen-a3b.jsonl`
+    - `artifacts/m117-live-extended-prompt-sweep/live-prompt-transport-sweep-m117-qwen-a3b.json`
+  - validation passed:
+    - sweep verdict `PASS`
+    - rows `8`
+    - prompt targets `512`, `1024`, `2048`, `4096`
+    - transports `resident`, `cli`
+  - M117 conclusion: prompt processing now has a live transport comparison
+    artifact across the important prompt-size band.
+- Completed M118 live lower-memory validation:
+  - generated artifacts:
+    - `artifacts/m118-live-lower-memory/dax-low-memory-live-m118-qwen-a3b.jsonl`
+    - `artifacts/m118-live-lower-memory/dax-low-memory-live-m118-qwen-a3b.json`
+    - `artifacts/m118-live-lower-memory/lower-memory-live-gate-m118-qwen-a3b.json`
+  - validation passed:
+    - benchmark verdict `PASS`
+    - best hit speedup `7.120x`
+    - lower-memory gate verdict `PASS`
+    - max peak memory `24.054 GB`
+    - cache memory limit `64 MB`
+    - conversion prefill `11` tokens
+  - M118 conclusion: lower-memory profile behavior is live-gated on both
+    latency and memory/cache limits.
+- Completed M119 runtime profile auto-selection validation:
+  - added `benchmarks/python/profile_auto_selection_runtime_gate.py`
+  - generated artifacts:
+    - `artifacts/m119-auto-selection-runtime/auto-selection-runtime-gate-m119-qwen-a3b.json`
+    - `artifacts/m119-auto-selection-runtime/dax-auto-selected-m119-qwen-a3b.jsonl`
+    - `artifacts/m119-auto-selection-runtime/dax-auto-selected-m119-qwen-a3b.json`
+  - validation passed:
+    - runtime gate verdict `PASS`
+    - scenarios `6`
+    - live benchmark verdict `PASS`
+    - auto-selected profile `agent-workspace-first-hit`
+    - best hit speedup `7.336x`
+  - M119 conclusion: profile auto-selection is wired into the benchmark path
+    and validated against a live resident server.
+- Completed M120 live product readiness bundle:
+  - added `benchmarks/python/live_product_readiness_bundle.py`
+  - generated artifact:
+    `artifacts/m120-live-product-readiness/live-product-readiness-bundle-m120-qwen-a3b.json`
+  - validation passed:
+    - bundle verdict `PASS`
+    - readiness `live-validated`
+    - evidence artifacts `7`
+    - failures `0`
+    - `python3 -m py_compile benchmarks/python/dax_repeated_context_bench.py benchmarks/python/live_prompt_transport_sweep.py benchmarks/python/profile_auto_selection_runtime_gate.py benchmarks/python/live_product_readiness_bundle.py`
+  - M120 conclusion: M115-M119 are packaged into a live product-readiness
+    bundle for the Qwen3.6-35B-A3B MLX runtime lane.

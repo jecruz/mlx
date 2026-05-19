@@ -623,3 +623,53 @@ engine does not use them.
   the current single-Mac path should prioritize prompt processing, cache reuse,
   scheduling, warmup/JIT behavior, Dax/operator overhead, and quantized kernels
   first.
+
+## Live Product Readiness: M115-M120
+
+The M115-M120 lane validates the resident server against a live Qwen3.6-35B-A3B
+MLX model and packages the result as a product-readiness bundle.
+
+Evidence:
+
+- M115 resident repeated-context benchmark:
+  `artifacts/m115-live-resident-client/dax-resident-client-m115-qwen-a3b.json`
+  - verdict: `PASS`
+  - best hit speedup: `6.899x`
+- M116 fast-path overhead gate:
+  `artifacts/m116-fast-path-overhead/fast-path-overhead-gate-m116-qwen-a3b.json`
+  - verdict: `PASS`
+  - mean overhead: `4.598 ms`
+- M117 live prompt transport sweep:
+  `artifacts/m117-live-extended-prompt-sweep/live-prompt-transport-sweep-m117-qwen-a3b.json`
+  - verdict: `PASS`
+  - rows: `8`
+- M118 lower-memory gate:
+  `artifacts/m118-live-lower-memory/lower-memory-live-gate-m118-qwen-a3b.json`
+  - verdict: `PASS`
+  - max peak memory: `24.054 GB`
+- M119 runtime auto-selection:
+  `artifacts/m119-auto-selection-runtime/dax-auto-selected-m119-qwen-a3b.json`
+  - verdict: `PASS`
+  - auto-selected profile: `agent-workspace-first-hit`
+- M120 live readiness bundle:
+  `artifacts/m120-live-product-readiness/live-product-readiness-bundle-m120-qwen-a3b.json`
+  - verdict: `PASS`
+  - readiness: `live-validated`
+
+Readiness position:
+
+- Resident Dax client transport is validated.
+- Hot-path operator overhead is under the `<=500 ms` target by a wide margin.
+- Lower-memory runtime behavior is gated with peak memory and cache-limit
+  checks.
+- Profile auto-selection is implemented in the benchmark path and validated
+  against the live server.
+
+Remaining constraints:
+
+- Qwen recurrent-state generic cache continuation still needs model-specific
+  continuation work.
+- Tensor parallelism is outside the current single-process resident-engine
+  lane.
+- The next engine milestone should convert this into a one-command live
+  regression suite and add server-side profile selection from request metadata.

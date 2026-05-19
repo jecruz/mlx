@@ -140,6 +140,32 @@ def runtime_profile_for_intent(intent: str | None) -> str | None:
     }.get(intent)
 
 
+def auto_select_runtime_profile(
+    *,
+    manual_profile: str | None = None,
+    diagnostics: bool = False,
+    interactive: bool = False,
+    agentic: bool = False,
+    repeated_workspace: bool = False,
+    immediate_second_turn: bool = False,
+    low_memory: bool = False,
+    memory_class_gb: int | None = None,
+) -> tuple[str, str]:
+    if manual_profile:
+        return manual_profile, "manual override"
+    if diagnostics:
+        return "diagnostics", "diagnostics requested"
+    if interactive and not agentic:
+        return "interactive", "foreground interactive use"
+    if low_memory or memory_class_gb in (16, 24, 32):
+        return "agent-workspace-low-memory", "bounded memory mode"
+    if immediate_second_turn:
+        return "agent-workspace-first-hit", "immediate repeated-context second turn"
+    if agentic or repeated_workspace:
+        return "agent-workspace-async", "steady-state coding-agent reuse"
+    return "interactive", "safe default for unknown foreground work"
+
+
 def run_resident_prompt(
     *,
     base_url: str,
@@ -253,6 +279,14 @@ def main() -> int:
     parser.add_argument("--dax-profile")
     parser.add_argument("--dax-intent")
     parser.add_argument("--client-mode", choices=("cli", "resident"), default="cli")
+    parser.add_argument("--auto-select-profile", action="store_true")
+    parser.add_argument("--memory-class-gb", type=int)
+    parser.add_argument("--immediate-second-turn", action="store_true")
+    parser.add_argument("--low-memory", action="store_true")
+    parser.add_argument("--diagnostics-workload", action="store_true")
+    parser.add_argument("--interactive-workload", action="store_true")
+    parser.add_argument("--agentic-workload", action="store_true")
+    parser.add_argument("--repeated-workspace", action="store_true")
     parser.add_argument("--min-speedup", type=float, default=2.0)
     parser.add_argument("--max-hit-prefill-tokens", type=int, default=32)
     parser.add_argument("--fail-on-fail", action="store_true")
@@ -265,7 +299,20 @@ def main() -> int:
     args.output_jsonl.parent.mkdir(parents=True, exist_ok=True)
     args.output_jsonl.write_text("")
 
-    target_profile = args.dax_profile or runtime_profile_for_intent(args.dax_intent)
+    auto_selection_reason = None
+    if args.auto_select_profile:
+        target_profile, auto_selection_reason = auto_select_runtime_profile(
+            manual_profile=args.dax_profile,
+            diagnostics=args.diagnostics_workload,
+            interactive=args.interactive_workload,
+            agentic=args.agentic_workload,
+            repeated_workspace=args.repeated_workspace,
+            immediate_second_turn=args.immediate_second_turn,
+            low_memory=args.low_memory,
+            memory_class_gb=args.memory_class_gb,
+        )
+    else:
+        target_profile = args.dax_profile or runtime_profile_for_intent(args.dax_intent)
     if args.client_mode == "resident" and args.dax_intent and target_profile is None:
         raise ValueError(f"unknown --dax-intent for resident client mode: {args.dax_intent}")
 
@@ -343,6 +390,9 @@ def main() -> int:
         "dax_profile": args.dax_profile,
         "dax_intent": args.dax_intent,
         "client_mode": args.client_mode,
+        "auto_select_profile": args.auto_select_profile,
+        "auto_selected_profile": target_profile if args.auto_select_profile else None,
+        "auto_selection_reason": auto_selection_reason,
         "min_speedup": args.min_speedup,
         "max_hit_prefill_tokens": args.max_hit_prefill_tokens,
         "rows": rows,

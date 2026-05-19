@@ -1,0 +1,94 @@
+{
+  "covered_milestones": [
+    "M115",
+    "M116",
+    "M117",
+    "M118",
+    "M119",
+    "M120"
+  ],
+  "evidence": {
+    "m115_live_resident_client": {
+      "best_hit_speedup_vs_baseline": 6.899120880265699,
+      "hit_count": 2,
+      "path": "artifacts/m115-live-resident-client/dax-resident-client-m115-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "m116_fast_path_overhead": {
+      "metrics": {
+        "max_overhead_ms": 4.9802090507000685,
+        "mean_overhead_ms": 4.597729013767093,
+        "min_overhead_ms": 4.403416998684406,
+        "p95_overhead_ms": 4.9802090507000685
+      },
+      "path": "artifacts/m116-fast-path-overhead/fast-path-overhead-gate-m116-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_operator_overhead_gate",
+      "verdict": "PASS"
+    },
+    "m117_live_prompt_transport_sweep": {
+      "path": "artifacts/m117-live-extended-prompt-sweep/live-prompt-transport-sweep-m117-qwen-a3b.json",
+      "row_count": 8,
+      "type": "live_prompt_transport_sweep",
+      "verdict": "PASS"
+    },
+    "m118_live_lower_memory_bench": {
+      "best_hit_speedup_vs_baseline": 7.119750985268721,
+      "hit_count": 2,
+      "path": "artifacts/m118-live-lower-memory/dax-low-memory-live-m118-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "m118_live_lower_memory_gate": {
+      "metrics": {
+        "conversion_prefill_tokens": 11.0,
+        "max_cache_memory_limit_mb": 64.0,
+        "max_peak_memory_gb": 24.054007214,
+        "mean_peak_memory_gb": 24.054007214
+      },
+      "path": "artifacts/m118-live-lower-memory/lower-memory-live-gate-m118-qwen-a3b.json",
+      "row_count": 4,
+      "type": "lower_memory_runtime_gate",
+      "verdict": "PASS"
+    },
+    "m119_auto_selection_runtime_gate": {
+      "path": "artifacts/m119-auto-selection-runtime/auto-selection-runtime-gate-m119-qwen-a3b.json",
+      "row_count": 0,
+      "type": "profile_auto_selection_runtime_gate",
+      "verdict": "PASS"
+    },
+    "m119_live_auto_selected_bench": {
+      "auto_selected_profile": "agent-workspace-first-hit",
+      "best_hit_speedup_vs_baseline": 7.3358605410164985,
+      "hit_count": 2,
+      "path": "artifacts/m119-auto-selection-runtime/dax-auto-selected-m119-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    }
+  },
+  "failures": [],
+  "implemented": [
+    "resident Dax client benchmark path",
+    "resident fast-path overhead gate",
+    "live prompt transport sweep",
+    "live lower-memory runtime gate",
+    "runtime profile auto-selection gate"
+  ],
+  "known_limitations": [
+    "Qwen recurrent-state generic cache continuation still needs model-specific continuation work.",
+    "Tensor parallelism is not part of the current single-process resident engine lane."
+  ],
+  "next_recommended_milestones": [
+    "turn the live readiness bundle into a one-command regression suite",
+    "add server-side profile auto-selection from request metadata",
+    "profile prompt processing kernels and JIT/warmup timing under Instruments"
+  ],
+  "readiness": "live-validated",
+  "tag": "m120-qwen-a3b",
+  "type": "live_product_readiness_bundle",
+  "verdict": "PASS"
+}

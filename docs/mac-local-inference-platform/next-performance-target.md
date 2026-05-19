@@ -1176,3 +1176,57 @@ Next live validation:
 - Run `dax_repeated_context_bench.py --client-mode resident`.
 - Gate the resulting JSONL with
   `dax_operator_overhead_gate.py --max-mean-overhead-ms 500 --fail-on-fail`.
+
+## M115-M120 Live Result
+
+The resident MLX server is now live-validated against the Qwen3.6-35B-A3B MLX
+model path:
+
+- model:
+  `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+- M115 resident repeated-context benchmark:
+  - artifact:
+    `artifacts/m115-live-resident-client/dax-resident-client-m115-qwen-a3b.json`
+  - verdict: `PASS`
+  - hit count: `2`
+  - best hit speedup: `6.899x`
+- M116 resident overhead gate:
+  - artifact:
+    `artifacts/m116-fast-path-overhead/fast-path-overhead-gate-m116-qwen-a3b.json`
+  - verdict: `PASS`
+  - mean overhead: `4.598 ms`
+  - max overhead: `4.980 ms`
+- M117 live prompt transport sweep:
+  - artifact:
+    `artifacts/m117-live-extended-prompt-sweep/live-prompt-transport-sweep-m117-qwen-a3b.json`
+  - verdict: `PASS`
+  - rows: `8`
+  - prompt targets: `512`, `1024`, `2048`, `4096`
+  - transports: `resident`, `cli`
+- M118 live lower-memory gate:
+  - artifact:
+    `artifacts/m118-live-lower-memory/lower-memory-live-gate-m118-qwen-a3b.json`
+  - verdict: `PASS`
+  - max peak memory: `24.054 GB`
+  - cache memory limit: `64 MB`
+  - conversion prefill: `11` tokens
+- M119 runtime auto-selection:
+  - artifact:
+    `artifacts/m119-auto-selection-runtime/dax-auto-selected-m119-qwen-a3b.json`
+  - verdict: `PASS`
+  - auto-selected profile: `agent-workspace-first-hit`
+  - best hit speedup: `7.336x`
+- M120 live product readiness bundle:
+  - artifact:
+    `artifacts/m120-live-product-readiness/live-product-readiness-bundle-m120-qwen-a3b.json`
+  - verdict: `PASS`
+  - readiness: `live-validated`
+  - evidence artifacts: `7`
+
+Decision:
+
+- The immediate product target is no longer proving whether the resident path
+  works; it does.
+- Next performance target should move to server-side automation and profiling:
+  one-command live regression, request-derived profile selection, and
+  Instruments-backed prompt-processing/JIT breakdowns.
