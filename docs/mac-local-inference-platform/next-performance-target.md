@@ -375,8 +375,41 @@ Decision:
 - The step remains opt-in so lower-level resident suites do not depend on the
   external Dax checkout unless product-path coverage is requested.
 
+## M87 Result
+
+M87 packaged the M86 product-path suite evidence through the existing resident
+suite evidence flow.
+
+Added:
+
+- `gate` summary in `resident-suite-evidence-index.json`
+- `dax_repeated_context` summary in `resident-suite-evidence-index.json`
+
+Artifact:
+
+- `artifacts/m87-dax-product-evidence-package/resident-suite-evidence-index.json`
+
+Result:
+
+- suite verdict: `PASS`
+- Dax product-path gate: `PASS`
+- copied artifacts: `4`
+- missing optional artifacts: `4`
+- cache-hit turns: `2`
+- best-hit speedup: `22.06x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service latency: `241.70 ms`
+
+Decision:
+
+- Product-path evidence packages now contain a compact machine-readable summary
+  for Redmine, Dax, CI, and future app surfaces.
+- Raw benchmark, JSONL rows, gate report, and suite manifest are still copied
+  for deeper debugging.
+
 Next target:
 
-- Package the M86 product-path suite evidence into the existing handoff/evidence
-  flow, then decide whether Dax should expose the opt-in product-path suite
-  flag directly from `/bench run`.
+- Decide and implement whether Dax `/bench run` should expose the opt-in
+  product-path suite flag directly, likely as a named mode rather than a raw
+  pile of suite-runner flags.

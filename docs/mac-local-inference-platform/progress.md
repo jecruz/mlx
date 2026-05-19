@@ -2523,3 +2523,38 @@
     - best-hit service `241.70 ms`
   - M86 conclusion: product-path cache reuse is now runnable and summarizable
     through the same resident suite manifest surface used by operator tooling.
+- Completed M87 Dax product-path evidence package:
+  - updated `benchmarks/python/package_resident_suite_evidence.py` so package
+    indexes include:
+    - `gate` summary for the resident regression gate when present
+    - `dax_repeated_context` summary for product-path suites
+  - package index now exposes:
+    - Dax benchmark verdict
+    - Dax gate verdict, check count, and failure count
+    - cache-hit count
+    - best-hit speedup
+    - baseline and best-hit prefill tokens
+    - best-hit service latency
+  - wrote package:
+    - `artifacts/m87-dax-product-evidence-package/resident-suite-evidence-index.json`
+    - `artifacts/m87-dax-product-evidence-package/resident-regression-suite-m86-qwen-a3b-dax-product.json`
+    - `artifacts/m87-dax-product-evidence-package/dax-repeated-context-m86-qwen-a3b-dax-product.json`
+    - `artifacts/m87-dax-product-evidence-package/dax-repeated-context-m86-qwen-a3b-dax-product.jsonl`
+    - `artifacts/m87-dax-product-evidence-package/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/package_resident_suite_evidence.py`
+    - `python3 benchmarks/python/package_resident_suite_evidence.py artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json --output-dir artifacts/m87-dax-product-evidence-package`
+    - `python3 -m json.tool artifacts/m87-dax-product-evidence-package/resident-suite-evidence-index.json`
+  - M87 result:
+    - suite verdict `PASS`
+    - Dax product-path gate `PASS`
+    - copied artifacts `4`
+    - missing optional artifacts `4`
+    - cache-hit turns `2`
+    - best-hit speedup `22.06x`
+    - baseline prefill `2092` tokens
+    - best-hit prefill `18` tokens
+    - best-hit service `241.70 ms`
+  - M87 conclusion: product-path suite evidence is now packaged with a compact,
+    machine-readable summary plus the raw benchmark, rows, gate, and suite
+    manifest.

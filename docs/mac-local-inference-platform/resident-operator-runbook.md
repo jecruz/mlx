@@ -127,12 +127,24 @@ python3 benchmarks/python/package_resident_suite_evidence.py \
   --output-dir /private/tmp/mlx-m64-evidence-package
 ```
 
+Package the Dax product-path suite evidence:
+
+```bash
+python3 benchmarks/python/package_resident_suite_evidence.py \
+  artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json \
+  --output-dir artifacts/m87-dax-product-evidence-package
+```
+
 The package directory contains:
 
 - the suite manifest
 - existing referenced artifacts
 - `resident-suite-evidence-index.json`
 - missing artifact references when optional steps were skipped
+
+For product-path suites, the index also includes `dax_repeated_context` with
+the benchmark verdict, gate verdict, hit count, speedup, prefill reduction, and
+best-hit service latency.
 
 ## Dax Operator Workflow
 

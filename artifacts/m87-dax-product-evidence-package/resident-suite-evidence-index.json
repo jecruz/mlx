@@ -1,0 +1,49 @@
+{
+  "copied": {
+    "dax_repeated_context": {
+      "bytes": 106996,
+      "path": "artifacts/m87-dax-product-evidence-package/dax-repeated-context-m86-qwen-a3b-dax-product.json",
+      "source": "artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.json"
+    },
+    "dax_repeated_context_gate": {
+      "bytes": 36114,
+      "path": "artifacts/m87-dax-product-evidence-package/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json",
+      "source": "artifacts/m86-dax-suite-product-path/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json"
+    },
+    "dax_repeated_context_jsonl": {
+      "bytes": 66655,
+      "path": "artifacts/m87-dax-product-evidence-package/dax-repeated-context-m86-qwen-a3b-dax-product.jsonl",
+      "source": "artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.jsonl"
+    },
+    "suite_manifest": {
+      "bytes": 147734,
+      "path": "artifacts/m87-dax-product-evidence-package/resident-regression-suite-m86-qwen-a3b-dax-product.json",
+      "source": "artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json"
+    }
+  },
+  "dax_repeated_context": {
+    "baseline_actual_prefill_tokens": 2092,
+    "benchmark_verdict": "PASS",
+    "best_hit_actual_prefill_tokens": 18,
+    "best_hit_service_request_ms": 241.69695796445012,
+    "best_hit_speedup_vs_baseline": 22.064976717172414,
+    "gate": {
+      "checks": 5,
+      "failures": 0,
+      "verdict": "PASS"
+    },
+    "hit_count": 2
+  },
+  "gate": null,
+  "missing": {
+    "cache": "artifacts/m86-dax-suite-product-path/resident-benchmark-sync-safe-m86-qwen-a3b-dax-product.jsonl",
+    "cold_start": "artifacts/m86-dax-suite-product-path/resident-cold-start-sync-safe-m86-qwen-a3b-dax-product.jsonl",
+    "gate": "artifacts/m86-dax-suite-product-path/resident-regression-gate-m86-qwen-a3b-dax-product.json",
+    "prefill": "artifacts/m86-dax-suite-product-path/resident-prefill-isolation-sync-safe-m86-qwen-a3b-dax-product.jsonl"
+  },
+  "output_dir": "artifacts/m87-dax-product-evidence-package",
+  "source_manifest": "artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json",
+  "suite_tag": "m86-qwen-a3b-dax-product",
+  "suite_verdict": "PASS",
+  "type": "resident_suite_evidence_package"
+}

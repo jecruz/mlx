@@ -357,6 +357,12 @@ Readiness interpretation:
     `artifacts/m86-dax-suite-product-path/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
   - result: suite `PASS`, Dax gate `PASS`, `2` cache-hit turns,
     `22.06x` best-hit speedup, and best-hit prefill `18` tokens
+- M87 packages the Dax product-path suite evidence:
+  - package index:
+    `artifacts/m87-dax-product-evidence-package/resident-suite-evidence-index.json`
+  - result: suite `PASS`, Dax gate `PASS`, copied `4` artifacts, and exposes
+    cache-hit count, best-hit speedup, prefill reduction, and best-hit service
+    latency in the package index
 
 ## Current Qwen Result
 

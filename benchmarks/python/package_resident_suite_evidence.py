@@ -32,6 +32,46 @@ def copy_artifact(source: Path, output_dir: Path) -> dict[str, Any]:
     }
 
 
+def gate_summary(report: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not report:
+        return None
+    failures = report.get("failures") or []
+    return {
+        "verdict": report.get("verdict"),
+        "checks": len(report.get("checks") or []),
+        "failures": len(failures),
+    }
+
+
+def dax_repeated_context_summary(
+    report: dict[str, Any] | None,
+    gate_report: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if not report and not gate_report:
+        return None
+    return {
+        "benchmark_verdict": report.get("verdict") if report else None,
+        "gate": gate_summary(gate_report),
+        "hit_count": report.get("hit_count") if report else None,
+        "best_hit_speedup_vs_baseline": (
+            report.get("best_hit_speedup_vs_baseline") if report else None
+        ),
+        "baseline_actual_prefill_tokens": (
+            ((report.get("baseline") or {}).get("actual_prefill_tokens"))
+            if report
+            else None
+        ),
+        "best_hit_actual_prefill_tokens": (
+            ((report.get("best_hit") or {}).get("actual_prefill_tokens"))
+            if report
+            else None
+        ),
+        "best_hit_service_request_ms": (
+            report.get("best_hit_service_request_ms") if report else None
+        ),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
@@ -61,6 +101,11 @@ def main() -> None:
         "output_dir": str(args.output_dir),
         "copied": copied,
         "missing": missing,
+        "gate": gate_summary(manifest.get("gate_report")),
+        "dax_repeated_context": dax_repeated_context_summary(
+            manifest.get("dax_repeated_context_report"),
+            manifest.get("dax_repeated_context_gate_report"),
+        ),
     }
     index_path = args.output_dir / "resident-suite-evidence-index.json"
     index_path.write_text(json.dumps(evidence_index, indent=2, sort_keys=True) + "\n")
@@ -72,6 +117,12 @@ def main() -> None:
         len(copied),
         "missing",
         len(missing),
+        "gate",
+        (evidence_index["gate"] or {}).get("verdict"),
+        "dax_repeated_context_gate",
+        ((evidence_index["dax_repeated_context"] or {}).get("gate") or {}).get(
+            "verdict"
+        ),
         index_path,
     )
 

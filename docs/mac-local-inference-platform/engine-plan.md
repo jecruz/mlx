@@ -5466,6 +5466,52 @@ M86 decision:
   so the lower-level resident suite does not require the external Dax checkout
   unless product-path coverage is requested.
 
+## M87 Dax Product-Path Evidence Package
+
+M87 packages the M86 product-path suite evidence through the existing resident
+suite evidence flow:
+
+- packager:
+  `benchmarks/python/package_resident_suite_evidence.py`
+- package index:
+  `artifacts/m87-dax-product-evidence-package/resident-suite-evidence-index.json`
+
+Package command:
+
+```text
+python3 benchmarks/python/package_resident_suite_evidence.py \
+  artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json \
+  --output-dir artifacts/m87-dax-product-evidence-package
+```
+
+Package contents:
+
+- `resident-regression-suite-m86-qwen-a3b-dax-product.json`
+- `dax-repeated-context-m86-qwen-a3b-dax-product.json`
+- `dax-repeated-context-m86-qwen-a3b-dax-product.jsonl`
+- `dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
+- `resident-suite-evidence-index.json`
+
+Index result:
+
+- suite verdict: `PASS`
+- Dax product-path gate: `PASS`
+- copied artifacts: `4`
+- missing optional artifacts: `4`
+- cache-hit turns: `2`
+- best-hit speedup: `22.06x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service: `241.70 ms`
+
+M87 decision:
+
+- Product-path evidence packages now carry enough structured summary data for
+  Redmine, Dax, CI, or future app surfaces to inspect the result without
+  opening the large benchmark report.
+- The package still preserves the raw benchmark, JSONL rows, gate report, and
+  suite manifest for deeper debugging.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
