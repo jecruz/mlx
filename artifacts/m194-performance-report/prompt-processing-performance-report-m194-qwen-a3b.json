@@ -1,0 +1,30 @@
+{
+  "current": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "memory_source": "request_metrics",
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "failures": [],
+  "readiness": "prompt-processing-performance-reported",
+  "source_artifacts": {
+    "first_turn_json": "artifacts/m180-live-request-memory-suite/request-scoped-gates-m180-qwen-a3b/m137_first_reusable_turn_latency-m180-qwen-a3b.json",
+    "lower_memory_json": "artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json",
+    "quality_threshold_json": "artifacts/m180-live-request-memory-suite/quality-threshold-gate-m180-qwen-a3b.json"
+  },
+  "tag": "m194-qwen-a3b",
+  "target": {
+    "mature_hit_service_request_ms": 175.0,
+    "minimum_speedup_vs_baseline": 4.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "type": "prompt_processing_performance_report",
+  "verdict": "PASS",
+  "warnings": [
+    "mature reusable-turn latency is 204.031ms; target is 175.000ms"
+  ]
+}

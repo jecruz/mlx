@@ -1,0 +1,90 @@
+{
+  "audited_count": 8,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M194",
+      "passed": true,
+      "path": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+      "readiness": "prompt-processing-performance-reported",
+      "type": "prompt_processing_performance_report",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M195",
+      "passed": true,
+      "path": "artifacts/m195-optimization-matrix/prompt-processing-optimization-matrix-m195-qwen-a3b.json",
+      "readiness": "prompt-processing-optimization-matrix-ready",
+      "type": "prompt_processing_optimization_matrix",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M196",
+      "passed": true,
+      "path": "artifacts/m196-performance-budget/performance-budget-gate-m196-qwen-a3b.json",
+      "readiness": "performance-budget-gated",
+      "type": "performance_budget_gate",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M197",
+      "passed": true,
+      "path": "artifacts/m197-live-performance-snapshot/live-performance-snapshot-m197-qwen-a3b.json",
+      "readiness": "live-performance-snapshot-ready",
+      "type": "live_performance_snapshot",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M198",
+      "passed": true,
+      "path": "artifacts/m198-performance-report-contract/performance-report-contract-m198-qwen-a3b.json",
+      "readiness": "performance-report-contract-ready",
+      "type": "performance_report_contract_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M199",
+      "passed": true,
+      "path": "artifacts/m199-performance-report-render/performance-report-render-m199-qwen-a3b.json",
+      "readiness": "performance-report-rendered",
+      "type": "performance_report_render",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M200",
+      "passed": true,
+      "path": "artifacts/m200-next-milestones/next-milestone-plan-m200.json",
+      "readiness": "next-milestones-planned",
+      "type": "next_milestone_plan",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M201",
+      "passed": true,
+      "path": "artifacts/m201-performance-batch-report/performance-batch-report-m201.json",
+      "readiness": "performance-batch-reported",
+      "type": "performance_batch_report",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m201-m194-m201",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

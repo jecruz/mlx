@@ -1,0 +1,54 @@
+{
+  "current": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "memory_source": "request_metrics",
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "failures": [],
+  "performance_report": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+  "readiness": "prompt-processing-optimization-matrix-ready",
+  "recommended_first": "cache_lookup_fast_path",
+  "tactics": [
+    {
+      "acceptance": "mature hit latency trends toward 175ms with quality threshold PASS",
+      "hypothesis": "avoid redundant cache admission and prefix matching work on exact mature hits",
+      "id": "cache_lookup_fast_path",
+      "risk": "cache hit correctness or request-scope bleed",
+      "target": "reduce mature reusable-turn service_request_ms"
+    },
+    {
+      "acceptance": "actual_prefill_tokens unchanged, service_request_ms reduced, deterministic quality PASS",
+      "hypothesis": "reuse tokenized prompt metadata for identical repeated workspace prompts",
+      "id": "tokenized_prompt_reuse",
+      "risk": "incorrect reuse across different request metadata",
+      "target": "reduce prompt tokenization and hash overhead"
+    },
+    {
+      "acceptance": "conversion service_request_ms decreases without queue wait regression",
+      "hypothesis": "short bounded wait for completed async prefix builds improves second-turn conversion",
+      "id": "async_cache_completion_wait",
+      "risk": "foreground request stalls under concurrent load",
+      "target": "reduce conversion-turn latency"
+    },
+    {
+      "acceptance": "fast-path overhead gate PASS and UI contract still PASS",
+      "hypothesis": "summarize heavy metrics for hot responses while preserving detailed debug mode",
+      "id": "response_metrics_trim",
+      "risk": "operator loses required diagnostics",
+      "target": "reduce operator/HTTP overhead"
+    }
+  ],
+  "tag": "m195-qwen-a3b",
+  "target": {
+    "mature_hit_service_request_ms": 175.0,
+    "minimum_speedup_vs_baseline": 4.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "type": "prompt_processing_optimization_matrix",
+  "verdict": "PASS"
+}

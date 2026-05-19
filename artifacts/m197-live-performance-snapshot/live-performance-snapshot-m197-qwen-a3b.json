@@ -1,0 +1,49 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "metrics": {
+    "cache_candidate_requests": 0,
+    "failed_requests": 0,
+    "mean_run_ms": null,
+    "successful_requests": 0,
+    "total_requests": 0
+  },
+  "operator_readiness": {
+    "failures": [],
+    "memory": {
+      "active_memory_bytes": 20741596426,
+      "cache_memory_bytes": 320790090,
+      "peak_memory_bytes": 21419940142,
+      "source": "engine_ui"
+    },
+    "readiness": "operator-live-ready",
+    "runtime": {
+      "backend": "text",
+      "can_generate": true,
+      "can_reload": true,
+      "can_unload": true,
+      "engine_preset": "async-experimental",
+      "gpu_ready": true,
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "runtime_profile": null,
+      "strategy": "split_prefill_or_async_build",
+      "warm": true
+    },
+    "status_card": {
+      "can_generate": "PASS",
+      "gpu": "PASS",
+      "live_controls": "PASS",
+      "runtime": "PASS",
+      "warm": "PASS"
+    },
+    "type": "operator_readiness_live_status",
+    "verdict": "PASS",
+    "warnings": [
+      "arrays_cache_has_recurrent_state_without_offset_or_trim"
+    ]
+  },
+  "readiness": "live-performance-snapshot-ready",
+  "tag": "m197-qwen-a3b",
+  "type": "live_performance_snapshot",
+  "verdict": "PASS"
+}

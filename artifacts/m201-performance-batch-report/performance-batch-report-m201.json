@@ -1,0 +1,65 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "mature reusable-turn latency improves while quality threshold stays PASS",
+      "milestone": "M202",
+      "title": "Cache lookup fast-path implementation"
+    },
+    {
+      "acceptance": "identical repeated workspace prompts reduce prompt overhead without route bleed",
+      "milestone": "M203",
+      "title": "Tokenized prompt reuse probe"
+    },
+    {
+      "acceptance": "conversion-turn latency improves without queue wait regression",
+      "milestone": "M204",
+      "title": "Async cache completion wait sweep"
+    },
+    {
+      "acceptance": "hot response overhead drops and operator debug mode preserves full metrics",
+      "milestone": "M205",
+      "title": "Response metrics trim experiment"
+    },
+    {
+      "acceptance": "M180-equivalent suite stays PASS with quality threshold PASS",
+      "milestone": "M206",
+      "title": "Live performance suite rerun"
+    },
+    {
+      "acceptance": "Prowl or UI-side probe consumes /engine/operator-readiness",
+      "milestone": "M207",
+      "title": "Prowl/UI readiness endpoint smoke"
+    },
+    {
+      "acceptance": "registry includes any new smaller/lower-memory candidates",
+      "milestone": "M208",
+      "title": "Candidate model registry refresh"
+    },
+    {
+      "acceptance": "new report shows latency delta versus M194 baseline",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    }
+  ],
+  "performance": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "quality_threshold_verdict": "PASS",
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229,
+    "speedup_vs_baseline": 6.91600447859388,
+    "target_mature_hit_service_request_ms": 175.0
+  },
+  "readiness": "performance-batch-reported",
+  "source_artifacts": {
+    "budget_gate_json": "artifacts/m196-performance-budget/performance-budget-gate-m196-qwen-a3b.json",
+    "next_plan_json": "artifacts/m200-next-milestones/next-milestone-plan-m200.json",
+    "performance_report_json": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+    "snapshot_json": "artifacts/m197-live-performance-snapshot/live-performance-snapshot-m197-qwen-a3b.json"
+  },
+  "tag": "m201-performance-batch",
+  "type": "performance_batch_report",
+  "verdict": "PASS"
+}

@@ -1,0 +1,7 @@
+Prompt Processing Performance: PASS
+readiness=prompt-processing-performance-reported quality=PASS
+baseline=1411.08045889996ms mature_hit=204.03116615489125ms speedup=6.91600447859388x
+target=175.0ms required_reduction=29.031ms required_reduction_pct=14.229%
+memory_source=request_metrics max_active=21.02259841GB
+warnings:
+- mature reusable-turn latency is 204.031ms; target is 175.000ms

@@ -2125,3 +2125,51 @@ Result:
 Decision:
 
 - The M186-M193 milestone batch is complete from the repo artifact perspective.
+
+## M194-M201 Performance Report Batch
+
+M194-M201 add a performance-reporting lane around the current prompt-processing
+baseline and the next latency target.
+
+Artifacts:
+
+- `artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json`
+- `artifacts/m195-optimization-matrix/prompt-processing-optimization-matrix-m195-qwen-a3b.json`
+- `artifacts/m196-performance-budget/performance-budget-gate-m196-qwen-a3b.json`
+- `artifacts/m197-live-performance-snapshot/live-performance-snapshot-m197-qwen-a3b.json`
+- `artifacts/m198-performance-report-contract/performance-report-contract-m198-qwen-a3b.json`
+- `artifacts/m199-performance-report-render/performance-report-render-m199-qwen-a3b.json`
+- `artifacts/m200-next-milestones/next-milestone-plan-m200.json`
+- `artifacts/m201-performance-batch-report/performance-batch-report-m201.json`
+- `artifacts/m201-performance-batch-report/milestone-completion-audit-m201-m194-m201.json`
+
+Result:
+
+- performance report: `PASS`
+- optimization matrix: `PASS`
+- budget gate: `PASS`
+- live performance snapshot: `PASS`
+- report contract: `PASS`
+- report renderer: `PASS`
+- next milestone plan: `PASS`
+- batch report: `PASS`
+- completion audit: `PASS`
+- audited artifacts: `8`
+- failures: `0`
+
+Performance summary:
+
+- baseline service request: `1411.08045889996 ms`
+- mature reusable-turn service request: `204.03116615489125 ms`
+- speedup vs baseline: `6.91600447859388x`
+- max active memory: `21.02259841 GB`
+- quality threshold: `PASS`
+- next mature-hit target: `175 ms`
+- required reduction: `29.031 ms`
+- required reduction percent: `14.229%`
+
+Decision:
+
+- The next implementation lane should target mature reusable-turn latency
+  reduction while preserving the existing quality threshold and at least `4x`
+  speedup versus baseline.

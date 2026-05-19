@@ -165,6 +165,14 @@ performance:
 - `M191` operator UI field map
 - `M192` prompt-processing next-target gate with quality threshold
 - `M193` milestone completion audit for M186-M193
+- `M194` prompt-processing performance report
+- `M195` prompt-processing optimization matrix
+- `M196` performance budget gate
+- `M197` live performance snapshot
+- `M198` performance report contract probe
+- `M199` performance report renderer
+- `M200` next milestone plan
+- `M201` performance batch report and completion audit
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport

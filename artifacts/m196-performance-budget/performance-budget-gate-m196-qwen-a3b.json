@@ -1,0 +1,14 @@
+{
+  "failures": [],
+  "mature_hit_service_request_ms": 204.03116615489125,
+  "quality_threshold_verdict": "PASS",
+  "readiness": "performance-budget-gated",
+  "speedup_vs_baseline": 6.91600447859388,
+  "tag": "m196-qwen-a3b",
+  "target_mature_hit_service_request_ms": 175.0,
+  "type": "performance_budget_gate",
+  "verdict": "PASS",
+  "warnings": [
+    "optimization gap remains: 204.031ms > 175.000ms"
+  ]
+}

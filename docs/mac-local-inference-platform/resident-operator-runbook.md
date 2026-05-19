@@ -833,3 +833,32 @@ Expected result:
 - failures: `0`
 - warning is acceptable when current mature reusable-turn latency is above the
   next target but the existing quality and speedup gates pass
+
+Build the prompt-processing performance report:
+
+```bash
+bin/mlx-engine performance-report \
+  --output-json artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json \
+  --output-md artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.md \
+  --tag m194-qwen-a3b \
+  --fail-on-fail
+```
+
+Render the performance report:
+
+```bash
+python3 benchmarks/python/performance_report_render.py \
+  --performance-report-json artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json \
+  --output-json artifacts/m199-performance-report-render/performance-report-render-m199-qwen-a3b.json \
+  --output-text artifacts/m199-performance-report-render/performance-report-render-m199-qwen-a3b.txt \
+  --tag m199-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected current report:
+
+- baseline service request: `1411.08045889996 ms`
+- mature reusable-turn service request: `204.03116615489125 ms`
+- speedup vs baseline: `6.91600447859388x`
+- next target: `175 ms`
+- quality threshold: `PASS`

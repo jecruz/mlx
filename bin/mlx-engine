@@ -20,6 +20,7 @@ READY = PYTHON_DIR / "wait_resident_ready.py"
 REGRESSION_SUITE = PYTHON_DIR / "run_resident_regression_suite.py"
 OPERATOR_READINESS_RENDER = PYTHON_DIR / "operator_readiness_render.py"
 OPERATOR_READINESS_BUNDLE = PYTHON_DIR / "operator_readiness_bundle.py"
+PROMPT_PERFORMANCE_REPORT = PYTHON_DIR / "prompt_processing_performance_report.py"
 
 
 def request_json(method: str, url: str, payload: dict[str, Any] | None = None):
@@ -243,6 +244,32 @@ def operator_readiness_refresh(args: argparse.Namespace) -> int:
     return subprocess.call(cmd, cwd=ROOT)
 
 
+def performance_report(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(PROMPT_PERFORMANCE_REPORT),
+        "--first-turn-json",
+        args.first_turn_json,
+        "--lower-memory-json",
+        args.lower_memory_json,
+        "--quality-threshold-json",
+        args.quality_threshold_json,
+        "--output-json",
+        args.output_json,
+        "--output-md",
+        args.output_md,
+        "--tag",
+        args.tag,
+        "--target-mature-hit-ms",
+        str(args.target_mature_hit_ms),
+        "--min-speedup",
+        str(args.min_speedup),
+    ]
+    if args.fail_on_fail:
+        cmd.append("--fail-on-fail")
+    return subprocess.call(cmd, cwd=ROOT)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Resident MLX engine CLI")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -371,6 +398,36 @@ def build_parser() -> argparse.ArgumentParser:
     refresh_parser.add_argument("--tag", default="operator-readiness-refresh")
     refresh_parser.add_argument("--fail-on-fail", action="store_true")
     refresh_parser.set_defaults(func=operator_readiness_refresh)
+
+    perf_parser = subcommands.add_parser(
+        "performance-report",
+        help="Build a prompt-processing performance report from gated artifacts",
+    )
+    perf_parser.add_argument(
+        "--first-turn-json",
+        default="artifacts/m180-live-request-memory-suite/request-scoped-gates-m180-qwen-a3b/m137_first_reusable_turn_latency-m180-qwen-a3b.json",
+    )
+    perf_parser.add_argument(
+        "--lower-memory-json",
+        default="artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json",
+    )
+    perf_parser.add_argument(
+        "--quality-threshold-json",
+        default="artifacts/m180-live-request-memory-suite/quality-threshold-gate-m180-qwen-a3b.json",
+    )
+    perf_parser.add_argument(
+        "--output-json",
+        default="artifacts/performance/prompt-processing-performance-report.json",
+    )
+    perf_parser.add_argument(
+        "--output-md",
+        default="artifacts/performance/prompt-processing-performance-report.md",
+    )
+    perf_parser.add_argument("--tag", default="performance-report")
+    perf_parser.add_argument("--target-mature-hit-ms", type=float, default=175.0)
+    perf_parser.add_argument("--min-speedup", type=float, default=4.0)
+    perf_parser.add_argument("--fail-on-fail", action="store_true")
+    perf_parser.set_defaults(func=performance_report)
 
     return parser
 

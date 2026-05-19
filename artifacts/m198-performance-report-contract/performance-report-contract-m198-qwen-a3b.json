@@ -1,0 +1,8 @@
+{
+  "failures": [],
+  "performance_report_json": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+  "readiness": "performance-report-contract-ready",
+  "tag": "m198-qwen-a3b",
+  "type": "performance_report_contract_probe",
+  "verdict": "PASS"
+}

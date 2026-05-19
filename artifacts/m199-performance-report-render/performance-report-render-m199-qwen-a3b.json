@@ -1,0 +1,9 @@
+{
+  "failures": [],
+  "performance_report_json": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+  "readiness": "performance-report-rendered",
+  "tag": "m199-qwen-a3b",
+  "text": "Prompt Processing Performance: PASS\nreadiness=prompt-processing-performance-reported quality=PASS\nbaseline=1411.08045889996ms mature_hit=204.03116615489125ms speedup=6.91600447859388x\ntarget=175.0ms required_reduction=29.031ms required_reduction_pct=14.229%\nmemory_source=request_metrics max_active=21.02259841GB\nwarnings:\n- mature reusable-turn latency is 204.031ms; target is 175.000ms\n",
+  "type": "performance_report_render",
+  "verdict": "PASS"
+}

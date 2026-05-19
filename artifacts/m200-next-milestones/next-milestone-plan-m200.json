@@ -1,0 +1,64 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "mature reusable-turn latency improves while quality threshold stays PASS",
+      "milestone": "M202",
+      "title": "Cache lookup fast-path implementation"
+    },
+    {
+      "acceptance": "identical repeated workspace prompts reduce prompt overhead without route bleed",
+      "milestone": "M203",
+      "title": "Tokenized prompt reuse probe"
+    },
+    {
+      "acceptance": "conversion-turn latency improves without queue wait regression",
+      "milestone": "M204",
+      "title": "Async cache completion wait sweep"
+    },
+    {
+      "acceptance": "hot response overhead drops and operator debug mode preserves full metrics",
+      "milestone": "M205",
+      "title": "Response metrics trim experiment"
+    },
+    {
+      "acceptance": "M180-equivalent suite stays PASS with quality threshold PASS",
+      "milestone": "M206",
+      "title": "Live performance suite rerun"
+    },
+    {
+      "acceptance": "Prowl or UI-side probe consumes /engine/operator-readiness",
+      "milestone": "M207",
+      "title": "Prowl/UI readiness endpoint smoke"
+    },
+    {
+      "acceptance": "registry includes any new smaller/lower-memory candidates",
+      "milestone": "M208",
+      "title": "Candidate model registry refresh"
+    },
+    {
+      "acceptance": "new report shows latency delta versus M194 baseline",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    }
+  ],
+  "performance_baseline": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "memory_source": "request_metrics",
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "performance_target": {
+    "mature_hit_service_request_ms": 175.0,
+    "minimum_speedup_vs_baseline": 4.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "readiness": "next-milestones-planned",
+  "tag": "m200-next",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}
