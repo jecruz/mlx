@@ -5659,6 +5659,59 @@ M90 decision:
   convert that turn into a bounded pending wait/hit without regressing the
   `18` token mature-hit path.
 
+## M91 Async Build Scheduling Sweep
+
+M91 turns the M90 first-hit gate into a Dax profile sweep so the product-facing
+command path can compare scheduling behavior across existing profile choices.
+
+Changes:
+
+- `benchmarks/python/dax_repeated_context_bench.py` now accepts optional
+  `--dax-profile` and `--dax-intent` arguments and forwards them to the Dax
+  `mlx-engine` command.
+- `benchmarks/python/dax_first_hit_scheduling_sweep.py` runs the repeated
+  context benchmark for multiple Dax profile variants, applies the M90
+  first-hit latency gate to each result, and reports both:
+  - `verdict`: whether the sweep executed successfully
+  - `target_verdict`: whether any variant passed the first-hit latency target
+
+Artifact:
+
+- `artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-scheduling-sweep-m91-qwen-a3b.json`
+
+Command:
+
+```text
+python3 benchmarks/python/dax_first_hit_scheduling_sweep.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m91-first-hit-scheduling-sweep \
+  --tag m91-qwen-a3b \
+  --variants auto,agent-workspace,agent-workspace-async
+```
+
+Result:
+
+- sweep verdict: `PASS`
+- target verdict: `FAIL`
+- variants tested: `auto`, `agent-workspace`, `agent-workspace-async`
+- all variants passed mature repeated-context reuse
+- no variant passed the scheduled pre-hit ratio target
+- best observed variant: `agent-workspace`
+- best observed scheduled pre-hit service: `1375.97 ms`
+- best observed scheduled pre-hit ratio vs baseline: `0.971`
+- best observed scheduled pre-hit prefill: `2092` tokens
+- best observed first mature hit: `231.92 ms`, `18` prefill tokens, `6.11x`
+  speedup vs baseline
+
+M91 decision:
+
+- Existing Dax profile selection does not solve first-hit conversion.
+- The product path still performs full `2092` token prefill on the scheduled
+  pre-hit/cache-build turn.
+- M92 must add a first-hit conversion behavior or new runtime profile that
+  changes scheduler/cache interaction, not just benchmark a different existing
+  Dax profile.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

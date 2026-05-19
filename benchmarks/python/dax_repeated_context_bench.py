@@ -84,6 +84,8 @@ def run_dax_prompt(
     base_url: str,
     prompt: str,
     max_tokens: int,
+    dax_profile: str | None,
+    dax_intent: str | None,
 ) -> tuple[dict[str, Any], float, list[str]]:
     cmd = [
         "npx",
@@ -92,12 +94,20 @@ def run_dax_prompt(
         "mlx-engine",
         "--base-url",
         base_url,
-        "--prompt",
-        prompt,
-        "--max-tokens",
-        str(max_tokens),
-        "--json",
     ]
+    if dax_profile:
+        cmd.extend(["--profile", dax_profile])
+    if dax_intent:
+        cmd.extend(["--intent", dax_intent])
+    cmd.extend(
+        [
+            "--prompt",
+            prompt,
+            "--max-tokens",
+            str(max_tokens),
+            "--json",
+        ]
+    )
     started = time.perf_counter()
     completed = subprocess.run(
         cmd,
@@ -199,6 +209,8 @@ def main() -> int:
     parser.add_argument("--turns", type=int, default=4)
     parser.add_argument("--shared-repeats", type=int, default=64)
     parser.add_argument("--max-tokens", type=int, default=4)
+    parser.add_argument("--dax-profile")
+    parser.add_argument("--dax-intent")
     parser.add_argument("--min-speedup", type=float, default=2.0)
     parser.add_argument("--max-hit-prefill-tokens", type=int, default=32)
     parser.add_argument("--fail-on-fail", action="store_true")
@@ -226,6 +238,8 @@ def main() -> int:
                 base_url=base_url,
                 prompt=prompt,
                 max_tokens=args.max_tokens,
+                dax_profile=args.dax_profile,
+                dax_intent=args.dax_intent,
             )
             after = health_summary(base_url)
             row = row_for_response(
@@ -271,6 +285,8 @@ def main() -> int:
         "turns": args.turns,
         "shared_repeats": args.shared_repeats,
         "max_tokens": args.max_tokens,
+        "dax_profile": args.dax_profile,
+        "dax_intent": args.dax_intent,
         "min_speedup": args.min_speedup,
         "max_hit_prefill_tokens": args.max_hit_prefill_tokens,
         "rows": rows,

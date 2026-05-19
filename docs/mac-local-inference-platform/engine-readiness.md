@@ -382,6 +382,16 @@ Readiness interpretation:
   - result: `PASS`, scheduled pre-hit service `1386.49 ms`, scheduled pre-hit
     prefill `2092` tokens, first-hit speedup `19.20x`, and first-hit prefill
     `18` tokens
+- M91 sweeps existing Dax profile choices against that first-hit gate:
+  - artifact:
+    `artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-scheduling-sweep-m91-qwen-a3b.json`
+  - result: sweep `PASS`, target `FAIL`; best observed profile
+    `agent-workspace`, scheduled pre-hit service `1375.97 ms`, scheduled
+    pre-hit ratio `0.971`, scheduled pre-hit prefill `2092` tokens, and first
+    mature hit `231.92 ms` with `18` prefill tokens
+  - implication: existing profile selection does not convert the expensive
+    scheduled pre-hit turn; the next readiness target is a runtime behavior or
+    profile change that alters scheduler/cache interaction.
 
 ## Current Qwen Result
 

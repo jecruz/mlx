@@ -2632,3 +2632,26 @@
   - M90 conclusion: first-hit latency now has its own regression gate; the
     current optimization target is the scheduled pre-hit turn that still does a
     full `2092` token prefill before mature-cache reuse appears.
+- Completed M91 async build scheduling sweep:
+  - added `benchmarks/python/dax_first_hit_scheduling_sweep.py`
+  - extended `benchmarks/python/dax_repeated_context_bench.py` with
+    `--dax-profile` and `--dax-intent` forwarding for Dax product-path sweeps
+  - wrote artifact:
+    - `artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-scheduling-sweep-m91-qwen-a3b.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/dax_repeated_context_bench.py benchmarks/python/dax_first_hit_scheduling_sweep.py benchmarks/python/dax_first_hit_latency_gate.py`
+    - sweep command completed against `http://127.0.0.1:8773`
+    - report parsed with `python3 -m json.tool`
+  - M91 result:
+    - sweep verdict `PASS`
+    - first-hit target verdict `FAIL`
+    - variants tested: `auto`, `agent-workspace`, `agent-workspace-async`
+    - best observed variant `agent-workspace`
+    - best observed scheduled pre-hit service `1375.97 ms`
+    - best observed scheduled pre-hit ratio vs baseline `0.971`
+    - scheduled pre-hit prefill remained `2092` tokens
+    - first mature hit remained strong at `231.92 ms`, `18` prefill tokens,
+      and `6.11x` speedup vs baseline
+  - M91 conclusion: existing profile selection is not enough to convert the
+    scheduled pre-hit/cache-build turn. M92 needs a runtime behavior/profile
+    change that changes scheduler/cache interaction.

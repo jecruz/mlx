@@ -499,3 +499,33 @@ Next target:
   evidence at `18` tokens.
 - Keep lower-memory product profiles as the next product track after first-hit
   latency is bounded.
+
+## M91 Result
+
+M91 swept existing Dax profile choices against the M90 first-hit gate.
+
+Added:
+
+- `benchmarks/python/dax_first_hit_scheduling_sweep.py`
+- Dax profile/intent forwarding in
+  `benchmarks/python/dax_repeated_context_bench.py`
+- `artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-scheduling-sweep-m91-qwen-a3b.json`
+
+Result:
+
+- sweep verdict: `PASS`
+- first-hit target verdict: `FAIL`
+- variants: `auto`, `agent-workspace`, `agent-workspace-async`
+- best observed variant: `agent-workspace`
+- best observed scheduled pre-hit service: `1375.97 ms`
+- best observed scheduled pre-hit ratio vs baseline: `0.971`
+- scheduled pre-hit prefill: `2092` tokens
+- first mature hit: `231.92 ms`, `18` prefill tokens, `6.11x` speedup
+
+Decision:
+
+- Existing Dax profile selection does not materially reduce first-hit latency.
+- The scheduled pre-hit/cache-build turn is still a full-prefill request.
+- Next target is M92: add a first-hit conversion behavior or profile that makes
+  the second repeated-context turn wait for or use the pending build instead of
+  doing a full `2092` token prefill.

@@ -1,0 +1,96 @@
+{
+  "artifacts": {
+    "agent-workspace": {
+      "benchmark_json": "artifacts/m91-first-hit-scheduling-sweep/dax-repeated-context-m91-qwen-a3b-agent-workspace.json",
+      "benchmark_jsonl": "artifacts/m91-first-hit-scheduling-sweep/dax-repeated-context-m91-qwen-a3b-agent-workspace.jsonl",
+      "first_hit_gate_json": "artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-latency-gate-m91-qwen-a3b-agent-workspace.json"
+    },
+    "agent-workspace-async": {
+      "benchmark_json": "artifacts/m91-first-hit-scheduling-sweep/dax-repeated-context-m91-qwen-a3b-agent-workspace-async.json",
+      "benchmark_jsonl": "artifacts/m91-first-hit-scheduling-sweep/dax-repeated-context-m91-qwen-a3b-agent-workspace-async.jsonl",
+      "first_hit_gate_json": "artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-latency-gate-m91-qwen-a3b-agent-workspace-async.json"
+    },
+    "auto": {
+      "benchmark_json": "artifacts/m91-first-hit-scheduling-sweep/dax-repeated-context-m91-qwen-a3b-auto.json",
+      "benchmark_jsonl": "artifacts/m91-first-hit-scheduling-sweep/dax-repeated-context-m91-qwen-a3b-auto.jsonl",
+      "first_hit_gate_json": "artifacts/m91-first-hit-scheduling-sweep/dax-first-hit-latency-gate-m91-qwen-a3b-auto.json"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "best_observed": {
+    "benchmark_verdict": "PASS",
+    "best_hit_speedup_vs_baseline": 6.112149491042174,
+    "failures": [
+      "scheduled_pre_hit_ratio_vs_baseline: 0.9706931743418213 <= 0.5 failed"
+    ],
+    "first_hit_actual_prefill_tokens": 18.0,
+    "first_hit_gate_verdict": "FAIL",
+    "first_hit_service_request_ms": 231.917415978387,
+    "first_hit_speedup_vs_baseline": 6.112149491042174,
+    "hit_count": 2,
+    "scheduled_pre_hit_actual_prefill_tokens": 2092.0,
+    "scheduled_pre_hit_ratio_vs_baseline": 0.9706931743418213,
+    "scheduled_pre_hit_service_request_ms": 1375.9710828308016,
+    "variant": "agent-workspace"
+  },
+  "best_passing": null,
+  "summaries": [
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 5.810275742159678,
+      "failures": [
+        "scheduled_pre_hit_ratio_vs_baseline: 0.9905926054768255 <= 0.5 failed"
+      ],
+      "first_hit_actual_prefill_tokens": 18.0,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": 240.51375011913478,
+      "first_hit_speedup_vs_baseline": 5.810275742159678,
+      "hit_count": 2,
+      "scheduled_pre_hit_actual_prefill_tokens": 2092.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.9905926054768255,
+      "scheduled_pre_hit_service_request_ms": 1384.3048331327736,
+      "variant": "auto"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 6.112149491042174,
+      "failures": [
+        "scheduled_pre_hit_ratio_vs_baseline: 0.9706931743418213 <= 0.5 failed"
+      ],
+      "first_hit_actual_prefill_tokens": 18.0,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": 231.917415978387,
+      "first_hit_speedup_vs_baseline": 6.112149491042174,
+      "hit_count": 2,
+      "scheduled_pre_hit_actual_prefill_tokens": 2092.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.9706931743418213,
+      "scheduled_pre_hit_service_request_ms": 1375.9710828308016,
+      "variant": "agent-workspace"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 5.923592106427637,
+      "failures": [
+        "scheduled_pre_hit_ratio_vs_baseline: 0.9795104438643439 <= 0.5 failed"
+      ],
+      "first_hit_actual_prefill_tokens": 18.0,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": 238.11241704970598,
+      "first_hit_speedup_vs_baseline": 5.923592106427637,
+      "hit_count": 2,
+      "scheduled_pre_hit_actual_prefill_tokens": 2092.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.9795104438643439,
+      "scheduled_pre_hit_service_request_ms": 1381.5807078499347,
+      "variant": "agent-workspace-async"
+    }
+  ],
+  "tag": "m91-qwen-a3b",
+  "target_verdict": "FAIL",
+  "type": "dax_first_hit_scheduling_sweep",
+  "variants": [
+    "auto",
+    "agent-workspace",
+    "agent-workspace-async"
+  ],
+  "verdict": "PASS"
+}
