@@ -2816,3 +2816,31 @@
   - M97 conclusion: the new first-hit profile name works directly after a
     server restart; compatibility profile routing is no longer required for
     this path.
+- Completed M98 direct lower-memory profile validation:
+  - ran direct product first-hit gate with `agent-workspace-low-memory`
+  - ran resident suite first-hit path with `agent-workspace-low-memory`
+  - used `--conversion-path any` because bounded low-memory conversion is the
+    acceptance criterion, not the exact split-prefill path
+  - packaged suite evidence
+  - wrote artifacts:
+    - `artifacts/m98-direct-low-memory-profile/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-direct.json`
+    - `artifacts/m98-direct-low-memory-profile/dax-product-first-hit-gate-m98-qwen-a3b-low-memory-direct.json`
+    - `artifacts/m98-direct-low-memory-profile/dax-product-first-hit-m98-qwen-a3b-low-memory-direct.json`
+    - `artifacts/m98-direct-low-memory-profile/dax-product-first-hit-m98-qwen-a3b-low-memory-direct.jsonl`
+    - `artifacts/m98-suite-low-memory-direct/resident-regression-suite-m98-qwen-a3b-low-memory-suite-direct.json`
+    - `artifacts/m98-suite-low-memory-direct-evidence-package/resident-suite-evidence-index.json`
+  - validation passed:
+    - direct product first-hit gate passed with `--fail-on-fail`
+    - suite manifest passed with `--include-dax-first-hit`
+    - evidence package indexed `dax_first_hit=PASS`
+  - M98 result:
+    - direct profile `agent-workspace-low-memory`
+    - direct conversion turn `2`
+    - direct conversion prefill `18` tokens
+    - direct conversion ratio vs baseline `0.776`
+    - direct mature hit speedup `2.585x`
+    - suite conversion ratio vs baseline `0.797`
+    - suite mature hit speedup `2.417x`
+  - M98 conclusion: the lower-memory product profile works directly by name
+    after server restart; compatibility `memory-saver` routing is no longer
+    required for this path.

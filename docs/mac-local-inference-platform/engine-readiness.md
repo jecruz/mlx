@@ -447,6 +447,14 @@ Readiness interpretation:
   - result: `agent-workspace-first-hit` direct gate `PASS`, suite path `PASS`,
     conversion turn `2`, conversion prefill `18` tokens, direct conversion
     ratio `0.783`, suite conversion ratio `0.785`
+- M98 validates the restarted-server lower-memory profile path:
+  - direct artifact:
+    `artifacts/m98-direct-low-memory-profile/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-direct.json`
+  - suite artifact:
+    `artifacts/m98-suite-low-memory-direct/resident-regression-suite-m98-qwen-a3b-low-memory-suite-direct.json`
+  - result: `agent-workspace-low-memory` direct gate `PASS`, suite path
+    `PASS`, conversion turn `2`, conversion prefill `18` tokens, direct
+    conversion ratio `0.776`, suite conversion ratio `0.797`
 
 ## Current Qwen Result
 

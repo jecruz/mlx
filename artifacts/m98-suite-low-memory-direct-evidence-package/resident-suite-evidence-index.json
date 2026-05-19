@@ -1,0 +1,56 @@
+{
+  "copied": {
+    "dax_first_hit_benchmark": {
+      "bytes": 107355,
+      "path": "artifacts/m98-suite-low-memory-direct-evidence-package/dax-product-first-hit-m98-qwen-a3b-low-memory-suite-direct.json",
+      "source": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-m98-qwen-a3b-low-memory-suite-direct.json"
+    },
+    "dax_first_hit_gate": {
+      "bytes": 54436,
+      "path": "artifacts/m98-suite-low-memory-direct-evidence-package/dax-product-first-hit-gate-m98-qwen-a3b-low-memory-suite-direct.json",
+      "source": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-gate-m98-qwen-a3b-low-memory-suite-direct.json"
+    },
+    "dax_first_hit_jsonl": {
+      "bytes": 66802,
+      "path": "artifacts/m98-suite-low-memory-direct-evidence-package/dax-product-first-hit-m98-qwen-a3b-low-memory-suite-direct.jsonl",
+      "source": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-m98-qwen-a3b-low-memory-suite-direct.jsonl"
+    },
+    "dax_first_hit_summary": {
+      "bytes": 1115,
+      "path": "artifacts/m98-suite-low-memory-direct-evidence-package/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-suite-direct.json",
+      "source": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-suite-direct.json"
+    },
+    "suite_manifest": {
+      "bytes": 169175,
+      "path": "artifacts/m98-suite-low-memory-direct-evidence-package/resident-regression-suite-m98-qwen-a3b-low-memory-suite-direct.json",
+      "source": "artifacts/m98-suite-low-memory-direct/resident-regression-suite-m98-qwen-a3b-low-memory-suite-direct.json"
+    }
+  },
+  "dax_first_hit": {
+    "benchmark_verdict": "PASS",
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.797351740152957,
+    "conversion_turn": 2,
+    "gate_verdict": "PASS",
+    "mature_hit_actual_prefill_tokens": 18.0,
+    "mature_hit_speedup_vs_baseline": 2.41655116777642,
+    "profile": "agent-workspace-low-memory",
+    "verdict": "PASS"
+  },
+  "dax_repeated_context": null,
+  "gate": null,
+  "missing": {
+    "cache": "artifacts/m98-suite-low-memory-direct/resident-benchmark-sync-safe-m98-qwen-a3b-low-memory-suite-direct.jsonl",
+    "cold_start": "artifacts/m98-suite-low-memory-direct/resident-cold-start-sync-safe-m98-qwen-a3b-low-memory-suite-direct.jsonl",
+    "dax_repeated_context": "artifacts/m98-suite-low-memory-direct/dax-repeated-context-m98-qwen-a3b-low-memory-suite-direct.json",
+    "dax_repeated_context_gate": "artifacts/m98-suite-low-memory-direct/dax-repeated-context-gate-m98-qwen-a3b-low-memory-suite-direct.json",
+    "dax_repeated_context_jsonl": "artifacts/m98-suite-low-memory-direct/dax-repeated-context-m98-qwen-a3b-low-memory-suite-direct.jsonl",
+    "gate": "artifacts/m98-suite-low-memory-direct/resident-regression-gate-m98-qwen-a3b-low-memory-suite-direct.json",
+    "prefill": "artifacts/m98-suite-low-memory-direct/resident-prefill-isolation-sync-safe-m98-qwen-a3b-low-memory-suite-direct.jsonl"
+  },
+  "output_dir": "artifacts/m98-suite-low-memory-direct-evidence-package",
+  "source_manifest": "artifacts/m98-suite-low-memory-direct/resident-regression-suite-m98-qwen-a3b-low-memory-suite-direct.json",
+  "suite_tag": "m98-qwen-a3b-low-memory-suite-direct",
+  "suite_verdict": "PASS",
+  "type": "resident_suite_evidence_package"
+}

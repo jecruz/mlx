@@ -701,3 +701,24 @@ Decision:
 
 - `agent-workspace-first-hit` is now live-validated by name.
 - Next target is M98: validate `agent-workspace-low-memory` directly by name.
+
+## M98 Result
+
+M98 validated `agent-workspace-low-memory` directly after server restart.
+
+Result:
+
+- direct product first-hit gate: `PASS`
+- resident suite first-hit path: `PASS`
+- direct conversion turn: `2`
+- direct conversion actual prefill: `18` tokens
+- direct conversion ratio vs baseline: `0.776`
+- direct mature hit speedup: `2.585x`
+- suite conversion ratio vs baseline: `0.797`
+- suite mature hit speedup: `2.417x`
+
+Decision:
+
+- `agent-workspace-low-memory` is now live-validated by name.
+- Next target is M99: wire product/Dax routing so operators can select async,
+  first-hit, or low-memory profile modes intentionally.
