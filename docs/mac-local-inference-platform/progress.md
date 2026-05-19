@@ -3065,3 +3065,20 @@
   - M110 conclusion: overhead is now a first-class gated metric. The current
     CLI baseline passes only the baseline threshold; the M103 fast-path target
     remains `<=500 ms` for live resident-client validation.
+- Completed M111 extended prompt sweep matrix:
+  - added `benchmarks/python/extended_prompt_sweep_matrix.py`
+  - generated artifact:
+    `artifacts/m111-extended-prompt-sweep/extended-prompt-sweep-matrix-m111-qwen-a3b.json`
+  - validation passed:
+    - matrix verdict `PASS`
+    - `72` cases
+    - `python3 -m py_compile benchmarks/python/extended_prompt_sweep_matrix.py`
+    - `git diff --check`
+  - M111 result:
+    - prompt token axis: `512`, `1024`, `2048`, `4096`
+    - reuse axis: `none`, `first-hit`, `mature-hit`
+    - transport axis: `cli`, `resident`
+    - profile axis: `agent-workspace-async`, `agent-workspace-first-hit`,
+      `agent-workspace-low-memory`
+  - M111 conclusion: the next live sweep has a complete matrix and required
+    metrics list, including `overhead_ms`, prompt progress, and peak memory.

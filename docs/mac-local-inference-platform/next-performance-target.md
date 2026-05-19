@@ -1070,3 +1070,27 @@ Decision:
 - The M103 fast-path target remains `<=500 ms`; the current CLI baseline does
   not satisfy that target and should not be treated as optimized.
 - Next target is M111: define and package the extended prompt sweep matrix.
+
+## M111 Result
+
+M111 defines the extended prompt sweep matrix:
+
+- script: `benchmarks/python/extended_prompt_sweep_matrix.py`
+- artifact:
+  `artifacts/m111-extended-prompt-sweep/extended-prompt-sweep-matrix-m111-qwen-a3b.json`
+
+Result:
+
+- matrix verdict: `PASS`
+- cases: `72`
+- prompt tokens: `512`, `1024`, `2048`, `4096`
+- reuse modes: `none`, `first-hit`, `mature-hit`
+- transports: `cli`, `resident`
+- profiles: `agent-workspace-async`, `agent-workspace-first-hit`,
+  `agent-workspace-low-memory`
+
+Decision:
+
+- Live sweeps must include `overhead_ms`, prompt progress, and peak memory.
+- The resident transport must be tested beside the CLI path.
+- Next target is M112: add lower-memory peak-memory/cache-limit gates.

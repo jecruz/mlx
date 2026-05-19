@@ -1,0 +1,1045 @@
+{
+  "acceptance": {
+    "must_include_resident_transport": true,
+    "must_report_overhead_ms": true,
+    "must_report_peak_memory_gb": true,
+    "must_report_prompt_progress": true
+  },
+  "axes": {
+    "profiles": [
+      "agent-workspace-async",
+      "agent-workspace-first-hit",
+      "agent-workspace-low-memory"
+    ],
+    "prompt_tokens": [
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "reuse_modes": [
+      "none",
+      "first-hit",
+      "mature-hit"
+    ],
+    "transports": [
+      "cli",
+      "resident"
+    ]
+  },
+  "case_count": 72,
+  "cases": [
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 512,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 1024,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 2048,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "none",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "first-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "cli"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-async",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-first-hit",
+      "transport": "resident"
+    },
+    {
+      "prompt_tokens": 4096,
+      "required_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms",
+        "actual_prefill_tokens",
+        "prompt_progress_last_ms",
+        "peak_memory_gb"
+      ],
+      "reuse_mode": "mature-hit",
+      "runtime_profile": "agent-workspace-low-memory",
+      "transport": "resident"
+    }
+  ],
+  "failures": [],
+  "tag": "m111-qwen-a3b",
+  "type": "extended_prompt_sweep_matrix",
+  "verdict": "PASS"
+}

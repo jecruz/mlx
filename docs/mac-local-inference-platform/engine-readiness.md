@@ -547,6 +547,12 @@ Readiness interpretation:
     `artifacts/m110-overhead-gate/operator-overhead-gate-m110-current-baseline.json`
   - current CLI baseline mean overhead: `1635.49 ms`
   - fast-path live target remains `<=500 ms`
+- M111 defines extended prompt sweep matrix:
+  - script: `benchmarks/python/extended_prompt_sweep_matrix.py`
+  - artifact:
+    `artifacts/m111-extended-prompt-sweep/extended-prompt-sweep-matrix-m111-qwen-a3b.json`
+  - result: `PASS`, `72` cases across prompt length, reuse, transport, and
+    profile axes
 
 ## Current Qwen Result
 
