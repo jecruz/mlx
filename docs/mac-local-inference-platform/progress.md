@@ -2959,3 +2959,20 @@
   - M104 conclusion: prompt processing is still the dominant service-time
     component even after prefill reduction, so the next sweep must vary prompt
     length, reuse ratio, transport, and profile together.
+- Completed M105 fast Dax invocation path:
+  - added `benchmarks/python/dax_fast_invocation_path_report.py`
+  - generated artifact:
+    `artifacts/m105-fast-dax-invocation/fast-dax-invocation-m105-qwen-a3b.json`
+  - validation passed:
+    - report verdict `PASS`
+    - `python3 -m py_compile benchmarks/python/dax_fast_invocation_path_report.py`
+    - `git diff --check`
+  - M105 result:
+    - recommended path: `resident-dax-client`
+    - current mean operator overhead: `1635.49 ms`
+    - acceptance target: `<=500 ms`
+    - required preserved metrics: `wall_ms`, `service_request_ms`,
+      `overhead_ms`
+  - M105 conclusion: the fast product path should reuse a loaded Dax
+    process/client before falling back to per-request `npx`/`tsx` CLI
+    invocation.

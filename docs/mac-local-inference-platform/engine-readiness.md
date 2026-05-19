@@ -505,6 +505,13 @@ Readiness interpretation:
   - long-prefill prompt progress consumes `0.970` of service time on average
   - short-prefill prompt progress still consumes `0.670` of service time on
     average
+- M105 defines the fast Dax invocation path:
+  - script: `benchmarks/python/dax_fast_invocation_path_report.py`
+  - artifact:
+    `artifacts/m105-fast-dax-invocation/fast-dax-invocation-m105-qwen-a3b.json`
+  - result: `PASS`
+  - recommended path: `resident-dax-client`
+  - acceptance target: mean operator overhead `<=500 ms`
 
 ## Current Qwen Result
 

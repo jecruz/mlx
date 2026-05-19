@@ -901,3 +901,32 @@ Decision:
   profile together.
 - Next target is M105: define and gate the fast Dax invocation path that should
   reduce operator overhead without hiding prompt-processing bottlenecks.
+
+## M105 Result
+
+M105 defines the fast Dax invocation path:
+
+- script: `benchmarks/python/dax_fast_invocation_path_report.py`
+- artifact:
+  `artifacts/m105-fast-dax-invocation/fast-dax-invocation-m105-qwen-a3b.json`
+
+Result:
+
+- report verdict: `PASS`
+- recommended path: `resident-dax-client`
+- current mean operator overhead: `1635.49 ms`
+- acceptance target: `<=500 ms`
+- transport order:
+  - in-process Dax panel/client call
+  - resident Dax local RPC/IPC client
+  - direct HTTP client to MLX resident service
+  - fallback `npx`/`tsx` CLI process
+
+Decision:
+
+- The next product implementation should keep Dax hot and reuse its MLX client
+  state for repeated turns.
+- The fast path must preserve `wall_ms`, `service_request_ms`, and
+  `overhead_ms`.
+- Next target is M106: define the profile auto-selection policy on top of the
+  gate-backed profiles and operator controls.

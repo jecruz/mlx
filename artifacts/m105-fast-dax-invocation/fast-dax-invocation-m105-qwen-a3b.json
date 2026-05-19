@@ -1,0 +1,57 @@
+{
+  "current": {
+    "long_prefill_prompt_progress_share_of_service": 0.9703392252138572,
+    "mean_operator_overhead_ms": 1635.4851586511359,
+    "projected_mature_wall_reduction_pct": 0.4741512608627543,
+    "target_operator_overhead_ms": 500.0
+  },
+  "failures": [],
+  "implementation_tasks": [
+    {
+      "order": 1,
+      "task": "Add a reusable Dax MLX client object that keeps config, HTTP agent, and profile state warm."
+    },
+    {
+      "order": 2,
+      "task": "Teach product benchmark paths to call the reusable client before falling back to npx/tsx."
+    },
+    {
+      "order": 3,
+      "task": "Emit overhead_ms in product benchmark rows and gate it against the M103 target."
+    },
+    {
+      "order": 4,
+      "task": "Keep prompt-progress metrics separate so faster transport does not hide engine prompt bottlenecks."
+    }
+  ],
+  "inputs": {
+    "overhead_report": "artifacts/m103-operator-overhead-reduction/operator-overhead-reduction-m103-qwen-a3b.json",
+    "prompt_report": "artifacts/m104-prompt-processing-extension/prompt-processing-extension-m104-qwen-a3b.json"
+  },
+  "recommended_path": {
+    "acceptance": {
+      "mean_operator_overhead_ms": "<=500.0",
+      "must_preserve_metrics": [
+        "wall_ms",
+        "service_request_ms",
+        "overhead_ms"
+      ],
+      "must_preserve_profile_controls": [
+        "agent-workspace-async",
+        "agent-workspace-first-hit",
+        "agent-workspace-low-memory"
+      ]
+    },
+    "goal": "Reuse a loaded Dax process/client for repeated MLX product calls.",
+    "name": "resident-dax-client",
+    "transport_order": [
+      "in-process Dax panel/client call",
+      "resident Dax local RPC/IPC client",
+      "direct HTTP client to MLX resident service",
+      "fallback npx/tsx CLI process"
+    ]
+  },
+  "tag": "m105-qwen-a3b",
+  "type": "dax_fast_invocation_path_report",
+  "verdict": "PASS"
+}
