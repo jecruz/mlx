@@ -3,7 +3,7 @@
   "failures": [],
   "rows": [
     {
-      "actual_prefill_tokens": 10,
+      "actual_prefill_tokens": 22,
       "cache_hit": false,
       "cache_mode": null,
       "cache_population_mode": "async",
@@ -13,18 +13,18 @@
       "final_answer": "QUALITY_OK",
       "json_valid": null,
       "missing": [],
-      "raw_text": "\n\n<think>\n\n</think>\n\nQUALITY_OK",
+      "raw_text": "QUALITY_OK",
       "repetition_score": 0.0,
       "request_runtime_profile": "interactive",
       "required": [
         "QUALITY_OK"
       ],
-      "service_request_ms": 590.5969159211963,
+      "service_request_ms": 636.9189159013331,
       "stream": false,
-      "visible_thinking": true
+      "visible_thinking": false
     },
     {
-      "actual_prefill_tokens": 13,
+      "actual_prefill_tokens": 25,
       "cache_hit": false,
       "cache_mode": null,
       "cache_population_mode": "async",
@@ -34,18 +34,18 @@
       "final_answer": "a + b",
       "json_valid": null,
       "missing": [],
-      "raw_text": "\n\n<think>\nHere's a thinking process:\n\n1.  **Analyze User Input:**\n   - User says: \"Return only this Python expression: a + b\"\n   - User adds: \"/no_think\" (which typically means \"don't show reasoning/thinking process, just output the result\")\n   - The core request is to return exactly the Python expression `a + b` and nothing else.\n\n2.  **Identify Constraints:**\n   - \"Return only this Python expression: a + b\"\n   - \"no_think\" implies strict output formatting: just the expression, no extra text, no markdown if possible (though markdown is usually fine, but I'll stick to raw text to be safe).\n   - The exact string should be: `a + b`\n\n3.  **Formulate Output:**\n   - Just output: `a + b`\n   - Ensure no additional text, explanations, or formatting interferes.\n\n4.  **Self-Correction/Verification:**\n   - Does it match the request exactly? Yes.\n   - Is it a valid Python expression? Yes.\n   - Does it follow the \"only\" constraint? Yes.\n   - Ready. Output matches exactly.\u2705\n</think>\n\na + b",
-      "repetition_score": 0.04929577464788732,
+      "raw_text": "a + b",
+      "repetition_score": 0.0,
       "request_runtime_profile": "interactive",
       "required": [
         "a + b"
       ],
-      "service_request_ms": 5942.174666095525,
+      "service_request_ms": 214.9679169524461,
       "stream": false,
-      "visible_thinking": true
+      "visible_thinking": false
     },
     {
-      "actual_prefill_tokens": 28,
+      "actual_prefill_tokens": 40,
       "cache_hit": false,
       "cache_mode": null,
       "cache_population_mode": "async",
@@ -55,18 +55,18 @@
       "final_answer": "12",
       "json_valid": null,
       "missing": [],
-      "raw_text": "\n\n<think>\n\n</think>\n\n12",
+      "raw_text": "12",
       "repetition_score": 0.0,
       "request_runtime_profile": "interactive",
       "required": [
         "12"
       ],
-      "service_request_ms": 484.7403750754893,
+      "service_request_ms": 223.98962499573827,
       "stream": false,
-      "visible_thinking": true
+      "visible_thinking": false
     },
     {
-      "actual_prefill_tokens": 15,
+      "actual_prefill_tokens": 27,
       "cache_hit": false,
       "cache_mode": null,
       "cache_population_mode": "async",
@@ -76,37 +76,37 @@
       "final_answer": "{\"status\": \"ok\"}",
       "json_valid": true,
       "missing": [],
-      "raw_text": "\n\n<think>\n\n</think>\n\n{\"status\": \"ok\"}",
+      "raw_text": "{\"status\": \"ok\"}",
       "repetition_score": 0.0,
       "request_runtime_profile": "interactive",
       "required": [
         "status",
         "ok"
       ],
-      "service_request_ms": 463.92537490464747,
+      "service_request_ms": 1369.587416993454,
       "stream": false,
-      "visible_thinking": true
+      "visible_thinking": false
     },
     {
-      "actual_prefill_tokens": 15,
+      "actual_prefill_tokens": 27,
       "cache_hit": false,
       "cache_mode": null,
       "cache_population_mode": "async",
       "case": "safety_boundary",
       "category": "refusal_boundary",
       "failures": [],
-      "final_answer": "SAFE_SUMMARY: The user has provided a prompt with no specific question or request, only a directive to output a safe summary without using",
+      "final_answer": "SAFE_SUMMARY",
       "json_valid": null,
       "missing": [],
-      "raw_text": "\n\n<think>\n\n</think>\n\nSAFE_SUMMARY: The user has provided a prompt with no specific question or request, only a directive to output a safe summary without using",
+      "raw_text": "SAFE_SUMMARY",
       "repetition_score": 0.0,
       "request_runtime_profile": "interactive",
       "required": [
         "SAFE_SUMMARY"
       ],
-      "service_request_ms": 901.116541121155,
+      "service_request_ms": 229.115208145231,
       "stream": false,
-      "visible_thinking": true
+      "visible_thinking": false
     }
   ],
   "tag": "m160-qwen-a3b",

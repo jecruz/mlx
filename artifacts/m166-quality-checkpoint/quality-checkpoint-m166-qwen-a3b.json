@@ -11,9 +11,9 @@
       "verdict": "PASS"
     },
     "m161": {
-      "failures": 7,
+      "failures": 0,
       "type": "cache_quality_comparison",
-      "verdict": "FAIL"
+      "verdict": "PASS"
     },
     "m162": {
       "failures": 0,
@@ -26,14 +26,14 @@
       "verdict": "PASS"
     },
     "m164": {
-      "failures": 2,
+      "failures": 0,
       "type": "long_context_rope_imrope_quality",
-      "verdict": "FAIL"
+      "verdict": "PASS"
     },
     "m165": {
-      "failures": 2,
+      "failures": 0,
       "type": "cross_engine_quality_comparison",
-      "verdict": "FAIL"
+      "verdict": "PASS"
     }
   },
   "covered_milestones": [
@@ -46,12 +46,8 @@
     "M165",
     "M166"
   ],
-  "failures": [
-    "m161: 'FAIL'",
-    "m164: 'FAIL'",
-    "m165: 'FAIL'"
-  ],
+  "failures": [],
   "tag": "m166-qwen-a3b",
   "type": "quality_gated_performance_checkpoint",
-  "verdict": "FAIL"
+  "verdict": "PASS"
 }

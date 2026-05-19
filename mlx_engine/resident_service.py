@@ -254,6 +254,22 @@ def trim_at_stop(text: str, stop: list[str]) -> tuple[str, bool]:
     return text[: min(matches)], True
 
 
+def qwen_no_think_prefill(prompt: str) -> str:
+    if "/no_think" not in prompt:
+        return prompt
+    if "<|im_start|>assistant" in prompt:
+        assistant_tail = prompt.rsplit("<|im_start|>assistant", 1)[-1]
+        if "</think>" in assistant_tail:
+            return prompt
+        return prompt + "<think>\n\n</think>\n\n"
+    return (
+        "<|im_start|>user\n"
+        f"{prompt}<|im_end|>\n"
+        "<|im_start|>assistant\n"
+        "<think>\n\n</think>\n\n"
+    )
+
+
 class Message(BaseModel):
     role: str
     content: str
@@ -1919,6 +1935,7 @@ class ResidentEngine:
         return len(self.prompt_tokens(prompt))
 
     def prompt_tokens(self, prompt: str) -> list[int]:
+        prompt = qwen_no_think_prefill(prompt)
         tokenizer = self.tokenizer.tokenizer if hasattr(self.tokenizer, "tokenizer") else self.tokenizer
         return list(tokenizer.encode(prompt))
 
@@ -1930,6 +1947,7 @@ class ResidentEngine:
         prefill_step_size_override: int | None,
         profile_selection: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
+        prompt = qwen_no_think_prefill(prompt)
         tokens = self.prompt_tokens(prompt)
         prompt_tokens_estimate = len(tokens)
         prefill_step_size, prefill_selection = self.selected_prefill_policy(

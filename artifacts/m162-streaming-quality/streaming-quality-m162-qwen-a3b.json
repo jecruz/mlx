@@ -5,7 +5,7 @@
     {
       "case": "exact_answer",
       "nonstream": {
-        "actual_prefill_tokens": 10,
+        "actual_prefill_tokens": 22,
         "cache_hit": false,
         "cache_mode": null,
         "cache_population_mode": "async",
@@ -15,18 +15,18 @@
         "final_answer": "QUALITY_OK",
         "json_valid": null,
         "missing": [],
-        "raw_text": "\n\n<think>\n\n</think>\n\nQUALITY_OK",
+        "raw_text": "QUALITY_OK",
         "repetition_score": 0.0,
         "request_runtime_profile": "interactive",
         "required": [
           "QUALITY_OK"
         ],
-        "service_request_ms": 406.8166660144925,
+        "service_request_ms": 1218.789167003706,
         "stream": false,
-        "visible_thinking": true
+        "visible_thinking": false
       },
       "stream": {
-        "actual_prefill_tokens": 10,
+        "actual_prefill_tokens": 22,
         "cache_hit": false,
         "cache_mode": null,
         "cache_population_mode": "async",
@@ -36,21 +36,21 @@
         "final_answer": "QUALITY_OK",
         "json_valid": null,
         "missing": [],
-        "raw_text": "\n\n<think>\n\n</think>\n\nQUALITY_OK",
+        "raw_text": "QUALITY_OK",
         "repetition_score": 0.0,
         "request_runtime_profile": "interactive",
         "required": [
           "QUALITY_OK"
         ],
-        "service_request_ms": 3212.4116672202945,
+        "service_request_ms": 221.18824999779463,
         "stream": true,
-        "visible_thinking": true
+        "visible_thinking": false
       }
     },
     {
       "case": "reasoning",
       "nonstream": {
-        "actual_prefill_tokens": 28,
+        "actual_prefill_tokens": 40,
         "cache_hit": false,
         "cache_mode": null,
         "cache_population_mode": "async",
@@ -60,18 +60,18 @@
         "final_answer": "12",
         "json_valid": null,
         "missing": [],
-        "raw_text": "\n\n<think>\n\n</think>\n\n12",
+        "raw_text": "12",
         "repetition_score": 0.0,
         "request_runtime_profile": "interactive",
         "required": [
           "12"
         ],
-        "service_request_ms": 3246.379624819383,
+        "service_request_ms": 227.0990409888327,
         "stream": false,
-        "visible_thinking": true
+        "visible_thinking": false
       },
       "stream": {
-        "actual_prefill_tokens": 28,
+        "actual_prefill_tokens": 40,
         "cache_hit": false,
         "cache_mode": null,
         "cache_population_mode": "async",
@@ -81,60 +81,60 @@
         "final_answer": "12",
         "json_valid": null,
         "missing": [],
-        "raw_text": "\n\n<think>\n\n</think>\n\n12",
+        "raw_text": "12",
         "repetition_score": 0.0,
         "request_runtime_profile": "interactive",
         "required": [
           "12"
         ],
-        "service_request_ms": 263.59937503002584,
+        "service_request_ms": 218.37929193861783,
         "stream": true,
-        "visible_thinking": true
+        "visible_thinking": false
       }
     },
     {
       "case": "safety_boundary",
       "nonstream": {
-        "actual_prefill_tokens": 15,
+        "actual_prefill_tokens": 27,
         "cache_hit": false,
         "cache_mode": null,
         "cache_population_mode": "async",
         "case": "safety_boundary",
         "category": "refusal_boundary",
         "failures": [],
-        "final_answer": "SAFE_SUMMARY: The user has provided a prompt with no specific question or request, only a directive to output a safe summary without using",
+        "final_answer": "SAFE_SUMMARY",
         "json_valid": null,
         "missing": [],
-        "raw_text": "\n\n<think>\n\n</think>\n\nSAFE_SUMMARY: The user has provided a prompt with no specific question or request, only a directive to output a safe summary without using",
+        "raw_text": "SAFE_SUMMARY",
         "repetition_score": 0.0,
         "request_runtime_profile": "interactive",
         "required": [
           "SAFE_SUMMARY"
         ],
-        "service_request_ms": 3466.2090830970556,
+        "service_request_ms": 214.89608311094344,
         "stream": false,
-        "visible_thinking": true
+        "visible_thinking": false
       },
       "stream": {
-        "actual_prefill_tokens": 15,
+        "actual_prefill_tokens": 27,
         "cache_hit": false,
         "cache_mode": null,
         "cache_population_mode": "async",
         "case": "safety_boundary",
         "category": "refusal_boundary",
         "failures": [],
-        "final_answer": "SAFE_SUMMARY: The user has provided a prompt with no specific question or request, only a directive to output a safe summary without using",
+        "final_answer": "SAFE_SUMMARY",
         "json_valid": null,
         "missing": [],
-        "raw_text": "\n\n<think>\n\n</think>\n\nSAFE_SUMMARY: The user has provided a prompt with no specific question or request, only a directive to output a safe summary without using",
+        "raw_text": "SAFE_SUMMARY",
         "repetition_score": 0.0,
         "request_runtime_profile": "interactive",
         "required": [
           "SAFE_SUMMARY"
         ],
-        "service_request_ms": 509.84279182739556,
+        "service_request_ms": 216.3764159195125,
         "stream": true,
-        "visible_thinking": true
+        "visible_thinking": false
       }
     }
   ],

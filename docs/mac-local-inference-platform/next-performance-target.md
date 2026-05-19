@@ -1781,20 +1781,21 @@ Result:
 
 - `M159` golden prompt set: `PASS`
 - `M160` deterministic quality regression: `PASS`
-- `M161` cache-enabled vs cache-disabled quality comparison: `FAIL`
+- `M161` cache-enabled vs cache-disabled quality comparison: `PASS`
 - `M162` streaming vs non-stream quality parity: `PASS`
 - `M163` loop/repetition detector: `PASS`
-- `M164` long-context RoPE/IMRoPE quality probe: `FAIL`
-- `M165` cross-engine Qwen3.6 rubric comparison: `FAIL`
-- `M166` quality-gated performance checkpoint: `FAIL`
+- `M164` long-context RoPE/IMRoPE quality probe: `PASS`
+- `M165` cross-engine Qwen3.6 rubric comparison: `PASS`
+- `M166` quality-gated performance checkpoint: `PASS`
 
-Blocking finding:
+Resolved quality finding:
 
-- The Qwen3.6 MLX path retrieves the long-context sentinel facts, but for the
-  long-context RoPE/IMRoPE case it keeps emitting visible reasoning and does
-  not close the thinking block within the quality budget. That makes the
-  response unacceptable for release-quality user output even though the facts
-  are present inside the reasoning text.
+- The original Qwen3.6 MLX path retrieved long-context sentinel facts inside
+  visible reasoning but did not produce a clean final answer. Explicit
+  `/no_think` prompts now receive a Qwen assistant prefill
+  `<think>\n\n</think>\n\n`, which suppresses visible reasoning and lets the
+  long-context quality gate return a clean final answer:
+  `ORCHID-17, LANTERN-42, HARBOR-93`.
 
 Artifacts:
 
@@ -1809,7 +1810,6 @@ Artifacts:
 
 Decision:
 
-- Do not continue performance optimization as release-ready work until this
-  quality blocker is resolved.
-- Next work should diagnose Qwen3.6 chat-template/thinking-mode handling,
-  output post-processing policy, and long-context final-answer extraction.
+- Quality gates are now blocking criteria for future speed work.
+- Continue performance optimization only while keeping M159-M166 in the
+  regression suite.

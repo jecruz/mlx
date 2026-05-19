@@ -1448,28 +1448,25 @@ Quality plan:
 
 ## M159-M166 Quality Gate Result
 
-The quality-gated lane is implemented, but it is not passing end-to-end.
+The quality-gated lane is implemented and passing end-to-end.
 
 Passing:
 
 - `M159` golden prompt set
 - `M160` deterministic quality regression
+- `M161` cache-enabled vs cache-disabled quality comparison
 - `M162` streaming vs non-stream quality parity
 - `M163` loop/repetition detector
-
-Failing:
-
-- `M161` cache-enabled vs cache-disabled quality comparison
 - `M164` long-context RoPE/IMRoPE quality probe
 - `M165` cross-engine Qwen3.6 rubric comparison
 - `M166` quality-gated performance checkpoint
 
-Blocker:
+Resolved blocker:
 
-- The long-context sentinel prompt retrieves `ORCHID-17`, `LANTERN-42`, and
-  `HARBOR-93` inside visible reasoning, but does not produce a clean final
-  answer. The quality gate treats this as a failure because user-visible
-  reasoning and unclosed thinking output are not acceptable release behavior.
+- Explicit `/no_think` prompts now receive a Qwen assistant prefill
+  `<think>\n\n</think>\n\n`. This prevents visible thinking output for the
+  quality-gated prompts and lets the long-context sentinel prompt return the
+  clean answer `ORCHID-17, LANTERN-42, HARBOR-93`.
 
 Primary artifact:
 
