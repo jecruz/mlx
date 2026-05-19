@@ -1,0 +1,22 @@
+{
+  "failures": [],
+  "input": "artifacts/m98-direct-low-memory-profile/dax-product-first-hit-m98-qwen-a3b-low-memory-direct.jsonl",
+  "metrics": {
+    "conversion_prefill_tokens": 18.0,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_peak_memory_gb": 22.682158758,
+    "mean_peak_memory_gb": 22.682156666
+  },
+  "profiles": [
+    "agent-workspace-low-memory"
+  ],
+  "row_count": 4,
+  "tag": "m112-qwen-a3b",
+  "thresholds": {
+    "max_cache_memory_limit_mb": 64.0,
+    "max_conversion_prefill_tokens": 32.0,
+    "max_peak_memory_gb": 32.0
+  },
+  "type": "lower_memory_runtime_gate",
+  "verdict": "PASS"
+}

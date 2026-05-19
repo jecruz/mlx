@@ -553,6 +553,12 @@ Readiness interpretation:
     `artifacts/m111-extended-prompt-sweep/extended-prompt-sweep-matrix-m111-qwen-a3b.json`
   - result: `PASS`, `72` cases across prompt length, reuse, transport, and
     profile axes
+- M112 adds lower-memory runtime gates:
+  - script: `benchmarks/python/lower_memory_runtime_gate.py`
+  - artifact:
+    `artifacts/m112-lower-memory-gate/lower-memory-runtime-gate-m112-qwen-a3b.json`
+  - result: `PASS`, max peak memory `22.682 GB`, cache limit `64 MB`,
+    conversion prefill `18` tokens
 
 ## Current Qwen Result
 

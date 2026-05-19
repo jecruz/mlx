@@ -3082,3 +3082,17 @@
       `agent-workspace-low-memory`
   - M111 conclusion: the next live sweep has a complete matrix and required
     metrics list, including `overhead_ms`, prompt progress, and peak memory.
+- Completed M112 lower-memory runtime gate:
+  - added `benchmarks/python/lower_memory_runtime_gate.py`
+  - generated artifact:
+    `artifacts/m112-lower-memory-gate/lower-memory-runtime-gate-m112-qwen-a3b.json`
+  - validation passed:
+    - gate verdict `PASS`
+    - rows `4`
+    - max peak memory `22.682 GB`
+    - cache memory limit `64 MB`
+    - conversion prefill `18` tokens
+    - `python3 -m py_compile benchmarks/python/lower_memory_runtime_gate.py`
+    - `git diff --check`
+  - M112 conclusion: low-memory mode now has memory and cache-limit acceptance
+    checks, not only latency checks.

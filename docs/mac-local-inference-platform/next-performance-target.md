@@ -1094,3 +1094,28 @@ Decision:
 - Live sweeps must include `overhead_ms`, prompt progress, and peak memory.
 - The resident transport must be tested beside the CLI path.
 - Next target is M112: add lower-memory peak-memory/cache-limit gates.
+
+## M112 Result
+
+M112 adds lower-memory runtime gates:
+
+- script: `benchmarks/python/lower_memory_runtime_gate.py`
+- artifact:
+  `artifacts/m112-lower-memory-gate/lower-memory-runtime-gate-m112-qwen-a3b.json`
+
+Result:
+
+- gate verdict: `PASS`
+- rows: `4`
+- observed profile: `agent-workspace-low-memory`
+- max peak memory: `22.682 GB`
+- cache memory limit: `64 MB`
+- conversion prefill: `18` tokens
+
+Decision:
+
+- Lower-memory mode now has memory and cache-limit acceptance checks.
+- The next lower-memory live run should execute this gate on target 16-24GB
+  and 32GB hardware.
+- Next target is M113: integrate the auto-selection policy into product
+  readiness checks.
