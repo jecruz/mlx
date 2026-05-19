@@ -819,3 +819,30 @@ Decision:
 - Lower-memory Mac profile: `agent-workspace-low-memory`
 - Next target is M102: expose these gate-backed profile choices clearly in the
   operator/product control surface.
+
+## M102 Result
+
+M102 exposes the gate-backed profile choices in Dax:
+
+- Dax commit: `08c14b5d`
+- `/profile default` -> `agent-workspace-async`
+- `/profile coding-agent` -> `agent-workspace-async`
+- `/profile async` -> `agent-workspace-async`
+- `/profile first-hit` -> `agent-workspace-first-hit`
+- `/profile low-memory` -> `agent-workspace-low-memory`
+- `/profiles` and `/profile recommended` print readable shortcut mappings.
+
+Validation:
+
+- Dax MLX status test file: `31 passed`
+- Dax typecheck: `tsgo --noEmit` passed
+- Dax Biome check on changed files passed
+- Dax diff whitespace check passed
+- Dax pre-commit full check passed during commit.
+
+Decision:
+
+- Product operators no longer need to memorize raw profile names for the main
+  gate-backed modes.
+- The next performance lane should move from profile selection to reducing
+  operator wall-time overhead and broadening prompt-processing sweeps.

@@ -483,6 +483,13 @@ Readiness interpretation:
   - default coding-agent profile: `agent-workspace-async`
   - explicit immediate second-turn profile: `agent-workspace-first-hit`
   - explicit lower-memory profile: `agent-workspace-low-memory`
+- M102 exposes those decisions through Dax TUI shortcuts:
+  - Dax commit: `08c14b5d`
+  - `/profile default`, `/profile coding-agent`, and `/profile async` route to
+    `agent-workspace-async`
+  - `/profile first-hit` routes to `agent-workspace-first-hit`
+  - `/profile low-memory` routes to `agent-workspace-low-memory`
+  - `/profiles` and `/profile recommended` show the shortcut mapping
 
 ## Current Qwen Result
 
@@ -512,6 +519,13 @@ instead of raw internals:
 - `Memory Saver`: keep as a generic conservative profile, not the preferred
   coding-agent lower-memory product route.
 - `Diagnostics`: run the readiness probes and show cache continuation blockers.
+
+Operator shortcuts:
+
+- `/profile default` for normal coding-agent sessions.
+- `/profile first-hit` when immediate second-turn responsiveness matters more
+  than steady-state async behavior.
+- `/profile low-memory` for smaller-memory Macs or constrained cache residency.
 
 ## Tensor Parallelism Note
 

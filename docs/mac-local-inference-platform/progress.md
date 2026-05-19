@@ -2908,3 +2908,20 @@
     - diagnostics profile: `diagnostics`
   - M101 conclusion: default profile selection is now gate-backed instead of
     only documented as a recommendation.
+- Completed M102 product UI/TUI control surface:
+  - updated Dax product CLI/TUI control surface in commit `08c14b5d`
+  - added product profile aliases:
+    - `/profile default` -> `agent-workspace-async`
+    - `/profile coding-agent` -> `agent-workspace-async`
+    - `/profile async` -> `agent-workspace-async`
+    - `/profile first-hit` -> `agent-workspace-first-hit`
+    - `/profile low-memory` -> `agent-workspace-low-memory`
+  - `/profiles` and `/profile recommended` now show readable one-line
+    shortcut mappings instead of a long truncated profile line
+  - validation passed:
+    - `./node_modules/.bin/vitest --run packages/coding-agent/test/mlx-engine-status.test.ts`
+    - `./node_modules/.bin/tsgo --noEmit`
+    - `./node_modules/.bin/biome check packages/coding-agent/src/cli/mlx-engine-status.ts packages/coding-agent/test/mlx-engine-status.test.ts`
+    - `git diff --check -- packages/coding-agent/src/cli/mlx-engine-status.ts packages/coding-agent/test/mlx-engine-status.test.ts`
+  - M102 conclusion: the gate-backed profile decision is exposed as
+    operator-friendly TUI controls, not only as raw MLX profile names.
