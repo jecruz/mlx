@@ -1,0 +1,44 @@
+{
+  "active_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "active_model_name": "Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "candidate_label": "qwen27b-ud-4bit",
+  "candidate_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+  "candidate_model_name": "Qwen3.6-27B-UD-MLX-4bit",
+  "display": {
+    "memory_line": "memory=request_metrics active=21.02259841GB peak=22.31961337GB",
+    "model_line": "active=Qwen3.6-35B-A3B-UD-MLX-4bit candidate=Qwen3.6-27B-UD-MLX-4bit swap=REJECT",
+    "runtime_line": "profile=interactive preset=async-experimental strategy=split_prefill_or_async_build",
+    "status_line": "runtime=PASS quality=PASS live_suite=PASS lower_memory=PASS memory_source=PASS live_model_swap=PASS candidate_swap=WARN",
+    "subtitle": "operator-readiness-ready | Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "title": "MLX Operator Readiness: PASS"
+  },
+  "engine_preset": "async-experimental",
+  "failures": [],
+  "max_active_memory_gb": 21.02259841,
+  "max_peak_memory_gb": 22.31961337,
+  "memory_source": "request_metrics",
+  "readiness": "operator-readiness-ready",
+  "runtime_profile": "interactive",
+  "source_type": "operator_readiness_bundle",
+  "status_card": {
+    "candidate_swap": "WARN",
+    "live_model_swap": "PASS",
+    "live_suite": "PASS",
+    "lower_memory": "PASS",
+    "memory_source": "PASS",
+    "quality": "PASS",
+    "runtime": "PASS"
+  },
+  "strategy": "split_prefill_or_async_build",
+  "swap_blockers": [
+    "candidate_speed: slowdown_ratio=9.968977, threshold=1.0"
+  ],
+  "swap_decision": "REJECT",
+  "swap_readiness": "swap-blocked",
+  "tag": "m182-qwen-a3b",
+  "type": "operator_readiness_render",
+  "verdict": "PASS",
+  "warnings": [
+    "model swap decision is REJECT"
+  ]
+}

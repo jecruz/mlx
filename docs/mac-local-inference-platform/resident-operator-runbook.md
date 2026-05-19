@@ -761,3 +761,17 @@ Expected result:
   `lower_memory=PASS`, `memory_source=PASS`, `live_model_swap=PASS`, and
   `candidate_swap=WARN`
 - model line shows the active model, tested candidate, and swap decision
+
+Render the same readiness card through the packaged CLI:
+
+```bash
+bin/mlx-engine operator-readiness \
+  --bundle-json artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json \
+  --output-json artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.json \
+  --output-text artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.txt \
+  --format text \
+  --fail-on-fail
+```
+
+This is the preferred entry point for external operator clients because it keeps
+the readiness display contract behind the packaged engine command.

@@ -18,6 +18,7 @@ SERVICE = ROOT / "mlx_engine" / "resident_service.py"
 SMOKE = PYTHON_DIR / "smoke_resident_service.py"
 READY = PYTHON_DIR / "wait_resident_ready.py"
 REGRESSION_SUITE = PYTHON_DIR / "run_resident_regression_suite.py"
+OPERATOR_READINESS_RENDER = PYTHON_DIR / "operator_readiness_render.py"
 
 
 def request_json(method: str, url: str, payload: dict[str, Any] | None = None):
@@ -195,6 +196,24 @@ def correctness(args: argparse.Namespace) -> int:
     return 0
 
 
+def operator_readiness(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(OPERATOR_READINESS_RENDER),
+        "--bundle-json",
+        args.bundle_json,
+        "--format",
+        args.format,
+    ]
+    if args.output_json:
+        cmd.extend(["--output-json", args.output_json])
+    if args.output_text:
+        cmd.extend(["--output-text", args.output_text])
+    if args.fail_on_fail:
+        cmd.append("--fail-on-fail")
+    return subprocess.call(cmd, cwd=ROOT)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Resident MLX engine CLI")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -272,6 +291,20 @@ def build_parser() -> argparse.ArgumentParser:
     correctness_parser.add_argument("--require-profile", action=argparse.BooleanOptionalAction, default=True)
     correctness_parser.add_argument("--expect-same-text", action="store_true")
     correctness_parser.set_defaults(func=correctness)
+
+    readiness_parser = subcommands.add_parser(
+        "operator-readiness",
+        help="Render an operator readiness bundle for UI/TUI display",
+    )
+    readiness_parser.add_argument(
+        "--bundle-json",
+        default="artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json",
+    )
+    readiness_parser.add_argument("--output-json")
+    readiness_parser.add_argument("--output-text")
+    readiness_parser.add_argument("--format", choices=("text", "json"), default="text")
+    readiness_parser.add_argument("--fail-on-fail", action="store_true")
+    readiness_parser.set_defaults(func=operator_readiness)
 
     return parser
 

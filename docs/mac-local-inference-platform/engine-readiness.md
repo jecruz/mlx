@@ -1918,3 +1918,30 @@ Decision:
 - Dax/Prowl/TUI clients can reuse the renderer output for compact status cards
   instead of reimplementing readiness formatting. The JSON renderer artifact is
   the stable bridge for richer UI presentation.
+
+## M185 Packaged Operator Readiness CLI
+
+M185 exposes the M184 readiness renderer through `bin/mlx-engine`.
+
+Artifacts:
+
+- `artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.json`
+- `artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.txt`
+
+Command:
+
+- `bin/mlx-engine operator-readiness`
+
+Result:
+
+- CLI render verdict: `PASS`
+- active model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+- candidate model: `Qwen3.6-27B-UD-MLX-4bit`
+- swap decision: `REJECT`
+- status line matches the M184 shared renderer output.
+
+Decision:
+
+- External clients no longer need to know the internal benchmark script path.
+  Dax, Prowl, shell scripts, or packaged operator surfaces can call
+  `bin/mlx-engine operator-readiness` as the stable entry point.

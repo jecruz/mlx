@@ -2226,3 +2226,26 @@ Decision:
 
 - The next UI/TUI integration can consume the M184 renderer JSON/text directly
   instead of duplicating readiness formatting logic in each client.
+
+## M185 Result
+
+M185 exposes the operator readiness renderer through the packaged engine CLI.
+
+Artifacts:
+
+- `artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.json`
+- `artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.txt`
+
+Result:
+
+- command: `bin/mlx-engine operator-readiness`
+- CLI render: `PASS`
+- active model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+- candidate model: `Qwen3.6-27B-UD-MLX-4bit`
+- swap decision: `REJECT`
+
+Decision:
+
+- External consumers should use `bin/mlx-engine operator-readiness` for the
+  standard readiness card. This keeps Dax/Prowl integration decoupled from
+  benchmark script internals.

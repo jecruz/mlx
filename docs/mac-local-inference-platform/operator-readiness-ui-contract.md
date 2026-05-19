@@ -22,6 +22,11 @@ Current renderer artifacts:
 - `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.json`
 - `artifacts/m184-operator-readiness-render/operator-readiness-render-m184-qwen-a3b.txt`
 
+Current packaged CLI artifacts:
+
+- `artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.json`
+- `artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.txt`
+
 ## Scope
 
 The readiness bundle is not a replacement for `/engine/ui`. Use `/engine/ui`
@@ -213,6 +218,23 @@ active=Qwen3.6-35B-A3B-UD-MLX-4bit candidate=Qwen3.6-27B-UD-MLX-4bit swap=REJECT
 
 The JSON renderer output provides the same normalized display strings plus the
 model names, memory values, warnings, failures, and swap blockers.
+
+## Packaged CLI
+
+The packaged engine CLI exposes the same renderer:
+
+```bash
+bin/mlx-engine operator-readiness \
+  --bundle-json artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json \
+  --output-json artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.json \
+  --output-text artifacts/m185-cli-operator-readiness/operator-readiness-cli-m185-qwen-a3b.txt \
+  --format text \
+  --fail-on-fail
+```
+
+Use this command from Dax, Prowl, shell scripts, or future packaged operator
+surfaces when they need the standard readiness card without importing Python
+modules directly.
 
 ## Validation Command
 
