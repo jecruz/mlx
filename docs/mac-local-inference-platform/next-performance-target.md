@@ -1898,3 +1898,27 @@ Decision:
 - The 27B UD MLX 4-bit model is quality-compatible enough for follow-up testing,
   but this evidence does not support using it as the speed replacement.
 - Keep the comparison gate as the acceptance bar for any model swap.
+
+## M171 Result
+
+M171 creates the operator/TUI bundle that combines live runtime status, quality
+gate status, and model-comparison status.
+
+Artifacts:
+
+- `artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json`
+- `artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `operator-quality-ready`
+- status card: engine `PASS`, gpu `PASS`, warmup `PASS`, quality `PASS`,
+  model comparison `PASS`
+- warning: the 27B quality-compatible candidate is slower than the active A3B
+  model
+
+Decision:
+
+- Dax/TUI should read this bundle shape for quality status before exposing model
+  swap or speed-claim surfaces.

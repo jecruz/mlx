@@ -1571,3 +1571,29 @@ Decision:
   pass the same quality comparison gate.
 - The tested 27B dense candidate is not a current speed replacement for the
   35B-A3B MoE model based on this evidence.
+
+## M171 Operator Quality Bundle
+
+M171 packages live engine status, suite quality status, and model-comparison
+quality into one operator/TUI-facing bundle.
+
+Artifacts:
+
+- `artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json`
+- `artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `operator-quality-ready`
+- engine: `PASS`
+- gpu: `PASS`
+- warmup: `PASS`
+- quality: `PASS`
+- model comparison: `PASS`
+- failures: `0`
+
+Operator warning:
+
+- The quality-compatible 27B candidate is slower than the active 35B-A3B model,
+  so it should not be presented as the speed replacement.

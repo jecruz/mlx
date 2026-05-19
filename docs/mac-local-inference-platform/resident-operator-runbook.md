@@ -462,3 +462,31 @@ python3 benchmarks/python/quality_status_summary.py \
   --tag m168-qwen-a3b \
   --fail-on-fail
 ```
+
+Create the operator/TUI quality bundle:
+
+```bash
+python3 benchmarks/python/operator_quality_bundle.py \
+  --base-url http://127.0.0.1:8773 \
+  --quality-summary-json artifacts/m168-quality-status/quality-status-m168-qwen-a3b.json \
+  --model-comparison-json artifacts/m170-model-quality-comparison/model-quality-comparison-m170-qwen.json \
+  --output-json artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json \
+  --output-md artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.md \
+  --tag m171-qwen-a3b \
+  --fail-on-fail
+```
+
+The bundle is the preferred compact surface for operator UI:
+
+- `status_card.engine`
+- `status_card.gpu`
+- `status_card.warmup`
+- `status_card.quality`
+- `status_card.model_comparison`
+- `runtime.model`
+- `runtime.runtime_profile`
+- `runtime.cache_strategy`
+- `models[].active`
+- `models[].verdict`
+- `models[].mean_quality_gate_ms`
+- `warnings[]`

@@ -1,0 +1,54 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "model_comparison": {
+    "path": "artifacts/m170-model-quality-comparison/model-quality-comparison-m170-qwen.json",
+    "readiness": "model-quality-comparable",
+    "verdict": "PASS"
+  },
+  "models": [
+    {
+      "active": true,
+      "failure_count": 0,
+      "label": "qwen35b-a3b-ud-4bit",
+      "mean_quality_gate_ms": 338.812,
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "verdict": "PASS"
+    },
+    {
+      "active": false,
+      "failure_count": 0,
+      "label": "qwen27b-ud-4bit",
+      "mean_quality_gate_ms": 3377.609,
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      "verdict": "PASS"
+    }
+  ],
+  "quality_summary": {
+    "path": "artifacts/m168-quality-status/quality-status-m168-qwen-a3b.json",
+    "quality_gate_count": 8,
+    "readiness": "quality-status-ready",
+    "verdict": "PASS"
+  },
+  "readiness": "operator-quality-ready",
+  "runtime": {
+    "cache_strategy": "split_prefill_or_async_build",
+    "can_generate": true,
+    "engine_preset": "async-experimental",
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "runtime_profile": "interactive"
+  },
+  "status_card": {
+    "engine": "PASS",
+    "gpu": "PASS",
+    "model_comparison": "PASS",
+    "quality": "PASS",
+    "warmup": "PASS"
+  },
+  "tag": "m171-qwen-a3b",
+  "type": "operator_quality_bundle",
+  "verdict": "PASS",
+  "warnings": [
+    "quality-compatible alternate model is slower than active model: qwen27b-ud-4bit"
+  ]
+}
