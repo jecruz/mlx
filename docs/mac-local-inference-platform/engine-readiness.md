@@ -809,3 +809,33 @@ It defines:
 - validation commands
 - current limitation around global profile mutation under future true
   concurrency
+
+## M126 Product-Mode Helper
+
+Product-mode request metadata helpers now live in `mlx_engine/ui_client.py`.
+
+Validated helper:
+
+- `metadata_for_product_mode(...)`
+- `apply_product_mode(...)`
+
+Validation:
+
+- artifact:
+  `artifacts/m126-product-mode-metadata/product-mode-metadata-m126-qwen-a3b.json`
+- verdict: `PASS`
+- cases: `7`
+- failures: `0`
+
+Product modes:
+
+- `chat`
+- `coding-agent`
+- `coding-agent-first-hit`
+- `coding-agent-low-memory`
+- `diagnostics`
+
+Readiness position:
+
+- Product clients no longer need to hand-assemble request metadata fields.
+- The next integration step is to wire this into a concrete client path.

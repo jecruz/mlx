@@ -1,0 +1,217 @@
+{
+  "case_count": 7,
+  "cases": [
+    {
+      "expected_runtime_profile": "interactive",
+      "kwargs": {},
+      "mode": "chat",
+      "observed_runtime_profile": "interactive",
+      "payload": {
+        "agentic_workload": false,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": true,
+        "low_memory": false,
+        "max_tokens": 1,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": false,
+        "workload_intent": "interactive"
+      },
+      "request_fields": {
+        "agentic_workload": false,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": true,
+        "low_memory": false,
+        "repeated_workspace": false,
+        "workload_intent": "interactive"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected_runtime_profile": "agent-workspace-async",
+      "kwargs": {},
+      "mode": "coding-agent",
+      "observed_runtime_profile": "agent-workspace-async",
+      "payload": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": false,
+        "max_tokens": 1,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": true,
+        "workload_intent": "coding-agent"
+      },
+      "request_fields": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": false,
+        "repeated_workspace": true,
+        "workload_intent": "coding-agent"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected_runtime_profile": "agent-workspace-low-memory",
+      "kwargs": {
+        "memory_class_gb": 32
+      },
+      "mode": "coding-agent",
+      "observed_runtime_profile": "agent-workspace-low-memory",
+      "payload": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": false,
+        "max_tokens": 1,
+        "memory_class_gb": 32,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": true,
+        "workload_intent": "coding-agent"
+      },
+      "request_fields": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": false,
+        "memory_class_gb": 32,
+        "repeated_workspace": true,
+        "workload_intent": "coding-agent"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected_runtime_profile": "agent-workspace-first-hit",
+      "kwargs": {},
+      "mode": "coding-agent-first-hit",
+      "observed_runtime_profile": "agent-workspace-first-hit",
+      "payload": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": true,
+        "interactive_workload": false,
+        "low_memory": false,
+        "max_tokens": 1,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": true,
+        "workload_intent": "first-hit"
+      },
+      "request_fields": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": true,
+        "interactive_workload": false,
+        "low_memory": false,
+        "repeated_workspace": true,
+        "workload_intent": "first-hit"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected_runtime_profile": "agent-workspace-low-memory",
+      "kwargs": {},
+      "mode": "coding-agent-low-memory",
+      "observed_runtime_profile": "agent-workspace-low-memory",
+      "payload": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": true,
+        "max_tokens": 1,
+        "memory_class_gb": 32,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": true,
+        "workload_intent": "coding-agent"
+      },
+      "request_fields": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": true,
+        "memory_class_gb": 32,
+        "repeated_workspace": true,
+        "workload_intent": "coding-agent"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected_runtime_profile": "diagnostics",
+      "kwargs": {},
+      "mode": "diagnostics",
+      "observed_runtime_profile": "diagnostics",
+      "payload": {
+        "agentic_workload": false,
+        "diagnostics_workload": true,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": false,
+        "max_tokens": 1,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": false,
+        "workload_intent": "diagnostics"
+      },
+      "request_fields": {
+        "agentic_workload": false,
+        "diagnostics_workload": true,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": false,
+        "repeated_workspace": false,
+        "workload_intent": "diagnostics"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected_runtime_profile": "interactive",
+      "kwargs": {
+        "runtime_profile": "interactive"
+      },
+      "mode": "coding-agent-low-memory",
+      "observed_runtime_profile": "interactive",
+      "payload": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": true,
+        "max_tokens": 1,
+        "memory_class_gb": 32,
+        "model": "local-mlx",
+        "prompt": "hello",
+        "repeated_workspace": true,
+        "runtime_profile": "interactive",
+        "workload_intent": "coding-agent"
+      },
+      "request_fields": {
+        "agentic_workload": true,
+        "diagnostics_workload": false,
+        "immediate_second_turn": false,
+        "interactive_workload": false,
+        "low_memory": true,
+        "memory_class_gb": 32,
+        "repeated_workspace": true,
+        "runtime_profile": "interactive",
+        "workload_intent": "coding-agent"
+      },
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "tag": "m126-qwen-a3b",
+  "type": "product_mode_metadata_probe",
+  "verdict": "PASS"
+}

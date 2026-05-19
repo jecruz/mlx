@@ -3314,3 +3314,18 @@
     - `git diff --check`
   - M125 conclusion: Dax, Prowl, and UI clients now have a concise product
     contract for request metadata integration without reading benchmark code.
+- Completed M126 product-mode metadata helper:
+  - updated `mlx_engine/ui_client.py`
+  - added `benchmarks/python/product_mode_metadata_probe.py`
+  - updated
+    `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+  - generated artifact:
+    `artifacts/m126-product-mode-metadata/product-mode-metadata-m126-qwen-a3b.json`
+  - validation passed:
+    - probe verdict `PASS`
+    - cases `7`
+    - failures `0`
+    - `python3 -m py_compile mlx_engine/ui_client.py benchmarks/python/product_mode_metadata_probe.py`
+    - `git diff --check`
+  - M126 conclusion: product clients can call `apply_product_mode(...)` to emit
+    validated request metadata from a small product-mode enum.

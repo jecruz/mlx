@@ -10,6 +10,13 @@ from dataclasses import dataclass
 from typing import Any, Literal
 
 
+ProductMode = Literal[
+    "chat",
+    "coding-agent",
+    "coding-agent-first-hit",
+    "coding-agent-low-memory",
+    "diagnostics",
+]
 WorkloadIntent = Literal[
     "interactive",
     "coding-agent",
@@ -37,6 +44,124 @@ WORKLOAD_INTENT_PROFILES: dict[WorkloadIntent, str] = {
 
 def runtime_profile_for_intent(intent: WorkloadIntent) -> str:
     return WORKLOAD_INTENT_PROFILES[intent]
+
+
+@dataclass(frozen=True)
+class ProductRequestMetadata:
+    workload_intent: WorkloadIntent
+    runtime_profile: str | None = None
+    memory_class_gb: int | None = None
+    immediate_second_turn: bool = False
+    low_memory: bool = False
+    diagnostics_workload: bool = False
+    interactive_workload: bool = False
+    agentic_workload: bool = False
+    repeated_workspace: bool = False
+
+    def request_fields(self) -> dict[str, Any]:
+        fields = {
+            "workload_intent": self.workload_intent,
+            "runtime_profile": self.runtime_profile,
+            "memory_class_gb": self.memory_class_gb,
+            "immediate_second_turn": self.immediate_second_turn,
+            "low_memory": self.low_memory,
+            "diagnostics_workload": self.diagnostics_workload,
+            "interactive_workload": self.interactive_workload,
+            "agentic_workload": self.agentic_workload,
+            "repeated_workspace": self.repeated_workspace,
+        }
+        return {key: value for key, value in fields.items() if value is not None}
+
+    @property
+    def expected_runtime_profile(self) -> str:
+        if self.runtime_profile is not None:
+            return self.runtime_profile
+        if self.diagnostics_workload or self.workload_intent == "diagnostics":
+            return "diagnostics"
+        if self.workload_intent == "memory-saver":
+            return "memory-saver"
+        if (
+            self.low_memory
+            or self.workload_intent in {"coding-agent-low-memory", "low-memory"}
+            or self.memory_class_gb in (16, 24, 32)
+        ):
+            return "agent-workspace-low-memory"
+        if (
+            self.immediate_second_turn
+            or self.workload_intent in {"coding-agent-first-hit", "first-hit"}
+        ):
+            return "agent-workspace-first-hit"
+        if (
+            self.agentic_workload
+            or self.repeated_workspace
+            or self.workload_intent in {"coding-agent", "agent-workspace"}
+        ):
+            return "agent-workspace-async"
+        return runtime_profile_for_intent(self.workload_intent)
+
+
+def metadata_for_product_mode(
+    mode: ProductMode,
+    *,
+    memory_class_gb: int | None = None,
+    runtime_profile: str | None = None,
+) -> ProductRequestMetadata:
+    if mode == "chat":
+        return ProductRequestMetadata(
+            workload_intent="interactive",
+            runtime_profile=runtime_profile,
+            interactive_workload=True,
+        )
+    if mode == "coding-agent":
+        return ProductRequestMetadata(
+            workload_intent="coding-agent",
+            runtime_profile=runtime_profile,
+            memory_class_gb=memory_class_gb,
+            agentic_workload=True,
+            repeated_workspace=True,
+        )
+    if mode == "coding-agent-first-hit":
+        return ProductRequestMetadata(
+            workload_intent="first-hit",
+            runtime_profile=runtime_profile,
+            memory_class_gb=memory_class_gb,
+            immediate_second_turn=True,
+            agentic_workload=True,
+            repeated_workspace=True,
+        )
+    if mode == "coding-agent-low-memory":
+        return ProductRequestMetadata(
+            workload_intent="coding-agent",
+            runtime_profile=runtime_profile,
+            memory_class_gb=memory_class_gb or 32,
+            low_memory=True,
+            agentic_workload=True,
+            repeated_workspace=True,
+        )
+    if mode == "diagnostics":
+        return ProductRequestMetadata(
+            workload_intent="diagnostics",
+            runtime_profile=runtime_profile,
+            diagnostics_workload=True,
+        )
+    raise ValueError(f"unknown product mode: {mode}")
+
+
+def apply_product_mode(
+    payload: dict[str, Any],
+    mode: ProductMode,
+    *,
+    memory_class_gb: int | None = None,
+    runtime_profile: str | None = None,
+) -> dict[str, Any]:
+    return {
+        **payload,
+        **metadata_for_product_mode(
+            mode,
+            memory_class_gb=memory_class_gb,
+            runtime_profile=runtime_profile,
+        ).request_fields(),
+    }
 
 
 @dataclass(frozen=True)

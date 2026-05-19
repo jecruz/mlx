@@ -1380,3 +1380,36 @@ Decision:
   benchmark code.
 - The next target is M126: add a small client-side helper or sample that emits
   this metadata from a product mode enum.
+
+## M126 Result
+
+M126 adds product-mode request metadata helpers:
+
+- helper: `mlx_engine/ui_client.py`
+- probe: `benchmarks/python/product_mode_metadata_probe.py`
+- artifact:
+  `artifacts/m126-product-mode-metadata/product-mode-metadata-m126-qwen-a3b.json`
+- contract update:
+  `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+
+Result:
+
+- verdict: `PASS`
+- cases: `7`
+- failures: `0`
+
+Product modes:
+
+- `chat`
+- `coding-agent`
+- `coding-agent-first-hit`
+- `coding-agent-low-memory`
+- `diagnostics`
+
+Decision:
+
+- Product clients can call `apply_product_mode(...)` instead of hardcoding
+  request metadata.
+- The next target is M127: wire the helper into a concrete client path, likely
+  Dax first, so operator commands can emit request metadata instead of changing
+  server profile state.

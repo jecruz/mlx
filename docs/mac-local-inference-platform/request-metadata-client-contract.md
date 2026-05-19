@@ -173,6 +173,69 @@ Use these defaults:
 Do not require users to pick raw cache or prefill knobs in the UI. Present the
 above as product modes and let the server map them to runtime profiles.
 
+## Python Client Helper
+
+`mlx_engine.ui_client` exposes product-mode helpers so clients do not need to
+hardcode request metadata fields.
+
+Product modes:
+
+- `chat`
+- `coding-agent`
+- `coding-agent-first-hit`
+- `coding-agent-low-memory`
+- `diagnostics`
+
+Example:
+
+```python
+from mlx_engine.ui_client import apply_product_mode
+
+payload = apply_product_mode(
+    {
+        "model": "local-mlx",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Use the repo context and suggest the next change.",
+            }
+        ],
+        "max_tokens": 256,
+    },
+    "coding-agent",
+    memory_class_gb=32,
+)
+```
+
+The resulting payload includes:
+
+```json
+{
+  "workload_intent": "coding-agent",
+  "memory_class_gb": 32,
+  "agentic_workload": true,
+  "repeated_workspace": true
+}
+```
+
+Expected route:
+
+- `agent-workspace-low-memory`
+
+Manual override remains available:
+
+```python
+payload = apply_product_mode(
+    {"model": "local-mlx", "prompt": "Answer interactively.", "max_tokens": 64},
+    "coding-agent-low-memory",
+    runtime_profile="interactive",
+)
+```
+
+Validation artifact:
+
+- `artifacts/m126-product-mode-metadata/product-mode-metadata-m126-qwen-a3b.json`
+
 ## Validation
 
 Static contract gate:
@@ -201,6 +264,15 @@ python3 benchmarks/python/run_live_product_regression_suite.py \
   --base-url http://127.0.0.1:8773 \
   --output-dir artifacts/m124-live-product-regression-suite \
   --tag m124-qwen-a3b \
+  --fail-on-fail
+```
+
+Product-mode helper probe:
+
+```bash
+python3 benchmarks/python/product_mode_metadata_probe.py \
+  --output-json artifacts/m126-product-mode-metadata/product-mode-metadata-m126-qwen-a3b.json \
+  --tag m126-qwen-a3b \
   --fail-on-fail
 ```
 
