@@ -700,3 +700,35 @@ Operational implication:
 - The next readiness gap is server-side profile selection from request metadata,
   because product clients should send workload intent, not benchmark-specific
   profile flags.
+
+## M122 Request Metadata Profile Selection
+
+M122 adds request-level workload intent handling to the resident engine.
+
+Implementation:
+
+- `mlx_engine/request_profiles.py` owns the lightweight selector and does not
+  import MLX.
+- `GenerateRequest`, `CompletionRequest`, and `ChatCompletionRequest` inherit
+  request profile hints.
+- `/generate`, `/v1/completions`, and `/v1/chat/completions` apply the selected
+  runtime profile before request metadata and prefill policy selection.
+- Streaming and non-streaming paths both use the same selector.
+- `engine_metrics` carries `request_runtime_profile`,
+  `request_runtime_profile_source`, `request_runtime_profile_reason`, and the
+  submitted workload hint fields.
+
+Validation:
+
+- gate:
+  `artifacts/m122-request-profile-metadata/request-profile-metadata-gate-m122-qwen-a3b.json`
+- verdict: `PASS`
+- scenarios: `6`
+- schema checks: `4`
+
+Operational note:
+
+- Existing live servers need a restart before this request metadata behavior is
+  available.
+- M123 should restart the live resident server and run a request-metadata
+  regression against the updated process.

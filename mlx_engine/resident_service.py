@@ -22,6 +22,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from starlette.responses import StreamingResponse
 
+from mlx_engine.request_profiles import WorkloadIntent, select_runtime_profile_for_request
+
 ROOT = Path(__file__).resolve().parents[1]
 BENCHMARKS_PYTHON = ROOT / "benchmarks" / "python"
 if str(BENCHMARKS_PYTHON) not in sys.path:
@@ -253,7 +255,19 @@ class Message(BaseModel):
     content: str
 
 
-class GenerateRequest(BaseModel):
+class RequestProfileHints(BaseModel):
+    runtime_profile: RuntimeProfileName | None = None
+    workload_intent: WorkloadIntent | None = None
+    memory_class_gb: int | None = Field(default=None, ge=1)
+    immediate_second_turn: bool = False
+    low_memory: bool = False
+    diagnostics_workload: bool = False
+    interactive_workload: bool = False
+    agentic_workload: bool = False
+    repeated_workspace: bool = False
+
+
+class GenerateRequest(RequestProfileHints):
     prompt: str
     max_tokens: int = Field(default=64, ge=1)
     policy: PolicyName = "auto"
@@ -262,7 +276,7 @@ class GenerateRequest(BaseModel):
     stop: StopValue | None = None
 
 
-class CompletionRequest(BaseModel):
+class CompletionRequest(RequestProfileHints):
     model: str | None = None
     prompt: str
     max_tokens: int = Field(default=64, ge=1)
@@ -272,7 +286,7 @@ class CompletionRequest(BaseModel):
     stop: StopValue | None = None
 
 
-class ChatCompletionRequest(BaseModel):
+class ChatCompletionRequest(RequestProfileHints):
     model: str | None = None
     messages: list[Message]
     max_tokens: int = Field(default=64, ge=1)
@@ -1908,6 +1922,7 @@ class ResidentEngine:
         prompt: str,
         policy: PolicyName,
         prefill_step_size_override: int | None,
+        profile_selection: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         tokens = self.prompt_tokens(prompt)
         prompt_tokens_estimate = len(tokens)
@@ -1936,9 +1951,59 @@ class ResidentEngine:
             "prompt_tokens_estimate": prompt_tokens_estimate,
             "default_device": self.device_info["default_device"],
             "metal_available": self.device_info["metal_available"],
+            **(profile_selection or {}),
             "_prompt": prompt,
             "_prompt_tokens": tokens,
             **prefix_analysis,
+        }
+
+    def apply_request_runtime_profile(
+        self,
+        request: RequestProfileHints,
+    ) -> dict[str, Any]:
+        profile, reason = select_runtime_profile_for_request(
+            manual_profile=request.runtime_profile,
+            workload_intent=request.workload_intent,
+            diagnostics=request.diagnostics_workload,
+            interactive=request.interactive_workload,
+            agentic=request.agentic_workload,
+            repeated_workspace=request.repeated_workspace,
+            immediate_second_turn=request.immediate_second_turn,
+            low_memory=request.low_memory,
+            memory_class_gb=request.memory_class_gb,
+        )
+        if profile is None:
+            return {
+                "request_runtime_profile": self.runtime_profile,
+                "request_runtime_profile_source": "engine_default",
+                "request_runtime_profile_reason": None,
+                "request_runtime_profile_applied": False,
+                "workload_intent": request.workload_intent,
+                "memory_class_gb": request.memory_class_gb,
+                "immediate_second_turn": request.immediate_second_turn,
+                "low_memory": request.low_memory,
+                "diagnostics_workload": request.diagnostics_workload,
+                "interactive_workload": request.interactive_workload,
+                "agentic_workload": request.agentic_workload,
+                "repeated_workspace": request.repeated_workspace,
+            }
+
+        config = runtime_profile_defaults(profile)["config"]
+        config["runtime_profile"] = profile
+        self.configure_runtime(config)
+        return {
+            "request_runtime_profile": profile,
+            "request_runtime_profile_source": "request_metadata",
+            "request_runtime_profile_reason": reason,
+            "request_runtime_profile_applied": True,
+            "workload_intent": request.workload_intent,
+            "memory_class_gb": request.memory_class_gb,
+            "immediate_second_turn": request.immediate_second_turn,
+            "low_memory": request.low_memory,
+            "diagnostics_workload": request.diagnostics_workload,
+            "interactive_workload": request.interactive_workload,
+            "agentic_workload": request.agentic_workload,
+            "repeated_workspace": request.repeated_workspace,
         }
 
     def record_prefix_prompt(self, metadata: dict[str, Any]) -> None:
@@ -3080,10 +3145,12 @@ class ResidentEngine:
     def generate(self, request: GenerateRequest):
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
+            profile_selection = self.apply_request_runtime_profile(request)
             metadata = self.request_metadata(
                 prompt=request.prompt,
                 policy=request.policy,
                 prefill_step_size_override=request.prefill_step_size,
+                profile_selection=profile_selection,
             )
             run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
                 metadata=metadata,
@@ -3156,10 +3223,12 @@ class ResidentEngine:
     def stream_generate_jsonl(self, request: GenerateRequest):
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
+            profile_selection = self.apply_request_runtime_profile(request)
             metadata = self.request_metadata(
                 prompt=request.prompt,
                 policy=request.policy,
                 prefill_step_size_override=request.prefill_step_size,
+                profile_selection=profile_selection,
             )
             run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
                 metadata=metadata,
@@ -3238,6 +3307,15 @@ class ResidentEngine:
                 prefill_step_size=request.prefill_step_size,
                 stream=request.stream,
                 stop=request.stop,
+                runtime_profile=request.runtime_profile,
+                workload_intent=request.workload_intent,
+                memory_class_gb=request.memory_class_gb,
+                immediate_second_turn=request.immediate_second_turn,
+                low_memory=request.low_memory,
+                diagnostics_workload=request.diagnostics_workload,
+                interactive_workload=request.interactive_workload,
+                agentic_workload=request.agentic_workload,
+                repeated_workspace=request.repeated_workspace,
             )
         )
         return {
@@ -3263,10 +3341,12 @@ class ResidentEngine:
     def stream_openai_completion(self, request: CompletionRequest):
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
+            profile_selection = self.apply_request_runtime_profile(request)
             metadata = self.request_metadata(
                 prompt=request.prompt,
                 policy=request.policy,
                 prefill_step_size_override=request.prefill_step_size,
+                profile_selection=profile_selection,
             )
             run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
                 metadata=metadata,
@@ -3387,6 +3467,15 @@ class ResidentEngine:
                 prefill_step_size=request.prefill_step_size,
                 stream=request.stream,
                 stop=request.stop,
+                runtime_profile=request.runtime_profile,
+                workload_intent=request.workload_intent,
+                memory_class_gb=request.memory_class_gb,
+                immediate_second_turn=request.immediate_second_turn,
+                low_memory=request.low_memory,
+                diagnostics_workload=request.diagnostics_workload,
+                interactive_workload=request.interactive_workload,
+                agentic_workload=request.agentic_workload,
+                repeated_workspace=request.repeated_workspace,
             )
         )
         return {
@@ -3418,10 +3507,12 @@ class ResidentEngine:
         prompt = self.render_chat_prompt(request.messages)
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
+            profile_selection = self.apply_request_runtime_profile(request)
             metadata = self.request_metadata(
                 prompt=prompt,
                 policy=request.policy,
                 prefill_step_size_override=request.prefill_step_size,
+                profile_selection=profile_selection,
             )
             run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
                 metadata=metadata,

@@ -1256,3 +1256,42 @@ Decision:
 - M115-M119 can now be rerun as a focused live regression command.
 - The next target is M122: move profile selection into server-side request
   metadata handling so product clients do not need to choose benchmark flags.
+
+## M122 Result
+
+M122 adds server-side request profile metadata handling:
+
+- selector module: `mlx_engine/request_profiles.py`
+- service integration: `mlx_engine/resident_service.py`
+- UI intent map update: `mlx_engine/ui_client.py`
+- gate: `benchmarks/python/request_profile_metadata_gate.py`
+- artifact:
+  `artifacts/m122-request-profile-metadata/request-profile-metadata-gate-m122-qwen-a3b.json`
+
+Result:
+
+- gate verdict: `PASS`
+- scenarios: `6`
+- schema checks: `4`
+- failures: `0`
+
+Accepted request metadata:
+
+- `workload_intent`
+- `runtime_profile`
+- `memory_class_gb`
+- `immediate_second_turn`
+- `low_memory`
+- `diagnostics_workload`
+- `interactive_workload`
+- `agentic_workload`
+- `repeated_workspace`
+
+Decision:
+
+- Product clients should send workload metadata directly on completion/chat
+  requests.
+- Manual `runtime_profile` remains the highest-priority override.
+- The next target is M123: restart the live server on the updated code and run
+  a live request-metadata regression to verify the decision appears in
+  `engine_metrics`.

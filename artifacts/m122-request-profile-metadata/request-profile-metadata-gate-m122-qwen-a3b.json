@@ -1,0 +1,94 @@
+{
+  "failures": [],
+  "resident_service": "mlx_engine/resident_service.py",
+  "scenario_count": 6,
+  "scenarios": [
+    {
+      "expected_profile": "agent-workspace-async",
+      "kwargs": {
+        "workload_intent": "coding-agent"
+      },
+      "name": "coding_agent_intent",
+      "observed_profile": "agent-workspace-async",
+      "reason": "steady-state coding-agent reuse",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-first-hit",
+      "kwargs": {
+        "workload_intent": "first-hit"
+      },
+      "name": "first_hit_intent",
+      "observed_profile": "agent-workspace-first-hit",
+      "reason": "immediate repeated-context second turn",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-low-memory",
+      "kwargs": {
+        "workload_intent": "low-memory"
+      },
+      "name": "low_memory_intent",
+      "observed_profile": "agent-workspace-low-memory",
+      "reason": "bounded memory mode",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-low-memory",
+      "kwargs": {
+        "memory_class_gb": 32,
+        "workload_intent": "coding-agent"
+      },
+      "name": "memory_class_32gb",
+      "observed_profile": "agent-workspace-low-memory",
+      "reason": "bounded memory mode",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-first-hit",
+      "kwargs": {
+        "manual_profile": "agent-workspace-first-hit",
+        "workload_intent": "low-memory"
+      },
+      "name": "manual_override",
+      "observed_profile": "agent-workspace-first-hit",
+      "reason": "request runtime_profile override",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "diagnostics",
+      "kwargs": {
+        "diagnostics": true
+      },
+      "name": "diagnostics",
+      "observed_profile": "diagnostics",
+      "reason": "diagnostics requested",
+      "verdict": "PASS"
+    }
+  ],
+  "schema_checks": [
+    {
+      "missing_fields": [],
+      "name": "request_profile_hints",
+      "verdict": "PASS"
+    },
+    {
+      "missing_fields": [],
+      "name": "completion",
+      "verdict": "PASS"
+    },
+    {
+      "missing_fields": [],
+      "name": "chat",
+      "verdict": "PASS"
+    },
+    {
+      "missing_fields": [],
+      "name": "generate",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m122-qwen-a3b",
+  "type": "request_profile_metadata_gate",
+  "verdict": "PASS"
+}

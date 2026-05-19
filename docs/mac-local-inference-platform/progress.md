@@ -3222,3 +3222,28 @@
     - `git diff --check`
   - M121 conclusion: the live product validation path is now repeatable from
     one command instead of being a manually sequenced set of milestone runs.
+- Completed M122 server-side request profile metadata:
+  - added `mlx_engine/request_profiles.py`
+  - updated `mlx_engine/resident_service.py`
+  - updated `mlx_engine/ui_client.py`
+  - added `benchmarks/python/request_profile_metadata_gate.py`
+  - generated artifact:
+    `artifacts/m122-request-profile-metadata/request-profile-metadata-gate-m122-qwen-a3b.json`
+  - validation passed:
+    - gate verdict `PASS`
+    - scenarios `6`
+    - schema checks `4`
+    - failures `0`
+    - `python3 -m py_compile mlx_engine/request_profiles.py mlx_engine/resident_service.py mlx_engine/ui_client.py benchmarks/python/request_profile_metadata_gate.py`
+    - `git diff --check`
+  - M122 behavior:
+    - request bodies can now carry `workload_intent`, `runtime_profile`,
+      `memory_class_gb`, `immediate_second_turn`, `low_memory`,
+      `diagnostics_workload`, `interactive_workload`, `agentic_workload`, and
+      `repeated_workspace`
+    - `/generate`, `/v1/completions`, and `/v1/chat/completions` apply the
+      selected runtime profile before prefill policy selection
+    - `engine_metrics` now includes the request profile decision fields
+  - M122 conclusion: product clients can send workload intent metadata instead
+    of manually changing global profiles before each request. A live server
+    restart is required before the new request fields are active.

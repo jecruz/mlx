@@ -14,6 +14,10 @@ WorkloadIntent = Literal[
     "interactive",
     "coding-agent",
     "agent-workspace",
+    "coding-agent-first-hit",
+    "first-hit",
+    "coding-agent-low-memory",
+    "low-memory",
     "memory-saver",
     "diagnostics",
 ]
@@ -22,6 +26,10 @@ WORKLOAD_INTENT_PROFILES: dict[WorkloadIntent, str] = {
     "interactive": "interactive",
     "coding-agent": "agent-workspace-async",
     "agent-workspace": "agent-workspace-async",
+    "coding-agent-first-hit": "agent-workspace-first-hit",
+    "first-hit": "agent-workspace-first-hit",
+    "coding-agent-low-memory": "agent-workspace-low-memory",
+    "low-memory": "agent-workspace-low-memory",
     "memory-saver": "memory-saver",
     "diagnostics": "diagnostics",
 }
