@@ -404,6 +404,15 @@ Readiness interpretation:
   - note: the live artifact used equivalent `agent-workspace-request` behavior
     because the resident server had not been restarted with the new profile
     catalog yet.
+- M93 adds a product-path first-hit regression gate:
+  - script: `benchmarks/python/dax_product_first_hit_gate.py`
+  - summary artifact:
+    `artifacts/m93-product-first-hit-gate/dax-product-first-hit-summary-m93-qwen-a3b-request-profile.json`
+  - result: `PASS`, conversion turn `2`, conversion prefill `18` tokens,
+    conversion ratio `0.843`, mature hit speedup `2.996x`, mature hit prefill
+    `18` tokens
+  - implication: Dax/product validation can now fail specifically when the
+    second repeated-context turn regresses to full prefill.
 
 ## Current Qwen Result
 

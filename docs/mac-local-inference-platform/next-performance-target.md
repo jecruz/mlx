@@ -562,3 +562,31 @@ Decision:
 - Next target is M93: make this first-hit behavior a product-path regression
   gate so Dax/product runs cannot silently fall back to full-prefill second
   turns.
+
+## M93 Result
+
+M93 adds a one-command Dax product-path regression gate for first-hit
+conversion.
+
+Added:
+
+- `benchmarks/python/dax_product_first_hit_gate.py`
+- `artifacts/m93-product-first-hit-gate/dax-product-first-hit-summary-m93-qwen-a3b-request-profile.json`
+
+Result:
+
+- product first-hit gate: `PASS`
+- conversion turn: `2`
+- conversion actual prefill: `18` tokens
+- conversion service ratio vs baseline: `0.843`
+- mature hit speedup: `2.996x`
+- mature hit actual prefill: `18` tokens
+
+Decision:
+
+- Product-path first-hit conversion is now regression-gated.
+- The gate catches the exact M91 failure mode: a second repeated-context turn
+  falling back to full prefill instead of converting.
+- Next target is M94: route Dax product mode to the first-hit profile when the
+  product wants immediate second-turn latency rather than pure steady-state
+  async reuse.

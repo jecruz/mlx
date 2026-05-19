@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "benchmark_json": "artifacts/m93-product-first-hit-gate/dax-product-first-hit-m93-qwen-a3b-request-profile.json",
+    "benchmark_jsonl": "artifacts/m93-product-first-hit-gate/dax-product-first-hit-m93-qwen-a3b-request-profile.jsonl",
+    "gate_json": "artifacts/m93-product-first-hit-gate/dax-product-first-hit-gate-m93-qwen-a3b-request-profile.json"
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "benchmark_verdict": "PASS",
+  "dax_intent": null,
+  "dax_profile": "agent-workspace-request",
+  "derived": {
+    "baseline_service_request_ms": 1386.2589579075575,
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.8431856243082165,
+    "conversion_service_request_ms": 1168.8736248761415,
+    "conversion_turn": 2,
+    "mature_hit_actual_prefill_tokens": 18.0,
+    "mature_hit_service_request_ms": 462.6371660269797,
+    "mature_hit_speedup_vs_baseline": 2.9964279995323913
+  },
+  "failures": [],
+  "gate_verdict": "PASS",
+  "tag": "m93-qwen-a3b-request-profile",
+  "type": "dax_product_first_hit_gate",
+  "verdict": "PASS"
+}

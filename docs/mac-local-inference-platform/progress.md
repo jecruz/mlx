@@ -2682,3 +2682,29 @@
     runtime profile. The live artifact used the equivalent
     `agent-workspace-request` profile because the resident server had not been
     restarted with the new profile name yet.
+- Completed M93 product-path first-hit regression gate:
+  - added `benchmarks/python/dax_product_first_hit_gate.py`
+  - the gate runs Dax repeated-context product path and then applies
+    `benchmarks/python/dax_first_hit_conversion_gate.py`
+  - wrote artifacts:
+    - `artifacts/m93-product-first-hit-gate/dax-product-first-hit-m93-qwen-a3b-request-profile.json`
+    - `artifacts/m93-product-first-hit-gate/dax-product-first-hit-m93-qwen-a3b-request-profile.jsonl`
+    - `artifacts/m93-product-first-hit-gate/dax-product-first-hit-gate-m93-qwen-a3b-request-profile.json`
+    - `artifacts/m93-product-first-hit-gate/dax-product-first-hit-summary-m93-qwen-a3b-request-profile.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/dax_product_first_hit_gate.py benchmarks/python/dax_first_hit_conversion_gate.py benchmarks/python/dax_repeated_context_bench.py`
+    - product first-hit gate passed with `--fail-on-fail`
+    - summary parsed with `python3 -m json.tool`
+  - M93 result:
+    - product first-hit gate `PASS`
+    - conversion turn `2`
+    - conversion prefill `18` tokens
+    - conversion service `1168.87 ms`
+    - baseline service `1386.26 ms`
+    - conversion ratio vs baseline `0.843 <= 0.85`
+    - mature hit speedup `2.996x`
+    - mature hit prefill `18` tokens
+  - M93 conclusion: product-path first-hit conversion now has a one-command
+    regression gate. The live artifact used `agent-workspace-request` because
+    the resident server predates the new `agent-workspace-first-hit` profile
+    name.

@@ -5784,6 +5784,60 @@ M92 decision:
   should decide when Dax product mode selects first-hit conversion versus
   steady-state async reuse.
 
+## M93 Product-Path First-Hit Regression Gate
+
+M93 packages the M92 first-hit conversion behavior as a product-path regression
+gate. The gate runs the Dax repeated-context command path, then applies the
+first-hit conversion gate to the generated report.
+
+Script:
+
+- `benchmarks/python/dax_product_first_hit_gate.py`
+
+Artifacts:
+
+- `artifacts/m93-product-first-hit-gate/dax-product-first-hit-m93-qwen-a3b-request-profile.json`
+- `artifacts/m93-product-first-hit-gate/dax-product-first-hit-m93-qwen-a3b-request-profile.jsonl`
+- `artifacts/m93-product-first-hit-gate/dax-product-first-hit-gate-m93-qwen-a3b-request-profile.json`
+- `artifacts/m93-product-first-hit-gate/dax-product-first-hit-summary-m93-qwen-a3b-request-profile.json`
+
+Command:
+
+```text
+python3 benchmarks/python/dax_product_first_hit_gate.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m93-product-first-hit-gate \
+  --tag m93-qwen-a3b-request-profile \
+  --dax-profile agent-workspace-request \
+  --fail-on-fail
+```
+
+The committed script defaults to `agent-workspace-first-hit`; this run used
+`agent-workspace-request` because the live resident server had not been
+restarted with the new profile catalog.
+
+Result:
+
+- product first-hit gate verdict: `PASS`
+- benchmark verdict: `PASS`
+- conversion turn: `2`
+- conversion prefill: `18` tokens
+- conversion service: `1168.87 ms`
+- baseline service: `1386.26 ms`
+- conversion ratio vs baseline: `0.843 <= 0.85`
+- mature hit service: `462.64 ms`
+- mature hit speedup: `2.996x`
+- mature hit prefill: `18` tokens
+
+M93 decision:
+
+- Product-path first-hit conversion is now regression-gated with a single
+  command.
+- The gate is intentionally stricter than mature-cache reuse: it requires turn
+  `2` conversion and bounded actual prefill, not just later cache hits.
+- M94 should wire Dax product mode to select the first-hit profile when the
+  workflow prioritizes immediate second-turn latency.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not
