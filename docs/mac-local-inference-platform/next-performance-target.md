@@ -679,3 +679,25 @@ Next target after M96:
 - Restart the resident server on the new code and rerun product gates with the
   new profile names directly.
 - Wire these profile choices into the product UI/Dax product mode.
+
+## M97 Result
+
+M97 restarted the resident server on the updated worktree and validated
+`agent-workspace-first-hit` directly.
+
+Result:
+
+- profile catalog includes `agent-workspace-first-hit`
+- direct product first-hit gate: `PASS`
+- resident suite first-hit path: `PASS`
+- direct conversion turn: `2`
+- direct conversion actual prefill: `18` tokens
+- direct conversion ratio vs baseline: `0.783`
+- direct mature hit speedup: `2.454x`
+- suite conversion ratio vs baseline: `0.785`
+- suite mature hit speedup: `2.382x`
+
+Decision:
+
+- `agent-workspace-first-hit` is now live-validated by name.
+- Next target is M98: validate `agent-workspace-low-memory` directly by name.

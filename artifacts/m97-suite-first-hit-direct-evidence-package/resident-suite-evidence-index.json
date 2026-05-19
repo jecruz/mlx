@@ -1,0 +1,56 @@
+{
+  "copied": {
+    "dax_first_hit_benchmark": {
+      "bytes": 107310,
+      "path": "artifacts/m97-suite-first-hit-direct-evidence-package/dax-product-first-hit-m97-qwen-a3b-first-hit-suite-direct.json",
+      "source": "artifacts/m97-suite-first-hit-direct/dax-product-first-hit-m97-qwen-a3b-first-hit-suite-direct.json"
+    },
+    "dax_first_hit_gate": {
+      "bytes": 54418,
+      "path": "artifacts/m97-suite-first-hit-direct-evidence-package/dax-product-first-hit-gate-m97-qwen-a3b-first-hit-suite-direct.json",
+      "source": "artifacts/m97-suite-first-hit-direct/dax-product-first-hit-gate-m97-qwen-a3b-first-hit-suite-direct.json"
+    },
+    "dax_first_hit_jsonl": {
+      "bytes": 66768,
+      "path": "artifacts/m97-suite-first-hit-direct-evidence-package/dax-product-first-hit-m97-qwen-a3b-first-hit-suite-direct.jsonl",
+      "source": "artifacts/m97-suite-first-hit-direct/dax-product-first-hit-m97-qwen-a3b-first-hit-suite-direct.jsonl"
+    },
+    "dax_first_hit_summary": {
+      "bytes": 1110,
+      "path": "artifacts/m97-suite-first-hit-direct-evidence-package/dax-product-first-hit-summary-m97-qwen-a3b-first-hit-suite-direct.json",
+      "source": "artifacts/m97-suite-first-hit-direct/dax-product-first-hit-summary-m97-qwen-a3b-first-hit-suite-direct.json"
+    },
+    "suite_manifest": {
+      "bytes": 169083,
+      "path": "artifacts/m97-suite-first-hit-direct-evidence-package/resident-regression-suite-m97-qwen-a3b-first-hit-suite-direct.json",
+      "source": "artifacts/m97-suite-first-hit-direct/resident-regression-suite-m97-qwen-a3b-first-hit-suite-direct.json"
+    }
+  },
+  "dax_first_hit": {
+    "benchmark_verdict": "PASS",
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.7848218894161102,
+    "conversion_turn": 2,
+    "gate_verdict": "PASS",
+    "mature_hit_actual_prefill_tokens": 18.0,
+    "mature_hit_speedup_vs_baseline": 2.381770539259693,
+    "profile": "agent-workspace-first-hit",
+    "verdict": "PASS"
+  },
+  "dax_repeated_context": null,
+  "gate": null,
+  "missing": {
+    "cache": "artifacts/m97-suite-first-hit-direct/resident-benchmark-sync-safe-m97-qwen-a3b-first-hit-suite-direct.jsonl",
+    "cold_start": "artifacts/m97-suite-first-hit-direct/resident-cold-start-sync-safe-m97-qwen-a3b-first-hit-suite-direct.jsonl",
+    "dax_repeated_context": "artifacts/m97-suite-first-hit-direct/dax-repeated-context-m97-qwen-a3b-first-hit-suite-direct.json",
+    "dax_repeated_context_gate": "artifacts/m97-suite-first-hit-direct/dax-repeated-context-gate-m97-qwen-a3b-first-hit-suite-direct.json",
+    "dax_repeated_context_jsonl": "artifacts/m97-suite-first-hit-direct/dax-repeated-context-m97-qwen-a3b-first-hit-suite-direct.jsonl",
+    "gate": "artifacts/m97-suite-first-hit-direct/resident-regression-gate-m97-qwen-a3b-first-hit-suite-direct.json",
+    "prefill": "artifacts/m97-suite-first-hit-direct/resident-prefill-isolation-sync-safe-m97-qwen-a3b-first-hit-suite-direct.jsonl"
+  },
+  "output_dir": "artifacts/m97-suite-first-hit-direct-evidence-package",
+  "source_manifest": "artifacts/m97-suite-first-hit-direct/resident-regression-suite-m97-qwen-a3b-first-hit-suite-direct.json",
+  "suite_tag": "m97-qwen-a3b-first-hit-suite-direct",
+  "suite_verdict": "PASS",
+  "type": "resident_suite_evidence_package"
+}

@@ -2786,3 +2786,33 @@
   - M96 conclusion: profile tradeoffs are now explicit and artifact-backed.
     Follow-up is a live rerun after resident server restart so the new profile
     names are exercised directly instead of through compatibility profiles.
+- Completed M97 restarted-server first-hit profile validation:
+  - replaced stale resident server on `127.0.0.1:8773` with the updated
+    worktree server
+  - verified `/engine/profiles` exposes:
+    `agent-workspace-first-hit` and `agent-workspace-low-memory`
+  - ran direct product first-hit gate with `agent-workspace-first-hit`
+  - ran resident suite first-hit path with `agent-workspace-first-hit`
+  - packaged suite evidence
+  - wrote artifacts:
+    - `artifacts/m97-direct-first-hit-profile/dax-product-first-hit-summary-m97-qwen-a3b-first-hit-direct.json`
+    - `artifacts/m97-direct-first-hit-profile/dax-product-first-hit-gate-m97-qwen-a3b-first-hit-direct.json`
+    - `artifacts/m97-direct-first-hit-profile/dax-product-first-hit-m97-qwen-a3b-first-hit-direct.json`
+    - `artifacts/m97-direct-first-hit-profile/dax-product-first-hit-m97-qwen-a3b-first-hit-direct.jsonl`
+    - `artifacts/m97-suite-first-hit-direct/resident-regression-suite-m97-qwen-a3b-first-hit-suite-direct.json`
+    - `artifacts/m97-suite-first-hit-direct-evidence-package/resident-suite-evidence-index.json`
+  - validation passed:
+    - direct product first-hit gate passed with `--fail-on-fail`
+    - suite manifest passed with `--include-dax-first-hit`
+    - evidence package indexed `dax_first_hit=PASS`
+  - M97 result:
+    - direct profile `agent-workspace-first-hit`
+    - direct conversion turn `2`
+    - direct conversion prefill `18` tokens
+    - direct conversion ratio vs baseline `0.783`
+    - direct mature hit speedup `2.454x`
+    - suite conversion ratio vs baseline `0.785`
+    - suite mature hit speedup `2.382x`
+  - M97 conclusion: the new first-hit profile name works directly after a
+    server restart; compatibility profile routing is no longer required for
+    this path.

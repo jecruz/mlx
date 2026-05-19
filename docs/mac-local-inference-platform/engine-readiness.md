@@ -439,6 +439,14 @@ Readiness interpretation:
   - default long-session coding-agent profile: `agent-workspace-async`
   - immediate second-turn profile: `agent-workspace-first-hit`
   - lower-memory profile: `agent-workspace-low-memory`
+- M97 validates the restarted-server first-hit profile path:
+  - direct artifact:
+    `artifacts/m97-direct-first-hit-profile/dax-product-first-hit-summary-m97-qwen-a3b-first-hit-direct.json`
+  - suite artifact:
+    `artifacts/m97-suite-first-hit-direct/resident-regression-suite-m97-qwen-a3b-first-hit-suite-direct.json`
+  - result: `agent-workspace-first-hit` direct gate `PASS`, suite path `PASS`,
+    conversion turn `2`, conversion prefill `18` tokens, direct conversion
+    ratio `0.783`, suite conversion ratio `0.785`
 
 ## Current Qwen Result
 
