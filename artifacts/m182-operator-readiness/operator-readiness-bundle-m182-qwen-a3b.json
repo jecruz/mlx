@@ -1,0 +1,58 @@
+{
+  "evidence": {
+    "live_model_swap_json": "artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json",
+    "lower_memory_json": "artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json",
+    "model_swap_workflow_json": "artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json",
+    "operator_quality_json": "artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json",
+    "suite_json": "artifacts/m180-live-request-memory-suite/live-product-regression-suite-m180-qwen-a3b.json"
+  },
+  "failures": [],
+  "memory": {
+    "health_active_memory_gb": null,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "source": "request_metrics"
+  },
+  "model_decision": {
+    "active_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "blockers": [
+      "candidate_speed: slowdown_ratio=9.968977, threshold=1.0"
+    ],
+    "candidate_label": "qwen27b-ud-4bit",
+    "candidate_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+    "current_label": "qwen35b-a3b-ud-4bit",
+    "readiness": "swap-blocked",
+    "swap_decision": "REJECT"
+  },
+  "readiness": "operator-readiness-ready",
+  "runtime": {
+    "backend": "text",
+    "base_url": "http://127.0.0.1:8773",
+    "can_generate": true,
+    "can_reload": true,
+    "can_unload": true,
+    "engine_preset": "async-experimental",
+    "gpu_ready": true,
+    "loaded": true,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "ok": true,
+    "runtime_profile": "interactive",
+    "strategy": "split_prefill_or_async_build",
+    "warm": true
+  },
+  "status_card": {
+    "candidate_swap": "WARN",
+    "live_model_swap": "PASS",
+    "live_suite": "PASS",
+    "lower_memory": "PASS",
+    "memory_source": "PASS",
+    "quality": "PASS",
+    "runtime": "PASS"
+  },
+  "tag": "m182-qwen-a3b",
+  "type": "operator_readiness_bundle",
+  "verdict": "PASS",
+  "warnings": [
+    "model swap decision is REJECT"
+  ]
+}

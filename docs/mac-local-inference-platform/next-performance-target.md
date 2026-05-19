@@ -2151,3 +2151,31 @@ Decision:
 - Same-model reload/restore is live-safe enough to use as the baseline lifecycle
   gate. Candidate model swaps still need the M176/M179 acceptance decision before
   promotion.
+
+## M182 Result
+
+M182 creates an operator readiness bundle that combines current runtime,
+quality, model-swap, live lifecycle, and lower-memory evidence.
+
+Artifacts:
+
+- `artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json`
+- `artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `operator-readiness-ready`
+- failures: `0`
+- warnings: `1`
+- quality: `PASS`
+- live suite: `PASS`
+- lower-memory request metrics: `PASS`
+- live model swap: `PASS`
+- candidate swap: `WARN`
+
+Decision:
+
+- The current engine is operator-ready on the active A3B model. The tested 27B
+  dense candidate remains visible as `swap_decision=REJECT` because of speed, so
+  UI/TUI surfaces can show both readiness and the blocked model decision.

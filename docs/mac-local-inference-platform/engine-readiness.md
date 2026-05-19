@@ -1841,3 +1841,33 @@ Decision:
   request-local memory metrics, then reload back to the original model path and
   serve again. M181 used a same-model candidate to prove lifecycle safety without
   changing the active model decision from M179/M180.
+
+## M182 Operator Readiness Bundle
+
+M182 packages current runtime, quality, lower-memory, and model-swap evidence
+into one operator-facing artifact.
+
+Artifacts:
+
+- `artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json`
+- `artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `operator-readiness-ready`
+- failures: `0`
+- warnings: `1`
+- runtime: `PASS`
+- quality: `PASS`
+- live suite: `PASS`
+- lower-memory: `PASS`
+- memory source: `request_metrics`
+- live model swap: `PASS`
+- candidate swap: `WARN`
+
+Decision:
+
+- The operator-facing status can now show the active model is ready while the
+  tested 27B dense candidate remains blocked by speed. This is a warning, not a
+  runtime failure, because the active A3B model remains the accepted model.

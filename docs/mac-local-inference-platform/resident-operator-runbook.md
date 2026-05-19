@@ -694,3 +694,28 @@ Expected result:
 Use a same-model candidate for the baseline lifecycle gate. Use a different
 candidate model only after M176/M179 acceptance artifacts indicate the candidate
 is worth testing live.
+
+Build the current operator readiness bundle:
+
+```bash
+python3 benchmarks/python/operator_readiness_bundle.py \
+  --base-url http://127.0.0.1:8773 \
+  --suite-json artifacts/m180-live-request-memory-suite/live-product-regression-suite-m180-qwen-a3b.json \
+  --operator-quality-json artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json \
+  --model-swap-workflow-json artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json \
+  --lower-memory-json artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json \
+  --live-model-swap-json artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json \
+  --output-json artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json \
+  --output-md artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.md \
+  --tag m182-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `operator_readiness_bundle PASS`
+- readiness: `operator-readiness-ready`
+- runtime, quality, live suite, lower-memory, memory source, and live model swap
+  should be `PASS`
+- candidate swap can be `WARN` when the current candidate is intentionally
+  rejected by the model-swap workflow
