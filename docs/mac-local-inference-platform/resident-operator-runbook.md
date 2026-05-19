@@ -719,3 +719,26 @@ Expected result:
   should be `PASS`
 - candidate swap can be `WARN` when the current candidate is intentionally
   rejected by the model-swap workflow
+
+Validate the operator readiness UI/TUI contract:
+
+```bash
+python3 benchmarks/python/operator_readiness_contract_probe.py \
+  --bundle-json artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json \
+  --output-json artifacts/m183-operator-readiness-contract/operator-readiness-contract-m183-qwen-a3b.json \
+  --tag m183-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `operator_readiness_contract_probe PASS`
+- readiness: `operator-readiness-contract-ready`
+- failures: `0`
+
+Consumer contract:
+
+- Use `docs/mac-local-inference-platform/operator-readiness-ui-contract.md`.
+- Use `/engine/ui` for live controls and immediate state.
+- Use the readiness bundle for release-quality readiness, warnings, model
+  decision, and evidence links.

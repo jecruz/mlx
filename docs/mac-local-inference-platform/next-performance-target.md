@@ -2179,3 +2179,26 @@ Decision:
 - The current engine is operator-ready on the active A3B model. The tested 27B
   dense candidate remains visible as `swap_decision=REJECT` because of speed, so
   UI/TUI surfaces can show both readiness and the blocked model decision.
+
+## M183 Result
+
+M183 defines and validates the UI/TUI contract for the M182 operator readiness
+bundle.
+
+Artifacts:
+
+- `docs/mac-local-inference-platform/operator-readiness-ui-contract.md`
+- `artifacts/m183-operator-readiness-contract/operator-readiness-contract-m183-qwen-a3b.json`
+
+Result:
+
+- contract probe: `PASS`
+- readiness: `operator-readiness-contract-ready`
+- failures: `0`
+
+Decision:
+
+- UI/TUI consumers should read the readiness bundle's `verdict`, `readiness`,
+  `status_card`, `runtime`, `model_decision`, `memory`, `warnings`, and
+  `failures`. They should not independently stitch M171/M179/M180/M181 unless
+  the operator opens a details view.

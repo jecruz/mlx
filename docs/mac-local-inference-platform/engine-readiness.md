@@ -1871,3 +1871,25 @@ Decision:
 - The operator-facing status can now show the active model is ready while the
   tested 27B dense candidate remains blocked by speed. This is a warning, not a
   runtime failure, because the active A3B model remains the accepted model.
+
+## M183 Operator Readiness UI Contract
+
+M183 makes the M182 readiness bundle a stable UI/TUI contract.
+
+Artifacts:
+
+- `docs/mac-local-inference-platform/operator-readiness-ui-contract.md`
+- `artifacts/m183-operator-readiness-contract/operator-readiness-contract-m183-qwen-a3b.json`
+
+Result:
+
+- contract probe: `PASS`
+- readiness: `operator-readiness-contract-ready`
+- failures: `0`
+
+Decision:
+
+- Dax, Prowl, or future operator surfaces should consume the M182 readiness
+  bundle as the primary readiness source and use `/engine/ui` for live controls.
+  `candidate_swap=WARN` is displayable as a non-blocking warning when the active
+  model remains ready.

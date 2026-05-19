@@ -1,0 +1,67 @@
+{
+  "bundle_json": "artifacts/m182-operator-readiness/operator-readiness-bundle-m182-qwen-a3b.json",
+  "failures": [],
+  "readiness": "operator-readiness-contract-ready",
+  "required_evidence": [
+    "suite_json",
+    "operator_quality_json",
+    "model_swap_workflow_json",
+    "lower_memory_json",
+    "live_model_swap_json"
+  ],
+  "required_memory": [
+    "source",
+    "max_active_memory_gb",
+    "max_peak_memory_gb",
+    "health_active_memory_gb"
+  ],
+  "required_model_decision": [
+    "current_label",
+    "active_model",
+    "candidate_label",
+    "candidate_model",
+    "swap_decision",
+    "readiness",
+    "blockers"
+  ],
+  "required_runtime": [
+    "base_url",
+    "ok",
+    "loaded",
+    "model",
+    "backend",
+    "engine_preset",
+    "runtime_profile",
+    "strategy",
+    "gpu_ready",
+    "warm",
+    "can_generate",
+    "can_reload",
+    "can_unload"
+  ],
+  "required_status_card": [
+    "runtime",
+    "quality",
+    "live_suite",
+    "lower_memory",
+    "memory_source",
+    "live_model_swap",
+    "candidate_swap"
+  ],
+  "required_top_level": [
+    "type",
+    "tag",
+    "verdict",
+    "readiness",
+    "status_card",
+    "runtime",
+    "model_decision",
+    "memory",
+    "evidence",
+    "warnings",
+    "failures"
+  ],
+  "tag": "m183-qwen-a3b",
+  "type": "operator_readiness_contract_probe",
+  "verdict": "PASS"
+}
