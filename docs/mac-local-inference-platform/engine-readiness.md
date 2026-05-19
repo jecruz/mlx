@@ -1733,3 +1733,28 @@ Decision:
 - Future lower-memory and operator gates can use per-request active memory
   directly after the resident server is restarted onto this commit. The `/health`
   fallback remains useful for older live server processes.
+
+## M178 Live Per-Request Memory Metrics
+
+M178 restarts the resident server onto M177 and proves the new memory fields are
+present in live OpenAI-compatible responses.
+
+Artifact:
+
+- `artifacts/m178-request-memory-live/request-memory-metrics-live-probe-m178-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `request-memory-metrics-live`
+- non-stream fields: `PASS`
+- stream fields: `PASS`
+- active memory observed: `20.78077057 GB`
+- cache memory observed: `0.007968398 GB`
+- MLX peak observed: `21.419940142 GB`
+
+Decision:
+
+- The running resident server now emits per-request memory metrics, so
+  lower-memory gates can use request-local `active_memory_gb` instead of relying
+  on process-level `/health` fallback.

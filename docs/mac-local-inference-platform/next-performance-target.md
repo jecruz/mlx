@@ -2049,3 +2049,26 @@ Decision:
 - Once the live resident server is restarted onto this commit, lower-memory
   checks should prefer per-request `active_memory_gb` and only use `/health` as
   compatibility fallback.
+
+## M178 Result
+
+M178 restarts the live resident server onto M177 and validates memory metrics at
+runtime.
+
+Artifact:
+
+- `artifacts/m178-request-memory-live/request-memory-metrics-live-probe-m178-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- non-stream response includes all required memory fields
+- stream final metrics include all required memory fields
+- active memory: `20.78077057 GB`
+- MLX peak memory: `21.419940142 GB`
+
+Decision:
+
+- M177 is now runtime-proven. Future lower-memory suite runs should no longer
+  need `/health` fallback when they are run against a server started from this
+  commit or later.

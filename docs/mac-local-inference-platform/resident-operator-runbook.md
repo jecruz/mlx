@@ -592,3 +592,19 @@ Compatibility note:
 - Existing live server processes started before this commit will not emit these
   fields. `lower_memory_runtime_gate.py --base-url ...` still falls back to
   `/health` for those older processes.
+
+Run the live memory metric probe after restarting the resident server:
+
+```bash
+python3 benchmarks/python/request_memory_metrics_live_probe.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-json artifacts/m178-request-memory-live/request-memory-metrics-live-probe-m178-qwen-a3b.json \
+  --tag m178-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `request_memory_metrics_live_probe PASS`
+- non-stream `engine_metrics` include all request memory fields
+- stream final `engine_metrics` include all request memory fields

@@ -1,0 +1,38 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "nonstream": {
+    "fields": {
+      "active_memory_bytes": 20780770570,
+      "active_memory_gb": 20.78077057,
+      "cache_memory_bytes": 7968398,
+      "cache_memory_gb": 0.007968398,
+      "mlx_peak_memory_gb": 21.419940142,
+      "peak_memory_bytes": 21419940142
+    },
+    "request_id": "req_e42ca87a6d924038a7b5bf766a58965e"
+  },
+  "readiness": "request-memory-metrics-live",
+  "required_fields": [
+    "active_memory_gb",
+    "active_memory_bytes",
+    "cache_memory_gb",
+    "cache_memory_bytes",
+    "mlx_peak_memory_gb",
+    "peak_memory_bytes"
+  ],
+  "stream": {
+    "fields": {
+      "active_memory_bytes": 20780770570,
+      "active_memory_gb": 20.78077057,
+      "cache_memory_bytes": 7968406,
+      "cache_memory_gb": 0.007968406,
+      "mlx_peak_memory_gb": 21.419940142,
+      "peak_memory_bytes": 21419940142
+    },
+    "request_id": "req_0347a1f679ac4fed87d2550b01a02ede"
+  },
+  "tag": "m178-qwen-a3b",
+  "type": "request_memory_metrics_live_probe",
+  "verdict": "PASS"
+}
