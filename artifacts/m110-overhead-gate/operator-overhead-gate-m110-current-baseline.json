@@ -1,0 +1,19 @@
+{
+  "failures": [],
+  "input": "artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json",
+  "metrics": {
+    "max_overhead_ms": 3130.715415813029,
+    "mean_overhead_ms": 1635.4851586511359,
+    "min_overhead_ms": 1484.8509582225233,
+    "p95_overhead_ms": 3130.715415813029
+  },
+  "overhead_count": 16,
+  "row_count": 16,
+  "tag": "m110-current-baseline",
+  "thresholds": {
+    "max_mean_overhead_ms": 2000.0,
+    "max_p95_overhead_ms": null
+  },
+  "type": "dax_operator_overhead_gate",
+  "verdict": "PASS"
+}

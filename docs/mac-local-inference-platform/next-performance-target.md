@@ -1047,3 +1047,26 @@ Decision:
   `127.0.0.1:8773`.
 - Next target is M110: add an overhead gate around the new `overhead_ms` row
   field.
+
+## M110 Result
+
+M110 adds the operator overhead gate:
+
+- script: `benchmarks/python/dax_operator_overhead_gate.py`
+- artifact:
+  `artifacts/m110-overhead-gate/operator-overhead-gate-m110-current-baseline.json`
+
+Result:
+
+- gate verdict: `PASS`
+- input: M100 wall-time report
+- rows: `16`
+- mean overhead: `1635.49 ms`
+- current baseline threshold: `<=2000 ms`
+
+Decision:
+
+- `overhead_ms` is now gateable for JSONL rows and wall-time reports.
+- The M103 fast-path target remains `<=500 ms`; the current CLI baseline does
+  not satisfy that target and should not be treated as optimized.
+- Next target is M111: define and package the extended prompt sweep matrix.

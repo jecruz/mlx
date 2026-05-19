@@ -3051,3 +3051,17 @@
   - M109 conclusion: the benchmark harness now has a hot resident-client path;
     live timing validation is blocked only by the resident server not currently
     running on `127.0.0.1:8773`.
+- Completed M110 operator overhead gate:
+  - added `benchmarks/python/dax_operator_overhead_gate.py`
+  - generated artifact:
+    `artifacts/m110-overhead-gate/operator-overhead-gate-m110-current-baseline.json`
+  - validation passed:
+    - gate verdict `PASS`
+    - rows `16`
+    - mean overhead `1635.49 ms`
+    - baseline threshold `<=2000 ms`
+    - `python3 -m py_compile benchmarks/python/dax_operator_overhead_gate.py`
+    - `git diff --check`
+  - M110 conclusion: overhead is now a first-class gated metric. The current
+    CLI baseline passes only the baseline threshold; the M103 fast-path target
+    remains `<=500 ms` for live resident-client validation.

@@ -541,6 +541,12 @@ Readiness interpretation:
   - product benchmark rows now include `overhead_ms`
   - readiness artifact:
     `artifacts/m109-resident-dax-client/resident-dax-client-m109-qwen-a3b.json`
+- M110 adds operator overhead gating:
+  - script: `benchmarks/python/dax_operator_overhead_gate.py`
+  - artifact:
+    `artifacts/m110-overhead-gate/operator-overhead-gate-m110-current-baseline.json`
+  - current CLI baseline mean overhead: `1635.49 ms`
+  - fast-path live target remains `<=500 ms`
 
 ## Current Qwen Result
 
