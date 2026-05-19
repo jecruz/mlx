@@ -439,9 +439,37 @@ Decision:
 - Product-path benchmark coverage is now reachable from the TUI as an operator
   mode instead of as raw suite-runner flags.
 
+## M89 Result
+
+M89 ran the new Dax product benchmark mode against the live Qwen A3B resident
+server through the Dax panel command handler.
+
+Command:
+
+```text
+/bench run product /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench artifacts/m89-dax-operator-product-run m89-qwen-a3b-dax-product
+```
+
+Result:
+
+- suite verdict: `PASS`
+- Dax product-path gate: `PASS`
+- cache-hit turns: `2`
+- best-hit speedup: `19.20x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service latency: `227.23 ms`
+
+Decision:
+
+- Product-path repeated-context performance is now proven through the
+  operator-facing Dax command path.
+- Steady-state repeated-context reuse is no longer the weakest link.
+
 Next target:
 
-- Use the Dax product mode against the live Qwen A3B resident server once from
-  the operator surface, then decide whether the next performance milestone
-  should target first-hit latency, async build scheduling, or lower-memory
-  product profiles.
+- Target first-hit latency and async build scheduling. The concrete goal is to
+  reduce the second-turn full-prefill/cache-build cost before the mature cache
+  hit appears, without regressing the `~18` token mature-hit behavior.
+- Keep lower-memory product profiles as the next product track after first-hit
+  latency is bounded.

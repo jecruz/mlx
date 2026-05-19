@@ -368,6 +368,14 @@ Readiness interpretation:
   - TUI command: `/bench run product <mlx-worktree> [output-dir] [tag]`
   - existing resident-suite command remains compatible
   - Dax summaries now show product gate verdict and product-path cache metrics
+- M89 validates the Dax product mode against the live Qwen A3B resident server:
+  - suite artifact:
+    `artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json`
+  - package index:
+    `artifacts/m89-dax-operator-product-evidence-package/resident-suite-evidence-index.json`
+  - result: suite `PASS`, Dax gate `PASS`, `2` cache-hit turns,
+    `19.20x` best-hit speedup, best-hit prefill `18` tokens, and best-hit
+    service latency `227.23 ms`
 
 ## Current Qwen Result
 

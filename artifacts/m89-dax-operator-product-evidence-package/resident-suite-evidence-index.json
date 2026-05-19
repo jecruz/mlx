@@ -1,0 +1,49 @@
+{
+  "copied": {
+    "dax_repeated_context": {
+      "bytes": 107097,
+      "path": "artifacts/m89-dax-operator-product-evidence-package/dax-repeated-context-m89-qwen-a3b-dax-product.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.json"
+    },
+    "dax_repeated_context_gate": {
+      "bytes": 36203,
+      "path": "artifacts/m89-dax-operator-product-evidence-package/dax-repeated-context-gate-m89-qwen-a3b-dax-product.json",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/dax-repeated-context-gate-m89-qwen-a3b-dax-product.json"
+    },
+    "dax_repeated_context_jsonl": {
+      "bytes": 66667,
+      "path": "artifacts/m89-dax-operator-product-evidence-package/dax-repeated-context-m89-qwen-a3b-dax-product.jsonl",
+      "source": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.jsonl"
+    },
+    "suite_manifest": {
+      "bytes": 148612,
+      "path": "artifacts/m89-dax-operator-product-evidence-package/resident-regression-suite-m89-qwen-a3b-dax-product.json",
+      "source": "artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json"
+    }
+  },
+  "dax_repeated_context": {
+    "baseline_actual_prefill_tokens": 2092,
+    "benchmark_verdict": "PASS",
+    "best_hit_actual_prefill_tokens": 18,
+    "best_hit_service_request_ms": 227.23437496460974,
+    "best_hit_speedup_vs_baseline": 19.19611524811562,
+    "gate": {
+      "checks": 5,
+      "failures": 0,
+      "verdict": "PASS"
+    },
+    "hit_count": 2
+  },
+  "gate": null,
+  "missing": {
+    "cache": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/resident-benchmark-sync-safe-m89-qwen-a3b-dax-product.jsonl",
+    "cold_start": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/resident-cold-start-sync-safe-m89-qwen-a3b-dax-product.jsonl",
+    "gate": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/resident-regression-gate-m89-qwen-a3b-dax-product.json",
+    "prefill": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m89-dax-operator-product-run/resident-prefill-isolation-sync-safe-m89-qwen-a3b-dax-product.jsonl"
+  },
+  "output_dir": "artifacts/m89-dax-operator-product-evidence-package",
+  "source_manifest": "artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json",
+  "suite_tag": "m89-qwen-a3b-dax-product",
+  "suite_verdict": "PASS",
+  "type": "resident_suite_evidence_package"
+}

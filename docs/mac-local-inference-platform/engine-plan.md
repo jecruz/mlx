@@ -5566,6 +5566,50 @@ M88 decision:
 - This completes the path from MLX engine optimization evidence to a usable
   terminal operator workflow.
 
+## M89 Live Dax Product-Mode Operator Run
+
+M89 validates the Dax product benchmark mode against the live Qwen A3B resident
+server through the Dax panel command handler.
+
+Operator command exercised:
+
+```text
+/bench run product /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench artifacts/m89-dax-operator-product-run m89-qwen-a3b-dax-product
+```
+
+Artifacts:
+
+- suite manifest:
+  `artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json`
+- Dax benchmark:
+  `artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.json`
+- Dax rows:
+  `artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.jsonl`
+- Dax gate:
+  `artifacts/m89-dax-operator-product-run/dax-repeated-context-gate-m89-qwen-a3b-dax-product.json`
+- evidence package:
+  `artifacts/m89-dax-operator-product-evidence-package/resident-suite-evidence-index.json`
+
+Result:
+
+- suite verdict: `PASS`
+- Dax product-path gate: `PASS`
+- gate checks: `5`
+- gate failures: `0`
+- cache-hit turns: `2`
+- best-hit speedup: `19.20x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service: `227.23 ms`
+
+M89 decision:
+
+- The product benchmark is now proven from the operator-facing Dax command path,
+  not just the Python suite runner.
+- Repeated-context steady-state behavior is strong enough that the next
+  performance milestone should focus on first-hit latency and async build
+  scheduling, while lower-memory profiles remain a parallel product track.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

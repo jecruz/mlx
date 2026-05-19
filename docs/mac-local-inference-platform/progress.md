@@ -2581,3 +2581,32 @@
       smoke, web-ui Biome, and web-ui TypeScript checks
   - M88 conclusion: Dax now exposes product-path benchmark coverage as a named
     operator mode instead of leaking raw suite-runner flags.
+- Completed M89 live Dax product-mode operator run:
+  - exercised the real Dax panel command handler with:
+    - `/bench run product /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench artifacts/m89-dax-operator-product-run m89-qwen-a3b-dax-product`
+  - wrote suite artifacts:
+    - `artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json`
+    - `artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.json`
+    - `artifacts/m89-dax-operator-product-run/dax-repeated-context-m89-qwen-a3b-dax-product.jsonl`
+    - `artifacts/m89-dax-operator-product-run/dax-repeated-context-gate-m89-qwen-a3b-dax-product.json`
+  - wrote evidence package:
+    - `artifacts/m89-dax-operator-product-evidence-package/resident-suite-evidence-index.json`
+  - validation passed:
+    - Dax panel command returned suite `PASS`
+    - `python3 benchmarks/python/summarize_resident_suite_manifest.py artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json --fail-on-fail`
+    - `python3 -m json.tool artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json`
+    - `python3 benchmarks/python/package_resident_suite_evidence.py artifacts/m89-dax-operator-product-run/resident-regression-suite-m89-qwen-a3b-dax-product.json --output-dir artifacts/m89-dax-operator-product-evidence-package`
+    - `python3 -m json.tool artifacts/m89-dax-operator-product-evidence-package/resident-suite-evidence-index.json`
+  - M89 result:
+    - suite verdict `PASS`
+    - Dax product-path gate `PASS`
+    - gate checks `5`
+    - gate failures `0`
+    - cache-hit turns `2`
+    - best-hit speedup `19.20x`
+    - baseline prefill `2092` tokens
+    - best-hit prefill `18` tokens
+    - best-hit service `227.23 ms`
+  - M89 conclusion: the optimized repeated-context path is now proven through
+    the Dax operator command path; next performance work should target
+    first-hit latency and async build scheduling.
