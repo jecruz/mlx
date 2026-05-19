@@ -467,6 +467,14 @@ Readiness interpretation:
     with `agent-workspace-low-memory`
   - Dax validation passed: focused MLX status tests, typecheck, Biome check,
     and diff whitespace check
+- M100 adds end-to-end operator wall-time evidence:
+  - script: `benchmarks/python/dax_operator_wall_time_report.py`
+  - artifact:
+    `artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json`
+  - result: report `PASS` across M97/M98 direct and suite cases
+  - mature service speedups: `2.382x` to `2.585x`
+  - mature wall-time speedups: `1.425x` to `2.190x`
+  - mean Dax/operator overhead: roughly `1.5s` to `1.9s`
 
 ## Current Qwen Result
 
@@ -511,4 +519,5 @@ engine does not use them.
   milestone is added.
 - Tensor parallelism is more relevant for multi-Mac or very large model work;
   the current single-Mac path should prioritize prompt processing, cache reuse,
-  scheduling, warmup/JIT behavior, and quantized kernels first.
+  scheduling, warmup/JIT behavior, Dax/operator overhead, and quantized kernels
+  first.

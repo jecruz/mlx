@@ -2866,3 +2866,25 @@
   - M99 conclusion: the engine profile decisions from M96-M98 are now
     reachable from Dax product/operator commands instead of being artifact-only
     recommendations.
+- Completed M100 end-to-end operator wall-time report:
+  - added `benchmarks/python/dax_operator_wall_time_report.py`
+  - generated artifact:
+    `artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json`
+  - report compares Dax/operator `wall_ms` against resident engine
+    `service_request_ms` for M97/M98 direct and suite evidence
+  - validation passed:
+    - report verdict `PASS`
+    - `python3 -m py_compile benchmarks/python/dax_operator_wall_time_report.py`
+    - `git diff --check`
+  - M100 result:
+    - `m97_first_hit_direct`: mature service speedup `2.454x`, mature wall
+      speedup `2.190x`, mean operator overhead `1921.63 ms`
+    - `m97_first_hit_suite`: mature service speedup `2.382x`, mature wall
+      speedup `1.425x`, mean operator overhead `1512.65 ms`
+    - `m98_low_memory_direct`: mature service speedup `2.585x`, mature wall
+      speedup `1.508x`, mean operator overhead `1565.29 ms`
+    - `m98_low_memory_suite`: mature service speedup `2.417x`, mature wall
+      speedup `1.449x`, mean operator overhead `1542.37 ms`
+  - M100 conclusion: the engine improvements are real, but product-visible
+    speed is now partially capped by Dax/operator overhead outside the resident
+    engine request path.

@@ -754,3 +754,33 @@ Decision:
 - Next target is M100: produce an end-to-end operator wall-time report so
   service-time improvements are compared against actual command/operator
   elapsed time.
+
+## M100 Result
+
+M100 adds an operator wall-time report:
+
+- script: `benchmarks/python/dax_operator_wall_time_report.py`
+- artifact:
+  `artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json`
+
+Result:
+
+- report verdict: `PASS`
+- cases covered:
+  - M97 first-hit direct
+  - M97 first-hit suite
+  - M98 low-memory direct
+  - M98 low-memory suite
+- mature service speedups: `2.382x` to `2.585x`
+- mature wall-time speedups: `1.425x` to `2.190x`
+- mean operator overhead: about `1512 ms` to `1922 ms`
+- mean service share of wall time: about `0.346` to `0.389`
+
+Decision:
+
+- Resident engine service-time gains are confirmed.
+- Product-visible wall-time gains are materially lower because the Dax command
+  path still spends roughly `1.5s+` outside resident engine service time.
+- Next target is M101: add a default profile decision gate that requires the
+  async, first-hit, low-memory, and wall-time evidence before claiming the
+  default product profile decision is ready.
