@@ -143,6 +143,8 @@ performance:
 - `M168` operator-facing quality status summary
 - `M169` expanded coding-agent golden prompts
 - `M170` model-to-model quality comparison before model swaps
+- `M171` operator/TUI quality bundle
+- `M172` coding-agent workspace/edit/test/debug golden prompts
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport

@@ -1597,3 +1597,33 @@ Operator warning:
 
 - The quality-compatible 27B candidate is slower than the active 35B-A3B model,
   so it should not be presented as the speed replacement.
+
+## M172 Coding-Agent Workspace Golden Set
+
+M172 expands the quality gate corpus with coding-agent workflow prompts.
+
+Added cases:
+
+- `workspace_symbol_lookup`
+- `patch_plan`
+- `test_selection`
+- `failure_triage`
+
+Artifacts:
+
+- `artifacts/m172-coding-agent-golden-set/quality-golden-set-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/deterministic-quality-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/loop-quality-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/quality-checkpoint-m172-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- deterministic rows: `12`
+- loop rows: `13`
+- failures: `0`
+
+Decision:
+
+- Coding-agent quality now covers workspace lookup, edit planning, focused test
+  selection, and failure triage before future speed claims can be accepted.

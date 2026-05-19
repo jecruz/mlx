@@ -1,0 +1,130 @@
+{
+  "case_count": 13,
+  "cases": [
+    {
+      "category": "instruction_following",
+      "id": "exact_answer",
+      "max_tokens": 24,
+      "prompt": "Output only: QUALITY_OK\n/no_think",
+      "required": [
+        "QUALITY_OK"
+      ]
+    },
+    {
+      "category": "coding",
+      "id": "coding_task",
+      "max_tokens": 512,
+      "prompt": "Return only this Python expression: a + b\n/no_think",
+      "required": [
+        "a + b"
+      ]
+    },
+    {
+      "category": "coding_agent_review",
+      "id": "code_review",
+      "max_tokens": 64,
+      "prompt": "Review this code: def add(a,b): return a-b. Output only: BUG_FOUND\n/no_think",
+      "required": [
+        "BUG_FOUND"
+      ]
+    },
+    {
+      "category": "coding_agent_plan",
+      "id": "edit_plan",
+      "max_tokens": 64,
+      "prompt": "A repo needs one small edit and one test. Output only: EDIT_AND_TEST\n/no_think",
+      "required": [
+        "EDIT_AND_TEST"
+      ]
+    },
+    {
+      "category": "reasoning",
+      "id": "reasoning",
+      "max_tokens": 24,
+      "prompt": "A job has 3 tasks taking 2, 4, and 6 minutes. Output only the total minutes.\n/no_think",
+      "required": [
+        "12"
+      ]
+    },
+    {
+      "category": "json",
+      "id": "json_schema",
+      "json_required": true,
+      "max_tokens": 48,
+      "prompt": "Output only valid JSON with key status and value ok.\n/no_think",
+      "required": [
+        "status",
+        "ok"
+      ]
+    },
+    {
+      "category": "summarization",
+      "id": "summary",
+      "max_tokens": 64,
+      "prompt": "Summarize this text as exactly SUMMARY_OK: MLX quality gates protect response quality while speed improves.\n/no_think",
+      "required": [
+        "SUMMARY_OK"
+      ]
+    },
+    {
+      "category": "coding_agent_workspace",
+      "id": "workspace_symbol_lookup",
+      "max_tokens": 64,
+      "prompt": "Repo map: src/server.py defines ResidentEngine; src/cache.py defines PrefixCache. Question: which symbol handles generation? Output only: ResidentEngine\n/no_think",
+      "required": [
+        "ResidentEngine"
+      ]
+    },
+    {
+      "category": "coding_agent_edit",
+      "id": "patch_plan",
+      "max_tokens": 64,
+      "prompt": "Task: fix a bug in src/cache.py and add one regression test in tests/test_cache.py. Output only: PATCH_SRC_CACHE_AND_TEST\n/no_think",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ]
+    },
+    {
+      "category": "coding_agent_test",
+      "id": "test_selection",
+      "max_tokens": 96,
+      "prompt": "Changed files: src/cache.py, tests/test_cache.py. Choose the focused test command. Output only: pytest tests/test_cache.py\n/no_think",
+      "required": [
+        "pytest tests/test_cache.py"
+      ]
+    },
+    {
+      "category": "coding_agent_debug",
+      "id": "failure_triage",
+      "max_tokens": 64,
+      "prompt": "Log: AssertionError expected 3 got 2 in tests/test_cache.py::test_reuse. Output only: TRIAGE_CACHE_REUSE\n/no_think",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ]
+    },
+    {
+      "category": "refusal_boundary",
+      "id": "safety_boundary",
+      "max_tokens": 32,
+      "prompt": "Output only SAFE_SUMMARY for a harmless request summary.\n/no_think",
+      "required": [
+        "SAFE_SUMMARY"
+      ]
+    },
+    {
+      "category": "long_context_rope_imrope",
+      "id": "rope_imrope_sentinel_recall",
+      "max_tokens": 512,
+      "prompt": "EARLY_FACT: alpha code is ORCHID-17.\nDistractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. Distractor text about local inference and benchmark routing. \nMIDDLE_FACT: beta code is LANTERN-42.\nMore distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. More distractor text about cache behavior and prompt processing. \nLATE_FACT: gamma code is HARBOR-93.\nOutput only the three codes separated by commas in early,middle,late order.\n/no_think",
+      "required": [
+        "ORCHID-17",
+        "LANTERN-42",
+        "HARBOR-93"
+      ]
+    }
+  ],
+  "failures": [],
+  "tag": "m172-qwen-a3b",
+  "type": "quality_golden_set",
+  "verdict": "PASS"
+}

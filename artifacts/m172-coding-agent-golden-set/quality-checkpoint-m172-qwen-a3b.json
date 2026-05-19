@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "deterministic": {
+      "failures": 0,
+      "type": "deterministic_quality_regression",
+      "verdict": "PASS"
+    },
+    "golden": {
+      "failures": 0,
+      "type": "quality_golden_set",
+      "verdict": "PASS"
+    },
+    "loop": {
+      "failures": 0,
+      "type": "loop_repetition_quality_gate",
+      "verdict": "PASS"
+    }
+  },
+  "covered_milestones": [
+    "M172"
+  ],
+  "failures": [],
+  "tag": "m172-qwen-a3b",
+  "type": "quality_gated_performance_checkpoint",
+  "verdict": "PASS"
+}

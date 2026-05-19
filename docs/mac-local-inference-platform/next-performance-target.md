@@ -1922,3 +1922,34 @@ Decision:
 
 - Dax/TUI should read this bundle shape for quality status before exposing model
   swap or speed-claim surfaces.
+
+## M172 Result
+
+M172 broadens the deterministic quality gate into coding-agent workflow coverage.
+
+Added cases:
+
+- workspace symbol lookup
+- patch planning
+- focused test selection
+- failure triage
+
+Artifacts:
+
+- `artifacts/m172-coding-agent-golden-set/quality-golden-set-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/deterministic-quality-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/loop-quality-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/quality-checkpoint-m172-qwen-a3b.json`
+- `artifacts/m172-coding-agent-golden-set/quality-checkpoint-m172-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- deterministic rows: `12`
+- loop rows: `13`
+- failures: `0`
+
+Decision:
+
+- Continue prompt-processing and generation speed work only while preserving
+  coding-agent task correctness, not just generic answer quality.

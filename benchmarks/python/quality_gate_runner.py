@@ -67,6 +67,46 @@ GOLDEN_CASES: list[dict[str, Any]] = [
         "max_tokens": 64,
     },
     {
+        "id": "workspace_symbol_lookup",
+        "category": "coding_agent_workspace",
+        "prompt": (
+            "Repo map: src/server.py defines ResidentEngine; src/cache.py defines PrefixCache. "
+            "Question: which symbol handles generation? Output only: ResidentEngine\n/no_think"
+        ),
+        "required": ["ResidentEngine"],
+        "max_tokens": 64,
+    },
+    {
+        "id": "patch_plan",
+        "category": "coding_agent_edit",
+        "prompt": (
+            "Task: fix a bug in src/cache.py and add one regression test in tests/test_cache.py. "
+            "Output only: PATCH_SRC_CACHE_AND_TEST\n/no_think"
+        ),
+        "required": ["PATCH_SRC_CACHE_AND_TEST"],
+        "max_tokens": 64,
+    },
+    {
+        "id": "test_selection",
+        "category": "coding_agent_test",
+        "prompt": (
+            "Changed files: src/cache.py, tests/test_cache.py. "
+            "Choose the focused test command. Output only: pytest tests/test_cache.py\n/no_think"
+        ),
+        "required": ["pytest tests/test_cache.py"],
+        "max_tokens": 96,
+    },
+    {
+        "id": "failure_triage",
+        "category": "coding_agent_debug",
+        "prompt": (
+            "Log: AssertionError expected 3 got 2 in tests/test_cache.py::test_reuse. "
+            "Output only: TRIAGE_CACHE_REUSE\n/no_think"
+        ),
+        "required": ["TRIAGE_CACHE_REUSE"],
+        "max_tokens": 64,
+    },
+    {
         "id": "safety_boundary",
         "category": "refusal_boundary",
         "prompt": "Output only SAFE_SUMMARY for a harmless request summary.\n/no_think",
@@ -344,6 +384,16 @@ def gate_checkpoint(args: argparse.Namespace) -> int:
         for name, artifact in artifacts.items()
         if artifact.get("verdict") != "PASS" or artifact.get("failures")
     ]
+    covered_milestones = args.covered_milestone or [
+        "M159",
+        "M160",
+        "M161",
+        "M162",
+        "M163",
+        "M164",
+        "M165",
+        "M166",
+    ]
     output = {
         "type": "quality_gated_performance_checkpoint",
         "tag": args.tag,
@@ -356,16 +406,20 @@ def gate_checkpoint(args: argparse.Namespace) -> int:
             }
             for name, artifact in artifacts.items()
         },
-        "covered_milestones": ["M159", "M160", "M161", "M162", "M163", "M164", "M165", "M166"],
+        "covered_milestones": covered_milestones,
         "failures": failures,
     }
     if args.output_md:
         args.output_md.parent.mkdir(parents=True, exist_ok=True)
         failure_lines = "\n".join(f"- `{failure}`" for failure in failures) or "- none"
+        title = "Quality-Gated Performance Checkpoint"
+        if len(covered_milestones) == 1:
+            title = f"{covered_milestones[0]} {title}"
+        covered = ", ".join(f"`{milestone}`" for milestone in covered_milestones)
         args.output_md.write_text(
-            "# M166 Quality-Gated Performance Checkpoint\n\n"
+            f"# {title}\n\n"
             f"Verdict: `{output['verdict']}`\n\n"
-            "Covered milestones: `M159` through `M166`\n\n"
+            f"Covered milestones: {covered}\n\n"
             "Result: quality gates are now blocking criteria for future speed work.\n\n"
             "Failures:\n\n"
             f"{failure_lines}\n"
@@ -381,6 +435,7 @@ def main() -> int:
     parser.add_argument("--output-md", type=Path)
     parser.add_argument("--tag", default="quality-gate")
     parser.add_argument("--artifact", nargs=2, action="append", default=[])
+    parser.add_argument("--covered-milestone", action="append", default=[])
     parser.add_argument("--fail-on-fail", action="store_true")
     args = parser.parse_args()
     return {
