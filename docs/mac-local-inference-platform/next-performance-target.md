@@ -1119,3 +1119,30 @@ Decision:
   and 32GB hardware.
 - Next target is M113: integrate the auto-selection policy into product
   readiness checks.
+
+## M113 Result
+
+M113 adds auto-selection integration gating:
+
+- script: `benchmarks/python/profile_auto_selection_integration_gate.py`
+- artifact:
+  `artifacts/m113-auto-selection-integration/auto-selection-integration-gate-m113-qwen-a3b.json`
+
+Result:
+
+- gate verdict: `PASS`
+- checks: `5`
+- failures: `0`
+- required scenarios covered:
+  - normal coding-agent
+  - immediate second turn
+  - lower-memory Mac
+  - interactive foreground
+  - diagnostics
+  - manual override
+
+Decision:
+
+- Auto-selection is now part of readiness gating.
+- Product implementation must preserve manual override.
+- Next target is M114: combine M109-M113 into a readiness regression suite.

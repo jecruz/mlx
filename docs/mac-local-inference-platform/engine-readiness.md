@@ -559,6 +559,11 @@ Readiness interpretation:
     `artifacts/m112-lower-memory-gate/lower-memory-runtime-gate-m112-qwen-a3b.json`
   - result: `PASS`, max peak memory `22.682 GB`, cache limit `64 MB`,
     conversion prefill `18` tokens
+- M113 adds profile auto-selection integration gating:
+  - script: `benchmarks/python/profile_auto_selection_integration_gate.py`
+  - artifact:
+    `artifacts/m113-auto-selection-integration/auto-selection-integration-gate-m113-qwen-a3b.json`
+  - result: `PASS`, `5` checks, `0` failures
 
 ## Current Qwen Result
 

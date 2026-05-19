@@ -3096,3 +3096,15 @@
     - `git diff --check`
   - M112 conclusion: low-memory mode now has memory and cache-limit acceptance
     checks, not only latency checks.
+- Completed M113 auto-selection integration gate:
+  - added `benchmarks/python/profile_auto_selection_integration_gate.py`
+  - generated artifact:
+    `artifacts/m113-auto-selection-integration/auto-selection-integration-gate-m113-qwen-a3b.json`
+  - validation passed:
+    - gate verdict `PASS`
+    - `5` checks, `0` failures
+    - all required scenarios covered, including manual override
+    - `python3 -m py_compile benchmarks/python/profile_auto_selection_integration_gate.py`
+    - `git diff --check`
+  - M113 conclusion: profile auto-selection is now part of readiness gating
+    and not just a standalone policy artifact.

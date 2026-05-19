@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "name": "policy_pass",
+      "verdict": "PASS"
+    },
+    {
+      "name": "bundle_pass",
+      "verdict": "PASS"
+    },
+    {
+      "name": "all_required_scenarios",
+      "verdict": "PASS"
+    },
+    {
+      "name": "manual_override_covered",
+      "verdict": "PASS"
+    },
+    {
+      "name": "next_lane_mentions_auto_selection",
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "observed_scenarios": [
+    "diagnostics",
+    "immediate_second_turn",
+    "interactive_foreground",
+    "lower_memory_mac",
+    "manual_override",
+    "normal_coding_agent"
+  ],
+  "policy": "artifacts/m106-profile-auto-selection/profile-auto-selection-m106-qwen-a3b.json",
+  "readiness_bundle": "artifacts/m108-product-readiness-bundle/product-readiness-bundle-m108-qwen-a3b.json",
+  "required_scenarios": [
+    "diagnostics",
+    "immediate_second_turn",
+    "interactive_foreground",
+    "lower_memory_mac",
+    "manual_override",
+    "normal_coding_agent"
+  ],
+  "tag": "m113-qwen-a3b",
+  "type": "profile_auto_selection_integration_gate",
+  "verdict": "PASS"
+}
