@@ -41,6 +41,35 @@ Expected readiness characteristics:
 - resident model loaded
 - warmup complete when warmed latency matters
 
+## Product Client Request Metadata
+
+Product clients should send workload intent on the request body instead of
+changing global runtime profile before each request.
+
+Contract:
+
+- `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+
+Minimal completion example:
+
+```json
+{
+  "model": "local-mlx",
+  "prompt": "Summarize this workspace context.",
+  "max_tokens": 128,
+  "workload_intent": "first-hit",
+  "immediate_second_turn": true
+}
+```
+
+Expected `engine_metrics` fields:
+
+- `request_runtime_profile`
+- `request_runtime_profile_source=request_metadata`
+- `request_runtime_profile_applied=true`
+
+Manual `runtime_profile` remains the highest-priority operator override.
+
 ## Run The Bounded Regression Suite
 
 ```bash

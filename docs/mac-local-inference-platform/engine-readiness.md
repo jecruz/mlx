@@ -793,3 +793,19 @@ Readiness position:
   send workload metadata on OpenAI-compatible requests, inspect
   `engine_metrics.request_runtime_profile`, and reserve manual
   `runtime_profile` for explicit operator override.
+
+## M125 Product Client Contract
+
+The product/client contract for request metadata lives at:
+
+- `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+
+It defines:
+
+- accepted request metadata fields
+- selection precedence
+- workload-intent to runtime-profile routing
+- completion and chat examples
+- validation commands
+- current limitation around global profile mutation under future true
+  concurrency

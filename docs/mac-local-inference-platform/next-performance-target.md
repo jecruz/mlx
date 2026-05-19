@@ -1354,3 +1354,29 @@ Decision:
 - The next target is M125: add a concise product/client contract document for
   request metadata fields and expected profile routing so Dax, Prowl, or a UI
   can integrate without reading benchmark code.
+
+## M125 Result
+
+M125 adds the product/client request metadata contract:
+
+- document:
+  `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+- linked from:
+  - `docs/mac-local-inference-platform/engine-readiness.md`
+  - `docs/mac-local-inference-platform/resident-operator-runbook.md`
+
+Contract coverage:
+
+- accepted request metadata fields
+- selection precedence
+- workload-intent routing table
+- completion, chat, and manual override examples
+- validation commands for M122, M123, and M124
+- current limitation for future true concurrent generation
+
+Decision:
+
+- Dax, Prowl, and UI clients can integrate request metadata without reading
+  benchmark code.
+- The next target is M126: add a small client-side helper or sample that emits
+  this metadata from a product mode enum.

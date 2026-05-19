@@ -3294,3 +3294,23 @@
     - `git diff --check`
   - M124 conclusion: the one-command live product regression suite now catches
     request metadata profile-routing regressions automatically.
+- Completed M125 product/client request metadata contract:
+  - added
+    `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+  - updated:
+    - `docs/mac-local-inference-platform/engine-readiness.md`
+    - `docs/mac-local-inference-platform/next-performance-target.md`
+    - `docs/mac-local-inference-platform/resident-operator-runbook.md`
+  - contract defines:
+    - accepted request metadata fields
+    - selection precedence
+    - workload-intent to runtime-profile routing
+    - completion and chat examples
+    - manual override behavior
+    - M122, M123, and M124 validation commands
+    - current limitation around global profile mutation if true concurrent
+      generation is added later
+  - validation passed:
+    - `git diff --check`
+  - M125 conclusion: Dax, Prowl, and UI clients now have a concise product
+    contract for request metadata integration without reading benchmark code.
