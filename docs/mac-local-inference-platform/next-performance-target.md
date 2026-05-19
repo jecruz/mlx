@@ -1146,3 +1146,33 @@ Decision:
 - Auto-selection is now part of readiness gating.
 - Product implementation must preserve manual override.
 - Next target is M114: combine M109-M113 into a readiness regression suite.
+
+## M114 Result
+
+M114 adds the product runtime readiness regression suite:
+
+- script: `benchmarks/python/product_runtime_readiness_suite.py`
+- artifact:
+  `artifacts/m114-readiness-regression-suite/product-runtime-readiness-suite-m114-qwen-a3b.json`
+
+Result:
+
+- suite verdict: `PASS`
+- readiness: `ready-for-live-resident-client-validation`
+- evidence artifacts: `5`
+- failures: `0`
+
+Covered milestones:
+
+- M109 resident Dax client benchmark path
+- M110 operator overhead gate
+- M111 extended prompt sweep matrix
+- M112 lower-memory runtime gate
+- M113 auto-selection integration gate
+
+Next live validation:
+
+- Start the resident MLX server.
+- Run `dax_repeated_context_bench.py --client-mode resident`.
+- Gate the resulting JSONL with
+  `dax_operator_overhead_gate.py --max-mean-overhead-ms 500 --fail-on-fail`.

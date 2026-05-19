@@ -3108,3 +3108,23 @@
     - `git diff --check`
   - M113 conclusion: profile auto-selection is now part of readiness gating
     and not just a standalone policy artifact.
+- Completed M114 readiness regression suite:
+  - added `benchmarks/python/product_runtime_readiness_suite.py`
+  - generated artifact:
+    `artifacts/m114-readiness-regression-suite/product-runtime-readiness-suite-m114-qwen-a3b.json`
+  - validation passed:
+    - suite verdict `PASS`
+    - readiness `ready-for-live-resident-client-validation`
+    - evidence artifacts `5`
+    - failures `0`
+    - `python3 -m py_compile benchmarks/python/product_runtime_readiness_suite.py`
+    - `git diff --check`
+  - M114 covers:
+    - M109 resident Dax client benchmark path
+    - M110 operator overhead gate
+    - M111 extended prompt sweep matrix
+    - M112 lower-memory runtime gate
+    - M113 auto-selection integration gate
+  - M114 conclusion: the runtime readiness suite is assembled and passing.
+    The next live step is to start the resident MLX server, run
+    `--client-mode resident`, and enforce the `<=500 ms` overhead target.

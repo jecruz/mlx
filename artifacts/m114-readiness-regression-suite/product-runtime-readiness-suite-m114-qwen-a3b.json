@@ -1,0 +1,49 @@
+{
+  "covered_milestones": [
+    "M109",
+    "M110",
+    "M111",
+    "M112",
+    "M113"
+  ],
+  "evidence": {
+    "m109_resident_client": {
+      "path": "artifacts/m109-resident-dax-client/resident-dax-client-m109-qwen-a3b.json",
+      "type": "dax_resident_client_readiness_report",
+      "verdict": "PASS"
+    },
+    "m110_overhead_gate": {
+      "path": "artifacts/m110-overhead-gate/operator-overhead-gate-m110-current-baseline.json",
+      "type": "dax_operator_overhead_gate",
+      "verdict": "PASS"
+    },
+    "m111_extended_prompt_sweep": {
+      "path": "artifacts/m111-extended-prompt-sweep/extended-prompt-sweep-matrix-m111-qwen-a3b.json",
+      "type": "extended_prompt_sweep_matrix",
+      "verdict": "PASS"
+    },
+    "m112_lower_memory_gate": {
+      "path": "artifacts/m112-lower-memory-gate/lower-memory-runtime-gate-m112-qwen-a3b.json",
+      "type": "lower_memory_runtime_gate",
+      "verdict": "PASS"
+    },
+    "m113_auto_selection_integration": {
+      "path": "artifacts/m113-auto-selection-integration/auto-selection-integration-gate-m113-qwen-a3b.json",
+      "type": "profile_auto_selection_integration_gate",
+      "verdict": "PASS"
+    }
+  },
+  "failures": [],
+  "known_limitations": [
+    "M110 current artifact gates the CLI baseline at <=2000 ms; the <=500 ms target requires a live resident-client run.",
+    "The resident server was not running during M109-M114, so live timing is the next validation step."
+  ],
+  "next_live_commands": [
+    "python3 benchmarks/python/dax_repeated_context_bench.py --client-mode resident --dax-profile agent-workspace-first-hit --output-jsonl artifacts/live-resident-client/dax-resident.jsonl --output-json artifacts/live-resident-client/dax-resident.json",
+    "python3 benchmarks/python/dax_operator_overhead_gate.py artifacts/live-resident-client/dax-resident.jsonl --max-mean-overhead-ms 500 --fail-on-fail"
+  ],
+  "readiness": "ready-for-live-resident-client-validation",
+  "tag": "m114-qwen-a3b",
+  "type": "product_runtime_readiness_suite",
+  "verdict": "PASS"
+}

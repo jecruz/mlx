@@ -564,6 +564,12 @@ Readiness interpretation:
   - artifact:
     `artifacts/m113-auto-selection-integration/auto-selection-integration-gate-m113-qwen-a3b.json`
   - result: `PASS`, `5` checks, `0` failures
+- M114 adds product runtime readiness suite:
+  - script: `benchmarks/python/product_runtime_readiness_suite.py`
+  - artifact:
+    `artifacts/m114-readiness-regression-suite/product-runtime-readiness-suite-m114-qwen-a3b.json`
+  - result: `PASS`, readiness `ready-for-live-resident-client-validation`,
+    `5` evidence artifacts, `0` failures
 
 ## Current Qwen Result
 
