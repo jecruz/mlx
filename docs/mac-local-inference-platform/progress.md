@@ -2940,3 +2940,22 @@
   - M103 conclusion: the next product-speed bottleneck is measurable outside
     MLX service time; the top action is avoiding per-request Dax CLI process
     startup for repeated product calls.
+- Completed M104 extended prompt-processing evidence:
+  - added `benchmarks/python/dax_prompt_processing_extension_report.py`
+  - generated artifact:
+    `artifacts/m104-prompt-processing-extension/prompt-processing-extension-m104-qwen-a3b.json`
+  - validation passed:
+    - report verdict `PASS`
+    - `python3 -m py_compile benchmarks/python/dax_prompt_processing_extension_report.py`
+    - `git diff --check`
+  - M104 result:
+    - rows analyzed: `16`
+    - long-prefill rows: `4`
+    - short-prefill rows: `12`
+    - long-prefill mean service time: `1510.54 ms`
+    - long-prefill prompt-progress share of service: `0.970`
+    - short-prefill mean service time: `840.77 ms`
+    - short-prefill prompt-progress share of service: `0.670`
+  - M104 conclusion: prompt processing is still the dominant service-time
+    component even after prefill reduction, so the next sweep must vary prompt
+    length, reuse ratio, transport, and profile together.

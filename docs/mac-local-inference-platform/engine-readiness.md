@@ -497,6 +497,14 @@ Readiness interpretation:
   - result: `PASS`, mean operator overhead `1635.49 ms`
   - target: reduce product invocation overhead toward `500 ms`
   - priority: avoid per-request Dax CLI startup for repeated product turns
+- M104 extends prompt-processing evidence:
+  - script: `benchmarks/python/dax_prompt_processing_extension_report.py`
+  - artifact:
+    `artifacts/m104-prompt-processing-extension/prompt-processing-extension-m104-qwen-a3b.json`
+  - result: `PASS`, `16` rows analyzed
+  - long-prefill prompt progress consumes `0.970` of service time on average
+  - short-prefill prompt progress still consumes `0.670` of service time on
+    average
 
 ## Current Qwen Result
 

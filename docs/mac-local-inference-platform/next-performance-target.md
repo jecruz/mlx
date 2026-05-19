@@ -872,3 +872,32 @@ Decision:
   `service_request_ms`.
 - Next target is M104: broaden prompt-processing evidence so the next engine
   work distinguishes raw prompt bottlenecks from operator overhead.
+
+## M104 Result
+
+M104 extracts prompt-processing behavior from existing product-path JSONL
+traces:
+
+- script: `benchmarks/python/dax_prompt_processing_extension_report.py`
+- artifact:
+  `artifacts/m104-prompt-processing-extension/prompt-processing-extension-m104-qwen-a3b.json`
+
+Result:
+
+- report verdict: `PASS`
+- rows analyzed: `16`
+- long-prefill rows: `4`
+- short-prefill rows: `12`
+- long-prefill mean service time: `1510.54 ms`
+- long-prefill prompt-progress share of service: `0.970`
+- short-prefill mean service time: `840.77 ms`
+- short-prefill prompt-progress share of service: `0.670`
+
+Decision:
+
+- Prompt processing remains a dominant service-time component even after cache
+  and split-prefill reduction.
+- The next sweep should vary prompt length, reuse ratio, Dax transport, and
+  profile together.
+- Next target is M105: define and gate the fast Dax invocation path that should
+  reduce operator overhead without hiding prompt-processing bottlenecks.
