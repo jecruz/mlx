@@ -528,6 +528,12 @@ Readiness interpretation:
   - 32GB Macs default to `agent-workspace-low-memory`
   - 64GB+ Macs default to `agent-workspace-async` unless profile policy
     overrides
+- M108 packages the product readiness bundle:
+  - script: `benchmarks/python/mlx_product_readiness_bundle.py`
+  - artifact:
+    `artifacts/m108-product-readiness-bundle/product-readiness-bundle-m108-qwen-a3b.json`
+  - result: `PASS`, readiness `ready-for-next-implementation-lane`
+  - bundle contains `9` passing evidence artifacts and `0` failures
 
 ## Current Qwen Result
 

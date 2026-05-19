@@ -1,0 +1,112 @@
+{
+  "commits": {
+    "m102_dax_controls": "08c14b5d",
+    "m99_dax_routing": "167cac48"
+  },
+  "docs": [
+    "docs/mac-local-inference-platform/progress.md",
+    "docs/mac-local-inference-platform/next-performance-target.md",
+    "docs/mac-local-inference-platform/engine-readiness.md"
+  ],
+  "evidence": {
+    "m100_wall_time": {
+      "path": "artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json",
+      "summary": {
+        "case_count": 4,
+        "tag": "m100-qwen-a3b"
+      },
+      "type": "dax_operator_wall_time_report",
+      "verdict": "PASS"
+    },
+    "m101_default_profile_gate": {
+      "path": "artifacts/m101-default-profile-decision-gate/default-profile-decision-gate-m101-qwen-a3b.json",
+      "summary": {
+        "tag": "m101-qwen-a3b"
+      },
+      "type": "dax_default_profile_decision_gate",
+      "verdict": "PASS"
+    },
+    "m103_overhead_target": {
+      "path": "artifacts/m103-operator-overhead-reduction/operator-overhead-reduction-m103-qwen-a3b.json",
+      "summary": {
+        "case_count": 4,
+        "tag": "m103-qwen-a3b"
+      },
+      "type": "dax_operator_overhead_reduction_report",
+      "verdict": "PASS"
+    },
+    "m104_prompt_processing": {
+      "path": "artifacts/m104-prompt-processing-extension/prompt-processing-extension-m104-qwen-a3b.json",
+      "summary": {
+        "row_count": 16,
+        "tag": "m104-qwen-a3b"
+      },
+      "type": "dax_prompt_processing_extension_report",
+      "verdict": "PASS"
+    },
+    "m105_fast_invocation": {
+      "path": "artifacts/m105-fast-dax-invocation/fast-dax-invocation-m105-qwen-a3b.json",
+      "summary": {
+        "tag": "m105-qwen-a3b"
+      },
+      "type": "dax_fast_invocation_path_report",
+      "verdict": "PASS"
+    },
+    "m106_auto_selection": {
+      "path": "artifacts/m106-profile-auto-selection/profile-auto-selection-m106-qwen-a3b.json",
+      "summary": {
+        "tag": "m106-qwen-a3b"
+      },
+      "type": "dax_profile_auto_selection_policy",
+      "verdict": "PASS"
+    },
+    "m107_lower_memory_strategy": {
+      "path": "artifacts/m107-lower-memory-mac-strategy/lower-memory-mac-strategy-m107-qwen-a3b.json",
+      "summary": {
+        "tag": "m107-qwen-a3b"
+      },
+      "type": "mlx_lower_memory_mac_strategy",
+      "verdict": "PASS"
+    },
+    "m97_first_hit_direct": {
+      "path": "artifacts/m97-direct-first-hit-profile/dax-product-first-hit-summary-m97-qwen-a3b-first-hit-direct.json",
+      "summary": {
+        "tag": "m97-qwen-a3b-first-hit-direct"
+      },
+      "type": "dax_product_first_hit_gate",
+      "verdict": "PASS"
+    },
+    "m98_low_memory_direct": {
+      "path": "artifacts/m98-direct-low-memory-profile/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-direct.json",
+      "summary": {
+        "tag": "m98-qwen-a3b-low-memory-direct"
+      },
+      "type": "dax_product_first_hit_gate",
+      "verdict": "PASS"
+    }
+  },
+  "failures": [],
+  "known_open_risks": [
+    "Qwen recurrent-state continuation still requires model-specific handling for generic replay-free prefix storage.",
+    "Dax/operator overhead remains above target until the resident client path is implemented.",
+    "Lower-memory 16-24GB Mac lane is planned but not live-bench validated on that hardware class."
+  ],
+  "next_implementation_lane": [
+    "Implement resident-dax-client fast invocation path.",
+    "Add overhead_ms gate to product benchmark rows.",
+    "Run extended prompt sweep across 512/1024/2048/4096 tokens.",
+    "Add lower-memory peak-memory and cache-limit gates.",
+    "Use auto-selection policy in the product control surface."
+  ],
+  "profile_decision": {
+    "default_coding_agent": "agent-workspace-async",
+    "diagnostics": "diagnostics",
+    "immediate_second_turn": "agent-workspace-first-hit",
+    "interactive": "interactive",
+    "lower_memory_mac": "agent-workspace-low-memory"
+  },
+  "readiness": "ready-for-next-implementation-lane",
+  "tag": "m108-qwen-a3b",
+  "type": "mlx_product_readiness_bundle",
+  "verdict": "PASS"
+}

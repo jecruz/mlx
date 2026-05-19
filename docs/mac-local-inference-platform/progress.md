@@ -3010,3 +3010,27 @@
       second-turn or memory pressure is detected
   - M107 conclusion: lower-memory Mac behavior now has a concrete product
     strategy and acceptance contract instead of only a sidequest note.
+- Completed M108 product readiness bundle:
+  - added `benchmarks/python/mlx_product_readiness_bundle.py`
+  - generated artifact:
+    `artifacts/m108-product-readiness-bundle/product-readiness-bundle-m108-qwen-a3b.json`
+  - validation passed:
+    - bundle verdict `PASS`
+    - readiness `ready-for-next-implementation-lane`
+    - `9` evidence artifacts, `0` failures
+    - `python3 -m py_compile benchmarks/python/mlx_product_readiness_bundle.py`
+    - `git diff --check`
+  - M108 bundle includes:
+    - M97 first-hit direct evidence
+    - M98 low-memory direct evidence
+    - M100 wall-time evidence
+    - M101 profile decision gate
+    - M103 overhead target
+    - M104 prompt-processing extension
+    - M105 fast invocation path
+    - M106 auto-selection policy
+    - M107 lower-memory strategy
+  - M108 conclusion: the profile/performance lane is packaged and ready for
+    the next implementation phase: resident Dax client, overhead gate, extended
+    prompt sweep, lower-memory peak-memory gates, and auto-selection
+    integration.
