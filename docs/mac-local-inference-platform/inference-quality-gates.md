@@ -139,7 +139,11 @@ performance:
 - `M164` long-context RoPE/IMRoPE quality probe
 - `M165` cross-engine Qwen3.6 quality comparison
 - `M166` quality-gated performance checkpoint
+- `M167` quality gates inside the live product regression suite
+- `M168` operator-facing quality status summary
+- `M169` expanded coding-agent golden prompts
+- `M170` model-to-model quality comparison before model swaps
 
-Only after M159-M166 pass should the engine continue deeper speed work such as
-first reusable-turn tuning, cache admission sweeps, and transport overhead
-reduction.
+Only after the relevant quality gates pass should the engine continue deeper
+speed work such as first reusable-turn tuning, cache admission sweeps, transport
+overhead reduction, or smaller-model substitution.

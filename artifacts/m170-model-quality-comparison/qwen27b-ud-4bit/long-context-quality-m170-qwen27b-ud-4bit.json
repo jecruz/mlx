@@ -1,0 +1,32 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "actual_prefill_tokens": 1760,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "rope_imrope_sentinel_recall",
+      "category": "long_context_rope_imrope",
+      "failures": [],
+      "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ORCHID-17",
+        "LANTERN-42",
+        "HARBOR-93"
+      ],
+      "service_request_ms": 6792.322542052716,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m170-qwen27b-ud-4bit",
+  "type": "long_context_rope_imrope_quality",
+  "verdict": "PASS"
+}

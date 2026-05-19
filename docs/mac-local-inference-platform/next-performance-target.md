@@ -1867,3 +1867,34 @@ Result:
 - deterministic rows: `8`
 - failures: `0`
 - added coverage: code review, edit-plan, and summary prompts
+
+## M170 Result
+
+M170 adds model-to-model quality comparison before using smaller models as a
+performance shortcut.
+
+Compared models:
+
+- `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+- `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit`
+
+Artifacts:
+
+- `artifacts/m170-model-quality-comparison/model-quality-comparison-m170-qwen.json`
+- `artifacts/m170-model-quality-comparison/model-quality-comparison-m170-qwen.md`
+
+Result:
+
+- verdict: `PASS`
+- candidate reload: `PASS`
+- candidate GPU health: `Device(gpu, 0)`
+- quality gates compared: deterministic, cache, loop, long-context
+- failures: `0`
+- observed latency: the 27B dense candidate was slower than the current A3B
+  model in these probes
+
+Decision:
+
+- The 27B UD MLX 4-bit model is quality-compatible enough for follow-up testing,
+  but this evidence does not support using it as the speed replacement.
+- Keep the comparison gate as the acceptance bar for any model swap.

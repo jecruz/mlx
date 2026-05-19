@@ -1540,3 +1540,34 @@ Result:
 - deterministic rows: `8`
 - failures: `0`
 - visible thinking: `false` for every row
+
+## M170 Model-To-Model Quality Comparison
+
+M170 compares quality gates across the current A3B model and the smaller Qwen
+27B UD MLX 4-bit candidate.
+
+Models:
+
+- current: `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+- candidate: `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit`
+
+Artifact:
+
+- `artifacts/m170-model-quality-comparison/model-quality-comparison-m170-qwen.md`
+
+Result:
+
+- verdict: `PASS`
+- compared gates: deterministic, cache, loop, and long-context
+- current model failures: `0`
+- candidate model failures: `0`
+- server restored to the current A3B model after comparison
+- observed candidate latency was slower in this gate set, so quality passed but
+  speed did not improve
+
+Decision:
+
+- Smaller or alternate models can be considered for speed work only after they
+  pass the same quality comparison gate.
+- The tested 27B dense candidate is not a current speed replacement for the
+  35B-A3B MoE model based on this evidence.

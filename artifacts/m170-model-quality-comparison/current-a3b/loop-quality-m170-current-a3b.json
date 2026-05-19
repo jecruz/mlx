@@ -1,0 +1,201 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "actual_prefill_tokens": 22,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "QUALITY_OK",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "QUALITY_OK",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 230.09275016374886,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 25,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "a + b",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "a + b",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 594.7552921716124,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "BUG_FOUND",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 168.93979208543897,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 180.96437491476536,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 174.1676249075681,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "json_schema",
+      "category": "json",
+      "failures": [],
+      "final_answer": "{\"status\": \"ok\"}",
+      "json_valid": true,
+      "missing": [],
+      "raw_text": "{\"status\": \"ok\"}",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 252.21408298239112,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "summary",
+      "category": "summarization",
+      "failures": [],
+      "final_answer": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 307.68791609443724,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "SAFE_SUMMARY",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SAFE_SUMMARY",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 209.454792086035,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "rope_imrope_sentinel_recall",
+      "category": "long_context_rope_imrope",
+      "failures": [],
+      "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ORCHID-17",
+        "LANTERN-42",
+        "HARBOR-93"
+      ],
+      "service_request_ms": 363.3279171772301,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m170-current-a3b",
+  "type": "loop_repetition_quality_gate",
+  "verdict": "PASS"
+}

@@ -1,0 +1,201 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "actual_prefill_tokens": 22,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "QUALITY_OK",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "QUALITY_OK",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 6697.7764999028295,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 25,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "a + b",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "a + b",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 6969.844541978091,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 34,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "BUG_FOUND",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 533.9707499369979,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 32,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 6933.473959099501,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 40,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 532.1014171931893,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "json_schema",
+      "category": "json",
+      "failures": [],
+      "final_answer": "{\n  \"status\": \"ok\"\n}",
+      "json_valid": true,
+      "missing": [],
+      "raw_text": "{\n  \"status\": \"ok\"\n}",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 811.6834170650691,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 37,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "summary",
+      "category": "summarization",
+      "failures": [],
+      "final_answer": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 1032.1622921619564,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "SAFE_SUMMARY",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SAFE_SUMMARY",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 502.0475001074374,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1760,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "rope_imrope_sentinel_recall",
+      "category": "long_context_rope_imrope",
+      "failures": [],
+      "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ORCHID-17",
+        "LANTERN-42",
+        "HARBOR-93"
+      ],
+      "service_request_ms": 6381.425249855965,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m170-qwen27b-ud-4bit",
+  "type": "loop_repetition_quality_gate",
+  "verdict": "PASS"
+}
