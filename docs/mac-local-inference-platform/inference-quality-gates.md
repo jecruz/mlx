@@ -159,6 +159,7 @@ performance:
 - `M185` packaged `bin/mlx-engine operator-readiness` command
 - `M186` live `/engine/operator-readiness` endpoint
 - `M187` live operator readiness endpoint contract probe
+- `M188` packaged `bin/mlx-engine operator-readiness-refresh` command
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport

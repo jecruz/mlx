@@ -797,3 +797,20 @@ Expected result:
 - `operator_readiness_endpoint_probe PASS`
 - readiness: `operator-readiness-endpoint-ready`
 - failures: `0`
+
+Refresh the artifact-backed operator readiness bundle:
+
+```bash
+bin/mlx-engine operator-readiness-refresh \
+  --base-url http://127.0.0.1:8773 \
+  --output-json artifacts/m188-operator-readiness-refresh/operator-readiness-refresh-m188-qwen-a3b.json \
+  --output-md artifacts/m188-operator-readiness-refresh/operator-readiness-refresh-m188-qwen-a3b.md \
+  --tag m188-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `operator_readiness_bundle PASS`
+- readiness: `operator-readiness-ready`
+- failures: `0`

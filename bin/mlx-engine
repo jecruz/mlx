@@ -19,6 +19,7 @@ SMOKE = PYTHON_DIR / "smoke_resident_service.py"
 READY = PYTHON_DIR / "wait_resident_ready.py"
 REGRESSION_SUITE = PYTHON_DIR / "run_resident_regression_suite.py"
 OPERATOR_READINESS_RENDER = PYTHON_DIR / "operator_readiness_render.py"
+OPERATOR_READINESS_BUNDLE = PYTHON_DIR / "operator_readiness_bundle.py"
 
 
 def request_json(method: str, url: str, payload: dict[str, Any] | None = None):
@@ -214,6 +215,34 @@ def operator_readiness(args: argparse.Namespace) -> int:
     return subprocess.call(cmd, cwd=ROOT)
 
 
+def operator_readiness_refresh(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(OPERATOR_READINESS_BUNDLE),
+        "--base-url",
+        args.base_url,
+        "--suite-json",
+        args.suite_json,
+        "--operator-quality-json",
+        args.operator_quality_json,
+        "--model-swap-workflow-json",
+        args.model_swap_workflow_json,
+        "--lower-memory-json",
+        args.lower_memory_json,
+        "--live-model-swap-json",
+        args.live_model_swap_json,
+        "--output-json",
+        args.output_json,
+        "--output-md",
+        args.output_md,
+        "--tag",
+        args.tag,
+    ]
+    if args.fail_on_fail:
+        cmd.append("--fail-on-fail")
+    return subprocess.call(cmd, cwd=ROOT)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Resident MLX engine CLI")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -305,6 +334,43 @@ def build_parser() -> argparse.ArgumentParser:
     readiness_parser.add_argument("--format", choices=("text", "json"), default="text")
     readiness_parser.add_argument("--fail-on-fail", action="store_true")
     readiness_parser.set_defaults(func=operator_readiness)
+
+    refresh_parser = subcommands.add_parser(
+        "operator-readiness-refresh",
+        help="Refresh the operator readiness bundle from standard evidence artifacts",
+    )
+    refresh_parser.add_argument("--base-url", default="http://127.0.0.1:8773")
+    refresh_parser.add_argument(
+        "--suite-json",
+        default="artifacts/m180-live-request-memory-suite/live-product-regression-suite-m180-qwen-a3b.json",
+    )
+    refresh_parser.add_argument(
+        "--operator-quality-json",
+        default="artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json",
+    )
+    refresh_parser.add_argument(
+        "--model-swap-workflow-json",
+        default="artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json",
+    )
+    refresh_parser.add_argument(
+        "--lower-memory-json",
+        default="artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json",
+    )
+    refresh_parser.add_argument(
+        "--live-model-swap-json",
+        default="artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json",
+    )
+    refresh_parser.add_argument(
+        "--output-json",
+        default="artifacts/operator-readiness/operator-readiness-bundle.json",
+    )
+    refresh_parser.add_argument(
+        "--output-md",
+        default="artifacts/operator-readiness/operator-readiness-bundle.md",
+    )
+    refresh_parser.add_argument("--tag", default="operator-readiness-refresh")
+    refresh_parser.add_argument("--fail-on-fail", action="store_true")
+    refresh_parser.set_defaults(func=operator_readiness_refresh)
 
     return parser
 

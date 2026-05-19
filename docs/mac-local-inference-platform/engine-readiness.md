@@ -1991,3 +1991,27 @@ Decision:
 
 - The live endpoint has a contract probe and is safe for UI/Prowl consumers to
   smoke-test against a running resident engine.
+
+## M188 Packaged Operator Readiness Refresh
+
+M188 exposes readiness bundle regeneration through the packaged CLI:
+
+- `bin/mlx-engine operator-readiness-refresh`
+
+Artifacts:
+
+- `artifacts/m188-operator-readiness-refresh/operator-readiness-refresh-m188-qwen-a3b.json`
+- `artifacts/m188-operator-readiness-refresh/operator-readiness-refresh-m188-qwen-a3b.md`
+
+Result:
+
+- refresh verdict: `PASS`
+- readiness: `operator-readiness-ready`
+- failures: `0`
+- warnings: `1`
+- candidate swap: `WARN`
+
+Decision:
+
+- Operators can now refresh the artifact-backed readiness bundle with one
+  packaged command instead of invoking the lower-level benchmark script.
