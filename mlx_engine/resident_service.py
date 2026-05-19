@@ -45,6 +45,7 @@ RuntimeProfileName = Literal[
     "agent-workspace",
     "agent-workspace-async",
     "agent-workspace-first-hit",
+    "agent-workspace-low-memory",
     "agent-workspace-request",
     "memory-saver",
     "diagnostics",
@@ -164,6 +165,20 @@ def runtime_profile_defaults(name: RuntimeProfileName) -> dict[str, Any]:
                 "engine_preset": "request-derived",
             },
         },
+        "agent-workspace-low-memory": {
+            "description": (
+                "Repeated coding-agent context for lower-memory Macs; use "
+                "request-derived first-hit conversion with a smaller bounded "
+                "prefix cache."
+            ),
+            "config": {
+                **engine_preset_defaults("request-derived"),
+                "engine_preset": "request-derived",
+                "prefix_cache_max_entries": 4,
+                "prefix_cache_memory_limit_mb": 64.0,
+                "prefix_cache_min_entries": 1,
+            },
+        },
         "agent-workspace-request": {
             "description": (
                 "Repeated coding-agent context; derive reusable prefixes from "
@@ -208,6 +223,7 @@ def runtime_profile_catalog() -> dict[str, dict[str, Any]]:
         "agent-workspace",
         "agent-workspace-async",
         "agent-workspace-first-hit",
+        "agent-workspace-low-memory",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",

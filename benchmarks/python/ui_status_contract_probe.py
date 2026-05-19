@@ -86,6 +86,7 @@ def main() -> int:
         "agent-workspace",
         "agent-workspace-async",
         "agent-workspace-first-hit",
+        "agent-workspace-low-memory",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",

@@ -2738,3 +2738,36 @@
     - mature hit prefill `18` tokens
   - M94 conclusion: first-hit product validation is now part of the resident
     suite manifest/evidence path, not just a standalone benchmark command.
+- Completed M95 lower-memory product profile:
+  - added runtime profile `agent-workspace-low-memory`
+  - profile uses `engine_preset=request-derived`,
+    `prefix_cache_population_mode=request`, `prefix_cache_max_entries=4`,
+    `prefix_cache_memory_limit_mb=64.0`, and `prefix_cache_min_entries=1`
+  - updated UI profile contract probes
+  - updated `benchmarks/python/dax_first_hit_conversion_gate.py` and
+    `benchmarks/python/dax_product_first_hit_gate.py` with
+    `--conversion-path split-prefill|any`
+  - updated resident suite first-hit options with
+    `--dax-first-hit-conversion-path`
+  - wrote artifacts:
+    - `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-m95-qwen-a3b-memory-saver.json`
+    - `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-m95-qwen-a3b-memory-saver.jsonl`
+    - `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-gate-m95-qwen-a3b-memory-saver.json`
+    - `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-summary-m95-qwen-a3b-memory-saver.json`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/dax_first_hit_conversion_gate.py benchmarks/python/dax_product_first_hit_gate.py benchmarks/python/run_resident_regression_suite.py benchmarks/python/ui_client_adapter_probe.py benchmarks/python/ui_status_contract_probe.py`
+    - static profile catalog check confirmed `agent-workspace-low-memory`
+      maps to request-derived/request mode with a 64 MB cache cap
+    - live compatibility run passed with current `memory-saver` profile and
+      `--conversion-path any`
+    - summary parsed with `python3 -m json.tool`
+  - M95 result:
+    - lower-memory first-hit gate `PASS`
+    - conversion turn `2`
+    - conversion prefill `18` tokens
+    - conversion ratio vs baseline `0.588`
+    - mature hit speedup `3.581x`
+    - mature hit prefill `18` tokens
+  - M95 conclusion: lower-memory product mode now has a dedicated profile and
+    a validation path that accepts bounded conversion without requiring the
+    exact split-prefill path.

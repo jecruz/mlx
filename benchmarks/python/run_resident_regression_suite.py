@@ -376,6 +376,11 @@ def main() -> int:
     parser.add_argument("--dax-first-hit-profile", default="agent-workspace-first-hit")
     parser.add_argument("--dax-first-hit-max-conversion-ratio", type=float, default=0.85)
     parser.add_argument("--dax-first-hit-max-prefill-tokens", type=int, default=32)
+    parser.add_argument(
+        "--dax-first-hit-conversion-path",
+        choices=("split-prefill", "any"),
+        default="split-prefill",
+    )
     parser.add_argument("--dax-first-hit-min-mature-speedup", type=float, default=2.0)
     parser.add_argument("--print-manifest-summary", action="store_true")
     parser.add_argument("--generated-cache-long-max-tokens", type=int, default=32)
@@ -697,6 +702,8 @@ def main() -> int:
                 str(args.dax_first_hit_max_prefill_tokens),
                 "--max-conversion-ratio",
                 str(args.dax_first_hit_max_conversion_ratio),
+                "--conversion-path",
+                args.dax_first_hit_conversion_path,
                 "--min-mature-hit-speedup",
                 str(args.dax_first_hit_min_mature_speedup),
                 "--max-mature-hit-prefill-tokens",

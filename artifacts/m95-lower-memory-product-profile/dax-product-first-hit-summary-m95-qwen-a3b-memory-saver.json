@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "benchmark_json": "artifacts/m95-lower-memory-product-profile/dax-product-first-hit-m95-qwen-a3b-memory-saver.json",
+    "benchmark_jsonl": "artifacts/m95-lower-memory-product-profile/dax-product-first-hit-m95-qwen-a3b-memory-saver.jsonl",
+    "gate_json": "artifacts/m95-lower-memory-product-profile/dax-product-first-hit-gate-m95-qwen-a3b-memory-saver.json"
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "benchmark_verdict": "PASS",
+  "dax_intent": null,
+  "dax_profile": "memory-saver",
+  "derived": {
+    "baseline_service_request_ms": 2076.1147500015795,
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.5880695140547131,
+    "conversion_service_request_ms": 1220.899792155251,
+    "conversion_turn": 2,
+    "mature_hit_actual_prefill_tokens": 18.0,
+    "mature_hit_service_request_ms": 579.7796670813113,
+    "mature_hit_speedup_vs_baseline": 3.580868505535939
+  },
+  "failures": [],
+  "gate_verdict": "PASS",
+  "tag": "m95-qwen-a3b-memory-saver",
+  "type": "dax_product_first_hit_gate",
+  "verdict": "PASS"
+}

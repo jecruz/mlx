@@ -423,6 +423,16 @@ Readiness interpretation:
   - result: suite `PASS`, `dax_first_hit` `PASS`, conversion turn `2`,
     conversion prefill `18` tokens, conversion ratio `0.837`, mature hit
     speedup `3.052x`, mature hit prefill `18` tokens
+- M95 adds lower-memory agent product mode:
+  - profile: `agent-workspace-low-memory`
+  - behavior: `engine_preset=request-derived`,
+    `prefix_cache_population_mode=request`, `prefix_cache_max_entries=4`,
+    `prefix_cache_memory_limit_mb=64.0`, `prefix_cache_min_entries=1`
+  - artifact:
+    `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-summary-m95-qwen-a3b-memory-saver.json`
+  - result: lower-memory first-hit gate `PASS`, conversion turn `2`,
+    conversion prefill `18` tokens, conversion ratio `0.588`, mature hit
+    speedup `3.581x`, mature hit prefill `18` tokens
 
 ## Current Qwen Result
 

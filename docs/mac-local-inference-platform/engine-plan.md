@@ -5909,6 +5909,71 @@ M94 decision:
 - M95 should add and validate a lower-memory product profile so first-hit and
   steady-state behavior remain usable on smaller-memory Macs.
 
+## M95 Lower-Memory Product Profile
+
+M95 adds a product-specific lower-memory agent profile and validates that
+bounded first-hit conversion remains usable when cache capacity is constrained.
+
+Changes:
+
+- Added runtime profile: `agent-workspace-low-memory`
+- Profile behavior:
+  - `engine_preset`: `request-derived`
+  - `prefix_cache_population_mode`: `request`
+  - `prefix_cache_max_entries`: `4`
+  - `prefix_cache_memory_limit_mb`: `64.0`
+  - `prefix_cache_min_entries`: `1`
+- Updated UI profile contract probes.
+- Updated first-hit conversion gates with `--conversion-path split-prefill|any`
+  so lower-memory sync/request conversion can be validated without requiring
+  the exact M92 split-prefill path.
+- Updated suite first-hit options with `--dax-first-hit-conversion-path`.
+
+Artifacts:
+
+- `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-m95-qwen-a3b-memory-saver.json`
+- `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-m95-qwen-a3b-memory-saver.jsonl`
+- `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-gate-m95-qwen-a3b-memory-saver.json`
+- `artifacts/m95-lower-memory-product-profile/dax-product-first-hit-summary-m95-qwen-a3b-memory-saver.json`
+
+Command:
+
+```text
+python3 benchmarks/python/dax_product_first_hit_gate.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m95-lower-memory-product-profile \
+  --tag m95-qwen-a3b-memory-saver \
+  --dax-profile memory-saver \
+  --conversion-path any \
+  --fail-on-fail
+```
+
+The live server had not yet been restarted with the new
+`agent-workspace-low-memory` profile name, so this validation used the existing
+`memory-saver` profile as compatibility evidence.
+
+Result:
+
+- lower-memory first-hit gate: `PASS`
+- profile used: `memory-saver`
+- conversion turn: `2`
+- conversion prefill: `18` tokens
+- conversion service: `1220.90 ms`
+- baseline service: `2076.11 ms`
+- conversion ratio vs baseline: `0.588`
+- mature hit service: `579.78 ms`
+- mature hit speedup: `3.581x`
+- mature hit prefill: `18` tokens
+
+M95 decision:
+
+- Lower-memory product behavior now has a dedicated agent profile instead of
+  relying only on the generic `memory-saver` profile.
+- The compatibility run shows that bounded cache behavior can still avoid full
+  second-turn prefill.
+- M96 should summarize profile tradeoffs and decide default product routing:
+  steady-state async, first-hit conversion, and lower-memory bounded mode.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

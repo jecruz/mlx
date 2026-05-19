@@ -108,6 +108,11 @@ def gate(report: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         else None
     )
     conversion_metrics = (conversion or {}).get("engine_metrics") or {}
+    conversion_path_ok = (
+        True
+        if args.conversion_path == "any"
+        else bool(conversion_metrics.get("cache_split_prefill"))
+    )
 
     check(
         checks,
@@ -136,8 +141,8 @@ def gate(report: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     check(
         checks,
         failures,
-        label="conversion_cache_split_prefill",
-        actual=bool(conversion_metrics.get("cache_split_prefill")),
+        label="conversion_path",
+        actual=conversion_path_ok,
         operator="==",
         threshold=True,
     )
@@ -188,6 +193,11 @@ def main() -> int:
     parser.add_argument("--expected-conversion-turn", type=int, default=2)
     parser.add_argument("--max-conversion-prefill-tokens", type=int, default=32)
     parser.add_argument("--max-conversion-ratio", type=float, default=0.85)
+    parser.add_argument(
+        "--conversion-path",
+        choices=("split-prefill", "any"),
+        default="split-prefill",
+    )
     parser.add_argument("--min-mature-hit-speedup", type=float, default=2.0)
     parser.add_argument("--max-mature-hit-prefill-tokens", type=int, default=32)
     parser.add_argument("--fail-on-fail", action="store_true")

@@ -36,6 +36,10 @@ def variant_config(name: str) -> dict[str, str | None]:
             "profile": "agent-workspace-first-hit",
             "intent": None,
         },
+        "agent-workspace-low-memory": {
+            "profile": "agent-workspace-low-memory",
+            "intent": None,
+        },
         "agent-workspace": {"profile": "agent-workspace", "intent": None},
         "agent-workspace-request": {"profile": "agent-workspace-request", "intent": None},
     }

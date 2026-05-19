@@ -621,3 +621,40 @@ Decision:
 - The first-hit gate remains opt-in so lower-level resident regression runs do
   not require Dax.
 - Next target is M95: lower-memory product profile validation.
+
+## M95 Result
+
+M95 adds a lower-memory agent product profile and validates bounded first-hit
+behavior under memory-saver constraints.
+
+Added:
+
+- runtime profile `agent-workspace-low-memory`
+- `--conversion-path split-prefill|any` for first-hit conversion gates
+- `--dax-first-hit-conversion-path` for resident suite first-hit runs
+
+Profile:
+
+- `engine_preset=request-derived`
+- `prefix_cache_population_mode=request`
+- `prefix_cache_max_entries=4`
+- `prefix_cache_memory_limit_mb=64.0`
+- `prefix_cache_min_entries=1`
+
+Result:
+
+- lower-memory first-hit gate: `PASS`
+- compatibility profile used: `memory-saver`
+- conversion turn: `2`
+- conversion actual prefill: `18` tokens
+- conversion ratio vs baseline: `0.588`
+- mature hit speedup: `3.581x`
+- mature hit actual prefill: `18` tokens
+
+Decision:
+
+- Lower-memory product behavior now has a named profile and a regression path.
+- The profile should be offered separately from the default coding-agent mode
+  because it trades cache capacity for safer memory behavior.
+- Next target is M96: performance decision report and default-routing
+  recommendation.

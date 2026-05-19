@@ -33,6 +33,7 @@ def main() -> int:
         "agent-workspace",
         "agent-workspace-async",
         "agent-workspace-first-hit",
+        "agent-workspace-low-memory",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",
@@ -71,6 +72,25 @@ def main() -> int:
             f"agent-workspace-first-hit mode mismatch: {first_hit_planned}"
         )
 
+    low_memory_dry_run = client.apply_profile(
+        "agent-workspace-low-memory",
+        dry_run=True,
+    )
+    low_memory_planned = low_memory_dry_run["planned_state"]
+    if low_memory_planned["runtime_profile"] != "agent-workspace-low-memory":
+        raise RuntimeError(
+            f"dry-run did not plan agent-workspace-low-memory: {low_memory_planned}"
+        )
+    low_memory_policy = low_memory_planned["prefix_cache_policy"]
+    if low_memory_policy["population_mode"] != "request":
+        raise RuntimeError(
+            f"agent-workspace-low-memory mode mismatch: {low_memory_planned}"
+        )
+    if low_memory_policy["memory_limit_bytes"] != 64 * 1024 * 1024:
+        raise RuntimeError(
+            f"agent-workspace-low-memory limit mismatch: {low_memory_planned}"
+        )
+
     if runtime_profile_for_intent("coding-agent") != "agent-workspace-async":
         raise RuntimeError("coding-agent intent did not map to agent-workspace-async")
     intent_dry_run = client.apply_workload_intent("coding-agent", dry_run=True)
@@ -104,6 +124,9 @@ def main() -> int:
         "agent_workspace_first_hit_population_mode": first_hit_planned[
             "prefix_cache_policy"
         ]["population_mode"],
+        "agent_workspace_low_memory_limit_bytes": low_memory_policy[
+            "memory_limit_bytes"
+        ],
         "coding_agent_intent_profile": intent_planned["runtime_profile"],
     }
     args.output_json.parent.mkdir(parents=True, exist_ok=True)

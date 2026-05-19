@@ -40,6 +40,11 @@ def main() -> int:
     parser.add_argument("--expected-conversion-turn", type=int, default=2)
     parser.add_argument("--max-conversion-prefill-tokens", type=int, default=32)
     parser.add_argument("--max-conversion-ratio", type=float, default=0.85)
+    parser.add_argument(
+        "--conversion-path",
+        choices=("split-prefill", "any"),
+        default="split-prefill",
+    )
     parser.add_argument("--min-mature-hit-speedup", type=float, default=2.0)
     parser.add_argument("--max-mature-hit-prefill-tokens", type=int, default=32)
     parser.add_argument("--fail-on-fail", action="store_true")
@@ -89,6 +94,8 @@ def main() -> int:
         str(args.max_conversion_prefill_tokens),
         "--max-conversion-ratio",
         str(args.max_conversion_ratio),
+        "--conversion-path",
+        args.conversion_path,
         "--min-mature-hit-speedup",
         str(args.min_mature_hit_speedup),
         "--max-mature-hit-prefill-tokens",
