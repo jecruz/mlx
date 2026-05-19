@@ -1,0 +1,110 @@
+{
+  "current_prompt_transport": [
+    {
+      "actual_prefill_tokens": 657,
+      "peak_memory_gb": 22.732432886,
+      "prompt_tps": 1908.7915316586286,
+      "service_request_ms": 462.439457885921,
+      "target_prompt_tokens": 512,
+      "transport": "resident",
+      "wall_ms": 465.3077498078346
+    },
+    {
+      "actual_prefill_tokens": 1333,
+      "peak_memory_gb": 22.732432886,
+      "prompt_tps": 2229.861093563286,
+      "service_request_ms": 722.7786248549819,
+      "target_prompt_tokens": 1024,
+      "transport": "resident",
+      "wall_ms": 729.7173750121146
+    },
+    {
+      "actual_prefill_tokens": 2659,
+      "peak_memory_gb": 23.346587146,
+      "prompt_tps": 2240.916424129801,
+      "service_request_ms": 1632.9663749784231,
+      "target_prompt_tokens": 2048,
+      "transport": "resident",
+      "wall_ms": 1641.7888330761343
+    },
+    {
+      "actual_prefill_tokens": 5311,
+      "peak_memory_gb": 23.899997614,
+      "prompt_tps": 2288.9298405443305,
+      "service_request_ms": 3021.7047079931945,
+      "target_prompt_tokens": 4096,
+      "transport": "resident",
+      "wall_ms": 3033.6399590596557
+    }
+  ],
+  "dax_request_metadata_smoke": {
+    "path": "artifacts/m131-dax-request-metadata-suite/dax-request-metadata-smoke-m131-qwen-a3b.json",
+    "request_runtime_profile": "agent-workspace-async",
+    "request_runtime_profile_source": "request_metadata",
+    "verdict": "PASS",
+    "workload_intent": "coding-agent"
+  },
+  "initial_to_warmed": [
+    {
+      "initial_prompt_tps": 2.89,
+      "initial_run_ms": 2872.15,
+      "latency_speedup_vs_initial": 19.7615935048851,
+      "prompt_tokens": 8,
+      "prompt_tps_ratio_vs_initial": 70.02768166089965,
+      "warmed_prompt_tps": 202.38,
+      "warmed_run_ms": 145.34
+    },
+    {
+      "initial_prompt_tps": 7.74,
+      "initial_run_ms": 2164.04,
+      "latency_speedup_vs_initial": 14.713353277128093,
+      "prompt_tokens": 16,
+      "prompt_tps_ratio_vs_initial": 41.320413436692505,
+      "warmed_prompt_tps": 319.82,
+      "warmed_run_ms": 147.08
+    },
+    {
+      "initial_prompt_tps": 88.67,
+      "initial_run_ms": 460.71,
+      "latency_speedup_vs_initial": 2.74542637506704,
+      "prompt_tokens": 32,
+      "prompt_tps_ratio_vs_initial": 4.905153941581143,
+      "warmed_prompt_tps": 434.94,
+      "warmed_run_ms": 167.81
+    },
+    {
+      "initial_prompt_tps": 198.98,
+      "initial_run_ms": 420.38,
+      "latency_speedup_vs_initial": 2.1470963787731754,
+      "prompt_tokens": 64,
+      "prompt_tps_ratio_vs_initial": 3.2896270982008247,
+      "warmed_prompt_tps": 654.57,
+      "warmed_run_ms": 195.79
+    }
+  ],
+  "repeated_context": {
+    "m121": {
+      "baseline_actual_prefill_tokens": 2082,
+      "baseline_service_request_ms": 1493.6270827893168,
+      "best_hit_actual_prefill_tokens": 11,
+      "best_hit_service_request_ms": 208.42275000177324,
+      "best_hit_speedup_vs_baseline": 7.166334206686214,
+      "hit_count": 2,
+      "path": "artifacts/m121-live-product-regression-suite/dax-resident-client-m121-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m124": {
+      "baseline_actual_prefill_tokens": 2082,
+      "baseline_service_request_ms": 1516.3215829525143,
+      "best_hit_actual_prefill_tokens": 11,
+      "best_hit_service_request_ms": 209.1239169239998,
+      "best_hit_speedup_vs_baseline": 7.250828146565267,
+      "hit_count": 2,
+      "path": "artifacts/m124-live-product-regression-suite/dax-resident-client-m124-qwen-a3b.json",
+      "verdict": "PASS"
+    }
+  },
+  "tag": "m132-qwen-a3b",
+  "type": "milestone_performance_comparison",
+  "verdict": "PASS"
+}

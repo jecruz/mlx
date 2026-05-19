@@ -924,3 +924,137 @@ Readiness position:
 
 - Future Dax, Prowl, or UI client work has a clear contract for when to use
   request metadata versus global engine controls.
+
+## M130 Dax Request Route Visibility
+
+Dax now surfaces request metadata routing in the interactive prompt panel header.
+
+Dax commit:
+
+- `3afb64d1 Show MLX request route in Dax prompt panel`
+
+Displayed examples:
+
+- `request route: engine default`
+- `request route: workload_intent=coding-agent flags=agentic,repeated`
+- `request route: workload_intent=first-hit flags=agentic,repeated,first-hit`
+- `request route: runtime_profile=interactive`
+
+Validation:
+
+- Dax focused test:
+  `npm run test -- mlx-engine-status.test.ts`
+- result: `34` tests passed
+- Dax coding-agent build:
+  `npm run build`
+- Dax pre-commit checks passed during commit.
+
+Readiness position:
+
+- Operators can now see whether a Dax prompt session is using request metadata
+  instead of silently relying on implicit routing.
+
+## M131 Dax Metadata Regression Suite Coverage
+
+The one-command live product regression suite now includes the real Dax CLI
+request-metadata smoke path.
+
+Added verifier:
+
+- `benchmarks/python/dax_request_metadata_smoke.py`
+
+Suite integration:
+
+- `benchmarks/python/run_live_product_regression_suite.py`
+- artifact key: `dax_request_metadata_smoke`
+- covered milestone: `M131`
+
+Live validation:
+
+- artifact:
+  `artifacts/m131-dax-request-metadata-suite/dax-request-metadata-smoke-m131-qwen-a3b.json`
+- verdict: `PASS`
+- checks: `5`
+- failures: `0`
+- runtime profile source: `request_metadata`
+
+Readiness position:
+
+- M121-style live regression can now fail if the Dax product path stops sending
+  request metadata correctly.
+
+## M132 Performance Comparison Refresh
+
+M132 packages an updated initial-to-current comparison.
+
+Added report generator:
+
+- `benchmarks/python/milestone_performance_comparison_report.py`
+
+Artifacts:
+
+- `artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.json`
+- `artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.md`
+
+Comparison coverage:
+
+- initial cold `gpt-oss-20b-MXFP4-Q8` prompt sweep
+- warmed resident `gpt-oss-20b-MXFP4-Q8` baseline
+- current Qwen A3B prompt transport sweep
+- M121 and M124 repeated-context product-path results
+- M131 Dax request-metadata smoke
+
+Readiness position:
+
+- The current evidence still points to repeated-context reuse and server-side
+  routing as the meaningful product levers, not another isolated short-prompt
+  micro-benchmark.
+
+## M133 Operator Readiness Checkpoint
+
+Operator readiness is now summarized by the following evidence chain:
+
+- Dax request metadata integration: `28b5493f`
+- Dax request route visibility: `3afb64d1`
+- live Dax request metadata artifact:
+  `artifacts/m131-dax-request-metadata-suite/dax-request-metadata-smoke-m131-qwen-a3b.json`
+- performance comparison:
+  `artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.md`
+- operator docs:
+  `docs/mac-local-inference-platform/resident-operator-runbook.md`
+- client contract:
+  `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+
+Checkpoint result:
+
+- Dax can run product prompts without global profile mutation.
+- The live server confirms metadata-derived profile selection.
+- The operator surface shows the active request route.
+- The regression suite has a Dax-specific metadata smoke step.
+
+## M134 Next Performance Target
+
+The next optimization target is server-side prompt-processing automation for
+repeated workspace turns.
+
+Priority:
+
+1. keep request metadata as the product control plane
+2. profile request-scoped cache admission and async prefix-build scheduling
+3. reduce first reusable-turn latency without increasing memory pressure
+4. preserve Dax/operator visibility and live regression coverage
+
+Non-targets for the next slice:
+
+- UI polish beyond request-route visibility
+- raw model-format changes
+- speculative decoding
+- multi-machine distribution
+
+Rationale:
+
+- warmed prompt processing is already much better than the initial cold sweep
+- current Qwen A3B long-prompt transport is in the warmed resident performance
+  class
+- product wins are dominated by avoiding repeated prefill and making the right
+  request-scoped routing decision automatically

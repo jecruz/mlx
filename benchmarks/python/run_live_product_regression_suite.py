@@ -58,6 +58,13 @@ def main() -> int:
     parser.add_argument("--max-tokens", type=int, default=4)
     parser.add_argument("--prompt-sweep-max-tokens", type=int, default=1)
     parser.add_argument("--max-mean-overhead-ms", type=float, default=500.0)
+    parser.add_argument(
+        "--dax-cli",
+        type=Path,
+        default=Path(
+            "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js"
+        ),
+    )
     parser.add_argument("--fail-on-fail", action="store_true")
     args = parser.parse_args()
 
@@ -75,6 +82,7 @@ def main() -> int:
     auto_jsonl = args.output_dir / f"dax-auto-selected-{args.tag}.jsonl"
     auto_json = args.output_dir / f"dax-auto-selected-{args.tag}.json"
     request_profile_json = args.output_dir / f"live-request-profile-metadata-{args.tag}.json"
+    dax_request_metadata_json = args.output_dir / f"dax-request-metadata-smoke-{args.tag}.json"
     suite_json = args.output_dir / f"live-product-regression-suite-{args.tag}.json"
 
     try:
@@ -227,6 +235,22 @@ def main() -> int:
             ],
             cwd=cwd,
         )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/dax_request_metadata_smoke.py",
+                "--base-url",
+                args.base_url,
+                "--dax-cli",
+                str(args.dax_cli),
+                "--output-json",
+                str(dax_request_metadata_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
         artifacts = {
             "resident_client": evidence_entry(resident_json),
             "overhead_gate": evidence_entry(overhead_json),
@@ -236,6 +260,7 @@ def main() -> int:
             "auto_selection_gate": evidence_entry(auto_gate_json),
             "auto_selected_client": evidence_entry(auto_json),
             "request_profile_metadata": evidence_entry(request_profile_json),
+            "dax_request_metadata_smoke": evidence_entry(dax_request_metadata_json),
         }
         failures = [
             f"{name}: verdict={entry.get('verdict')!r}"
@@ -258,6 +283,7 @@ def main() -> int:
                 "M121",
                 "M123",
                 "M124",
+                "M131",
             ],
             "artifacts": artifacts,
             "failures": failures,
@@ -279,6 +305,7 @@ def main() -> int:
                 "M121",
                 "M123",
                 "M124",
+                "M131",
             ],
             "artifacts": {},
             "failures": [

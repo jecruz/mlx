@@ -1493,3 +1493,140 @@ Decision:
   runtime profile mutation as an operator-only control.
 - The next target is M130: improve Dax operator UX so the active product mode
   and metadata path are visible instead of implicit.
+
+## M130 Result
+
+M130 makes Dax request routing visible in the interactive operator panel.
+
+Dax commit:
+
+- `3afb64d1 Show MLX request route in Dax prompt panel`
+
+Displayed route examples:
+
+- `request route: engine default`
+- `request route: workload_intent=coding-agent flags=agentic,repeated`
+- `request route: workload_intent=first-hit flags=agentic,repeated,first-hit`
+- `request route: runtime_profile=interactive`
+
+Validation:
+
+- Dax focused MLX test: `34` passed
+- Dax coding-agent build: passed
+- Dax pre-commit checks: passed
+
+Decision:
+
+- Operators should be able to distinguish request metadata routing from global
+  engine profile state at a glance.
+- The next target is M131: put the real Dax request-metadata path into the
+  one-command live regression suite.
+
+## M131 Result
+
+M131 adds Dax request-metadata smoke coverage to the live product regression
+suite.
+
+Added:
+
+- `benchmarks/python/dax_request_metadata_smoke.py`
+- `run_live_product_regression_suite.py` artifact key:
+  `dax_request_metadata_smoke`
+- `covered_milestones` now includes `M131`
+
+Live artifact:
+
+- `artifacts/m131-dax-request-metadata-suite/dax-request-metadata-smoke-m131-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- checks: `5`
+- failures: `0`
+- profile source: `request_metadata`
+
+Decision:
+
+- The live product regression suite now covers the actual Dax CLI request path,
+  not only direct HTTP probes.
+- The next target is M132: refresh the initial-to-current performance
+  comparison with the latest request-metadata and Dax evidence.
+
+## M132 Result
+
+M132 refreshes the performance comparison artifact.
+
+Added:
+
+- `benchmarks/python/milestone_performance_comparison_report.py`
+
+Artifacts:
+
+- `artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.json`
+- `artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- current prompt transport rows: `4`
+- M121 repeated-context speedup: `7.17x`
+- M124 repeated-context speedup: `7.25x`
+- Dax request metadata smoke: `PASS`
+
+Decision:
+
+- The large change from the initial bench remains resident warmup and avoiding
+  repeated prefill.
+- The next target is M133: turn the current evidence chain into an operator
+  readiness checkpoint.
+
+## M133 Result
+
+M133 defines the current operator readiness checkpoint.
+
+Evidence chain:
+
+- Dax integration commit: `28b5493f`
+- Dax route-visibility commit: `3afb64d1`
+- live Dax request metadata artifact:
+  `artifacts/m131-dax-request-metadata-suite/dax-request-metadata-smoke-m131-qwen-a3b.json`
+- performance comparison:
+  `artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.md`
+- runbook:
+  `docs/mac-local-inference-platform/resident-operator-runbook.md`
+- client contract:
+  `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+
+Decision:
+
+- The Dax operator path is ready for continued performance work.
+- The next target is M134: select the next performance slice based on the
+  refreshed comparison.
+
+## M134 Result
+
+M134 selects the next performance target: request-scoped prompt-processing
+automation for repeated workspace turns.
+
+Target:
+
+- keep request metadata as the product control plane
+- profile cache admission and async prefix-build scheduling under Dax/product
+  workloads
+- reduce first reusable-turn latency while preserving memory bounds
+
+Why this target:
+
+- warmed resident prefill already removes most initial short-prompt noise
+- current Qwen A3B prompt transport is not the product bottleneck by itself
+- M121/M124 repeated-context evidence shows the product path benefits most when
+  repeated prefill is avoided
+- Dax now sends and displays request metadata, so product routing decisions can
+  drive the next optimization safely
+
+Deferred:
+
+- speculative decoding
+- tensor parallelism
+- image/VLM expansion
+- broad UI work

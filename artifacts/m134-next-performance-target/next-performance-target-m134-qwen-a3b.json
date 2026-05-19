@@ -1,0 +1,23 @@
+{
+  "deferred": [
+    "speculative decoding",
+    "tensor parallelism",
+    "image/VLM expansion",
+    "broad UI work"
+  ],
+  "evidence": {
+    "operator_readiness": "artifacts/m133-operator-readiness-checkpoint/operator-readiness-m133-qwen-a3b.json",
+    "performance_comparison": "artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.json"
+  },
+  "priorities": [
+    "keep request metadata as product control plane",
+    "profile cache admission under product workloads",
+    "profile async prefix-build scheduling under product workloads",
+    "reduce first reusable-turn latency without increasing memory pressure",
+    "preserve Dax/operator visibility and live regression coverage"
+  ],
+  "tag": "m134-qwen-a3b",
+  "target": "request-scoped prompt-processing automation for repeated workspace turns",
+  "type": "next_performance_target",
+  "verdict": "PASS"
+}

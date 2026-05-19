@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "name": "dax_generation_uses_request_metadata",
+      "pass": true
+    },
+    {
+      "name": "live_server_applies_request_metadata",
+      "pass": true
+    },
+    {
+      "name": "operator_panel_shows_request_route",
+      "pass": true
+    },
+    {
+      "name": "live_suite_has_dax_metadata_smoke",
+      "pass": true
+    },
+    {
+      "name": "performance_comparison_refreshed",
+      "pass": true
+    }
+  ],
+  "evidence": {
+    "client_contract": "docs/mac-local-inference-platform/request-metadata-client-contract.md",
+    "dax_request_metadata_commit": "28b5493f",
+    "dax_request_metadata_smoke": "artifacts/m131-dax-request-metadata-suite/dax-request-metadata-smoke-m131-qwen-a3b.json",
+    "dax_request_route_visibility_commit": "3afb64d1",
+    "performance_comparison": "artifacts/m132-performance-comparison/performance-comparison-m132-qwen-a3b.md",
+    "runbook": "docs/mac-local-inference-platform/resident-operator-runbook.md"
+  },
+  "failures": [],
+  "readiness": "operator-ready-for-next-performance-slice",
+  "tag": "m133-qwen-a3b",
+  "type": "operator_readiness_checkpoint",
+  "verdict": "PASS"
+}
