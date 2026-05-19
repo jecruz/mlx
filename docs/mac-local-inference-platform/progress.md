@@ -3271,3 +3271,26 @@
     - `git diff --check`
   - M123 conclusion: request metadata profile selection is now live-validated
     through both `/v1/completions` and `/v1/chat/completions`.
+- Completed M124 request-metadata regression suite integration:
+  - updated `benchmarks/python/run_live_product_regression_suite.py`
+  - generated artifact:
+    `artifacts/m124-live-product-regression-suite/live-product-regression-suite-m124-qwen-a3b.json`
+  - validation passed:
+    - suite verdict `PASS`
+    - readiness `live-regression-passing`
+    - evidence artifacts `8`
+    - failures `0`
+    - covered milestones: `M115`, `M116`, `M117`, `M118`, `M119`, `M121`,
+      `M123`, `M124`
+    - resident repeated-context speedup `7.251x`
+    - fast-path overhead mean `4.691 ms`
+    - prompt transport sweep rows `8`
+    - lower-memory speedup `9.685x`
+    - lower-memory max peak memory `24.054 GB`
+    - auto-selected first-hit speedup `5.191x`
+    - request metadata probe rows `3`
+    - request metadata failures `0`
+    - `python3 -m py_compile benchmarks/python/run_live_product_regression_suite.py benchmarks/python/live_request_profile_metadata_probe.py`
+    - `git diff --check`
+  - M124 conclusion: the one-command live product regression suite now catches
+    request metadata profile-routing regressions automatically.

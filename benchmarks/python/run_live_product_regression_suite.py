@@ -74,6 +74,7 @@ def main() -> int:
     auto_gate_json = args.output_dir / f"auto-selection-runtime-gate-{args.tag}.json"
     auto_jsonl = args.output_dir / f"dax-auto-selected-{args.tag}.jsonl"
     auto_json = args.output_dir / f"dax-auto-selected-{args.tag}.json"
+    request_profile_json = args.output_dir / f"live-request-profile-metadata-{args.tag}.json"
     suite_json = args.output_dir / f"live-product-regression-suite-{args.tag}.json"
 
     try:
@@ -212,6 +213,20 @@ def main() -> int:
             ],
             cwd=cwd,
         )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/live_request_profile_metadata_probe.py",
+                "--base-url",
+                args.base_url,
+                "--output-json",
+                str(request_profile_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
         artifacts = {
             "resident_client": evidence_entry(resident_json),
             "overhead_gate": evidence_entry(overhead_json),
@@ -220,6 +235,7 @@ def main() -> int:
             "low_memory_gate": evidence_entry(low_memory_gate_json),
             "auto_selection_gate": evidence_entry(auto_gate_json),
             "auto_selected_client": evidence_entry(auto_json),
+            "request_profile_metadata": evidence_entry(request_profile_json),
         }
         failures = [
             f"{name}: verdict={entry.get('verdict')!r}"
@@ -233,7 +249,16 @@ def main() -> int:
             "verdict": "PASS" if not failures else "FAIL",
             "readiness": "live-regression-passing" if not failures else "not-ready",
             "output_dir": str(args.output_dir),
-            "covered_milestones": ["M115", "M116", "M117", "M118", "M119", "M121"],
+            "covered_milestones": [
+                "M115",
+                "M116",
+                "M117",
+                "M118",
+                "M119",
+                "M121",
+                "M123",
+                "M124",
+            ],
             "artifacts": artifacts,
             "failures": failures,
         }
@@ -245,7 +270,16 @@ def main() -> int:
             "verdict": "FAIL",
             "readiness": "not-ready",
             "output_dir": str(args.output_dir),
-            "covered_milestones": ["M115", "M116", "M117", "M118", "M119", "M121"],
+            "covered_milestones": [
+                "M115",
+                "M116",
+                "M117",
+                "M118",
+                "M119",
+                "M121",
+                "M123",
+                "M124",
+            ],
             "artifacts": {},
             "failures": [
                 {

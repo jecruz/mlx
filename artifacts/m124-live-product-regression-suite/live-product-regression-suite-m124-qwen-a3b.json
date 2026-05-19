@@ -1,0 +1,88 @@
+{
+  "artifacts": {
+    "auto_selected_client": {
+      "auto_selected_profile": "agent-workspace-first-hit",
+      "best_hit_speedup_vs_baseline": 5.190835097083301,
+      "hit_count": 2,
+      "path": "artifacts/m124-live-product-regression-suite/dax-auto-selected-m124-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "auto_selection_gate": {
+      "path": "artifacts/m124-live-product-regression-suite/auto-selection-runtime-gate-m124-qwen-a3b.json",
+      "row_count": 0,
+      "type": "profile_auto_selection_runtime_gate",
+      "verdict": "PASS"
+    },
+    "low_memory_client": {
+      "best_hit_speedup_vs_baseline": 9.684831277724356,
+      "hit_count": 1,
+      "path": "artifacts/m124-live-product-regression-suite/dax-low-memory-live-m124-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "low_memory_gate": {
+      "metrics": {
+        "conversion_prefill_tokens": 11.0,
+        "max_cache_memory_limit_mb": 64.0,
+        "max_peak_memory_gb": 24.054007214,
+        "mean_peak_memory_gb": 24.054007214
+      },
+      "path": "artifacts/m124-live-product-regression-suite/lower-memory-live-gate-m124-qwen-a3b.json",
+      "row_count": 4,
+      "type": "lower_memory_runtime_gate",
+      "verdict": "PASS"
+    },
+    "overhead_gate": {
+      "metrics": {
+        "max_overhead_ms": 5.036376183852553,
+        "mean_overhead_ms": 4.691010515671223,
+        "min_overhead_ms": 4.482249030843377,
+        "p95_overhead_ms": 5.036376183852553
+      },
+      "path": "artifacts/m124-live-product-regression-suite/fast-path-overhead-gate-m124-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_operator_overhead_gate",
+      "verdict": "PASS"
+    },
+    "prompt_transport_sweep": {
+      "path": "artifacts/m124-live-product-regression-suite/live-prompt-transport-sweep-m124-qwen-a3b.json",
+      "row_count": 8,
+      "type": "live_prompt_transport_sweep",
+      "verdict": "PASS"
+    },
+    "request_profile_metadata": {
+      "path": "artifacts/m124-live-product-regression-suite/live-request-profile-metadata-m124-qwen-a3b.json",
+      "row_count": 3,
+      "type": "live_request_profile_metadata_probe",
+      "verdict": "PASS"
+    },
+    "resident_client": {
+      "best_hit_speedup_vs_baseline": 7.250828146565267,
+      "hit_count": 2,
+      "path": "artifacts/m124-live-product-regression-suite/dax-resident-client-m124-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "covered_milestones": [
+    "M115",
+    "M116",
+    "M117",
+    "M118",
+    "M119",
+    "M121",
+    "M123",
+    "M124"
+  ],
+  "failures": [],
+  "output_dir": "artifacts/m124-live-product-regression-suite",
+  "readiness": "live-regression-passing",
+  "tag": "m124-qwen-a3b",
+  "type": "live_product_regression_suite",
+  "verdict": "PASS"
+}

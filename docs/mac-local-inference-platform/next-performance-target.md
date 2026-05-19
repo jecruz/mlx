@@ -1325,3 +1325,32 @@ Decision:
 - The next target is M124: add request-metadata coverage to the one-command
   live product regression suite so M121-style regression catches profile
   routing regressions automatically.
+
+## M124 Result
+
+M124 integrates live request-metadata routing into the one-command product
+regression suite:
+
+- script: `benchmarks/python/run_live_product_regression_suite.py`
+- artifact:
+  `artifacts/m124-live-product-regression-suite/live-product-regression-suite-m124-qwen-a3b.json`
+
+Result:
+
+- suite verdict: `PASS`
+- readiness: `live-regression-passing`
+- evidence artifacts: `8`
+- failures: `0`
+- resident repeated-context speedup: `7.251x`
+- fast-path overhead mean: `4.691 ms`
+- lower-memory speedup: `9.685x`
+- lower-memory max peak memory: `24.054 GB`
+- auto-selected first-hit speedup: `5.191x`
+- request metadata probe rows: `3`
+
+Decision:
+
+- The live product regression suite now covers request profile metadata.
+- The next target is M125: add a concise product/client contract document for
+  request metadata fields and expected profile routing so Dax, Prowl, or a UI
+  can integrate without reading benchmark code.

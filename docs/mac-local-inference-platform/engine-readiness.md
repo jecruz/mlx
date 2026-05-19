@@ -761,3 +761,35 @@ Readiness position:
 - The routing decision is visible in `engine_metrics`.
 - The next regression gap is including this live request metadata probe in the
   one-command product regression suite.
+
+## M124 Product Regression Suite Coverage
+
+M124 integrates the live request metadata probe into the one-command product
+regression suite.
+
+Evidence:
+
+- artifact:
+  `artifacts/m124-live-product-regression-suite/live-product-regression-suite-m124-qwen-a3b.json`
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- evidence artifacts: `8`
+- failures: `0`
+
+Covered live gates:
+
+- resident repeated-context first-hit path
+- fast-path operator overhead
+- prompt transport sweep
+- lower-memory runtime behavior
+- auto-selection runtime gate
+- auto-selected live repeated-context path
+- request metadata profile routing
+
+Readiness position:
+
+- Request metadata profile routing is now part of the live regression suite.
+- A product client contract can be written against the validated behavior:
+  send workload metadata on OpenAI-compatible requests, inspect
+  `engine_metrics.request_runtime_profile`, and reserve manual
+  `runtime_profile` for explicit operator override.
