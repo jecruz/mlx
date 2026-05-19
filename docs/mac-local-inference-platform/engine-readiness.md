@@ -392,6 +392,18 @@ Readiness interpretation:
   - implication: existing profile selection does not convert the expensive
     scheduled pre-hit turn; the next readiness target is a runtime behavior or
     profile change that alters scheduler/cache interaction.
+- M92 adds first-hit conversion as a named product profile:
+  - profile: `agent-workspace-first-hit`
+  - behavior: `engine_preset=request-derived`,
+    `prefix_cache_population_mode=request`
+  - gate artifact:
+    `artifacts/m92-first-hit-conversion/dax-first-hit-conversion-gate-m92-request-probe.json`
+  - result: `PASS`, conversion turn `2`, conversion prefill `18` tokens,
+    conversion service ratio `0.813`, `cache_split_prefill=True`, mature hit
+    speedup `2.94x`, mature hit prefill `18` tokens
+  - note: the live artifact used equivalent `agent-workspace-request` behavior
+    because the resident server had not been restarted with the new profile
+    catalog yet.
 
 ## Current Qwen Result
 

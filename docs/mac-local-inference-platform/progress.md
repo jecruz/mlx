@@ -2655,3 +2655,30 @@
   - M91 conclusion: existing profile selection is not enough to convert the
     scheduled pre-hit/cache-build turn. M92 needs a runtime behavior/profile
     change that changes scheduler/cache interaction.
+- Completed M92 first-hit conversion profile:
+  - added runtime profile `agent-workspace-first-hit`
+  - profile uses `engine_preset=request-derived` and
+    `prefix_cache_population_mode=request`
+  - added `benchmarks/python/dax_first_hit_conversion_gate.py`
+  - updated UI profile contract probes and scheduling-sweep variant support
+  - wrote artifacts:
+    - `artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.json`
+    - `artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.jsonl`
+    - `artifacts/m92-first-hit-conversion/dax-first-hit-conversion-gate-m92-request-probe.json`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py mlx_engine/ui_client.py benchmarks/python/dax_first_hit_conversion_gate.py benchmarks/python/dax_first_hit_scheduling_sweep.py benchmarks/python/ui_client_adapter_probe.py benchmarks/python/ui_status_contract_probe.py`
+    - static profile catalog check confirmed `agent-workspace-first-hit` maps
+      to `request-derived` / `request`
+    - live request-derived Dax benchmark passed against `http://127.0.0.1:8773`
+    - first-hit conversion gate passed with `--fail-on-fail`
+  - M92 result:
+    - conversion turn `2`
+    - conversion actual prefill `18 <= 32` tokens
+    - conversion service ratio vs baseline `0.813 <= 0.85`
+    - conversion path `cache_split_prefill=True`
+    - mature hit speedup `2.94x >= 2.0x`
+    - mature hit actual prefill `18 <= 32` tokens
+  - M92 conclusion: first-hit conversion is now exposed as a product-facing
+    runtime profile. The live artifact used the equivalent
+    `agent-workspace-request` profile because the resident server had not been
+    restarted with the new profile name yet.

@@ -5712,6 +5712,78 @@ M91 decision:
   changes scheduler/cache interaction, not just benchmark a different existing
   Dax profile.
 
+## M92 First-Hit Conversion Profile
+
+M92 adds a product-facing first-hit conversion profile for repeated coding-agent
+context. The profile uses the existing request-derived prefix-cache mode but
+exposes it under a clearer name for product selection and future Dax wiring.
+
+Changes:
+
+- Added runtime profile: `agent-workspace-first-hit`
+- Profile behavior:
+  - `engine_preset`: `request-derived`
+  - `prefix_cache_population_mode`: `request`
+  - purpose: convert the first duplicate repeated-context request through
+    split prefill/request-derived cache creation instead of waiting for a later
+    async cache hit
+- Added gate: `benchmarks/python/dax_first_hit_conversion_gate.py`
+- Updated UI profile contract probes and scheduling-sweep variant support.
+
+Artifacts:
+
+- `artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.json`
+- `artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.jsonl`
+- `artifacts/m92-first-hit-conversion/dax-first-hit-conversion-gate-m92-request-probe.json`
+
+Live validation command:
+
+```text
+python3 benchmarks/python/dax_repeated_context_bench.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-jsonl artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.jsonl \
+  --output-json artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.json \
+  --turns 4 \
+  --shared-repeats 64 \
+  --max-tokens 4 \
+  --dax-profile agent-workspace-request \
+  --fail-on-fail
+```
+
+The live server had not yet been restarted with the new
+`agent-workspace-first-hit` profile name, so this validation used the equivalent
+existing `agent-workspace-request` profile.
+
+Gate command:
+
+```text
+python3 benchmarks/python/dax_first_hit_conversion_gate.py \
+  artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.json \
+  --output-json artifacts/m92-first-hit-conversion/dax-first-hit-conversion-gate-m92-request-probe.json \
+  --fail-on-fail
+```
+
+Result:
+
+- gate verdict: `PASS`
+- conversion turn: `2`
+- conversion actual prefill: `18 <= 32` tokens
+- conversion service ratio vs baseline: `0.813 <= 0.85`
+- conversion path: `cache_split_prefill=True`
+- mature hit speedup: `2.94x >= 2.0x`
+- mature hit actual prefill: `18 <= 32` tokens
+
+M92 decision:
+
+- First-hit conversion is now a named product profile instead of an internal
+  request-derived mode.
+- The conversion profile reduces the second repeated-context turn from full
+  `2092` token foreground prefill to `18` actual prefill tokens.
+- Latency improves versus baseline but is still not as strong as mature async
+  cache reuse; M93 should make this a product-path regression gate, and M94
+  should decide when Dax product mode selects first-hit conversion versus
+  steady-state async reuse.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

@@ -529,3 +529,36 @@ Decision:
 - Next target is M92: add a first-hit conversion behavior or profile that makes
   the second repeated-context turn wait for or use the pending build instead of
   doing a full `2092` token prefill.
+
+## M92 Result
+
+M92 adds a named first-hit conversion profile and a gate for the second
+repeated-context turn.
+
+Added:
+
+- runtime profile `agent-workspace-first-hit`
+- `benchmarks/python/dax_first_hit_conversion_gate.py`
+- `artifacts/m92-first-hit-conversion/dax-repeated-context-m92-request-probe.json`
+- `artifacts/m92-first-hit-conversion/dax-first-hit-conversion-gate-m92-request-probe.json`
+
+Result:
+
+- first-hit conversion gate: `PASS`
+- conversion turn: `2`
+- conversion actual prefill: `18` tokens
+- conversion service ratio vs baseline: `0.813`
+- conversion path: `cache_split_prefill=True`
+- mature hit speedup: `2.94x`
+- mature hit actual prefill: `18` tokens
+
+Decision:
+
+- The product now has a clear profile name for first-hit conversion:
+  `agent-workspace-first-hit`.
+- The profile is backed by request-derived cache behavior, which converts the
+  first duplicate request immediately but has weaker latency than mature async
+  reuse.
+- Next target is M93: make this first-hit behavior a product-path regression
+  gate so Dax/product runs cannot silently fall back to full-prefill second
+  turns.

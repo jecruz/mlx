@@ -32,6 +32,7 @@ def main() -> int:
         "interactive",
         "agent-workspace",
         "agent-workspace-async",
+        "agent-workspace-first-hit",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",
@@ -57,6 +58,17 @@ def main() -> int:
     if async_planned["prefix_cache_policy"]["pending_wait_ms"] != 0:
         raise RuntimeError(
             f"agent-workspace-async should not wait by default: {async_planned}"
+        )
+
+    first_hit_dry_run = client.apply_profile("agent-workspace-first-hit", dry_run=True)
+    first_hit_planned = first_hit_dry_run["planned_state"]
+    if first_hit_planned["runtime_profile"] != "agent-workspace-first-hit":
+        raise RuntimeError(
+            f"dry-run did not plan agent-workspace-first-hit: {first_hit_planned}"
+        )
+    if first_hit_planned["prefix_cache_policy"]["population_mode"] != "request":
+        raise RuntimeError(
+            f"agent-workspace-first-hit mode mismatch: {first_hit_planned}"
         )
 
     if runtime_profile_for_intent("coding-agent") != "agent-workspace-async":
@@ -89,6 +101,9 @@ def main() -> int:
         "agent_workspace_async_pending_wait_ms": async_planned[
             "prefix_cache_policy"
         ]["pending_wait_ms"],
+        "agent_workspace_first_hit_population_mode": first_hit_planned[
+            "prefix_cache_policy"
+        ]["population_mode"],
         "coding_agent_intent_profile": intent_planned["runtime_profile"],
     }
     args.output_json.parent.mkdir(parents=True, exist_ok=True)

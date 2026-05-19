@@ -32,7 +32,12 @@ def variant_config(name: str) -> dict[str, str | None]:
     variants: dict[str, dict[str, str | None]] = {
         "auto": {"profile": None, "intent": None},
         "agent-workspace-async": {"profile": "agent-workspace-async", "intent": None},
+        "agent-workspace-first-hit": {
+            "profile": "agent-workspace-first-hit",
+            "intent": None,
+        },
         "agent-workspace": {"profile": "agent-workspace", "intent": None},
+        "agent-workspace-request": {"profile": "agent-workspace-request", "intent": None},
     }
     if name not in variants:
         raise argparse.ArgumentTypeError(f"unknown variant: {name}")

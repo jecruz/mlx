@@ -44,6 +44,7 @@ RuntimeProfileName = Literal[
     "interactive",
     "agent-workspace",
     "agent-workspace-async",
+    "agent-workspace-first-hit",
     "agent-workspace-request",
     "memory-saver",
     "diagnostics",
@@ -152,6 +153,17 @@ def runtime_profile_defaults(name: RuntimeProfileName) -> dict[str, Any]:
                 "prefix_cache_pending_wait_ms": 0,
             },
         },
+        "agent-workspace-first-hit": {
+            "description": (
+                "Repeated coding-agent context; convert the first duplicate "
+                "request through request-derived prefix reuse instead of waiting "
+                "for a later async cache hit."
+            ),
+            "config": {
+                **engine_preset_defaults("request-derived"),
+                "engine_preset": "request-derived",
+            },
+        },
         "agent-workspace-request": {
             "description": (
                 "Repeated coding-agent context; derive reusable prefixes from "
@@ -195,6 +207,7 @@ def runtime_profile_catalog() -> dict[str, dict[str, Any]]:
         "interactive",
         "agent-workspace",
         "agent-workspace-async",
+        "agent-workspace-first-hit",
         "agent-workspace-request",
         "memory-saver",
         "diagnostics",
