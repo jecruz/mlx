@@ -1813,3 +1813,57 @@ Decision:
 - Quality gates are now blocking criteria for future speed work.
 - Continue performance optimization only while keeping M159-M166 in the
   regression suite.
+
+## M167 Result
+
+M167 integrates the quality gates into the live product regression suite.
+
+Artifact:
+
+- `artifacts/m167-live-quality-regression-suite/live-product-regression-suite-m167-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `23`
+- failures: `0`
+- covered milestones include `M159` through `M167`
+
+Decision:
+
+- The default acceptance bar is now quality-gated performance.
+- Continue with Dax/TUI quality status visibility, broader coding-agent golden
+  prompts, and model-to-model quality comparison.
+
+## M168 Result
+
+M168 packages suite quality health for operator surfaces.
+
+Artifact:
+
+- `artifacts/m168-quality-status/quality-status-m168-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- quality gates: `8`
+- failures: `0`
+- operator summary reports quality `PASS` and performance `PASS`
+
+## M169 Result
+
+M169 expands the deterministic golden set with coding-agent-shaped quality
+checks.
+
+Artifacts:
+
+- `artifacts/m169-expanded-golden-set/quality-golden-set-m169-qwen-a3b.json`
+- `artifacts/m169-expanded-golden-set/deterministic-quality-m169-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- deterministic rows: `8`
+- failures: `0`
+- added coverage: code review, edit-plan, and summary prompts

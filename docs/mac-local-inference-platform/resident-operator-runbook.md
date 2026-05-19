@@ -428,3 +428,37 @@ The operator/TUI surface should display these request fields when present:
 - `prompt_progress_total_tokens`
 - `prompt_progress_processed_tokens`
 - `peak_memory_gb`
+
+## Live Quality-Gated Suite
+
+Run the live product suite with integrated quality gates:
+
+```bash
+python3 benchmarks/python/run_live_product_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m167-live-quality-regression-suite \
+  --tag m167-qwen-a3b \
+  --turns 3 \
+  --shared-repeats 48 \
+  --max-tokens 3 \
+  --prompt-tokens 512 \
+  --prompt-sweep-max-tokens 1 \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `live_product_regression_suite PASS`
+- `23` artifacts
+- `0` failures
+- quality checkpoint: `PASS`
+
+Create an operator-facing quality summary:
+
+```bash
+python3 benchmarks/python/quality_status_summary.py \
+  --suite-json artifacts/m167-live-quality-regression-suite/live-product-regression-suite-m167-qwen-a3b.json \
+  --output-json artifacts/m168-quality-status/quality-status-m168-qwen-a3b.json \
+  --tag m168-qwen-a3b \
+  --fail-on-fail
+```

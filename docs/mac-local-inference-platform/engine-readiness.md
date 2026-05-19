@@ -1471,3 +1471,72 @@ Resolved blocker:
 Primary artifact:
 
 - `artifacts/m166-quality-checkpoint/quality-checkpoint-m166-qwen-a3b.md`
+
+## M167 Live Suite Quality Integration
+
+M167 integrates the quality gates into the live product regression suite.
+
+Suite artifact:
+
+- `artifacts/m167-live-quality-regression-suite/live-product-regression-suite-m167-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `23`
+- failures: `0`
+- covered milestones now include `M159` through `M167`
+
+Quality artifacts in the suite:
+
+- `artifacts/m167-live-quality-regression-suite/quality-golden-set-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/deterministic-quality-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/cache-quality-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/streaming-quality-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/loop-quality-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/long-context-quality-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/cross-engine-quality-m167-qwen-a3b.json`
+- `artifacts/m167-live-quality-regression-suite/quality-checkpoint-m167-qwen-a3b.md`
+
+Acceptance rule:
+
+- Future live-suite passes now require both performance/request-scope gates and
+  response-quality gates to pass.
+
+## M168 Operator Quality Status
+
+M168 adds a compact quality status summary for Dax/TUI consumption.
+
+Artifact:
+
+- `artifacts/m168-quality-status/quality-status-m168-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- quality gates: `8`
+- failures: `0`
+- operator summary: quality `PASS`, performance `PASS`
+
+## M169 Expanded Coding-Agent Golden Set
+
+M169 broadens the deterministic golden set with coding-agent-shaped prompts.
+
+Added cases:
+
+- `code_review`
+- `edit_plan`
+- `summary`
+
+Artifacts:
+
+- `artifacts/m169-expanded-golden-set/quality-golden-set-m169-qwen-a3b.json`
+- `artifacts/m169-expanded-golden-set/deterministic-quality-m169-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- deterministic rows: `8`
+- failures: `0`
+- visible thinking: `false` for every row

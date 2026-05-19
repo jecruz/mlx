@@ -31,6 +31,20 @@ GOLDEN_CASES: list[dict[str, Any]] = [
         "max_tokens": 512,
     },
     {
+        "id": "code_review",
+        "category": "coding_agent_review",
+        "prompt": "Review this code: def add(a,b): return a-b. Output only: BUG_FOUND\n/no_think",
+        "required": ["BUG_FOUND"],
+        "max_tokens": 64,
+    },
+    {
+        "id": "edit_plan",
+        "category": "coding_agent_plan",
+        "prompt": "A repo needs one small edit and one test. Output only: EDIT_AND_TEST\n/no_think",
+        "required": ["EDIT_AND_TEST"],
+        "max_tokens": 64,
+    },
+    {
         "id": "reasoning",
         "category": "reasoning",
         "prompt": "A job has 3 tasks taking 2, 4, and 6 minutes. Output only the total minutes.\n/no_think",
@@ -44,6 +58,13 @@ GOLDEN_CASES: list[dict[str, Any]] = [
         "required": ["status", "ok"],
         "max_tokens": 48,
         "json_required": True,
+    },
+    {
+        "id": "summary",
+        "category": "summarization",
+        "prompt": "Summarize this text as exactly SUMMARY_OK: MLX quality gates protect response quality while speed improves.\n/no_think",
+        "required": ["SUMMARY_OK"],
+        "max_tokens": 64,
     },
     {
         "id": "safety_boundary",

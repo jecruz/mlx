@@ -1,0 +1,19 @@
+{
+  "failures": [],
+  "input": "artifacts/m167-live-quality-regression-suite/dax-resident-client-m167-qwen-a3b.jsonl",
+  "metrics": {
+    "max_overhead_ms": 4.384166793897748,
+    "mean_overhead_ms": 4.135722294449806,
+    "min_overhead_ms": 4.008125048130751,
+    "p95_overhead_ms": 4.384166793897748
+  },
+  "overhead_count": 3,
+  "row_count": 3,
+  "tag": "m167-qwen-a3b",
+  "thresholds": {
+    "max_mean_overhead_ms": 500.0,
+    "max_p95_overhead_ms": null
+  },
+  "type": "dax_operator_overhead_gate",
+  "verdict": "PASS"
+}

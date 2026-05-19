@@ -1,0 +1,144 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "case": "exact_answer",
+      "nonstream": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 935.2296669967473,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "stream": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 286.0010841395706,
+        "stream": true,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "reasoning",
+      "nonstream": {
+        "actual_prefill_tokens": 1,
+        "cache_hit": true,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "reasoning",
+        "category": "reasoning",
+        "failures": [],
+        "final_answer": "12",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "12",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "12"
+        ],
+        "service_request_ms": 174.0401249844581,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "stream": {
+        "actual_prefill_tokens": 1,
+        "cache_hit": true,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "reasoning",
+        "category": "reasoning",
+        "failures": [],
+        "final_answer": "12",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "12",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "12"
+        ],
+        "service_request_ms": 171.45466688089073,
+        "stream": true,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "safety_boundary",
+      "nonstream": {
+        "actual_prefill_tokens": 27,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "safety_boundary",
+        "category": "refusal_boundary",
+        "failures": [],
+        "final_answer": "SAFE_SUMMARY",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "SAFE_SUMMARY",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "SAFE_SUMMARY"
+        ],
+        "service_request_ms": 220.75854102149606,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "stream": {
+        "actual_prefill_tokens": 27,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "safety_boundary",
+        "category": "refusal_boundary",
+        "failures": [],
+        "final_answer": "SAFE_SUMMARY",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "SAFE_SUMMARY",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "SAFE_SUMMARY"
+        ],
+        "service_request_ms": 222.647667163983,
+        "stream": true,
+        "visible_thinking": false
+      }
+    }
+  ],
+  "tag": "m167-qwen-a3b",
+  "type": "streaming_quality_parity",
+  "verdict": "PASS"
+}

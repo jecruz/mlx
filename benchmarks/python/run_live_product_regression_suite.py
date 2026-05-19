@@ -93,6 +93,15 @@ def main() -> int:
     cache_threshold_json = cache_threshold_dir / f"cache-threshold-and-turn-gates-{args.tag}.json"
     dax_product_mode_json = args.output_dir / f"dax-product-mode-smoke-{args.tag}.json"
     concurrency_json = args.output_dir / f"request-scoped-concurrency-{args.tag}.json"
+    quality_golden_json = args.output_dir / f"quality-golden-set-{args.tag}.json"
+    quality_deterministic_json = args.output_dir / f"deterministic-quality-{args.tag}.json"
+    quality_cache_json = args.output_dir / f"cache-quality-{args.tag}.json"
+    quality_streaming_json = args.output_dir / f"streaming-quality-{args.tag}.json"
+    quality_loop_json = args.output_dir / f"loop-quality-{args.tag}.json"
+    quality_long_context_json = args.output_dir / f"long-context-quality-{args.tag}.json"
+    quality_cross_engine_json = args.output_dir / f"cross-engine-quality-{args.tag}.json"
+    quality_checkpoint_json = args.output_dir / f"quality-checkpoint-{args.tag}.json"
+    quality_checkpoint_md = args.output_dir / f"quality-checkpoint-{args.tag}.md"
     suite_json = args.output_dir / f"live-product-regression-suite-{args.tag}.json"
 
     try:
@@ -353,6 +362,46 @@ def main() -> int:
             ],
             cwd=cwd,
         )
+        quality_gate_artifacts = [
+            ("m159", "golden", quality_golden_json),
+            ("m160", "deterministic", quality_deterministic_json),
+            ("m161", "cache", quality_cache_json),
+            ("m162", "streaming", quality_streaming_json),
+            ("m163", "loop", quality_loop_json),
+            ("m164", "long-context", quality_long_context_json),
+            ("m165", "cross-engine", quality_cross_engine_json),
+        ]
+        for _milestone, gate, output_json in quality_gate_artifacts:
+            cmd = [
+                sys.executable,
+                "benchmarks/python/quality_gate_runner.py",
+                "--gate",
+                gate,
+                "--output-json",
+                str(output_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ]
+            if gate != "golden":
+                cmd.extend(["--base-url", args.base_url])
+            run(cmd, cwd=cwd)
+        checkpoint_cmd = [
+            sys.executable,
+            "benchmarks/python/quality_gate_runner.py",
+            "--gate",
+            "checkpoint",
+            "--output-json",
+            str(quality_checkpoint_json),
+            "--output-md",
+            str(quality_checkpoint_md),
+            "--tag",
+            args.tag,
+            "--fail-on-fail",
+        ]
+        for milestone, _gate, output_json in quality_gate_artifacts:
+            checkpoint_cmd.extend(["--artifact", milestone, str(output_json)])
+        run(checkpoint_cmd, cwd=cwd)
         artifacts = {
             "resident_client": evidence_entry(resident_json),
             "overhead_gate": evidence_entry(overhead_json),
@@ -369,6 +418,14 @@ def main() -> int:
             "cache_threshold_and_turn_gates": evidence_entry(cache_threshold_json),
             "dax_product_mode_smoke": evidence_entry(dax_product_mode_json),
             "request_scoped_concurrency": evidence_entry(concurrency_json),
+            "quality_golden_set": evidence_entry(quality_golden_json),
+            "quality_deterministic": evidence_entry(quality_deterministic_json),
+            "quality_cache": evidence_entry(quality_cache_json),
+            "quality_streaming": evidence_entry(quality_streaming_json),
+            "quality_loop": evidence_entry(quality_loop_json),
+            "quality_long_context": evidence_entry(quality_long_context_json),
+            "quality_cross_engine": evidence_entry(quality_cross_engine_json),
+            "quality_checkpoint": evidence_entry(quality_checkpoint_json),
         }
         failures = [
             f"{name}: verdict={entry.get('verdict')!r}"
@@ -404,6 +461,15 @@ def main() -> int:
                 "M146",
                 "M148",
                 "M149",
+                "M159",
+                "M160",
+                "M161",
+                "M162",
+                "M163",
+                "M164",
+                "M165",
+                "M166",
+                "M167",
             ],
             "artifacts": artifacts,
             "failures": failures,
@@ -438,6 +504,15 @@ def main() -> int:
                 "M146",
                 "M148",
                 "M149",
+                "M159",
+                "M160",
+                "M161",
+                "M162",
+                "M163",
+                "M164",
+                "M165",
+                "M166",
+                "M167",
             ],
             "artifacts": {},
             "failures": [

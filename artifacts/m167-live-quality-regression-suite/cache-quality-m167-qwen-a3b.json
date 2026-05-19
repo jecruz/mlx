@@ -1,0 +1,148 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "case": "exact_answer",
+      "off": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": "off",
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 218.65620813332498,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "request": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": "request",
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 222.55620802752674,
+        "stream": false,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "reasoning",
+      "off": {
+        "actual_prefill_tokens": 40,
+        "cache_hit": false,
+        "cache_mode": "off",
+        "cache_population_mode": "async",
+        "case": "reasoning",
+        "category": "reasoning",
+        "failures": [],
+        "final_answer": "12",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "12",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "12"
+        ],
+        "service_request_ms": 223.03741704672575,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "request": {
+        "actual_prefill_tokens": 40,
+        "cache_hit": false,
+        "cache_mode": "request",
+        "cache_population_mode": "async",
+        "case": "reasoning",
+        "category": "reasoning",
+        "failures": [],
+        "final_answer": "12",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "12",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "12"
+        ],
+        "service_request_ms": 230.22116720676422,
+        "stream": false,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "rope_imrope_sentinel_recall",
+      "off": {
+        "actual_prefill_tokens": 1760,
+        "cache_hit": false,
+        "cache_mode": "off",
+        "cache_population_mode": "async",
+        "case": "rope_imrope_sentinel_recall",
+        "category": "long_context_rope_imrope",
+        "failures": [],
+        "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "ORCHID-17",
+          "LANTERN-42",
+          "HARBOR-93"
+        ],
+        "service_request_ms": 1128.6136659327894,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "request": {
+        "actual_prefill_tokens": 1760,
+        "cache_hit": false,
+        "cache_mode": "request",
+        "cache_population_mode": "async",
+        "case": "rope_imrope_sentinel_recall",
+        "category": "long_context_rope_imrope",
+        "failures": [],
+        "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "ORCHID-17",
+          "LANTERN-42",
+          "HARBOR-93"
+        ],
+        "service_request_ms": 1112.8370829392225,
+        "stream": false,
+        "visible_thinking": false
+      }
+    }
+  ],
+  "tag": "m167-qwen-a3b",
+  "type": "cache_quality_comparison",
+  "verdict": "PASS"
+}

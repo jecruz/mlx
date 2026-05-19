@@ -1,0 +1,75 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "comparison_mode": "rubric_reference; puma.cpp and panthro.cpp live endpoints not configured",
+  "failures": [],
+  "rows": [
+    {
+      "actual_prefill_tokens": 22,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "QUALITY_OK",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "QUALITY_OK",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 212.05541701056063,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 160.25266610085964,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 1,
+      "cache_hit": true,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "rope_imrope_sentinel_recall",
+      "category": "long_context_rope_imrope",
+      "failures": [],
+      "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ORCHID-17",
+        "LANTERN-42",
+        "HARBOR-93"
+      ],
+      "service_request_ms": 363.10662515461445,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m167-qwen-a3b",
+  "type": "cross_engine_quality_comparison",
+  "verdict": "PASS"
+}
