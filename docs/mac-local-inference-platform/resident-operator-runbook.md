@@ -513,3 +513,32 @@ The threshold gate is intended for automation. It fails when:
 - repetition exceeds the configured threshold
 - the operator quality bundle is not ready
 - engine, GPU, suite quality, or model comparison status is not `PASS`
+
+Run the expanded live regression suite:
+
+```bash
+python3 benchmarks/python/run_live_product_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m175-live-expanded-quality-suite \
+  --tag m175-qwen-a3b \
+  --turns 3 \
+  --shared-repeats 48 \
+  --max-tokens 3 \
+  --prompt-tokens 512 \
+  --prompt-sweep-max-tokens 1 \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `live_product_regression_suite PASS`
+- `24` artifacts
+- `0` failures
+- `quality_threshold_gate PASS`
+
+Lower-memory note:
+
+- When `--base-url` is passed, `lower_memory_runtime_gate.py` checks current
+  active MLX memory from `/health`. Historical `peak_memory_gb` remains
+  diagnostic because peak memory can reflect earlier model reloads in the same
+  process.

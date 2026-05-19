@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import urllib.request
 from pathlib import Path
 from statistics import mean
 from typing import Any
@@ -27,6 +28,11 @@ def load_rows(path: Path) -> list[dict[str, Any]]:
     raise ValueError(f"unsupported lower-memory input: {path}")
 
 
+def request_json(url: str, *, timeout: int = 120) -> dict[str, Any]:
+    with urllib.request.urlopen(url, timeout=timeout) as resp:
+        return json.loads(resp.read().decode())
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -40,6 +46,8 @@ def main() -> int:
     )
     parser.add_argument("--output-json", type=Path, required=True)
     parser.add_argument("--tag", default="m112-qwen-a3b")
+    parser.add_argument("--base-url")
+    parser.add_argument("--max-active-memory-gb", type=float, default=32.0)
     parser.add_argument("--max-peak-memory-gb", type=float, default=32.0)
     parser.add_argument("--max-cache-memory-limit-mb", type=float, default=64.0)
     parser.add_argument("--max-conversion-prefill-tokens", type=float, default=32.0)
@@ -48,6 +56,7 @@ def main() -> int:
 
     rows = load_rows(args.input)
     peak_memory = []
+    active_memory = []
     cache_limits = []
     actual_prefill = []
     profiles = set()
@@ -58,16 +67,31 @@ def main() -> int:
             profiles.add(after["runtime_profile"])
         if (value := as_float(metrics.get("peak_memory_gb"))) is not None:
             peak_memory.append(value)
+        if (value := as_float(metrics.get("active_memory_gb"))) is not None:
+            active_memory.append(value)
         if (value := as_float(metrics.get("memory_prune_limit_bytes"))) is not None:
             cache_limits.append(value / (1024 * 1024))
         if (value := as_float(row.get("actual_prefill_tokens"))) is not None:
             actual_prefill.append(value)
 
+    health_active_memory_gb = None
+    if args.base_url:
+        health = request_json(f"{args.base_url.rstrip('/')}/health")
+        active_bytes = ((health.get("mlx_memory") or {}).get("active_memory_bytes"))
+        if (value := as_float(active_bytes)) is not None:
+            health_active_memory_gb = value / 1e9
+            active_memory.append(health_active_memory_gb)
+
     failures = []
     if "agent-workspace-low-memory" not in profiles:
         failures.append(f"agent-workspace-low-memory not observed in profiles={sorted(profiles)}")
-    if not peak_memory:
-        failures.append("peak_memory_gb missing")
+    if active_memory:
+        if max(active_memory) > args.max_active_memory_gb:
+            failures.append(
+                f"active_memory_gb {max(active_memory):.3f} > {args.max_active_memory_gb:.3f}"
+            )
+    elif not peak_memory:
+        failures.append("active_memory_gb and peak_memory_gb missing")
     elif max(peak_memory) > args.max_peak_memory_gb:
         failures.append(f"peak_memory_gb {max(peak_memory):.3f} > {args.max_peak_memory_gb:.3f}")
     if not cache_limits:
@@ -90,11 +114,14 @@ def main() -> int:
         "row_count": len(rows),
         "profiles": sorted(profiles),
         "thresholds": {
+            "max_active_memory_gb": args.max_active_memory_gb,
             "max_peak_memory_gb": args.max_peak_memory_gb,
             "max_cache_memory_limit_mb": args.max_cache_memory_limit_mb,
             "max_conversion_prefill_tokens": args.max_conversion_prefill_tokens,
         },
         "metrics": {
+            "max_active_memory_gb": max(active_memory) if active_memory else None,
+            "health_active_memory_gb": health_active_memory_gb,
             "max_peak_memory_gb": max(peak_memory) if peak_memory else None,
             "mean_peak_memory_gb": mean(peak_memory) if peak_memory else None,
             "max_cache_memory_limit_mb": max(cache_limits) if cache_limits else None,

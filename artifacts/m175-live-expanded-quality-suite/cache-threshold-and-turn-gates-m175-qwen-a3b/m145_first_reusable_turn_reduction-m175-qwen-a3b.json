@@ -1,0 +1,13 @@
+{
+  "baseline_actual_prefill_tokens": 1570,
+  "baseline_service_request_ms": 1093.8566660042852,
+  "best_hit_speedup_vs_baseline": 5.619463491860231,
+  "conversion_actual_prefill_tokens": 11,
+  "conversion_service_request_ms": 863.6489580385387,
+  "failures": [],
+  "mature_hit_actual_prefill_tokens": 11,
+  "mature_hit_service_request_ms": 194.65499999932945,
+  "tag": "m175-qwen-a3b",
+  "type": "first_reusable_turn_reduction_probe",
+  "verdict": "PASS"
+}

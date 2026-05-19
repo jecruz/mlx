@@ -1976,3 +1976,28 @@ Decision:
 
 - Any future model swap, profile change, cache change, or speed claim should
   include this threshold gate or an equivalent stricter gate.
+
+## M175 Result
+
+M175 reruns the full live product regression suite after integrating expanded
+coding-agent quality and CI threshold output.
+
+Artifact:
+
+- `artifacts/m175-live-expanded-quality-suite/live-product-regression-suite-m175-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `24`
+- failures: `0`
+- lower-memory gate: `PASS`
+- quality checkpoint: `PASS`
+- quality threshold gate: `PASS`
+
+Implementation note:
+
+- The lower-memory runtime gate now checks current active memory through live
+  `/health` when available. This avoids false failures from historical MLX peak
+  memory after model reload experiments.

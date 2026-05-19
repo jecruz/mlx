@@ -1,0 +1,12 @@
+{
+  "artifacts": {
+    "m136_async_prefix_build_scheduling": "artifacts/m175-live-expanded-quality-suite/request-scoped-gates-m175-qwen-a3b/m136_async_prefix_build_scheduling-m175-qwen-a3b.json",
+    "m137_first_reusable_turn_latency": "artifacts/m175-live-expanded-quality-suite/request-scoped-gates-m175-qwen-a3b/m137_first_reusable_turn_latency-m175-qwen-a3b.json",
+    "m138_memory_bounded_cache_policy": "artifacts/m175-live-expanded-quality-suite/request-scoped-gates-m175-qwen-a3b/m138_memory_bounded_cache_policy-m175-qwen-a3b.json",
+    "m139_request_scoped_routing_isolation": "artifacts/m175-live-expanded-quality-suite/request-scoped-gates-m175-qwen-a3b/m139_request_scoped_routing_isolation-m175-qwen-a3b.json"
+  },
+  "failures": [],
+  "tag": "m175-qwen-a3b",
+  "type": "request_scoped_performance_gates",
+  "verdict": "PASS"
+}

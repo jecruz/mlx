@@ -146,6 +146,7 @@ performance:
 - `M171` operator/TUI quality bundle
 - `M172` coding-agent workspace/edit/test/debug golden prompts
 - `M173` CI-style quality threshold output
+- `M175` expanded live product regression suite with M172/M173 integrated
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport

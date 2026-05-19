@@ -1651,3 +1651,29 @@ Decision:
 
 - Future model/profile/speed changes should publish this threshold gate output
   so automation can block regressions before operator surfaces claim a speed win.
+
+## M175 Expanded Live Product Regression Suite
+
+M175 runs the full live product regression suite with the expanded M172
+coding-agent quality gates and the M173 CI threshold gate integrated.
+
+Artifact:
+
+- `artifacts/m175-live-expanded-quality-suite/live-product-regression-suite-m175-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `24`
+- failures: `0`
+- deterministic quality rows: `12`
+- loop quality rows: `13`
+- quality threshold readiness: `ci-quality-ready`
+
+Fix included:
+
+- The lower-memory gate now prefers current active MLX memory from `/health`
+  when a live base URL is provided. Historical MLX peak memory is still recorded
+  as diagnostic data, but it no longer fails a lower-memory run after prior
+  model reloads raised process-level peak memory.

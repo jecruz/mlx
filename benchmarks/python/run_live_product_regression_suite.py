@@ -102,6 +102,7 @@ def main() -> int:
     quality_cross_engine_json = args.output_dir / f"cross-engine-quality-{args.tag}.json"
     quality_checkpoint_json = args.output_dir / f"quality-checkpoint-{args.tag}.json"
     quality_checkpoint_md = args.output_dir / f"quality-checkpoint-{args.tag}.md"
+    quality_threshold_json = args.output_dir / f"quality-threshold-gate-{args.tag}.json"
     suite_json = args.output_dir / f"live-product-regression-suite-{args.tag}.json"
 
     try:
@@ -199,6 +200,8 @@ def main() -> int:
                 str(low_memory_gate_json),
                 "--tag",
                 args.tag,
+                "--base-url",
+                args.base_url,
                 "--fail-on-fail",
             ],
             cwd=cwd,
@@ -399,9 +402,37 @@ def main() -> int:
             args.tag,
             "--fail-on-fail",
         ]
+        for milestone in [
+            "M159",
+            "M160",
+            "M161",
+            "M162",
+            "M163",
+            "M164",
+            "M165",
+            "M166",
+            "M172",
+        ]:
+            checkpoint_cmd.extend(["--covered-milestone", milestone])
         for milestone, _gate, output_json in quality_gate_artifacts:
             checkpoint_cmd.extend(["--artifact", milestone, str(output_json)])
         run(checkpoint_cmd, cwd=cwd)
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/quality_threshold_gate.py",
+                "--quality-artifact",
+                str(quality_deterministic_json),
+                "--quality-artifact",
+                str(quality_loop_json),
+                "--output-json",
+                str(quality_threshold_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
         artifacts = {
             "resident_client": evidence_entry(resident_json),
             "overhead_gate": evidence_entry(overhead_json),
@@ -426,6 +457,7 @@ def main() -> int:
             "quality_long_context": evidence_entry(quality_long_context_json),
             "quality_cross_engine": evidence_entry(quality_cross_engine_json),
             "quality_checkpoint": evidence_entry(quality_checkpoint_json),
+            "quality_threshold_gate": evidence_entry(quality_threshold_json),
         }
         failures = [
             f"{name}: verdict={entry.get('verdict')!r}"
@@ -470,6 +502,9 @@ def main() -> int:
                 "M165",
                 "M166",
                 "M167",
+                "M172",
+                "M173",
+                "M175",
             ],
             "artifacts": artifacts,
             "failures": failures,
@@ -513,6 +548,9 @@ def main() -> int:
                 "M165",
                 "M166",
                 "M167",
+                "M172",
+                "M173",
+                "M175",
             ],
             "artifacts": {},
             "failures": [
