@@ -1425,3 +1425,23 @@ Performance summary:
 - repeated best-hit prefill tokens: `11`
 - resident prompt transport wall ms: `474.661166081205`
 - CLI prompt transport wall ms: `6038.545124931261`
+
+## Quality Gate Policy
+
+Speed does not count as release-ready progress if response quality regresses.
+
+Before further performance milestones are treated as production-ready, add and
+run quality gates for:
+
+- deterministic golden prompts
+- cache-enabled versus cache-disabled answer comparison
+- streaming versus non-stream answer parity
+- loop and repetition detection
+- long-context RoPE/IMRoPE recall
+- cross-engine Qwen3.6 comparison against known-good `puma.cpp` and
+  `panthro.cpp` behavior
+
+Quality plan:
+
+- `docs/mac-local-inference-platform/inference-quality-gates.md`
+- `artifacts/m159-quality-gate-plan/quality-gate-plan-m159-qwen-a3b.md`

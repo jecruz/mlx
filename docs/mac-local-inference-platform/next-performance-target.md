@@ -1759,5 +1759,16 @@ Current performance:
 
 Next target:
 
-- Continue with deeper concurrency stress under external observer load, then
-  first reusable-turn latency tuning and cache admission threshold sweeps.
+- Pause performance-only work and add quality gates first. Speed improvements
+  are not release-ready unless response quality is preserved.
+- The next milestone lane is M159-M166 quality-gated performance:
+  `M159` quality golden-set harness, `M160` deterministic quality regression
+  runner, `M161` cache-enabled vs cache-disabled quality comparison, `M162`
+  streaming vs non-stream quality parity, `M163` loop/repetition detector,
+  `M164` long-context RoPE/IMRoPE quality probe, `M165` cross-engine Qwen3.6
+  quality comparison, and `M166` quality-gated performance checkpoint.
+
+Quality plan:
+
+- `docs/mac-local-inference-platform/inference-quality-gates.md`
+- `artifacts/m159-quality-gate-plan/quality-gate-plan-m159-qwen-a3b.md`

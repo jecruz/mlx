@@ -1,0 +1,28 @@
+{
+  "failures": [],
+  "gates": [
+    "golden_prompt_set",
+    "deterministic_quality_regression",
+    "cache_enabled_vs_disabled_quality",
+    "streaming_vs_nonstream_quality_parity",
+    "loop_and_repetition_detection",
+    "long_context_rope_imrope_quality",
+    "cross_engine_qwen36_quality_comparison",
+    "quality_gated_performance_checkpoint"
+  ],
+  "next_milestones": [
+    "M159 quality golden-set harness",
+    "M160 deterministic quality regression runner",
+    "M161 cache-enabled vs cache-disabled quality comparison",
+    "M162 streaming vs non-stream quality parity",
+    "M163 loop/repetition detector",
+    "M164 long-context RoPE/IMRoPE quality probe",
+    "M165 cross-engine Qwen3.6 quality comparison",
+    "M166 quality-gated performance checkpoint"
+  ],
+  "policy": "Performance improvements are not release-ready unless quality gates also pass.",
+  "readiness": "quality-gate-plan-ready",
+  "tag": "m159-quality-gate-plan",
+  "type": "quality_gate_plan",
+  "verdict": "PASS"
+}
