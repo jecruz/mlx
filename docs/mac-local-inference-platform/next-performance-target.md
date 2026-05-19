@@ -2094,3 +2094,34 @@ Decision:
 
 - Keep the active A3B model. The 27B dense model is quality-compatible but not a
   performance upgrade.
+
+## M180 Result
+
+M180 reruns the full live product regression suite after request-local memory
+metrics were added and proven live.
+
+Artifacts:
+
+- `artifacts/m180-live-request-memory-suite/live-product-regression-suite-m180-qwen-a3b.json`
+- `artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json`
+- `artifacts/m180-live-request-memory-suite/quality-threshold-gate-m180-qwen-a3b.json`
+
+Result:
+
+- suite verdict: `PASS`
+- artifacts: `24`
+- failures: `0`
+- lower-memory gate: `PASS`
+- quality checkpoint: `PASS`
+- quality threshold gate: `PASS`
+- lower-memory memory source: `request_metrics`
+- health fallback active memory: unused
+- max active memory: `21.02259841 GB`
+- max peak memory: `22.31961337 GB`
+
+Decision:
+
+- Continue using the active A3B model and request-scoped runtime profiles. The
+  lower-memory gate is now driven by request-local active memory instead of stale
+  process peak memory or process-level `/health` when request metrics are
+  available.

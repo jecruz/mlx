@@ -1,0 +1,148 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "case": "exact_answer",
+      "off": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": "off",
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 216.13283292390406,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "request": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": "request",
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 216.77591581828892,
+        "stream": false,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "code_review",
+      "off": {
+        "actual_prefill_tokens": 34,
+        "cache_hit": false,
+        "cache_mode": "off",
+        "cache_population_mode": "async",
+        "case": "code_review",
+        "category": "coding_agent_review",
+        "failures": [],
+        "final_answer": "BUG_FOUND",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "BUG_FOUND",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "BUG_FOUND"
+        ],
+        "service_request_ms": 222.5428749807179,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "request": {
+        "actual_prefill_tokens": 34,
+        "cache_hit": false,
+        "cache_mode": "request",
+        "cache_population_mode": "async",
+        "case": "code_review",
+        "category": "coding_agent_review",
+        "failures": [],
+        "final_answer": "BUG_FOUND",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "BUG_FOUND",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "BUG_FOUND"
+        ],
+        "service_request_ms": 225.77179200015962,
+        "stream": false,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "rope_imrope_sentinel_recall",
+      "off": {
+        "actual_prefill_tokens": 1760,
+        "cache_hit": false,
+        "cache_mode": "off",
+        "cache_population_mode": "async",
+        "case": "rope_imrope_sentinel_recall",
+        "category": "long_context_rope_imrope",
+        "failures": [],
+        "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "ORCHID-17",
+          "LANTERN-42",
+          "HARBOR-93"
+        ],
+        "service_request_ms": 1137.4844158999622,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "request": {
+        "actual_prefill_tokens": 1760,
+        "cache_hit": false,
+        "cache_mode": "request",
+        "cache_population_mode": "async",
+        "case": "rope_imrope_sentinel_recall",
+        "category": "long_context_rope_imrope",
+        "failures": [],
+        "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "ORCHID-17",
+          "LANTERN-42",
+          "HARBOR-93"
+        ],
+        "service_request_ms": 1113.0480840802193,
+        "stream": false,
+        "visible_thinking": false
+      }
+    }
+  ],
+  "tag": "m180-qwen-a3b",
+  "type": "cache_quality_comparison",
+  "verdict": "PASS"
+}

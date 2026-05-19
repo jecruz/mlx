@@ -1,0 +1,11 @@
+{
+  "baseline_actual_prefill_tokens": 1570,
+  "baseline_service_request_ms": 1411.08045889996,
+  "best_hit_actual_prefill_tokens": 11,
+  "best_hit_service_request_ms": 204.03116615489125,
+  "best_hit_speedup_vs_baseline": 6.91600447859388,
+  "failures": [],
+  "tag": "m180-qwen-a3b",
+  "type": "first_reusable_turn_latency_gate",
+  "verdict": "PASS"
+}

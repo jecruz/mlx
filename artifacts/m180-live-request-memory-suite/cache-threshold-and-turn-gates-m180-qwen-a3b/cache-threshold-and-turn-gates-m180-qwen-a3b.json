@@ -1,0 +1,10 @@
+{
+  "artifacts": {
+    "m145_first_reusable_turn_reduction": "artifacts/m180-live-request-memory-suite/cache-threshold-and-turn-gates-m180-qwen-a3b/m145_first_reusable_turn_reduction-m180-qwen-a3b.json",
+    "m146_cache_admission_thresholds": "artifacts/m180-live-request-memory-suite/cache-threshold-and-turn-gates-m180-qwen-a3b/m146_cache_admission_thresholds-m180-qwen-a3b.json"
+  },
+  "failures": [],
+  "tag": "m180-qwen-a3b",
+  "type": "cache_threshold_and_turn_gates",
+  "verdict": "PASS"
+}

@@ -538,10 +538,39 @@ Expected result:
 
 Lower-memory note:
 
-- When `--base-url` is passed, `lower_memory_runtime_gate.py` checks current
-  active MLX memory from `/health`. Historical `peak_memory_gb` remains
-  diagnostic because peak memory can reflect earlier model reloads in the same
-  process.
+- When request rows include `engine_metrics.active_memory_gb`,
+  `lower_memory_runtime_gate.py` uses those request-local values and reports
+  `metrics.memory_source=request_metrics`.
+- When request-local memory is not present and `--base-url` is passed, the gate
+  falls back to current active MLX memory from `/health` and reports
+  `metrics.memory_source=health_fallback`.
+- Historical `peak_memory_gb` remains diagnostic because peak memory can reflect
+  earlier model reloads in the same process.
+
+Run the live suite after per-request memory metrics are live:
+
+```bash
+python3 benchmarks/python/run_live_product_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m180-live-request-memory-suite \
+  --tag m180-qwen-a3b \
+  --turns 3 \
+  --shared-repeats 48 \
+  --max-tokens 3 \
+  --prompt-tokens 512 \
+  --prompt-sweep-max-tokens 1 \
+  --fail-on-fail
+```
+
+Expected M180 result:
+
+- `live_product_regression_suite PASS`
+- `24` artifacts
+- `0` failures
+- `lower_memory_runtime_gate PASS`
+- `metrics.memory_source=request_metrics`
+- `health_active_memory_gb=null`
+- `quality_threshold_gate PASS`
 
 Run the model swap acceptance gate:
 

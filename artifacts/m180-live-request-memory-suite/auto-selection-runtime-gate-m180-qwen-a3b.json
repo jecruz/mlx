@@ -1,0 +1,74 @@
+{
+  "benchmark": "benchmarks/python/dax_repeated_context_bench.py",
+  "failures": [],
+  "scenario_count": 6,
+  "scenarios": [
+    {
+      "expected_profile": "agent-workspace-async",
+      "kwargs": {
+        "agentic": true
+      },
+      "name": "normal_coding_agent",
+      "observed_profile": "agent-workspace-async",
+      "reason": "steady-state coding-agent reuse",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-first-hit",
+      "kwargs": {
+        "agentic": true,
+        "immediate_second_turn": true
+      },
+      "name": "immediate_second_turn",
+      "observed_profile": "agent-workspace-first-hit",
+      "reason": "immediate repeated-context second turn",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-low-memory",
+      "kwargs": {
+        "agentic": true,
+        "memory_class_gb": 32
+      },
+      "name": "lower_memory_mac_32gb",
+      "observed_profile": "agent-workspace-low-memory",
+      "reason": "bounded memory mode",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "interactive",
+      "kwargs": {
+        "interactive": true
+      },
+      "name": "interactive_foreground",
+      "observed_profile": "interactive",
+      "reason": "foreground interactive use",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "diagnostics",
+      "kwargs": {
+        "diagnostics": true
+      },
+      "name": "diagnostics",
+      "observed_profile": "diagnostics",
+      "reason": "diagnostics requested",
+      "verdict": "PASS"
+    },
+    {
+      "expected_profile": "agent-workspace-first-hit",
+      "kwargs": {
+        "agentic": true,
+        "manual_profile": "agent-workspace-first-hit",
+        "memory_class_gb": 32
+      },
+      "name": "manual_override",
+      "observed_profile": "agent-workspace-first-hit",
+      "reason": "manual override",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m180-qwen-a3b",
+  "type": "profile_auto_selection_runtime_gate",
+  "verdict": "PASS"
+}

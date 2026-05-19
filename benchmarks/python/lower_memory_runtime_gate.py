@@ -75,12 +75,14 @@ def main() -> int:
             actual_prefill.append(value)
 
     health_active_memory_gb = None
-    if args.base_url:
+    memory_source = "request_metrics" if active_memory else None
+    if args.base_url and not active_memory:
         health = request_json(f"{args.base_url.rstrip('/')}/health")
         active_bytes = ((health.get("mlx_memory") or {}).get("active_memory_bytes"))
         if (value := as_float(active_bytes)) is not None:
             health_active_memory_gb = value / 1e9
             active_memory.append(health_active_memory_gb)
+            memory_source = "health_fallback"
 
     failures = []
     if "agent-workspace-low-memory" not in profiles:
@@ -120,6 +122,7 @@ def main() -> int:
             "max_conversion_prefill_tokens": args.max_conversion_prefill_tokens,
         },
         "metrics": {
+            "memory_source": memory_source,
             "max_active_memory_gb": max(active_memory) if active_memory else None,
             "health_active_memory_gb": health_active_memory_gb,
             "max_peak_memory_gb": max(peak_memory) if peak_memory else None,

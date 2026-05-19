@@ -1,0 +1,126 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "readiness": "dax-product-modes-live",
+  "row_count": 5,
+  "rows": [
+    {
+      "command": [
+        "node",
+        "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+        "mlx-engine",
+        "--base-url",
+        "http://127.0.0.1:8773",
+        "--product-mode",
+        "chat",
+        "--prompt",
+        "m180-qwen-a3b Dax product mode chat. Reply briefly.",
+        "--max-tokens",
+        "4",
+        "--json"
+      ],
+      "expected_profile": "interactive",
+      "mode": "chat",
+      "request_runtime_profile": "interactive",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "returncode": 0,
+      "service_request_ms": 231.88249999657273
+    },
+    {
+      "command": [
+        "node",
+        "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+        "mlx-engine",
+        "--base-url",
+        "http://127.0.0.1:8773",
+        "--product-mode",
+        "coding-agent",
+        "--prompt",
+        "m180-qwen-a3b Dax product mode coding-agent. Reply briefly.",
+        "--max-tokens",
+        "4",
+        "--json"
+      ],
+      "expected_profile": "agent-workspace-async",
+      "mode": "coding-agent",
+      "request_runtime_profile": "agent-workspace-async",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "returncode": 0,
+      "service_request_ms": 232.73612488992512
+    },
+    {
+      "command": [
+        "node",
+        "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+        "mlx-engine",
+        "--base-url",
+        "http://127.0.0.1:8773",
+        "--product-mode",
+        "coding-agent-first-hit",
+        "--prompt",
+        "m180-qwen-a3b Dax product mode coding-agent-first-hit. Reply briefly.",
+        "--max-tokens",
+        "4",
+        "--json"
+      ],
+      "expected_profile": "agent-workspace-first-hit",
+      "mode": "coding-agent-first-hit",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "returncode": 0,
+      "service_request_ms": 233.34866692312062
+    },
+    {
+      "command": [
+        "node",
+        "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+        "mlx-engine",
+        "--base-url",
+        "http://127.0.0.1:8773",
+        "--product-mode",
+        "coding-agent-low-memory",
+        "--prompt",
+        "m180-qwen-a3b Dax product mode coding-agent-low-memory. Reply briefly.",
+        "--max-tokens",
+        "4",
+        "--json"
+      ],
+      "expected_profile": "agent-workspace-low-memory",
+      "mode": "coding-agent-low-memory",
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "returncode": 0,
+      "service_request_ms": 332.3636669665575
+    },
+    {
+      "command": [
+        "node",
+        "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+        "mlx-engine",
+        "--base-url",
+        "http://127.0.0.1:8773",
+        "--product-mode",
+        "diagnostics",
+        "--prompt",
+        "m180-qwen-a3b Dax product mode diagnostics. Reply briefly.",
+        "--max-tokens",
+        "4",
+        "--json"
+      ],
+      "expected_profile": "diagnostics",
+      "mode": "diagnostics",
+      "request_runtime_profile": "diagnostics",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "returncode": 0,
+      "service_request_ms": 238.5324169881642
+    }
+  ],
+  "tag": "m180-qwen-a3b",
+  "type": "dax_product_mode_smoke",
+  "verdict": "PASS"
+}

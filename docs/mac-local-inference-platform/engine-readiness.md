@@ -1783,3 +1783,34 @@ Decision:
 - Model swap evaluation is now reproducible as a single artifact workflow. The
   tested 27B dense model remains rejected because it is slower despite passing
   quality gates.
+
+## M180 Live Suite With Request-Local Memory
+
+M180 reruns the full live product regression suite after per-request memory
+metrics were proven live.
+
+Artifacts:
+
+- `artifacts/m180-live-request-memory-suite/live-product-regression-suite-m180-qwen-a3b.json`
+- `artifacts/m180-live-request-memory-suite/lower-memory-live-gate-m180-qwen-a3b.json`
+- `artifacts/m180-live-request-memory-suite/quality-threshold-gate-m180-qwen-a3b.json`
+
+Result:
+
+- suite verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `24`
+- failures: `0`
+- lower-memory gate: `PASS`
+- quality checkpoint: `PASS`
+- quality threshold gate: `PASS`
+- lower-memory memory source: `request_metrics`
+- lower-memory max active memory: `21.02259841 GB`
+- lower-memory health fallback: unused
+- lower-memory max peak memory: `22.31961337 GB`
+
+Decision:
+
+- Lower-memory suite gating now uses request-local `active_memory_gb` when the
+  live server emits it. `/health` remains a compatibility fallback, but it did
+  not drive the M180 lower-memory verdict.
