@@ -1226,3 +1226,161 @@ Decision:
 - Next lane should prioritize streaming request-profile scope parity, first
   reusable-turn latency reduction, cache-admission threshold tuning, and Dax
   product-mode docs/smokes.
+
+## M143 Streaming Request-Profile Scope Parity
+
+M143 moves streaming request-profile handling onto the same scoped path as
+non-stream generation.
+
+Code change:
+
+- `mlx_engine/resident_service.py`
+- `stream_generate_jsonl`
+- `stream_openai_completion`
+- `stream_openai_chat_completion`
+
+Result:
+
+- streaming routes now apply request metadata inside
+  `request_runtime_profile_scope(...)`
+- streaming responses report scoped request-profile metrics instead of relying
+  on the compatibility path
+
+## M144 Streaming Metadata Regression Gate
+
+M144 validates streaming request-profile scope parity.
+
+Artifact:
+
+- `artifacts/m144-streaming-metadata-scope/streaming-request-metadata-scope-m144-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- rows: `2`
+- failures: `0`
+- readiness: `streaming-request-scope-parity`
+
+## M145 First Reusable-Turn Latency Reduction Probe
+
+M145 packages the first reusable-turn latency gate from the repeated-context
+and cache-admission artifacts.
+
+Artifacts:
+
+- `artifacts/m145-m146-cache-turn-gates/cache-threshold-and-turn-gates-m145-m146-qwen-a3b.json`
+- `artifacts/m145-m146-cache-turn-gates/m145_first_reusable_turn_reduction-m145-m146-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- failures: `0`
+
+## M146 Cache-Admission Threshold Tuning
+
+M146 validates cache admission and threshold behavior for request-scoped
+prompt-processing gates.
+
+Artifacts:
+
+- `artifacts/m146-cache-threshold-tuning/request-scoped-cache-admission-m146-qwen-a3b.json`
+- `artifacts/m145-m146-cache-turn-gates/m146_cache_admission_thresholds-m145-m146-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- rows: `5`
+- failures: `0`
+- readiness: `cache-admission-measured`
+
+## M147 Dax Product-Mode Smoke Commands
+
+M147 documents the operator-facing Dax product-mode commands.
+
+Example command shape:
+
+```bash
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --product-mode coding-agent-first-hit \
+  --prompt "Summarize the active workspace route." \
+  --json
+```
+
+Covered product modes:
+
+- `chat`
+- `coding-agent`
+- `coding-agent-first-hit`
+- `coding-agent-low-memory`
+- `diagnostics`
+
+## M148 Live Suite Product-Mode Coverage
+
+M148 expands the one-command live product regression suite with:
+
+- streaming request metadata scope
+- cache threshold and first reusable-turn gates
+- Dax product-mode smoke
+- request-scoped concurrency probe
+
+Suite artifact:
+
+- `artifacts/m148-live-product-mode-suite/live-product-regression-suite-m148-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `15`
+- failures: `0`
+- covered milestones include `M143`, `M144`, `M145`, `M146`, `M148`, and
+  `M149`
+
+## M149 Request-Scoped Concurrency Safety Probe
+
+M149 validates mixed concurrent request metadata does not persistently mutate
+the active runtime profile.
+
+Artifact:
+
+- `artifacts/m149-request-scoped-concurrency/request-scoped-concurrency-m149-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- rows: `3`
+- failures: `0`
+- before runtime profile: `interactive`
+- after runtime profile: `interactive`
+- readiness: `request-profile-no-bleed`
+
+Follow-up:
+
+- a first M149 attempt previously observed profile bleed before the passing
+  rerun, so the next lane should harden lock/scope discipline with a repeated
+  stress gate.
+
+## M150 Performance Checkpoint
+
+M150 packages the M143-M149 decision point.
+
+Artifacts:
+
+- `artifacts/m150-performance-checkpoint/performance-checkpoint-m150-qwen-a3b.json`
+- `artifacts/m150-performance-checkpoint/performance-checkpoint-m150-qwen-a3b.md`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `m143-m150-passing-with-concurrency-follow-up`
+- live suite verdict: `PASS`
+- request-scoped concurrency verdict: `PASS`
+
+Decision:
+
+- Continue into concurrency hardening and first reusable-turn latency
+  reduction.
+- Do not claim complete request-scoped runtime isolation until the transient
+  M149 profile-bleed observation is converted into a stronger repeated stress
+  gate.

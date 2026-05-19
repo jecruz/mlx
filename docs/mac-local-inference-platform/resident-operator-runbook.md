@@ -359,3 +359,50 @@ the next related request:
 See:
 
 - `docs/mac-local-inference-platform/next-performance-target.md`
+
+## Dax Product-Mode Smoke Commands
+
+Run these from `/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo` while the
+resident MLX server is listening on `127.0.0.1:8773`.
+
+```bash
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --product-mode chat \
+  --prompt "Reply with a one sentence chat response." \
+  --json
+
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --product-mode coding-agent \
+  --prompt "Summarize the current coding-agent route." \
+  --json
+
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --product-mode coding-agent-first-hit \
+  --prompt "Summarize the first-hit workspace route." \
+  --json
+
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --product-mode coding-agent-low-memory \
+  --prompt "Summarize the low-memory workspace route." \
+  --json
+
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --product-mode diagnostics \
+  --prompt "Return the diagnostics route in one sentence." \
+  --json
+```
+
+Automated smoke gate:
+
+```bash
+python3 benchmarks/python/dax_product_mode_smoke.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-json artifacts/m148-dax-product-mode-smoke/dax-product-mode-smoke-m148-qwen-a3b.json \
+  --tag m148-qwen-a3b \
+  --fail-on-fail
+```

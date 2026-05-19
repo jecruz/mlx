@@ -1,0 +1,13 @@
+{
+  "baseline_actual_prefill_tokens": 2082,
+  "baseline_service_request_ms": 1515.8914579078555,
+  "best_hit_speedup_vs_baseline": 7.302436308399903,
+  "conversion_actual_prefill_tokens": 11,
+  "conversion_service_request_ms": 1109.8611250054091,
+  "failures": [],
+  "mature_hit_actual_prefill_tokens": 11,
+  "mature_hit_service_request_ms": 207.58708380162716,
+  "tag": "m148-qwen-a3b",
+  "type": "first_reusable_turn_reduction_probe",
+  "verdict": "PASS"
+}

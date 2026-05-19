@@ -88,6 +88,11 @@ def main() -> int:
     request_scoped_gates_json = (
         request_scoped_gates_dir / f"request-scoped-performance-gates-{args.tag}.json"
     )
+    streaming_scope_json = args.output_dir / f"streaming-request-metadata-scope-{args.tag}.json"
+    cache_threshold_dir = args.output_dir / f"cache-threshold-and-turn-gates-{args.tag}"
+    cache_threshold_json = cache_threshold_dir / f"cache-threshold-and-turn-gates-{args.tag}.json"
+    dax_product_mode_json = args.output_dir / f"dax-product-mode-smoke-{args.tag}.json"
+    concurrency_json = args.output_dir / f"request-scoped-concurrency-{args.tag}.json"
     suite_json = args.output_dir / f"live-product-regression-suite-{args.tag}.json"
 
     try:
@@ -288,6 +293,66 @@ def main() -> int:
             ],
             cwd=cwd,
         )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/streaming_request_metadata_scope_probe.py",
+                "--base-url",
+                args.base_url,
+                "--output-json",
+                str(streaming_scope_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/cache_threshold_and_turn_gates.py",
+                "--repeated",
+                str(resident_json),
+                "--admission",
+                str(cache_admission_json),
+                "--output-dir",
+                str(cache_threshold_dir),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/dax_product_mode_smoke.py",
+                "--base-url",
+                args.base_url,
+                "--dax-cli",
+                str(args.dax_cli),
+                "--output-json",
+                str(dax_product_mode_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/request_scoped_concurrency_probe.py",
+                "--base-url",
+                args.base_url,
+                "--output-json",
+                str(concurrency_json),
+                "--tag",
+                args.tag,
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
         artifacts = {
             "resident_client": evidence_entry(resident_json),
             "overhead_gate": evidence_entry(overhead_json),
@@ -300,6 +365,10 @@ def main() -> int:
             "dax_request_metadata_smoke": evidence_entry(dax_request_metadata_json),
             "request_scoped_cache_admission": evidence_entry(cache_admission_json),
             "request_scoped_performance_gates": evidence_entry(request_scoped_gates_json),
+            "streaming_request_metadata_scope": evidence_entry(streaming_scope_json),
+            "cache_threshold_and_turn_gates": evidence_entry(cache_threshold_json),
+            "dax_product_mode_smoke": evidence_entry(dax_product_mode_json),
+            "request_scoped_concurrency": evidence_entry(concurrency_json),
         }
         failures = [
             f"{name}: verdict={entry.get('verdict')!r}"
@@ -329,6 +398,12 @@ def main() -> int:
                 "M138",
                 "M139",
                 "M140",
+                "M143",
+                "M144",
+                "M145",
+                "M146",
+                "M148",
+                "M149",
             ],
             "artifacts": artifacts,
             "failures": failures,
@@ -357,6 +432,12 @@ def main() -> int:
                 "M138",
                 "M139",
                 "M140",
+                "M143",
+                "M144",
+                "M145",
+                "M146",
+                "M148",
+                "M149",
             ],
             "artifacts": {},
             "failures": [

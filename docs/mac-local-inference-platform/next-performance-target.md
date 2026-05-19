@@ -1679,3 +1679,46 @@ Important limitation:
 - Streaming routes still use the compatibility path and should be converted in
   the next milestone batch before claiming complete concurrency-safe request
   profile isolation.
+
+## M143-M150 Result
+
+The request-scoped prompt-processing lane now has streaming parity, cache-turn
+gates, product-mode smoke coverage, and an expanded live suite checkpoint.
+
+Completed:
+
+- M143 streaming request-profile scope parity
+- M144 streaming metadata regression gate
+- M145 first reusable-turn latency reduction probe
+- M146 cache-admission threshold tuning
+- M147 Dax product-mode smoke commands
+- M148 live suite product-mode coverage
+- M149 request-scoped concurrency safety probe
+- M150 performance checkpoint
+
+Key artifacts:
+
+- `artifacts/m144-streaming-metadata-scope/streaming-request-metadata-scope-m144-qwen-a3b.json`
+- `artifacts/m145-m146-cache-turn-gates/cache-threshold-and-turn-gates-m145-m146-qwen-a3b.json`
+- `artifacts/m146-cache-threshold-tuning/request-scoped-cache-admission-m146-qwen-a3b.json`
+- `artifacts/m148-live-product-mode-suite/live-product-regression-suite-m148-qwen-a3b.json`
+- `artifacts/m149-request-scoped-concurrency/request-scoped-concurrency-m149-qwen-a3b.json`
+- `artifacts/m150-performance-checkpoint/performance-checkpoint-m150-qwen-a3b.md`
+
+M148 live suite:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `15`
+- failures: `0`
+- covered milestones include `M143`, `M144`, `M145`, `M146`, `M148`, and
+  `M149`
+
+Decision:
+
+- Continue into concurrency hardening and first reusable-turn latency
+  reduction.
+- Treat request-scoped routing as improved but not finished. A first M149 run
+  observed profile bleed before the passing rerun, so the next milestone should
+  strengthen the lock/scope discipline and run repeated stress coverage before
+  claiming complete request-profile isolation.

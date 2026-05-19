@@ -1,0 +1,10 @@
+{
+  "artifacts": {
+    "m145_first_reusable_turn_reduction": "artifacts/m145-m146-cache-turn-gates/m145_first_reusable_turn_reduction-m145-m146-qwen-a3b.json",
+    "m146_cache_admission_thresholds": "artifacts/m145-m146-cache-turn-gates/m146_cache_admission_thresholds-m145-m146-qwen-a3b.json"
+  },
+  "failures": [],
+  "tag": "m145-m146-qwen-a3b",
+  "type": "cache_threshold_and_turn_gates",
+  "verdict": "PASS"
+}

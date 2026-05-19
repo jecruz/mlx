@@ -1,0 +1,186 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "checks": [
+    {
+      "actual": "request_metadata",
+      "expected": "request_metadata",
+      "name": "request_runtime_profile_source",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "request_runtime_profile_applied",
+      "pass": true
+    },
+    {
+      "actual": "coding-agent",
+      "expected": "coding-agent",
+      "name": "workload_intent",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "agentic_workload",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "repeated_workspace",
+      "pass": true
+    }
+  ],
+  "command": [
+    "node",
+    "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+    "mlx-engine",
+    "--base-url",
+    "http://127.0.0.1:8773",
+    "--intent",
+    "coding-agent",
+    "--prompt",
+    "m148-qwen-a3b Dax request metadata smoke. Reply with one short sentence.",
+    "--max-tokens",
+    "8",
+    "--json"
+  ],
+  "dax_cli": "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js",
+  "failures": [],
+  "readiness": "dax-request-metadata-live",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "length",
+        "index": 0,
+        "message": {
+          "content": "Here's a thinking process:\n\n1",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1779168110,
+    "engine_metrics": {
+      "actual_prefill_tokens": 31,
+      "agentic_workload": true,
+      "backend": "text",
+      "cache_build_dedup_reason": null,
+      "cache_build_deduplicated": false,
+      "cache_candidate": false,
+      "cache_created": false,
+      "cache_exact_match_trimmed": false,
+      "cache_hit": false,
+      "cache_pending": false,
+      "cache_pending_wait_ms": 0,
+      "cache_pending_wait_result": null,
+      "cache_population_mode": "async",
+      "cache_prepare_ms": 0.000125030055642128,
+      "cache_request_store_reason": null,
+      "cache_request_trimmed_tokens": 0,
+      "cache_reuse_enabled": false,
+      "cache_scheduled": false,
+      "cache_scope_hash": null,
+      "cache_split_prefill": false,
+      "cache_split_prefill_reason": null,
+      "cache_stored_from_request": false,
+      "cached_prefix_tokens": 0,
+      "created": 1779168110,
+      "default_device": "Device(gpu, 0)",
+      "diagnostics_workload": false,
+      "effective_policy": "memory_saver",
+      "engine_lock_wait_ms": 0.00037509016692638397,
+      "estimated_recompute_tokens": 28,
+      "generated_prefix_cache_reason": "stored",
+      "generated_prefix_cache_recorded": true,
+      "generated_prefix_cache_tokens": 39,
+      "generated_prefix_combined_tokens": 39,
+      "generated_prefix_retokenized_tokens": 39,
+      "generated_prefix_token_boundary_safe": true,
+      "generated_token_count_recorded": 8,
+      "generation_tokens": 8,
+      "generation_tps": 105.94050379785878,
+      "immediate_second_turn": false,
+      "interactive_workload": false,
+      "longest_prefix_match_tokens": 3,
+      "low_memory": false,
+      "matched_prompt_hash": "27a52cb9265359b0b7ff3f20c4a908de",
+      "matched_request_id": "req_eb6679380cfb42d09568a40174752b75",
+      "matched_tokenized_prompt_hash": "9a65f9a745dc4c8a335f669f95b8bcba",
+      "memory_class_gb": null,
+      "memory_prune_applied": false,
+      "memory_prune_cache_memory_bytes": 8476356,
+      "memory_prune_limit_bytes": null,
+      "memory_prune_reason": null,
+      "memory_prune_removed_entries": 0,
+      "metal_available": true,
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "peak_memory_gb": 22.69777269,
+      "policy": "auto",
+      "prefill_band_max_prompt_tokens": null,
+      "prefill_band_min_prompt_tokens": null,
+      "prefill_selection_source": "global_policy",
+      "prefill_step_size": null,
+      "prefix_reuse_ratio": 0.0967741935483871,
+      "prefix_signature": "12ef11258eee7b878c7336a34e63da76",
+      "prefix_tracker_recent_size": 32,
+      "prompt_hash": "656163d561989905b6420a66b67d48e4",
+      "prompt_progress_complete": true,
+      "prompt_progress_events": 3,
+      "prompt_progress_first_ms": 114.60554110817611,
+      "prompt_progress_last_ms": 187.5387909822166,
+      "prompt_progress_processed_tokens": 31,
+      "prompt_progress_total_tokens": 31,
+      "prompt_progress_trace": [
+        {
+          "elapsed_ms": 114.60554110817611,
+          "processed_tokens": 0,
+          "total_tokens": 31
+        },
+        {
+          "elapsed_ms": 163.79058314487338,
+          "processed_tokens": 30,
+          "total_tokens": 31
+        },
+        {
+          "elapsed_ms": 187.5387909822166,
+          "processed_tokens": 31,
+          "total_tokens": 31
+        }
+      ],
+      "prompt_tokens": 31,
+      "prompt_tokens_estimate": 31,
+      "prompt_tps": 424.90782243529685,
+      "repeated_workspace": true,
+      "request_id": "req_e9fe456f32b749f7bb6bc1b00319b0e3",
+      "request_runtime_profile": "agent-workspace-async",
+      "request_runtime_profile_applied": true,
+      "request_runtime_profile_reason": "steady-state coding-agent reuse",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "run_ms": 272.0207499805838,
+      "scheduler_active_requests_at_admit": 1,
+      "scheduler_max_concurrent_requests": 1,
+      "scheduler_queue_wait_ms": 0.002040993422269821,
+      "scheduler_queued_requests_at_admit": 0,
+      "service_request_ms": 272.8883749805391,
+      "stop_reason": "length",
+      "text": "Here's a thinking process:\n\n1",
+      "tokenized_prompt_hash": "12ef11258eee7b878c7336a34e63da76",
+      "workload_intent": "coding-agent"
+    },
+    "id": "chatcmpl-req_e9fe456f32b749f7bb6bc1b00319b0e3",
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 8,
+      "prompt_tokens": 31,
+      "total_tokens": 39
+    }
+  },
+  "returncode": 0,
+  "stderr": "",
+  "tag": "m148-qwen-a3b",
+  "type": "dax_request_metadata_smoke",
+  "verdict": "PASS"
+}

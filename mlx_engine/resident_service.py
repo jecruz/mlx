@@ -3331,60 +3331,60 @@ class ResidentEngine:
     def stream_generate_jsonl(self, request: GenerateRequest):
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
-            profile_selection = self.apply_request_runtime_profile(request)
-            metadata = self.request_metadata(
-                prompt=request.prompt,
-                policy=request.policy,
-                prefill_step_size_override=request.prefill_step_size,
-                profile_selection=profile_selection,
-            )
-            run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
-                metadata=metadata,
-            )
-            cache_info.update(admission)
-            self.request_registry.begin(
-                request_id=metadata["request_id"],
-                route="/generate:stream",
-                prompt_tokens=metadata["prompt_tokens_estimate"],
-                policy=metadata["effective_policy"],
-                prefill_step_size=metadata["prefill_step_size"],
-            )
-            for event in self._stream_run_live_jsonl(
-                prompt=run_prompt,
-                max_tokens=request.max_tokens,
-                prefill_step_size=metadata["prefill_step_size"],
-                stop=request.stop,
-                metadata=self.public_metadata(metadata),
-                prompt_cache=prompt_cache,
-                cache_info=cache_info,
-                full_prompt_tokens=metadata["prompt_tokens_estimate"],
-                prompt_tokens_for_generated_cache=metadata["_prompt_tokens"],
-                prompt_text_for_generated_cache=metadata["_prompt"],
-                request_t0=request_t0,
-            ):
-                if event["type"] == "final":
-                    self.record_prefix_prompt(metadata)
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="completed",
-                        service_request_ms=event.get("service_request_ms"),
-                        generation_tokens=event.get("generation_tokens"),
-                    )
-                elif event["type"] == "cancelled":
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="cancelled",
-                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                        prompt_progress_events=event.get("prompt_progress_events"),
-                    )
-                elif event["type"] == "error":
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="failed",
-                        error=event.get("error"),
-                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                    )
-                yield json.dumps(event) + "\n"
+            with self.request_runtime_profile_scope(request) as profile_selection:
+                metadata = self.request_metadata(
+                    prompt=request.prompt,
+                    policy=request.policy,
+                    prefill_step_size_override=request.prefill_step_size,
+                    profile_selection=profile_selection,
+                )
+                run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
+                    metadata=metadata,
+                )
+                cache_info.update(admission)
+                self.request_registry.begin(
+                    request_id=metadata["request_id"],
+                    route="/generate:stream",
+                    prompt_tokens=metadata["prompt_tokens_estimate"],
+                    policy=metadata["effective_policy"],
+                    prefill_step_size=metadata["prefill_step_size"],
+                )
+                for event in self._stream_run_live_jsonl(
+                    prompt=run_prompt,
+                    max_tokens=request.max_tokens,
+                    prefill_step_size=metadata["prefill_step_size"],
+                    stop=request.stop,
+                    metadata=self.public_metadata(metadata),
+                    prompt_cache=prompt_cache,
+                    cache_info=cache_info,
+                    full_prompt_tokens=metadata["prompt_tokens_estimate"],
+                    prompt_tokens_for_generated_cache=metadata["_prompt_tokens"],
+                    prompt_text_for_generated_cache=metadata["_prompt"],
+                    request_t0=request_t0,
+                ):
+                    if event["type"] == "final":
+                        self.record_prefix_prompt(metadata)
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="completed",
+                            service_request_ms=event.get("service_request_ms"),
+                            generation_tokens=event.get("generation_tokens"),
+                        )
+                    elif event["type"] == "cancelled":
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="cancelled",
+                            service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                            prompt_progress_events=event.get("prompt_progress_events"),
+                        )
+                    elif event["type"] == "error":
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="failed",
+                            error=event.get("error"),
+                            service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                        )
+                    yield json.dumps(event) + "\n"
 
     def render_chat_prompt(self, messages: list[Message]) -> str:
         rendered_messages = [message.model_dump() for message in messages]
@@ -3449,118 +3449,118 @@ class ResidentEngine:
     def stream_openai_completion(self, request: CompletionRequest):
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
-            profile_selection = self.apply_request_runtime_profile(request)
-            metadata = self.request_metadata(
-                prompt=request.prompt,
-                policy=request.policy,
-                prefill_step_size_override=request.prefill_step_size,
-                profile_selection=profile_selection,
-            )
-            run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
-                metadata=metadata,
-            )
-            cache_info.update(admission)
-            self.request_registry.begin(
-                request_id=metadata["request_id"],
-                route="/v1/completions:stream",
-                prompt_tokens=metadata["prompt_tokens_estimate"],
-                policy=metadata["effective_policy"],
-                prefill_step_size=metadata["prefill_step_size"],
-            )
-            for event in self._stream_run_live_jsonl(
-                prompt=run_prompt,
-                max_tokens=request.max_tokens,
-                prefill_step_size=metadata["prefill_step_size"],
-                stop=request.stop,
-                metadata=self.public_metadata(metadata),
-                prompt_cache=prompt_cache,
-                cache_info=cache_info,
-                full_prompt_tokens=metadata["prompt_tokens_estimate"],
-                prompt_tokens_for_generated_cache=metadata["_prompt_tokens"],
-                prompt_text_for_generated_cache=metadata["_prompt"],
-                request_t0=request_t0,
-            ):
-                if event["type"] == "prompt_progress":
-                    comment = {
-                        "request_id": event["request_id"],
-                        "processed_tokens": event["processed_tokens"],
-                        "total_tokens": event["total_tokens"],
-                        "complete": event["complete"],
-                    }
-                    yield f": prompt_progress {json.dumps(comment)}\n\n"
-                elif event["type"] == "token":
-                    chunk = {
-                        "id": f"cmpl-{event['request_id']}",
-                        "object": "text_completion.chunk",
-                        "created": event["created"],
-                        "model": request.model or self.model_path,
-                        "choices": [
-                            {
-                                "text": event["text"],
-                                "index": 0,
-                                "finish_reason": None,
-                            }
-                        ],
-                    }
-                    yield f"data: {json.dumps(chunk)}\n\n"
-                elif event["type"] == "final":
-                    self.record_prefix_prompt(metadata)
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="completed",
-                        service_request_ms=event.get("service_request_ms"),
-                        generation_tokens=event.get("generation_tokens"),
-                    )
-                    chunk = {
-                        "id": f"cmpl-{event['request_id']}",
-                        "object": "text_completion.chunk",
-                        "created": event["created"],
-                        "model": request.model or self.model_path,
-                        "choices": [
-                            {
-                                "text": "",
-                                "index": 0,
-                                "finish_reason": event["stop_reason"],
-                            }
-                        ],
-                        "usage": {
-                            "prompt_tokens": event["prompt_tokens"],
-                            "completion_tokens": event["generation_tokens"],
-                            "total_tokens": event["prompt_tokens"] + event["generation_tokens"],
-                        },
-                        "engine_metrics": event,
-                    }
-                    yield f"data: {json.dumps(chunk)}\n\n"
-                elif event["type"] == "cancelled":
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="cancelled",
-                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                        prompt_progress_events=event.get("prompt_progress_events"),
-                    )
-                    chunk = {
-                        "id": f"cmpl-{event['request_id']}",
-                        "object": "text_completion.chunk",
-                        "created": event["created"],
-                        "model": request.model or self.model_path,
-                        "choices": [
-                            {
-                                "text": "",
-                                "index": 0,
-                                "finish_reason": "cancelled",
-                            }
-                        ],
-                        "engine_metrics": event,
-                    }
-                    yield f"data: {json.dumps(chunk)}\n\n"
-                elif event["type"] == "error":
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="failed",
-                        error=event.get("error"),
-                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                    )
-                    raise RuntimeError(event.get("error", "stream error"))
+            with self.request_runtime_profile_scope(request) as profile_selection:
+                metadata = self.request_metadata(
+                    prompt=request.prompt,
+                    policy=request.policy,
+                    prefill_step_size_override=request.prefill_step_size,
+                    profile_selection=profile_selection,
+                )
+                run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
+                    metadata=metadata,
+                )
+                cache_info.update(admission)
+                self.request_registry.begin(
+                    request_id=metadata["request_id"],
+                    route="/v1/completions:stream",
+                    prompt_tokens=metadata["prompt_tokens_estimate"],
+                    policy=metadata["effective_policy"],
+                    prefill_step_size=metadata["prefill_step_size"],
+                )
+                for event in self._stream_run_live_jsonl(
+                    prompt=run_prompt,
+                    max_tokens=request.max_tokens,
+                    prefill_step_size=metadata["prefill_step_size"],
+                    stop=request.stop,
+                    metadata=self.public_metadata(metadata),
+                    prompt_cache=prompt_cache,
+                    cache_info=cache_info,
+                    full_prompt_tokens=metadata["prompt_tokens_estimate"],
+                    prompt_tokens_for_generated_cache=metadata["_prompt_tokens"],
+                    prompt_text_for_generated_cache=metadata["_prompt"],
+                    request_t0=request_t0,
+                ):
+                    if event["type"] == "prompt_progress":
+                        comment = {
+                            "request_id": event["request_id"],
+                            "processed_tokens": event["processed_tokens"],
+                            "total_tokens": event["total_tokens"],
+                            "complete": event["complete"],
+                        }
+                        yield f": prompt_progress {json.dumps(comment)}\n\n"
+                    elif event["type"] == "token":
+                        chunk = {
+                            "id": f"cmpl-{event['request_id']}",
+                            "object": "text_completion.chunk",
+                            "created": event["created"],
+                            "model": request.model or self.model_path,
+                            "choices": [
+                                {
+                                    "text": event["text"],
+                                    "index": 0,
+                                    "finish_reason": None,
+                                }
+                            ],
+                        }
+                        yield f"data: {json.dumps(chunk)}\n\n"
+                    elif event["type"] == "final":
+                        self.record_prefix_prompt(metadata)
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="completed",
+                            service_request_ms=event.get("service_request_ms"),
+                            generation_tokens=event.get("generation_tokens"),
+                        )
+                        chunk = {
+                            "id": f"cmpl-{event['request_id']}",
+                            "object": "text_completion.chunk",
+                            "created": event["created"],
+                            "model": request.model or self.model_path,
+                            "choices": [
+                                {
+                                    "text": "",
+                                    "index": 0,
+                                    "finish_reason": event["stop_reason"],
+                                }
+                            ],
+                            "usage": {
+                                "prompt_tokens": event["prompt_tokens"],
+                                "completion_tokens": event["generation_tokens"],
+                                "total_tokens": event["prompt_tokens"] + event["generation_tokens"],
+                            },
+                            "engine_metrics": event,
+                        }
+                        yield f"data: {json.dumps(chunk)}\n\n"
+                    elif event["type"] == "cancelled":
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="cancelled",
+                            service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                            prompt_progress_events=event.get("prompt_progress_events"),
+                        )
+                        chunk = {
+                            "id": f"cmpl-{event['request_id']}",
+                            "object": "text_completion.chunk",
+                            "created": event["created"],
+                            "model": request.model or self.model_path,
+                            "choices": [
+                                {
+                                    "text": "",
+                                    "index": 0,
+                                    "finish_reason": "cancelled",
+                                }
+                            ],
+                            "engine_metrics": event,
+                        }
+                        yield f"data: {json.dumps(chunk)}\n\n"
+                    elif event["type"] == "error":
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="failed",
+                            error=event.get("error"),
+                            service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                        )
+                        raise RuntimeError(event.get("error", "stream error"))
         yield "data: [DONE]\n\n"
 
     def openai_chat_completion(self, request: ChatCompletionRequest):
@@ -3615,118 +3615,118 @@ class ResidentEngine:
         prompt = self.render_chat_prompt(request.messages)
         request_t0 = time.perf_counter()
         with self.scheduler.admit() as admission:
-            profile_selection = self.apply_request_runtime_profile(request)
-            metadata = self.request_metadata(
-                prompt=prompt,
-                policy=request.policy,
-                prefill_step_size_override=request.prefill_step_size,
-                profile_selection=profile_selection,
-            )
-            run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
-                metadata=metadata,
-            )
-            cache_info.update(admission)
-            self.request_registry.begin(
-                request_id=metadata["request_id"],
-                route="/v1/chat/completions:stream",
-                prompt_tokens=metadata["prompt_tokens_estimate"],
-                policy=metadata["effective_policy"],
-                prefill_step_size=metadata["prefill_step_size"],
-            )
-            for event in self._stream_run_live_jsonl(
-                prompt=run_prompt,
-                max_tokens=request.max_tokens,
-                prefill_step_size=metadata["prefill_step_size"],
-                stop=request.stop,
-                metadata=self.public_metadata(metadata),
-                prompt_cache=prompt_cache,
-                cache_info=cache_info,
-                full_prompt_tokens=metadata["prompt_tokens_estimate"],
-                prompt_tokens_for_generated_cache=metadata["_prompt_tokens"],
-                prompt_text_for_generated_cache=metadata["_prompt"],
-                request_t0=request_t0,
-            ):
-                if event["type"] == "prompt_progress":
-                    comment = {
-                        "request_id": event["request_id"],
-                        "processed_tokens": event["processed_tokens"],
-                        "total_tokens": event["total_tokens"],
-                        "complete": event["complete"],
-                    }
-                    yield f": prompt_progress {json.dumps(comment)}\n\n"
-                elif event["type"] == "token":
-                    chunk = {
-                        "id": f"chatcmpl-{event['request_id']}",
-                        "object": "chat.completion.chunk",
-                        "created": event["created"],
-                        "model": request.model or self.model_path,
-                        "choices": [
-                            {
-                                "index": 0,
-                                "delta": {"content": event["text"]},
-                                "finish_reason": None,
-                            }
-                        ],
-                    }
-                    yield f"data: {json.dumps(chunk)}\n\n"
-                elif event["type"] == "final":
-                    self.record_prefix_prompt(metadata)
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="completed",
-                        service_request_ms=event.get("service_request_ms"),
-                        generation_tokens=event.get("generation_tokens"),
-                    )
-                    chunk = {
-                        "id": f"chatcmpl-{event['request_id']}",
-                        "object": "chat.completion.chunk",
-                        "created": event["created"],
-                        "model": request.model or self.model_path,
-                        "choices": [
-                            {
-                                "index": 0,
-                                "delta": {},
-                                "finish_reason": event["stop_reason"],
-                            }
-                        ],
-                        "usage": {
-                            "prompt_tokens": event["prompt_tokens"],
-                            "completion_tokens": event["generation_tokens"],
-                            "total_tokens": event["prompt_tokens"] + event["generation_tokens"],
-                        },
-                        "engine_metrics": event,
-                    }
-                    yield f"data: {json.dumps(chunk)}\n\n"
-                elif event["type"] == "cancelled":
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="cancelled",
-                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                        prompt_progress_events=event.get("prompt_progress_events"),
-                    )
-                    chunk = {
-                        "id": f"chatcmpl-{event['request_id']}",
-                        "object": "chat.completion.chunk",
-                        "created": event["created"],
-                        "model": request.model or self.model_path,
-                        "choices": [
-                            {
-                                "index": 0,
-                                "delta": {},
-                                "finish_reason": "cancelled",
-                            }
-                        ],
-                        "engine_metrics": event,
-                    }
-                    yield f"data: {json.dumps(chunk)}\n\n"
-                elif event["type"] == "error":
-                    self.request_registry.finish(
-                        metadata["request_id"],
-                        status="failed",
-                        error=event.get("error"),
-                        service_request_ms=1e3 * (time.perf_counter() - request_t0),
-                    )
-                    raise RuntimeError(event.get("error", "stream error"))
+            with self.request_runtime_profile_scope(request) as profile_selection:
+                metadata = self.request_metadata(
+                    prompt=prompt,
+                    policy=request.policy,
+                    prefill_step_size_override=request.prefill_step_size,
+                    profile_selection=profile_selection,
+                )
+                run_prompt, prompt_cache, cache_info = self.prepare_prefix_cache_reuse(
+                    metadata=metadata,
+                )
+                cache_info.update(admission)
+                self.request_registry.begin(
+                    request_id=metadata["request_id"],
+                    route="/v1/chat/completions:stream",
+                    prompt_tokens=metadata["prompt_tokens_estimate"],
+                    policy=metadata["effective_policy"],
+                    prefill_step_size=metadata["prefill_step_size"],
+                )
+                for event in self._stream_run_live_jsonl(
+                    prompt=run_prompt,
+                    max_tokens=request.max_tokens,
+                    prefill_step_size=metadata["prefill_step_size"],
+                    stop=request.stop,
+                    metadata=self.public_metadata(metadata),
+                    prompt_cache=prompt_cache,
+                    cache_info=cache_info,
+                    full_prompt_tokens=metadata["prompt_tokens_estimate"],
+                    prompt_tokens_for_generated_cache=metadata["_prompt_tokens"],
+                    prompt_text_for_generated_cache=metadata["_prompt"],
+                    request_t0=request_t0,
+                ):
+                    if event["type"] == "prompt_progress":
+                        comment = {
+                            "request_id": event["request_id"],
+                            "processed_tokens": event["processed_tokens"],
+                            "total_tokens": event["total_tokens"],
+                            "complete": event["complete"],
+                        }
+                        yield f": prompt_progress {json.dumps(comment)}\n\n"
+                    elif event["type"] == "token":
+                        chunk = {
+                            "id": f"chatcmpl-{event['request_id']}",
+                            "object": "chat.completion.chunk",
+                            "created": event["created"],
+                            "model": request.model or self.model_path,
+                            "choices": [
+                                {
+                                    "index": 0,
+                                    "delta": {"content": event["text"]},
+                                    "finish_reason": None,
+                                }
+                            ],
+                        }
+                        yield f"data: {json.dumps(chunk)}\n\n"
+                    elif event["type"] == "final":
+                        self.record_prefix_prompt(metadata)
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="completed",
+                            service_request_ms=event.get("service_request_ms"),
+                            generation_tokens=event.get("generation_tokens"),
+                        )
+                        chunk = {
+                            "id": f"chatcmpl-{event['request_id']}",
+                            "object": "chat.completion.chunk",
+                            "created": event["created"],
+                            "model": request.model or self.model_path,
+                            "choices": [
+                                {
+                                    "index": 0,
+                                    "delta": {},
+                                    "finish_reason": event["stop_reason"],
+                                }
+                            ],
+                            "usage": {
+                                "prompt_tokens": event["prompt_tokens"],
+                                "completion_tokens": event["generation_tokens"],
+                                "total_tokens": event["prompt_tokens"] + event["generation_tokens"],
+                            },
+                            "engine_metrics": event,
+                        }
+                        yield f"data: {json.dumps(chunk)}\n\n"
+                    elif event["type"] == "cancelled":
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="cancelled",
+                            service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                            prompt_progress_events=event.get("prompt_progress_events"),
+                        )
+                        chunk = {
+                            "id": f"chatcmpl-{event['request_id']}",
+                            "object": "chat.completion.chunk",
+                            "created": event["created"],
+                            "model": request.model or self.model_path,
+                            "choices": [
+                                {
+                                    "index": 0,
+                                    "delta": {},
+                                    "finish_reason": "cancelled",
+                                }
+                            ],
+                            "engine_metrics": event,
+                        }
+                        yield f"data: {json.dumps(chunk)}\n\n"
+                    elif event["type"] == "error":
+                        self.request_registry.finish(
+                            metadata["request_id"],
+                            status="failed",
+                            error=event.get("error"),
+                            service_request_ms=1e3 * (time.perf_counter() - request_t0),
+                        )
+                        raise RuntimeError(event.get("error", "stream error"))
         yield "data: [DONE]\n\n"
 
 

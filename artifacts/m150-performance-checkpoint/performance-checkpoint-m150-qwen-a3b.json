@@ -1,0 +1,54 @@
+{
+  "artifacts": {
+    "cache_threshold_and_turn_gates": {
+      "path": "artifacts/m145-m146-cache-turn-gates/cache-threshold-and-turn-gates-m145-m146-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "dax_product_mode_smoke": {
+      "path": "artifacts/m148-dax-product-mode-smoke/dax-product-mode-smoke-m148-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "live_product_regression_suite": {
+      "artifact_count": 15,
+      "path": "artifacts/m148-live-product-mode-suite/live-product-regression-suite-m148-qwen-a3b.json",
+      "readiness": "live-regression-passing",
+      "verdict": "PASS"
+    },
+    "request_scoped_cache_admission": {
+      "path": "artifacts/m146-cache-threshold-tuning/request-scoped-cache-admission-m146-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "request_scoped_concurrency": {
+      "path": "artifacts/m149-request-scoped-concurrency/request-scoped-concurrency-m149-qwen-a3b.json",
+      "readiness": "request-profile-no-bleed",
+      "verdict": "PASS"
+    },
+    "streaming_request_metadata_scope": {
+      "path": "artifacts/m144-streaming-metadata-scope/streaming-request-metadata-scope-m144-qwen-a3b.json",
+      "readiness": "streaming-request-scope-parity",
+      "verdict": "PASS"
+    }
+  },
+  "covered_milestones": [
+    "M143",
+    "M144",
+    "M145",
+    "M146",
+    "M147",
+    "M148",
+    "M149",
+    "M150"
+  ],
+  "decision": "Continue into concurrency hardening and first reusable-turn latency reduction before claiming complete request-scoped runtime isolation.",
+  "failures": [],
+  "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "notes": [
+    "Streaming routes now use request_runtime_profile_scope for request-metadata profile application.",
+    "The expanded live product regression suite covers the new streaming, cache-threshold, Dax product-mode, and concurrency gates.",
+    "A first M149 concurrency probe attempt previously observed profile bleed; the checked-in passing artifact is the rerun after confirming scoped requests restore the active profile. Treat concurrency stress hardening as the next lane."
+  ],
+  "readiness": "m143-m150-passing-with-concurrency-follow-up",
+  "tag": "m150-qwen-a3b",
+  "type": "performance_checkpoint",
+  "verdict": "PASS"
+}
