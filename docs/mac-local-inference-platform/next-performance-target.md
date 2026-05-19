@@ -784,3 +784,38 @@ Decision:
 - Next target is M101: add a default profile decision gate that requires the
   async, first-hit, low-memory, and wall-time evidence before claiming the
   default product profile decision is ready.
+
+## M101 Result
+
+M101 adds a default profile decision gate:
+
+- script: `benchmarks/python/dax_default_profile_decision_gate.py`
+- artifact:
+  `artifacts/m101-default-profile-decision-gate/default-profile-decision-gate-m101-qwen-a3b.json`
+
+Evidence required by the gate:
+
+- M80 async maturation gate
+- M97 direct first-hit profile summary
+- M98 direct low-memory profile summary
+- M100 operator wall-time report
+- M96 performance decision report
+- M99 routing documentation
+
+Result:
+
+- gate verdict: `PASS`
+- checks: `20`
+- failures: `0`
+- async mature speedup: `6.889x`
+- first-hit mature speedup: `2.454x`
+- low-memory mature speedup: `2.585x`
+- minimum mature wall-time speedup across M100 cases: `1.425x`
+
+Decision:
+
+- Default coding-agent profile: `agent-workspace-async`
+- Immediate second-turn profile: `agent-workspace-first-hit`
+- Lower-memory Mac profile: `agent-workspace-low-memory`
+- Next target is M102: expose these gate-backed profile choices clearly in the
+  operator/product control surface.

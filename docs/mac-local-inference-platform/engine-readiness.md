@@ -475,6 +475,14 @@ Readiness interpretation:
   - mature service speedups: `2.382x` to `2.585x`
   - mature wall-time speedups: `1.425x` to `2.190x`
   - mean Dax/operator overhead: roughly `1.5s` to `1.9s`
+- M101 gates the default profile decision:
+  - script: `benchmarks/python/dax_default_profile_decision_gate.py`
+  - artifact:
+    `artifacts/m101-default-profile-decision-gate/default-profile-decision-gate-m101-qwen-a3b.json`
+  - result: `PASS`, `20` checks, `0` failures
+  - default coding-agent profile: `agent-workspace-async`
+  - explicit immediate second-turn profile: `agent-workspace-first-hit`
+  - explicit lower-memory profile: `agent-workspace-low-memory`
 
 ## Current Qwen Result
 

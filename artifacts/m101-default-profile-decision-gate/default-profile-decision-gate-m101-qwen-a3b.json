@@ -1,0 +1,173 @@
+{
+  "checks": [
+    {
+      "actual": "PASS",
+      "expected": "PASS",
+      "name": "async_gate_passes",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 6.889396947855158,
+      "expected": ">=2.0",
+      "name": "async_mature_speedup",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 9.0,
+      "expected": "<=32.0",
+      "name": "async_mature_prefill_bounded",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "expected": "PASS",
+      "name": "first_hit_gate_passes",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "agent-workspace-first-hit",
+      "expected": "agent-workspace-first-hit",
+      "name": "first_hit_profile",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 18.0,
+      "expected": "<=32.0",
+      "name": "first_hit_conversion_prefill_bounded",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 2.453519674350216,
+      "expected": ">=2.0",
+      "name": "first_hit_mature_speedup",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "expected": "PASS",
+      "name": "low_memory_gate_passes",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "agent-workspace-low-memory",
+      "expected": "agent-workspace-low-memory",
+      "name": "low_memory_profile",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 18.0,
+      "expected": "<=32.0",
+      "name": "low_memory_conversion_prefill_bounded",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 2.5851577387361138,
+      "expected": ">=2.0",
+      "name": "low_memory_mature_speedup",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "expected": "PASS",
+      "name": "wall_time_report_passes",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 4,
+      "expected": 4,
+      "name": "wall_time_cases_present",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 1.424517771876861,
+      "expected": ">=1.4",
+      "name": "wall_time_min_speedup",
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "decision_report_mentions_agent-workspace-async",
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "routing_doc_mentions_agent-workspace-async",
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "decision_report_mentions_agent-workspace-first-hit",
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "routing_doc_mentions_agent-workspace-first-hit",
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "decision_report_mentions_agent-workspace-low-memory",
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "name": "routing_doc_mentions_agent-workspace-low-memory",
+      "verdict": "PASS"
+    }
+  ],
+  "evidence": {
+    "async_gate": "artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json",
+    "decision_report": "docs/mac-local-inference-platform/performance-decision-report-m91-m96.md",
+    "first_hit_summary": "artifacts/m97-direct-first-hit-profile/dax-product-first-hit-summary-m97-qwen-a3b-first-hit-direct.json",
+    "low_memory_summary": "artifacts/m98-direct-low-memory-profile/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-direct.json",
+    "routing_doc": "docs/mac-local-inference-platform/engine-readiness.md",
+    "wall_time_report": "artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json"
+  },
+  "failures": [],
+  "recommended_profiles": {
+    "default_coding_agent": "agent-workspace-async",
+    "diagnostics": "diagnostics",
+    "immediate_second_turn": "agent-workspace-first-hit",
+    "interactive": "interactive",
+    "lower_memory_mac": "agent-workspace-low-memory"
+  },
+  "summaries": {
+    "async": {
+      "mature_cache_hit_speedup_vs_baseline": 6.889396947855158,
+      "mature_hit_actual_prefill_tokens": 9.0,
+      "verdict": "PASS"
+    },
+    "first_hit": {
+      "conversion_actual_prefill_tokens": 18.0,
+      "conversion_ratio_vs_baseline": 0.7827566724520874,
+      "conversion_turn": 2,
+      "dax_profile": "agent-workspace-first-hit",
+      "mature_hit_service_request_ms": 621.8997919932008,
+      "mature_hit_speedup_vs_baseline": 2.453519674350216,
+      "verdict": "PASS"
+    },
+    "low_memory": {
+      "conversion_actual_prefill_tokens": 18.0,
+      "conversion_ratio_vs_baseline": 0.7755066277387822,
+      "conversion_turn": 2,
+      "dax_profile": "agent-workspace-low-memory",
+      "mature_hit_service_request_ms": 586.3892501220107,
+      "mature_hit_speedup_vs_baseline": 2.5851577387361138,
+      "verdict": "PASS"
+    },
+    "wall_time": {
+      "case_count": 4,
+      "min_baseline_to_mature_wall_speedup": 1.424517771876861,
+      "verdict": "PASS"
+    }
+  },
+  "tag": "m101-qwen-a3b",
+  "type": "dax_default_profile_decision_gate",
+  "verdict": "PASS"
+}

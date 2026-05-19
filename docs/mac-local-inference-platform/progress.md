@@ -2888,3 +2888,23 @@
   - M100 conclusion: the engine improvements are real, but product-visible
     speed is now partially capped by Dax/operator overhead outside the resident
     engine request path.
+- Completed M101 default profile decision gate:
+  - added `benchmarks/python/dax_default_profile_decision_gate.py`
+  - generated artifact:
+    `artifacts/m101-default-profile-decision-gate/default-profile-decision-gate-m101-qwen-a3b.json`
+  - gate checks M80 async evidence, M97 first-hit evidence, M98 low-memory
+    evidence, M100 wall-time evidence, the M96 decision report, and M99 routing
+    documentation
+  - validation passed:
+    - gate verdict `PASS`
+    - `20` checks, `0` failures
+    - `python3 -m py_compile benchmarks/python/dax_default_profile_decision_gate.py`
+    - `git diff --check`
+  - M101 decision:
+    - default coding-agent profile: `agent-workspace-async`
+    - immediate second-turn profile: `agent-workspace-first-hit`
+    - lower-memory Mac profile: `agent-workspace-low-memory`
+    - interactive profile: `interactive`
+    - diagnostics profile: `diagnostics`
+  - M101 conclusion: default profile selection is now gate-backed instead of
+    only documented as a recommendation.
