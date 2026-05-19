@@ -1,0 +1,70 @@
+{
+  "audited_count": 6,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M187",
+      "passed": true,
+      "path": "artifacts/m187-operator-readiness-endpoint/operator-readiness-endpoint-m187-qwen-a3b.json",
+      "readiness": "operator-readiness-endpoint-ready",
+      "type": "operator_readiness_endpoint_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M188",
+      "passed": true,
+      "path": "artifacts/m188-operator-readiness-refresh/operator-readiness-refresh-m188-qwen-a3b.json",
+      "readiness": "operator-readiness-ready",
+      "type": "operator_readiness_bundle",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M189",
+      "passed": true,
+      "path": "artifacts/m189-model-candidate-registry/model-candidate-registry-m189-qwen.json",
+      "readiness": "model-candidate-registry-ready",
+      "type": "model_candidate_registry",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M190",
+      "passed": true,
+      "path": "artifacts/m190-lower-memory-candidate/lower-memory-candidate-gate-m190-qwen.json",
+      "readiness": "lower-memory-candidate-gated",
+      "type": "lower_memory_candidate_gate",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M191",
+      "passed": true,
+      "path": "artifacts/m191-operator-ui-field-map/operator-ui-field-map-m191.json",
+      "readiness": "operator-ui-field-map-ready",
+      "type": "operator_ui_field_map",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M192",
+      "passed": true,
+      "path": "artifacts/m192-prompt-processing-next-target/prompt-processing-next-target-m192-qwen-a3b.json",
+      "readiness": "prompt-processing-next-target-ready",
+      "type": "prompt_processing_next_target_gate",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m193-m186-m193",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

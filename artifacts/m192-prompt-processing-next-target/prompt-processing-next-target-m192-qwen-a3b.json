@@ -1,0 +1,22 @@
+{
+  "current": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "best_hit_service_request_ms": 204.03116615489125,
+    "best_hit_speedup_vs_baseline": 6.91600447859388,
+    "quality_threshold_verdict": "PASS"
+  },
+  "failures": [],
+  "next_target": {
+    "focus": "reduce mature reusable-turn latency without quality regression",
+    "maintain_min_speedup": 4.0,
+    "maintain_quality_threshold": "PASS",
+    "mature_hit_service_request_ms": 175.0
+  },
+  "readiness": "prompt-processing-next-target-ready",
+  "tag": "m192-qwen-a3b",
+  "type": "prompt_processing_next_target_gate",
+  "verdict": "PASS",
+  "warnings": [
+    "mature hit 204.031ms is above next target 175.000ms"
+  ]
+}

@@ -2081,3 +2081,47 @@ Decision:
 
 - UI consumers now have a field-level map for readiness headers, badges, runtime
   details, memory, warnings, and failures.
+
+## M192 Prompt-Processing Next Target Gate
+
+M192 reopens the prompt-processing performance lane with a quality-protected
+next target.
+
+Artifact:
+
+- `artifacts/m192-prompt-processing-next-target/prompt-processing-next-target-m192-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `prompt-processing-next-target-ready`
+- baseline service request: `1411.08045889996 ms`
+- mature reusable-turn service request: `204.03116615489125 ms`
+- speedup: `6.91600447859388x`
+- quality threshold: `PASS`
+- failures: `0`
+- warnings: `1`
+
+Decision:
+
+- The next speed target is to reduce mature reusable-turn latency toward
+  `175 ms` while preserving quality threshold `PASS` and at least `4x` speedup.
+
+## M193 Milestone Completion Audit
+
+M193 audits the M186-M193 batch against concrete artifacts.
+
+Artifact:
+
+- `artifacts/m193-completion-audit/milestone-completion-audit-m193-m186-m193.json`
+
+Result:
+
+- audit verdict: `PASS`
+- readiness: `milestone-batch-complete`
+- audited artifacts: `6`
+- failures: `0`
+
+Decision:
+
+- The M186-M193 milestone batch is complete from the repo artifact perspective.

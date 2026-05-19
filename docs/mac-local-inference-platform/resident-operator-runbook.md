@@ -814,3 +814,22 @@ Expected result:
 - `operator_readiness_bundle PASS`
 - readiness: `operator-readiness-ready`
 - failures: `0`
+
+Gate the next prompt-processing target:
+
+```bash
+python3 benchmarks/python/prompt_processing_next_target_gate.py \
+  --first-turn-json artifacts/m180-live-request-memory-suite/request-scoped-gates-m180-qwen-a3b/m137_first_reusable_turn_latency-m180-qwen-a3b.json \
+  --quality-threshold-json artifacts/m180-live-request-memory-suite/quality-threshold-gate-m180-qwen-a3b.json \
+  --output-json artifacts/m192-prompt-processing-next-target/prompt-processing-next-target-m192-qwen-a3b.json \
+  --tag m192-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `prompt_processing_next_target_gate PASS`
+- readiness: `prompt-processing-next-target-ready`
+- failures: `0`
+- warning is acceptable when current mature reusable-turn latency is above the
+  next target but the existing quality and speedup gates pass

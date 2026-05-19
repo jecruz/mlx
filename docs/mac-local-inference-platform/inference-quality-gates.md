@@ -163,6 +163,8 @@ performance:
 - `M189` model candidate registry
 - `M190` lower-memory candidate gate
 - `M191` operator UI field map
+- `M192` prompt-processing next-target gate with quality threshold
+- `M193` milestone completion audit for M186-M193
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport
