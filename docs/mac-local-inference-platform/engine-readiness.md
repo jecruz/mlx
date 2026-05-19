@@ -673,3 +673,30 @@ Remaining constraints:
   lane.
 - The next engine milestone should convert this into a one-command live
   regression suite and add server-side profile selection from request metadata.
+
+## M121 One-Command Live Regression
+
+M121 converts the M115-M119 validation sequence into a focused live regression
+command:
+
+- script: `benchmarks/python/run_live_product_regression_suite.py`
+- artifact:
+  `artifacts/m121-live-product-regression-suite/live-product-regression-suite-m121-qwen-a3b.json`
+
+Validated result:
+
+- suite verdict: `PASS`
+- readiness: `live-regression-passing`
+- evidence artifacts: `7`
+- resident repeated-context speedup: `7.166x`
+- fast-path overhead mean: `4.234 ms`
+- lower-memory max peak memory: `24.056 GB`
+- auto-selected first-hit speedup: `5.265x`
+
+Operational implication:
+
+- Product readiness can now be checked by running the M121 suite against a live
+  resident server.
+- The next readiness gap is server-side profile selection from request metadata,
+  because product clients should send workload intent, not benchmark-specific
+  profile flags.

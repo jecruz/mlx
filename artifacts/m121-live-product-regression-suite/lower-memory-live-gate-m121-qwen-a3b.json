@@ -1,0 +1,22 @@
+{
+  "failures": [],
+  "input": "artifacts/m121-live-product-regression-suite/dax-low-memory-live-m121-qwen-a3b.jsonl",
+  "metrics": {
+    "conversion_prefill_tokens": 11.0,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_peak_memory_gb": 24.056300974,
+    "mean_peak_memory_gb": 24.056300974
+  },
+  "profiles": [
+    "agent-workspace-low-memory"
+  ],
+  "row_count": 4,
+  "tag": "m121-qwen-a3b",
+  "thresholds": {
+    "max_cache_memory_limit_mb": 64.0,
+    "max_conversion_prefill_tokens": 32.0,
+    "max_peak_memory_gb": 32.0
+  },
+  "type": "lower_memory_runtime_gate",
+  "verdict": "PASS"
+}

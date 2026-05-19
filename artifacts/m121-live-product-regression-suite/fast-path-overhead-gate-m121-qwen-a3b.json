@@ -1,0 +1,19 @@
+{
+  "failures": [],
+  "input": "artifacts/m121-live-product-regression-suite/dax-resident-client-m121-qwen-a3b.jsonl",
+  "metrics": {
+    "max_overhead_ms": 4.396333126351237,
+    "mean_overhead_ms": 4.234364547301084,
+    "min_overhead_ms": 4.032623954117298,
+    "p95_overhead_ms": 4.396333126351237
+  },
+  "overhead_count": 4,
+  "row_count": 4,
+  "tag": "m121-qwen-a3b",
+  "thresholds": {
+    "max_mean_overhead_ms": 500.0,
+    "max_p95_overhead_ms": null
+  },
+  "type": "dax_operator_overhead_gate",
+  "verdict": "PASS"
+}

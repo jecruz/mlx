@@ -3204,3 +3204,21 @@
     - `python3 -m py_compile benchmarks/python/dax_repeated_context_bench.py benchmarks/python/live_prompt_transport_sweep.py benchmarks/python/profile_auto_selection_runtime_gate.py benchmarks/python/live_product_readiness_bundle.py`
   - M120 conclusion: M115-M119 are packaged into a live product-readiness
     bundle for the Qwen3.6-35B-A3B MLX runtime lane.
+- Completed M121 one-command live product regression suite:
+  - added `benchmarks/python/run_live_product_regression_suite.py`
+  - generated artifact:
+    `artifacts/m121-live-product-regression-suite/live-product-regression-suite-m121-qwen-a3b.json`
+  - validation passed:
+    - suite verdict `PASS`
+    - readiness `live-regression-passing`
+    - evidence artifacts `7`
+    - failures `0`
+    - resident repeated-context speedup `7.166x`
+    - fast-path overhead mean `4.234 ms`
+    - prompt transport sweep rows `8`
+    - lower-memory max peak memory `24.056 GB`
+    - auto-selected first-hit speedup `5.265x`
+    - `python3 -m py_compile benchmarks/python/run_live_product_regression_suite.py`
+    - `git diff --check`
+  - M121 conclusion: the live product validation path is now repeatable from
+    one command instead of being a manually sequenced set of milestone runs.

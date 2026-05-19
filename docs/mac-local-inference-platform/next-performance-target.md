@@ -1230,3 +1230,29 @@ Decision:
 - Next performance target should move to server-side automation and profiling:
   one-command live regression, request-derived profile selection, and
   Instruments-backed prompt-processing/JIT breakdowns.
+
+## M121 Result
+
+M121 adds the one-command live product regression suite:
+
+- script: `benchmarks/python/run_live_product_regression_suite.py`
+- artifact:
+  `artifacts/m121-live-product-regression-suite/live-product-regression-suite-m121-qwen-a3b.json`
+
+Result:
+
+- suite verdict: `PASS`
+- readiness: `live-regression-passing`
+- evidence artifacts: `7`
+- failures: `0`
+- resident repeated-context speedup: `7.166x`
+- fast-path overhead mean: `4.234 ms`
+- prompt transport sweep rows: `8`
+- lower-memory max peak memory: `24.056 GB`
+- auto-selected first-hit speedup: `5.265x`
+
+Decision:
+
+- M115-M119 can now be rerun as a focused live regression command.
+- The next target is M122: move profile selection into server-side request
+  metadata handling so product clients do not need to choose benchmark flags.

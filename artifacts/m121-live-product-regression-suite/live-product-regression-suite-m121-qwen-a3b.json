@@ -1,0 +1,80 @@
+{
+  "artifacts": {
+    "auto_selected_client": {
+      "auto_selected_profile": "agent-workspace-first-hit",
+      "best_hit_speedup_vs_baseline": 5.265425578105074,
+      "hit_count": 2,
+      "path": "artifacts/m121-live-product-regression-suite/dax-auto-selected-m121-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "auto_selection_gate": {
+      "path": "artifacts/m121-live-product-regression-suite/auto-selection-runtime-gate-m121-qwen-a3b.json",
+      "row_count": 0,
+      "type": "profile_auto_selection_runtime_gate",
+      "verdict": "PASS"
+    },
+    "low_memory_client": {
+      "best_hit_speedup_vs_baseline": 9.709441783331302,
+      "hit_count": 1,
+      "path": "artifacts/m121-live-product-regression-suite/dax-low-memory-live-m121-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    },
+    "low_memory_gate": {
+      "metrics": {
+        "conversion_prefill_tokens": 11.0,
+        "max_cache_memory_limit_mb": 64.0,
+        "max_peak_memory_gb": 24.056300974,
+        "mean_peak_memory_gb": 24.056300974
+      },
+      "path": "artifacts/m121-live-product-regression-suite/lower-memory-live-gate-m121-qwen-a3b.json",
+      "row_count": 4,
+      "type": "lower_memory_runtime_gate",
+      "verdict": "PASS"
+    },
+    "overhead_gate": {
+      "metrics": {
+        "max_overhead_ms": 4.396333126351237,
+        "mean_overhead_ms": 4.234364547301084,
+        "min_overhead_ms": 4.032623954117298,
+        "p95_overhead_ms": 4.396333126351237
+      },
+      "path": "artifacts/m121-live-product-regression-suite/fast-path-overhead-gate-m121-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_operator_overhead_gate",
+      "verdict": "PASS"
+    },
+    "prompt_transport_sweep": {
+      "path": "artifacts/m121-live-product-regression-suite/live-prompt-transport-sweep-m121-qwen-a3b.json",
+      "row_count": 8,
+      "type": "live_prompt_transport_sweep",
+      "verdict": "PASS"
+    },
+    "resident_client": {
+      "best_hit_speedup_vs_baseline": 7.166334206686214,
+      "hit_count": 2,
+      "path": "artifacts/m121-live-product-regression-suite/dax-resident-client-m121-qwen-a3b.json",
+      "row_count": 4,
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "covered_milestones": [
+    "M115",
+    "M116",
+    "M117",
+    "M118",
+    "M119",
+    "M121"
+  ],
+  "failures": [],
+  "output_dir": "artifacts/m121-live-product-regression-suite",
+  "readiness": "live-regression-passing",
+  "tag": "m121-qwen-a3b",
+  "type": "live_product_regression_suite",
+  "verdict": "PASS"
+}
