@@ -490,6 +490,13 @@ Readiness interpretation:
   - `/profile first-hit` routes to `agent-workspace-first-hit`
   - `/profile low-memory` routes to `agent-workspace-low-memory`
   - `/profiles` and `/profile recommended` show the shortcut mapping
+- M103 defines the operator-overhead reduction target:
+  - script: `benchmarks/python/dax_operator_overhead_reduction_report.py`
+  - artifact:
+    `artifacts/m103-operator-overhead-reduction/operator-overhead-reduction-m103-qwen-a3b.json`
+  - result: `PASS`, mean operator overhead `1635.49 ms`
+  - target: reduce product invocation overhead toward `500 ms`
+  - priority: avoid per-request Dax CLI startup for repeated product turns
 
 ## Current Qwen Result
 

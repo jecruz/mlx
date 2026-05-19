@@ -846,3 +846,29 @@ Decision:
   gate-backed modes.
 - The next performance lane should move from profile selection to reducing
   operator wall-time overhead and broadening prompt-processing sweeps.
+
+## M103 Result
+
+M103 converts the M100 wall-time finding into a measurable reduction target:
+
+- script: `benchmarks/python/dax_operator_overhead_reduction_report.py`
+- artifact:
+  `artifacts/m103-operator-overhead-reduction/operator-overhead-reduction-m103-qwen-a3b.json`
+
+Result:
+
+- report verdict: `PASS`
+- cases covered: `4`
+- mean operator overhead: `1635.49 ms`
+- maximum operator overhead: above the `1000 ms` warning threshold
+- target operator overhead: `500 ms`
+- projected mature-turn wall-time reduction: about `47.4%`
+
+Decision:
+
+- Avoiding per-request Dax CLI process startup is now the primary product
+  overhead target.
+- Product gates should continue reporting both `wall_ms` and
+  `service_request_ms`.
+- Next target is M104: broaden prompt-processing evidence so the next engine
+  work distinguishes raw prompt bottlenecks from operator overhead.

@@ -2925,3 +2925,18 @@
     - `git diff --check -- packages/coding-agent/src/cli/mlx-engine-status.ts packages/coding-agent/test/mlx-engine-status.test.ts`
   - M102 conclusion: the gate-backed profile decision is exposed as
     operator-friendly TUI controls, not only as raw MLX profile names.
+- Completed M103 operator overhead reduction target:
+  - added `benchmarks/python/dax_operator_overhead_reduction_report.py`
+  - generated artifact:
+    `artifacts/m103-operator-overhead-reduction/operator-overhead-reduction-m103-qwen-a3b.json`
+  - validation passed:
+    - report verdict `PASS`
+    - `python3 -m py_compile benchmarks/python/dax_operator_overhead_reduction_report.py`
+    - `git diff --check`
+  - M103 result:
+    - mean operator overhead across M100 cases: `1635.49 ms`
+    - target operator overhead: `500 ms`
+    - projected mature-turn wall-time reduction: about `47.4%`
+  - M103 conclusion: the next product-speed bottleneck is measurable outside
+    MLX service time; the top action is avoiding per-request Dax CLI process
+    startup for repeated product calls.

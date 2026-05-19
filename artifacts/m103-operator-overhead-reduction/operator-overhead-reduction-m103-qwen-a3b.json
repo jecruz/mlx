@@ -1,0 +1,114 @@
+{
+  "case_count": 4,
+  "cases": [
+    {
+      "current": {
+        "baseline_service_ms": 1525.8433751296252,
+        "baseline_wall_ms": 4656.558790942654,
+        "mature_service_ms": 621.8997919932008,
+        "mature_wall_ms": 2126.343207899481,
+        "mean_operator_overhead_ms": 1921.6318433755077,
+        "wall_speedup": 2.1899375292019108
+      },
+      "dax_profile": "agent-workspace-first-hit",
+      "label": "m97_first_hit_direct",
+      "target": {
+        "mature_wall_reduction_ms": 1004.4434159062803,
+        "mature_wall_reduction_pct": 0.4723806637492565,
+        "operator_overhead_ms": 500.0,
+        "projected_baseline_wall_ms": 2025.8433751296252,
+        "projected_mature_wall_ms": 1121.8997919932008,
+        "projected_wall_speedup": 1.8057257783517824
+      }
+    },
+    {
+      "current": {
+        "baseline_service_ms": 1512.1666660998017,
+        "baseline_wall_ms": 3052.0520000718534,
+        "mature_service_ms": 634.8918341100216,
+        "mature_wall_ms": 2142.5159168429673,
+        "mean_operator_overhead_ms": 1512.6510312547907,
+        "wall_speedup": 1.424517771876861
+      },
+      "dax_profile": "agent-workspace-first-hit",
+      "label": "m97_first_hit_suite",
+      "target": {
+        "mature_wall_reduction_ms": 1007.6240827329457,
+        "mature_wall_reduction_pct": 0.47029946186710087,
+        "operator_overhead_ms": 500.0,
+        "projected_baseline_wall_ms": 2012.1666660998017,
+        "projected_mature_wall_ms": 1134.8918341100216,
+        "projected_wall_speedup": 1.7730030348466963
+      }
+    },
+    {
+      "current": {
+        "baseline_service_ms": 1515.9087078645825,
+        "baseline_wall_ms": 3147.987165953964,
+        "mature_service_ms": 586.3892501220107,
+        "mature_wall_ms": 2087.53625000827,
+        "mean_operator_overhead_ms": 1565.2886352618225,
+        "wall_speedup": 1.5079916173630483
+      },
+      "dax_profile": "agent-workspace-low-memory",
+      "label": "m98_low_memory_direct",
+      "target": {
+        "mature_wall_reduction_ms": 1001.1469998862594,
+        "mature_wall_reduction_pct": 0.4795830491002459,
+        "operator_overhead_ms": 500.0,
+        "projected_baseline_wall_ms": 2015.9087078645825,
+        "projected_mature_wall_ms": 1086.3892501220107,
+        "projected_wall_speedup": 1.8556044324243626
+      }
+    },
+    {
+      "current": {
+        "baseline_service_ms": 1488.238374935463,
+        "baseline_wall_ms": 3076.6803750302643,
+        "mature_service_ms": 615.8522090408951,
+        "mature_wall_ms": 2122.771707829088,
+        "mean_operator_overhead_ms": 1542.3691247124225,
+        "wall_speedup": 1.44936940872305
+      },
+      "dax_profile": "agent-workspace-low-memory",
+      "label": "m98_low_memory_suite",
+      "target": {
+        "mature_wall_reduction_ms": 1006.9194987881929,
+        "mature_wall_reduction_pct": 0.4743418687344139,
+        "operator_overhead_ms": 500.0,
+        "projected_baseline_wall_ms": 1988.238374935463,
+        "projected_mature_wall_ms": 1115.852209040895,
+        "projected_wall_speedup": 1.7818115686166067
+      }
+    }
+  ],
+  "failures": [],
+  "recommendations": [
+    {
+      "item": "Avoid per-request Dax CLI process startup for benchmark/product calls.",
+      "priority": 1,
+      "reason": "M100 wall time includes large overhead outside resident service_request_ms."
+    },
+    {
+      "item": "Keep a resident Dax client/session or direct transport for repeated prompt turns.",
+      "priority": 2,
+      "reason": "The model service path is already faster than operator-visible wall time."
+    },
+    {
+      "item": "Track wall_ms, service_request_ms, and overhead_ms in every product-path gate.",
+      "priority": 3,
+      "reason": "Service-only wins can be hidden by product invocation overhead."
+    }
+  ],
+  "source_report": "artifacts/m100-operator-wall-time/dax-operator-wall-time-m100-qwen-a3b.json",
+  "summary": {
+    "max_operator_overhead_ms": 1921.6318433755077,
+    "mean_operator_overhead_ms": 1635.4851586511359,
+    "mean_projected_mature_wall_reduction_pct": 0.4741512608627543
+  },
+  "tag": "m103-qwen-a3b",
+  "target_overhead_ms": 500.0,
+  "type": "dax_operator_overhead_reduction_report",
+  "verdict": "PASS",
+  "warn_overhead_ms": 1000.0
+}
