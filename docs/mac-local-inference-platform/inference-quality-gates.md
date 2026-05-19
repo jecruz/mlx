@@ -152,6 +152,7 @@ performance:
 - `M178` live proof of per-request memory metrics
 - `M179` one-command model swap artifact workflow
 - `M180` live product regression suite using request-local memory metrics
+- `M181` live resident model swap lifecycle probe
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport

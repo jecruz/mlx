@@ -667,3 +667,30 @@ Expected result:
 - `model_swap_workflow PASS`
 - `swap_decision=REJECT` for the tested 27B dense candidate
 - the blocker should be `candidate_speed`
+
+Run the live model swap lifecycle probe:
+
+```bash
+python3 benchmarks/python/live_model_swap_probe.py \
+  --base-url http://127.0.0.1:8773 \
+  --candidate-model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit \
+  --output-json artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json \
+  --tag m181-qwen-a3b \
+  --warmup-prompt-tokens 64 \
+  --max-tokens 3 \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `live_model_swap_probe PASS`
+- readiness: `live-model-swap-safe`
+- candidate reload returns loaded model metadata
+- candidate post-reload completion succeeds on GPU
+- restore reload returns loaded model metadata
+- restore post-reload completion succeeds on GPU
+- post-reload completions include request-local memory metrics
+
+Use a same-model candidate for the baseline lifecycle gate. Use a different
+candidate model only after M176/M179 acceptance artifacts indicate the candidate
+is worth testing live.

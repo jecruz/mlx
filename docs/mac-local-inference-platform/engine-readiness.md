@@ -1814,3 +1814,30 @@ Decision:
 - Lower-memory suite gating now uses request-local `active_memory_gb` when the
   live server emits it. `/health` remains a compatibility fallback, but it did
   not drive the M180 lower-memory verdict.
+
+## M181 Live Model Swap Lifecycle Probe
+
+M181 adds a live reload/restore probe for the resident model lifecycle.
+
+Artifact:
+
+- `artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-model-swap-safe`
+- failures: `0`
+- candidate reload elapsed: `12524.02 ms`
+- restore reload elapsed: `8440.3 ms`
+- candidate device: `Device(gpu, 0)`
+- restore device: `Device(gpu, 0)`
+- candidate active memory: `20.78082 GB`
+- restore active memory: `20.780771 GB`
+
+Decision:
+
+- The resident engine can reload a model path, serve a completion with
+  request-local memory metrics, then reload back to the original model path and
+  serve again. M181 used a same-model candidate to prove lifecycle safety without
+  changing the active model decision from M179/M180.

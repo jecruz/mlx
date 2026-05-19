@@ -2125,3 +2125,29 @@ Decision:
   lower-memory gate is now driven by request-local active memory instead of stale
   process peak memory or process-level `/health` when request metrics are
   available.
+
+## M181 Result
+
+M181 adds and runs a live resident model swap lifecycle probe.
+
+Artifact:
+
+- `artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-model-swap-safe`
+- failures: `0`
+- candidate reload: `12524.02 ms`
+- restore reload: `8440.3 ms`
+- candidate post-reload completion: `PASS`
+- restore post-reload completion: `PASS`
+- device stayed on `Device(gpu, 0)`
+- request-local memory metrics were present after both reloads
+
+Decision:
+
+- Same-model reload/restore is live-safe enough to use as the baseline lifecycle
+  gate. Candidate model swaps still need the M176/M179 acceptance decision before
+  promotion.

@@ -1,0 +1,437 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "candidate_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "failures": [],
+  "initial_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "readiness": "live-model-swap-safe",
+  "restore_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "stages": [
+    {
+      "completion": {
+        "finish_reason": "length",
+        "label": "candidate",
+        "metrics": {
+          "active_memory_bytes": 20780819754,
+          "active_memory_gb": 20.780819754,
+          "actual_prefill_tokens": 27,
+          "agentic_workload": false,
+          "backend": "text",
+          "cache_build_dedup_reason": null,
+          "cache_build_deduplicated": false,
+          "cache_candidate": false,
+          "cache_created": false,
+          "cache_exact_match_trimmed": false,
+          "cache_hit": false,
+          "cache_memory_bytes": 7968420,
+          "cache_memory_gb": 0.00796842,
+          "cache_pending": false,
+          "cache_pending_wait_ms": 0.0,
+          "cache_pending_wait_result": null,
+          "cache_population_mode": "async",
+          "cache_prepare_ms": 0.00016693957149982452,
+          "cache_request_store_reason": null,
+          "cache_request_trimmed_tokens": 0,
+          "cache_reuse_enabled": false,
+          "cache_scheduled": false,
+          "cache_scope_hash": null,
+          "cache_split_prefill": false,
+          "cache_split_prefill_reason": null,
+          "cache_stored_from_request": false,
+          "cached_prefix_tokens": 0,
+          "created": 1779207616,
+          "default_device": "Device(gpu, 0)",
+          "diagnostics_workload": false,
+          "effective_policy": "memory_saver",
+          "engine_lock_wait_ms": 0.000500120222568512,
+          "estimated_recompute_tokens": 27,
+          "generated_prefix_cache_reason": "stored",
+          "generated_prefix_cache_recorded": true,
+          "generated_prefix_cache_tokens": 30,
+          "generated_prefix_combined_tokens": 30,
+          "generated_prefix_retokenized_tokens": 30,
+          "generated_prefix_token_boundary_safe": true,
+          "generated_token_count_recorded": 3,
+          "generation_tokens": 3,
+          "generation_tps": 138.60974377441457,
+          "immediate_second_turn": false,
+          "interactive_workload": false,
+          "longest_prefix_match_tokens": 0,
+          "low_memory": false,
+          "matched_prompt_hash": null,
+          "matched_request_id": null,
+          "matched_tokenized_prompt_hash": null,
+          "memory_class_gb": null,
+          "memory_prune_applied": false,
+          "memory_prune_cache_memory_bytes": 8476324,
+          "memory_prune_limit_bytes": null,
+          "memory_prune_reason": null,
+          "memory_prune_removed_entries": 0,
+          "metal_available": true,
+          "mlx_peak_memory_gb": 42.056216694,
+          "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+          "peak_memory_bytes": 42056216694,
+          "peak_memory_gb": 42.056216694,
+          "policy": "auto",
+          "prefill_band_max_prompt_tokens": null,
+          "prefill_band_min_prompt_tokens": null,
+          "prefill_selection_source": "global_policy",
+          "prefill_step_size": null,
+          "prefix_reuse_ratio": 0.0,
+          "prefix_signature": "54997b01c2f2e342a46bc353437fa6d5",
+          "prefix_tracker_recent_size": 0,
+          "prompt_hash": "2fb320ee0708b4ae35d4e6ab6ae50f1f",
+          "prompt_progress_complete": true,
+          "prompt_progress_events": 3,
+          "prompt_progress_first_ms": 108.43004193156958,
+          "prompt_progress_last_ms": 170.91095889918506,
+          "prompt_progress_processed_tokens": 27,
+          "prompt_progress_total_tokens": 27,
+          "prompt_progress_trace": [
+            {
+              "elapsed_ms": 108.43004193156958,
+              "processed_tokens": 0,
+              "total_tokens": 27
+            },
+            {
+              "elapsed_ms": 147.42962503805757,
+              "processed_tokens": 26,
+              "total_tokens": 27
+            },
+            {
+              "elapsed_ms": 170.91095889918506,
+              "processed_tokens": 27,
+              "total_tokens": 27
+            }
+          ],
+          "prompt_tokens": 27,
+          "prompt_tokens_estimate": 27,
+          "prompt_tps": 431.9596805060105,
+          "repeated_workspace": false,
+          "request_id": "req_61c04247097746f2b859ba8f9f9e7f3d",
+          "request_runtime_profile": "interactive",
+          "request_runtime_profile_applied": true,
+          "request_runtime_profile_reason": "request runtime_profile override",
+          "request_runtime_profile_scoped": true,
+          "request_runtime_profile_source": "request_metadata",
+          "run_ms": 201.632458018139,
+          "scheduler_active_requests_at_admit": 1,
+          "scheduler_max_concurrent_requests": 1,
+          "scheduler_queue_wait_ms": 0.00200001522898674,
+          "scheduler_queued_requests_at_admit": 0,
+          "service_request_ms": 202.40570907481015,
+          "stop_reason": "length",
+          "text": "LIVE_MODEL",
+          "tokenized_prompt_hash": "54997b01c2f2e342a46bc353437fa6d5",
+          "workload_intent": null
+        },
+        "text": "LIVE_MODEL",
+        "wall_ms": 204.40399996005
+      },
+      "health": {
+        "backend": "text",
+        "device": {
+          "default_device": "Device(gpu, 0)",
+          "metal_available": true
+        },
+        "engine_preset": "async-experimental",
+        "load_ms": 10928.734458051622,
+        "loaded": true,
+        "mlx_memory": {
+          "active_memory_bytes": 20741645610,
+          "cache_memory_bytes": 81925988,
+          "peak_memory_bytes": 42056216694
+        },
+        "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+        "ok": true,
+        "runtime_profile": "interactive",
+        "scheduler": {
+          "active_requests": 0,
+          "max_concurrent_requests": 1,
+          "max_observed_queue_wait_ms": 0.0,
+          "max_queued_requests": 16,
+          "mean_queue_wait_ms": 0.0,
+          "queue_timeout_ms": 30000,
+          "queued_requests": 0,
+          "total_admitted": 0,
+          "total_completed": 0,
+          "total_rejected": 0
+        },
+        "uptime_s": 4.130841016769409,
+        "warmup": {
+          "completed": true,
+          "completed_at": 1779207616.356234,
+          "error": null,
+          "mode": "async",
+          "profile_prefill": false,
+          "result_count": 1,
+          "running": false,
+          "started_at": 1779207612.28049,
+          "targets": [
+            {
+              "prompt_tokens": 64,
+              "source": "configured"
+            }
+          ]
+        }
+      },
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "reload_elapsed_ms": 12524.024958023801,
+      "stage": "candidate",
+      "status": {
+        "backend": "text",
+        "device": {
+          "default_device": "Device(gpu, 0)",
+          "metal_available": true
+        },
+        "engine_preset": "async-experimental",
+        "last_reload_error": null,
+        "loaded": true,
+        "mlx_memory": {
+          "active_memory_bytes": 20753979262,
+          "cache_memory_bytes": 12,
+          "peak_memory_bytes": 42056216694
+        },
+        "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+        "ok": true,
+        "reload_count": 1,
+        "runtime_profile": "interactive",
+        "unload_count": 0,
+        "warmup": {
+          "completed": false,
+          "completed_at": null,
+          "error": null,
+          "mode": "async",
+          "profile_prefill": false,
+          "result_count": 0,
+          "running": true,
+          "started_at": 1779207612.28049,
+          "targets": [
+            {
+              "prompt_tokens": 64,
+              "source": "configured"
+            }
+          ]
+        },
+        "warmup_prompt_tokens": [
+          64
+        ]
+      }
+    },
+    {
+      "completion": {
+        "finish_reason": "length",
+        "label": "restore",
+        "metrics": {
+          "active_memory_bytes": 20780770632,
+          "active_memory_gb": 20.780770632,
+          "actual_prefill_tokens": 25,
+          "agentic_workload": false,
+          "backend": "text",
+          "cache_build_dedup_reason": null,
+          "cache_build_deduplicated": false,
+          "cache_candidate": false,
+          "cache_created": false,
+          "cache_exact_match_trimmed": false,
+          "cache_hit": false,
+          "cache_memory_bytes": 7968394,
+          "cache_memory_gb": 0.007968394,
+          "cache_pending": false,
+          "cache_pending_wait_ms": 0.0,
+          "cache_pending_wait_result": null,
+          "cache_population_mode": "async",
+          "cache_prepare_ms": 0.000125030055642128,
+          "cache_request_store_reason": null,
+          "cache_request_trimmed_tokens": 0,
+          "cache_reuse_enabled": false,
+          "cache_scheduled": false,
+          "cache_scope_hash": null,
+          "cache_split_prefill": false,
+          "cache_split_prefill_reason": null,
+          "cache_stored_from_request": false,
+          "cached_prefix_tokens": 0,
+          "created": 1779207627,
+          "default_device": "Device(gpu, 0)",
+          "diagnostics_workload": false,
+          "effective_policy": "memory_saver",
+          "engine_lock_wait_ms": 0.0004169996827840805,
+          "estimated_recompute_tokens": 25,
+          "generated_prefix_cache_reason": "stored",
+          "generated_prefix_cache_recorded": true,
+          "generated_prefix_cache_tokens": 28,
+          "generated_prefix_combined_tokens": 28,
+          "generated_prefix_retokenized_tokens": 28,
+          "generated_prefix_token_boundary_safe": true,
+          "generated_token_count_recorded": 3,
+          "generation_tokens": 3,
+          "generation_tps": 137.60363309677396,
+          "immediate_second_turn": false,
+          "interactive_workload": false,
+          "longest_prefix_match_tokens": 0,
+          "low_memory": false,
+          "matched_prompt_hash": null,
+          "matched_request_id": null,
+          "matched_tokenized_prompt_hash": null,
+          "memory_class_gb": null,
+          "memory_prune_applied": false,
+          "memory_prune_cache_memory_bytes": 8476298,
+          "memory_prune_limit_bytes": null,
+          "memory_prune_reason": null,
+          "memory_prune_removed_entries": 0,
+          "metal_available": true,
+          "mlx_peak_memory_gb": 42.056216694,
+          "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+          "peak_memory_bytes": 42056216694,
+          "peak_memory_gb": 42.056216694,
+          "policy": "auto",
+          "prefill_band_max_prompt_tokens": null,
+          "prefill_band_min_prompt_tokens": null,
+          "prefill_selection_source": "global_policy",
+          "prefill_step_size": null,
+          "prefix_reuse_ratio": 0.0,
+          "prefix_signature": "4d3b5bffe2fa61e5e95f56f269fe8c23",
+          "prefix_tracker_recent_size": 0,
+          "prompt_hash": "a7335b0770a08f84d796ea4a23b2cb60",
+          "prompt_progress_complete": true,
+          "prompt_progress_events": 3,
+          "prompt_progress_first_ms": 116.04204098694026,
+          "prompt_progress_last_ms": 178.79870790056884,
+          "prompt_progress_processed_tokens": 25,
+          "prompt_progress_total_tokens": 25,
+          "prompt_progress_trace": [
+            {
+              "elapsed_ms": 116.04204098694026,
+              "processed_tokens": 0,
+              "total_tokens": 25
+            },
+            {
+              "elapsed_ms": 155.37733305245638,
+              "processed_tokens": 24,
+              "total_tokens": 25
+            },
+            {
+              "elapsed_ms": 178.79870790056884,
+              "processed_tokens": 25,
+              "total_tokens": 25
+            }
+          ],
+          "prompt_tokens": 25,
+          "prompt_tokens_estimate": 25,
+          "prompt_tps": 398.1657809921347,
+          "repeated_workspace": false,
+          "request_id": "req_9a85e34db7214ef0bc503685d032ee19",
+          "request_runtime_profile": "interactive",
+          "request_runtime_profile_applied": true,
+          "request_runtime_profile_reason": "request runtime_profile override",
+          "request_runtime_profile_scoped": true,
+          "request_runtime_profile_source": "request_metadata",
+          "run_ms": 209.37670907005668,
+          "scheduler_active_requests_at_admit": 1,
+          "scheduler_max_concurrent_requests": 1,
+          "scheduler_queue_wait_ms": 0.001916196197271347,
+          "scheduler_queued_requests_at_admit": 0,
+          "service_request_ms": 210.0647499319166,
+          "stop_reason": "length",
+          "text": "LIVE_MODEL",
+          "tokenized_prompt_hash": "4d3b5bffe2fa61e5e95f56f269fe8c23",
+          "workload_intent": null
+        },
+        "text": "LIVE_MODEL",
+        "wall_ms": 211.849374929443
+      },
+      "health": {
+        "backend": "text",
+        "device": {
+          "default_device": "Device(gpu, 0)",
+          "metal_available": true
+        },
+        "engine_preset": "async-experimental",
+        "load_ms": 6944.7773329447955,
+        "loaded": true,
+        "mlx_memory": {
+          "active_memory_bytes": 20741596488,
+          "cache_memory_bytes": 79337254,
+          "peak_memory_bytes": 42056216694
+        },
+        "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+        "ok": true,
+        "runtime_profile": "interactive",
+        "scheduler": {
+          "active_requests": 0,
+          "max_concurrent_requests": 1,
+          "max_observed_queue_wait_ms": 0.0,
+          "max_queued_requests": 16,
+          "mean_queue_wait_ms": 0.0,
+          "queue_timeout_ms": 30000,
+          "queued_requests": 0,
+          "total_admitted": 0,
+          "total_completed": 0,
+          "total_rejected": 0
+        },
+        "uptime_s": 3.5242092609405518,
+        "warmup": {
+          "completed": true,
+          "completed_at": 1779207626.807745,
+          "error": null,
+          "mode": "async",
+          "profile_prefill": false,
+          "result_count": 1,
+          "running": false,
+          "started_at": 1779207623.563561,
+          "targets": [
+            {
+              "prompt_tokens": 64,
+              "source": "configured"
+            }
+          ]
+        }
+      },
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "reload_elapsed_ms": 8440.303333103657,
+      "stage": "restore",
+      "status": {
+        "backend": "text",
+        "device": {
+          "default_device": "Device(gpu, 0)",
+          "metal_available": true
+        },
+        "engine_preset": "async-experimental",
+        "last_reload_error": null,
+        "loaded": true,
+        "mlx_memory": {
+          "active_memory_bytes": 20758065208,
+          "cache_memory_bytes": 12,
+          "peak_memory_bytes": 42056216694
+        },
+        "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+        "ok": true,
+        "reload_count": 2,
+        "runtime_profile": "interactive",
+        "unload_count": 0,
+        "warmup": {
+          "completed": false,
+          "completed_at": null,
+          "error": null,
+          "mode": "async",
+          "profile_prefill": false,
+          "result_count": 0,
+          "running": true,
+          "started_at": 1779207623.563561,
+          "targets": [
+            {
+              "prompt_tokens": 64,
+              "source": "configured"
+            }
+          ]
+        },
+        "warmup_prompt_tokens": [
+          64
+        ]
+      }
+    }
+  ],
+  "tag": "m181-qwen-a3b",
+  "type": "live_model_swap_probe",
+  "verdict": "PASS",
+  "warmup_mode": "async",
+  "warmup_prompt_tokens": "64"
+}
