@@ -1677,3 +1677,30 @@ Fix included:
   when a live base URL is provided. Historical MLX peak memory is still recorded
   as diagnostic data, but it no longer fails a lower-memory run after prior
   model reloads raised process-level peak memory.
+
+## M176 Model Swap Acceptance Gate
+
+M176 adds an acceptance gate for model/profile swaps.
+
+Artifacts:
+
+- `artifacts/m176-model-swap-acceptance/model-swap-acceptance-m176-qwen27b.json`
+- `artifacts/m176-model-swap-acceptance/model-swap-acceptance-m176-qwen27b.md`
+
+Result:
+
+- gate verdict: `PASS`
+- swap decision: `REJECT`
+- current model: `qwen35b-a3b-ud-4bit`
+- candidate model: `qwen27b-ud-4bit`
+- model comparison: `PASS`
+- quality threshold: `PASS`
+- candidate quality: `PASS`
+- candidate speed: `FAIL`
+- candidate slowdown ratio: `9.968977`
+
+Decision:
+
+- Quality passing is necessary but not sufficient for a model swap. The 27B
+  candidate remains blocked because it is materially slower than the active A3B
+  model on the quality-gate comparison.

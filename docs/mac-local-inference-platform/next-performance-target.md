@@ -2001,3 +2001,25 @@ Implementation note:
 - The lower-memory runtime gate now checks current active memory through live
   `/health` when available. This avoids false failures from historical MLX peak
   memory after model reload experiments.
+
+## M176 Result
+
+M176 adds model/profile swap acceptance automation.
+
+Artifact:
+
+- `artifacts/m176-model-swap-acceptance/model-swap-acceptance-m176-qwen27b.json`
+
+Result:
+
+- gate verdict: `PASS`
+- swap decision: `REJECT`
+- blocker: candidate speed
+- candidate slowdown ratio: `9.968977`
+- quality gates: `PASS`
+- CI threshold gate: `PASS`
+
+Decision:
+
+- Do not replace the active A3B model with the tested 27B dense model. The swap
+  gate correctly blocks it even though quality checks pass.

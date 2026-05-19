@@ -542,3 +542,28 @@ Lower-memory note:
   active MLX memory from `/health`. Historical `peak_memory_gb` remains
   diagnostic because peak memory can reflect earlier model reloads in the same
   process.
+
+Run the model swap acceptance gate:
+
+```bash
+python3 benchmarks/python/model_swap_acceptance_gate.py \
+  --model-comparison-json artifacts/m170-model-quality-comparison/model-quality-comparison-m170-qwen.json \
+  --quality-threshold-json artifacts/m175-live-expanded-quality-suite/quality-threshold-gate-m175-qwen-a3b.json \
+  --current-label qwen35b-a3b-ud-4bit \
+  --candidate-label qwen27b-ud-4bit \
+  --output-json artifacts/m176-model-swap-acceptance/model-swap-acceptance-m176-qwen27b.json \
+  --output-md artifacts/m176-model-swap-acceptance/model-swap-acceptance-m176-qwen27b.md \
+  --tag m176-qwen27b
+```
+
+Acceptance policy:
+
+- quality comparison must pass
+- CI quality threshold must pass
+- current quality must pass
+- candidate quality must pass
+- candidate quality-gate latency must not be slower than the active model unless
+  the operator intentionally changes `--max-candidate-slowdown-ratio`
+
+The gate can return a successful report with `swap_decision=REJECT`; use
+`--fail-on-reject` when automation should exit non-zero for blocked swaps.
