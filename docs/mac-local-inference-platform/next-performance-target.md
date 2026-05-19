@@ -1295,3 +1295,33 @@ Decision:
 - The next target is M123: restart the live server on the updated code and run
   a live request-metadata regression to verify the decision appears in
   `engine_metrics`.
+
+## M123 Result
+
+M123 live-validates request metadata profile selection:
+
+- script: `benchmarks/python/live_request_profile_metadata_probe.py`
+- artifact:
+  `artifacts/m123-live-request-profile-metadata/live-request-profile-metadata-m123-qwen-a3b.json`
+- service: restarted on `127.0.0.1:8773` from the updated worktree
+
+Result:
+
+- verdict: `PASS`
+- rows: `3`
+- failures: `0`
+- `/v1/completions` with first-hit intent:
+  `agent-workspace-first-hit`
+- `/v1/chat/completions` with coding-agent plus `memory_class_gb=32`:
+  `agent-workspace-low-memory`
+- `/v1/completions` with manual `runtime_profile=interactive`:
+  `interactive`
+- all rows reported `request_runtime_profile_source=request_metadata`
+- all rows reported `request_runtime_profile_applied=true`
+
+Decision:
+
+- Server-side request metadata routing is live-validated.
+- The next target is M124: add request-metadata coverage to the one-command
+  live product regression suite so M121-style regression catches profile
+  routing regressions automatically.

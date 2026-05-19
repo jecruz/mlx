@@ -3247,3 +3247,27 @@
   - M122 conclusion: product clients can send workload intent metadata instead
     of manually changing global profiles before each request. A live server
     restart is required before the new request fields are active.
+- Completed M123 live request profile metadata validation:
+  - fixed `mlx_engine/resident_service.py` script-mode import ordering so the
+    service can import `mlx_engine.request_profiles` when launched through
+    `bin/mlx-engine serve`
+  - added `benchmarks/python/live_request_profile_metadata_probe.py`
+  - restarted the resident server on `127.0.0.1:8773` from the updated
+    worktree in `codex-mlx-server`
+  - generated artifact:
+    `artifacts/m123-live-request-profile-metadata/live-request-profile-metadata-m123-qwen-a3b.json`
+  - validation passed:
+    - live probe verdict `PASS`
+    - rows `3`
+    - failures `0`
+    - completion first-hit intent selected `agent-workspace-first-hit`
+    - chat coding-agent with `memory_class_gb=32` selected
+      `agent-workspace-low-memory`
+    - completion manual override selected `interactive`
+    - every row reported `request_runtime_profile_source=request_metadata`
+    - every row reported `request_runtime_profile_applied=true`
+    - static M122 gate still passed after the import-order fix
+    - `python3 -m py_compile benchmarks/python/live_request_profile_metadata_probe.py mlx_engine/resident_service.py mlx_engine/request_profiles.py`
+    - `git diff --check`
+  - M123 conclusion: request metadata profile selection is now live-validated
+    through both `/v1/completions` and `/v1/chat/completions`.

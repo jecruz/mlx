@@ -732,3 +732,32 @@ Operational note:
   available.
 - M123 should restart the live resident server and run a request-metadata
   regression against the updated process.
+
+## M123 Live Request Metadata Regression
+
+M123 restarts the resident service from the updated worktree and validates
+request metadata profile routing against live OpenAI-compatible endpoints.
+
+Evidence:
+
+- artifact:
+  `artifacts/m123-live-request-profile-metadata/live-request-profile-metadata-m123-qwen-a3b.json`
+- verdict: `PASS`
+- rows: `3`
+- failures: `0`
+
+Live cases:
+
+- `/v1/completions` with `workload_intent=first-hit` selected
+  `agent-workspace-first-hit`.
+- `/v1/chat/completions` with `workload_intent=coding-agent` and
+  `memory_class_gb=32` selected `agent-workspace-low-memory`.
+- `/v1/completions` with `runtime_profile=interactive` and conflicting
+  low-memory hints selected `interactive`, proving manual override precedence.
+
+Readiness position:
+
+- Product clients can now send workload metadata on the request itself.
+- The routing decision is visible in `engine_metrics`.
+- The next regression gap is including this live request metadata probe in the
+  one-command product regression suite.

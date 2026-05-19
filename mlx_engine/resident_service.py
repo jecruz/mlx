@@ -22,9 +22,12 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from starlette.responses import StreamingResponse
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from mlx_engine.request_profiles import WorkloadIntent, select_runtime_profile_for_request
 
-ROOT = Path(__file__).resolve().parents[1]
 BENCHMARKS_PYTHON = ROOT / "benchmarks" / "python"
 if str(BENCHMARKS_PYTHON) not in sys.path:
     sys.path.insert(0, str(BENCHMARKS_PYTHON))
