@@ -2311,3 +2311,25 @@ Decision:
 - The next operator handoff can use packaged commands only:
   `operator-readiness-refresh` to rebuild the bundle, then `operator-readiness`
   to render it.
+
+## M189-M191 Result
+
+M189-M191 package model-candidate and UI display readiness.
+
+Artifacts:
+
+- `artifacts/m189-model-candidate-registry/model-candidate-registry-m189-qwen.json`
+- `artifacts/m190-lower-memory-candidate/lower-memory-candidate-gate-m190-qwen.json`
+- `artifacts/m191-operator-ui-field-map/operator-ui-field-map-m191.json`
+
+Result:
+
+- model candidate registry: `PASS`, `2` candidates
+- lower-memory candidate gate: `PASS`, max active memory `21.02259841 GB`
+- UI field map: `PASS`, `11` fields
+- failures: `0`
+
+Decision:
+
+- The active model is explicitly tracked, lower-memory suitability is gated from
+  request metrics, and UI/Prowl/TUI consumers have a concrete field map.

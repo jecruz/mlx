@@ -1,0 +1,38 @@
+{
+  "active_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "candidate_count": 2,
+  "candidates": [
+    {
+      "active": true,
+      "blockers": [],
+      "failure_count": 0,
+      "label": "qwen35b-a3b-ud-4bit",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "quality_verdict": "PASS",
+      "readiness": "active",
+      "swap_decision": "ACCEPT"
+    },
+    {
+      "active": false,
+      "blockers": [
+        "candidate_speed: slowdown_ratio=9.968977, threshold=1.0"
+      ],
+      "failure_count": 0,
+      "label": "qwen27b-ud-4bit",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      "quality_verdict": "PASS",
+      "readiness": "swap-blocked",
+      "swap_decision": "REJECT"
+    }
+  ],
+  "failures": [],
+  "readiness": "model-candidate-registry-ready",
+  "source_artifacts": {
+    "model_quality_comparison_json": "artifacts/m179-model-swap-workflow/model-quality-comparison-m179-qwen27b.json",
+    "model_swap_workflow_json": "artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json",
+    "operator_readiness_json": "artifacts/m188-operator-readiness-refresh/operator-readiness-refresh-m188-qwen-a3b.json"
+  },
+  "tag": "m189-qwen",
+  "type": "model_candidate_registry",
+  "verdict": "PASS"
+}

@@ -1,0 +1,15 @@
+{
+  "active_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+  "alternate_count": 1,
+  "failures": [],
+  "max_active_memory_gb": 21.02259841,
+  "max_active_memory_threshold_gb": 24.0,
+  "memory_source": "request_metrics",
+  "readiness": "lower-memory-candidate-gated",
+  "tag": "m190-qwen",
+  "type": "lower_memory_candidate_gate",
+  "verdict": "PASS",
+  "warnings": [
+    "qwen27b-ud-4bit is not promotable: REJECT"
+  ]
+}

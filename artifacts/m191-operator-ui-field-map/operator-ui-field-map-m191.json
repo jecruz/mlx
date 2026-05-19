@@ -1,0 +1,104 @@
+{
+  "failures": [],
+  "field_count": 11,
+  "fields": [
+    {
+      "bundle_field": "verdict",
+      "endpoint_field": "verdict",
+      "label": "Readiness",
+      "render_field": "display.title",
+      "required": true,
+      "surface": "header"
+    },
+    {
+      "bundle_field": "model_decision.active_model",
+      "endpoint_field": "runtime.model",
+      "label": "Active Model",
+      "render_field": "active_model_name",
+      "required": true,
+      "surface": "header"
+    },
+    {
+      "bundle_field": "status_card.runtime",
+      "endpoint_field": "status_card.runtime",
+      "label": "Runtime",
+      "render_field": "status_card.runtime",
+      "required": true,
+      "surface": "badges"
+    },
+    {
+      "bundle_field": "status_card.quality",
+      "endpoint_field": null,
+      "label": "Quality",
+      "render_field": "status_card.quality",
+      "required": true,
+      "surface": "badges"
+    },
+    {
+      "bundle_field": "status_card.memory_source",
+      "endpoint_field": "memory.source",
+      "label": "Memory Source",
+      "render_field": "status_card.memory_source",
+      "required": true,
+      "surface": "badges"
+    },
+    {
+      "bundle_field": "status_card.candidate_swap",
+      "endpoint_field": null,
+      "label": "Candidate Swap",
+      "render_field": "status_card.candidate_swap",
+      "required": true,
+      "surface": "badges"
+    },
+    {
+      "bundle_field": "runtime.runtime_profile",
+      "endpoint_field": "runtime.runtime_profile",
+      "label": "Runtime Profile",
+      "render_field": "runtime_profile",
+      "required": true,
+      "surface": "details"
+    },
+    {
+      "bundle_field": "runtime.engine_preset",
+      "endpoint_field": "runtime.engine_preset",
+      "label": "Engine Preset",
+      "render_field": "engine_preset",
+      "required": true,
+      "surface": "details"
+    },
+    {
+      "bundle_field": "memory.max_active_memory_gb",
+      "endpoint_field": "memory.active_memory_bytes",
+      "label": "Max Active Memory GB",
+      "render_field": "max_active_memory_gb",
+      "required": true,
+      "surface": "details"
+    },
+    {
+      "bundle_field": "warnings",
+      "endpoint_field": "warnings",
+      "label": "Warnings",
+      "render_field": "warnings",
+      "required": true,
+      "surface": "warnings"
+    },
+    {
+      "bundle_field": "failures",
+      "endpoint_field": "failures",
+      "label": "Failures",
+      "render_field": "failures",
+      "required": true,
+      "surface": "failures"
+    }
+  ],
+  "guidance": {
+    "candidate_swap_warn_is_non_blocking": true,
+    "live_source": "/engine/operator-readiness",
+    "primary_source": "operator readiness bundle or renderer JSON",
+    "quality_source": "artifact bundle only"
+  },
+  "readiness": "operator-ui-field-map-ready",
+  "tag": "m191-operator-ui",
+  "type": "operator_ui_field_map",
+  "verdict": "PASS"
+}

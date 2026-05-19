@@ -2015,3 +2015,69 @@ Decision:
 
 - Operators can now refresh the artifact-backed readiness bundle with one
   packaged command instead of invoking the lower-level benchmark script.
+
+## M189 Model Candidate Registry
+
+M189 creates an explicit registry for active and tested MLX model candidates.
+
+Artifact:
+
+- `artifacts/m189-model-candidate-registry/model-candidate-registry-m189-qwen.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `model-candidate-registry-ready`
+- candidates: `2`
+- failures: `0`
+
+Decision:
+
+- Operator surfaces and future model-swap automation can read active and tested
+  candidates from one registry instead of inferring them from comparison
+  artifacts.
+
+## M190 Lower-Memory Candidate Gate
+
+M190 gates lower-memory candidate readiness from the model registry and
+request-metric lower-memory evidence.
+
+Artifact:
+
+- `artifacts/m190-lower-memory-candidate/lower-memory-candidate-gate-m190-qwen.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `lower-memory-candidate-gated`
+- max active memory: `21.02259841 GB`
+- threshold: `24 GB`
+- failures: `0`
+- warnings: `1`
+
+Decision:
+
+- The active A3B model remains acceptable for the current lower-memory target.
+  The tested 27B alternate remains visible but not promotable because the swap
+  decision is still `REJECT`.
+
+## M191 Operator UI Field Map
+
+M191 defines the fields UI/Prowl/TUI consumers should display from the readiness
+bundle, renderer, and live endpoint.
+
+Artifact:
+
+- `artifacts/m191-operator-ui-field-map/operator-ui-field-map-m191.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `operator-ui-field-map-ready`
+- fields: `11`
+- failures: `0`
+
+Decision:
+
+- UI consumers now have a field-level map for readiness headers, badges, runtime
+  details, memory, warnings, and failures.
