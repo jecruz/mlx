@@ -1945,3 +1945,49 @@ Decision:
 - External clients no longer need to know the internal benchmark script path.
   Dax, Prowl, shell scripts, or packaged operator surfaces can call
   `bin/mlx-engine operator-readiness` as the stable entry point.
+
+## M186 Live Operator Readiness Endpoint
+
+M186 adds a live HTTP endpoint for operator readiness:
+
+- `GET /engine/operator-readiness`
+
+Result:
+
+- endpoint type: `operator_readiness_live_status`
+- live verdict: `PASS`
+- readiness: `operator-live-ready`
+- runtime: `PASS`
+- GPU: `PASS`
+- warm: `PASS`
+- can generate: `PASS`
+- live controls: `PASS`
+- memory source: `engine_ui`
+
+Decision:
+
+- Prowl, Dax, and UI clients can read current runtime readiness without shelling
+  out. The endpoint reports live state only; artifact-backed release readiness
+  remains covered by the M182/M185 bundle path.
+
+## M187 Operator Readiness Endpoint Probe
+
+M187 validates the new live readiness endpoint.
+
+Artifact:
+
+- `artifacts/m187-operator-readiness-endpoint/operator-readiness-endpoint-m187-qwen-a3b.json`
+
+Result:
+
+- probe verdict: `PASS`
+- readiness: `operator-readiness-endpoint-ready`
+- failures: `0`
+- active model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+- engine preset: `async-experimental`
+- GPU ready: `true`
+
+Decision:
+
+- The live endpoint has a contract probe and is safe for UI/Prowl consumers to
+  smoke-test against a running resident engine.

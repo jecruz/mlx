@@ -3993,6 +3993,60 @@ class EngineManager:
             "last_unloaded_at": self.last_unloaded_at,
         }
 
+    def operator_readiness_status(self) -> dict[str, Any]:
+        ui_status = self.ui_status()
+        readiness = ui_status.get("readiness") or {}
+        controls = ui_status.get("controls") or {}
+        memory = ui_status.get("memory") or {}
+        failures = []
+        warnings = []
+        if not ui_status.get("loaded"):
+            failures.append("engine is not loaded")
+        if not controls.get("can_generate"):
+            failures.append("engine cannot generate")
+        if not readiness.get("gpu_ready"):
+            failures.append("gpu is not ready")
+        if not readiness.get("warm"):
+            warnings.append("warmup is not complete")
+        if readiness.get("blockers"):
+            warnings.extend(str(blocker) for blocker in readiness["blockers"])
+
+        status_card = {
+            "runtime": "PASS" if not failures else "FAIL",
+            "gpu": "PASS" if readiness.get("gpu_ready") else "FAIL",
+            "warm": "PASS" if readiness.get("warm") else "WARN",
+            "can_generate": "PASS" if controls.get("can_generate") else "FAIL",
+            "live_controls": "PASS"
+            if controls.get("can_reload") and controls.get("can_unload")
+            else "WARN",
+        }
+        return {
+            "type": "operator_readiness_live_status",
+            "verdict": "PASS" if not failures else "FAIL",
+            "readiness": "operator-live-ready" if not failures else "operator-live-blocked",
+            "status_card": status_card,
+            "runtime": {
+                "model": ui_status.get("model"),
+                "backend": ui_status.get("backend"),
+                "engine_preset": ui_status.get("engine_preset"),
+                "runtime_profile": ui_status.get("runtime_profile"),
+                "strategy": readiness.get("strategy"),
+                "gpu_ready": readiness.get("gpu_ready"),
+                "warm": readiness.get("warm"),
+                "can_generate": controls.get("can_generate"),
+                "can_reload": controls.get("can_reload"),
+                "can_unload": controls.get("can_unload"),
+            },
+            "memory": {
+                "source": "engine_ui",
+                "active_memory_bytes": memory.get("active_memory_bytes"),
+                "cache_memory_bytes": memory.get("cache_memory_bytes"),
+                "peak_memory_bytes": memory.get("peak_memory_bytes"),
+            },
+            "warnings": warnings,
+            "failures": failures,
+        }
+
     def planned_config_snapshot(self, config: dict[str, Any]) -> dict[str, Any]:
         metadata = self.metadata()
         scheduler = metadata.get("scheduler", {})
@@ -4344,6 +4398,10 @@ def create_app(manager: EngineManager):
     @app.get("/engine/ui")
     def engine_ui_status():
         return manager.ui_status()
+
+    @app.get("/engine/operator-readiness")
+    def engine_operator_readiness():
+        return manager.operator_readiness_status()
 
     @app.post("/engine/config")
     def configure_engine(request: EngineConfigRequest):

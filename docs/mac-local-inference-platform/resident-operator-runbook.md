@@ -775,3 +775,25 @@ bin/mlx-engine operator-readiness \
 
 This is the preferred entry point for external operator clients because it keeps
 the readiness display contract behind the packaged engine command.
+
+Read live operator readiness over HTTP:
+
+```bash
+curl -sS http://127.0.0.1:8773/engine/operator-readiness
+```
+
+Validate the live endpoint contract:
+
+```bash
+python3 benchmarks/python/operator_readiness_endpoint_probe.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-json artifacts/m187-operator-readiness-endpoint/operator-readiness-endpoint-m187-qwen-a3b.json \
+  --tag m187-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected result:
+
+- `operator_readiness_endpoint_probe PASS`
+- readiness: `operator-readiness-endpoint-ready`
+- failures: `0`

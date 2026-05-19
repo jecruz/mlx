@@ -2249,3 +2249,41 @@ Decision:
 - External consumers should use `bin/mlx-engine operator-readiness` for the
   standard readiness card. This keeps Dax/Prowl integration decoupled from
   benchmark script internals.
+
+## M186 Result
+
+M186 adds a live resident endpoint for operator readiness:
+
+- `GET /engine/operator-readiness`
+
+Result:
+
+- endpoint type: `operator_readiness_live_status`
+- live verdict: `PASS`
+- readiness: `operator-live-ready`
+- runtime/GPU/warm/can-generate/live-controls status card: `PASS`
+- memory source: `engine_ui`
+
+Decision:
+
+- UI and Prowl clients can now read current live readiness over HTTP. This is
+  separate from the artifact-backed M182/M185 release readiness bundle.
+
+## M187 Result
+
+M187 adds and runs the live endpoint contract probe.
+
+Artifact:
+
+- `artifacts/m187-operator-readiness-endpoint/operator-readiness-endpoint-m187-qwen-a3b.json`
+
+Result:
+
+- probe verdict: `PASS`
+- readiness: `operator-readiness-endpoint-ready`
+- failures: `0`
+
+Decision:
+
+- The HTTP readiness endpoint has a repeatable live probe. Continue with
+  artifact refresh automation next.
