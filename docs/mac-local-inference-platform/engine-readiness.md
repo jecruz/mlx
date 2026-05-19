@@ -520,6 +520,14 @@ Readiness interpretation:
   - normal coding-agent -> `agent-workspace-async`
   - immediate second turn -> `agent-workspace-first-hit`
   - lower-memory Mac -> `agent-workspace-low-memory`
+- M107 defines lower-memory Mac runtime strategy:
+  - script: `benchmarks/python/mlx_lower_memory_mac_strategy.py`
+  - artifact:
+    `artifacts/m107-lower-memory-mac-strategy/lower-memory-mac-strategy-m107-qwen-a3b.json`
+  - result: `PASS`
+  - 32GB Macs default to `agent-workspace-low-memory`
+  - 64GB+ Macs default to `agent-workspace-async` unless profile policy
+    overrides
 
 ## Current Qwen Result
 

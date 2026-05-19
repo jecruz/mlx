@@ -2994,3 +2994,19 @@
     - manual override preserved
   - M106 conclusion: product profile auto-selection can now be implemented
     against a tested rule set instead of hardcoded one-off defaults.
+- Completed M107 lower-memory Mac runtime strategy:
+  - added `benchmarks/python/mlx_lower_memory_mac_strategy.py`
+  - generated artifact:
+    `artifacts/m107-lower-memory-mac-strategy/lower-memory-mac-strategy-m107-qwen-a3b.json`
+  - validation passed:
+    - strategy verdict `PASS`
+    - `python3 -m py_compile benchmarks/python/mlx_lower_memory_mac_strategy.py`
+    - `git diff --check`
+  - M107 result:
+    - 16-24GB Macs: planned low-memory/offload lane, prefer smaller MoE or
+      4-bit MLX models
+    - 32GB Macs: default to `agent-workspace-low-memory`
+    - 64GB+ Macs: default to `agent-workspace-async` unless immediate
+      second-turn or memory pressure is detected
+  - M107 conclusion: lower-memory Mac behavior now has a concrete product
+    strategy and acceptance contract instead of only a sidequest note.

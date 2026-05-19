@@ -1,0 +1,53 @@
+{
+  "acceptance": {
+    "must_keep_conversion_actual_prefill_tokens": "<=32",
+    "must_load_without_gpu_fallback": true,
+    "must_preserve_manual_override": true,
+    "must_report_cache_memory_limit_mb": true,
+    "must_report_peak_memory_gb": true
+  },
+  "failures": [],
+  "inputs": {
+    "auto_selection": "artifacts/m106-profile-auto-selection/profile-auto-selection-m106-qwen-a3b.json",
+    "low_memory_summary": "artifacts/m98-direct-low-memory-profile/dax-product-first-hit-summary-m98-qwen-a3b-low-memory-direct.json"
+  },
+  "strategy": {
+    "auto_selection_signal": "memory_class_gb in 16/24/32 or explicit low_memory=true",
+    "default_low_memory_profile": "agent-workspace-low-memory",
+    "future_feature": "layer/offload mode for lower-memory Macs, informed by the AirLLM sidequest",
+    "manual_override": "/profile low-memory"
+  },
+  "tag": "m107-qwen-a3b",
+  "tiers": [
+    {
+      "cache_policy": "Small cache entry cap and explicit memory limit; aggressive pruning.",
+      "memory_gb": "16-24",
+      "model_guidance": "Prefer smaller MoE active-parameter models or 4-bit MLX models; avoid large bf16 dense models.",
+      "runtime_profile": "agent-workspace-low-memory",
+      "status": "planned"
+    },
+    {
+      "cache_policy": "Bounded request-derived cache with first-hit conversion acceptance.",
+      "memory_gb": "32",
+      "model_guidance": "Use low-memory profile by default for 20B-35B class quantized models.",
+      "runtime_profile": "agent-workspace-low-memory",
+      "status": "validated-profile"
+    },
+    {
+      "cache_policy": "Prefer mature async reuse with manual low-memory override.",
+      "memory_gb": "64+",
+      "model_guidance": "Use async steady-state profile unless immediate second-turn or memory pressure is detected.",
+      "runtime_profile": "agent-workspace-async",
+      "status": "validated-default"
+    }
+  ],
+  "type": "mlx_lower_memory_mac_strategy",
+  "validated_low_memory_profile": {
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.7755066277387822,
+    "conversion_turn": 2,
+    "mature_hit_speedup_vs_baseline": 2.5851577387361138,
+    "profile": "agent-workspace-low-memory"
+  },
+  "verdict": "PASS"
+}

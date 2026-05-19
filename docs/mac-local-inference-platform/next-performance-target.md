@@ -957,3 +957,30 @@ Decision:
 - Low-memory selection should happen before generic repeated-workspace async
   selection.
 - Next target is M107: make the lower-memory Mac runtime strategy concrete.
+
+## M107 Result
+
+M107 makes the lower-memory Mac strategy concrete:
+
+- script: `benchmarks/python/mlx_lower_memory_mac_strategy.py`
+- artifact:
+  `artifacts/m107-lower-memory-mac-strategy/lower-memory-mac-strategy-m107-qwen-a3b.json`
+
+Result:
+
+- strategy verdict: `PASS`
+- validated low-memory profile: `agent-workspace-low-memory`
+- 16-24GB Macs: planned lower-memory/offload lane, prefer smaller MoE active
+  parameter models or 4-bit MLX models
+- 32GB Macs: use `agent-workspace-low-memory` by default
+- 64GB+ Macs: use `agent-workspace-async` unless first-hit or memory pressure
+  signals override
+
+Decision:
+
+- The AirLLM/layer-offload idea belongs behind a lower-memory feature flag,
+  not in the default 64GB+ path.
+- Lower-memory gates must report peak memory and cache memory limits, not only
+  latency.
+- Next target is M108: package the completed profile, overhead, prompt, and
+  low-memory evidence into a product readiness bundle.
