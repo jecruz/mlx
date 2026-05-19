@@ -1,0 +1,42 @@
+{
+  "checks": [
+    {
+      "name": "runtime_config_lock_initialized",
+      "pass": true
+    },
+    {
+      "name": "configure_runtime_locked",
+      "pass": true
+    },
+    {
+      "name": "snapshot_locked",
+      "pass": true
+    },
+    {
+      "name": "restore_locked",
+      "pass": true
+    },
+    {
+      "name": "request_scope_holds_lock",
+      "pass": true
+    },
+    {
+      "name": "stream_generate_scoped",
+      "pass": true
+    },
+    {
+      "name": "stream_completion_scoped",
+      "pass": true
+    },
+    {
+      "name": "stream_chat_scoped",
+      "pass": true
+    }
+  ],
+  "failures": [],
+  "readiness": "runtime-profile-scope-locked",
+  "service": "mlx_engine/resident_service.py",
+  "tag": "m152-qwen-a3b",
+  "type": "runtime_profile_scope_audit",
+  "verdict": "PASS"
+}

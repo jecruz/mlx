@@ -1136,6 +1136,7 @@ class ResidentEngine:
         self.engine_preset = engine_preset
         self.runtime_profile = runtime_profile
         self.state_lock = threading.RLock()
+        self.runtime_config_lock = threading.RLock()
         self.execution_lock = EngineExecutionLock()
         self.prefix_tracker = PrefixOpportunityTracker()
         self.prefix_kv_cache = PrefixKVCacheStore(max_entries=prefix_cache_max_entries)
@@ -1428,122 +1429,123 @@ class ResidentEngine:
         }
 
     def configure_runtime(self, config: dict[str, Any]) -> dict[str, Any]:
-        changes: dict[str, Any] = {}
-        if "runtime_profile" in config:
-            before = self.runtime_profile
-            self.runtime_profile = config["runtime_profile"]
-            changes["runtime_profile"] = {
-                "before": before,
-                "after": self.runtime_profile,
-            }
-        if "engine_preset" in config:
-            before = self.engine_preset
-            self.engine_preset = config["engine_preset"]
-            changes["engine_preset"] = {
-                "before": before,
-                "after": self.engine_preset,
-            }
-
-        scheduler_keys = {
-            "max_concurrent_requests",
-            "max_queued_requests",
-            "queue_timeout_ms",
-        }
-        scheduler_config = {
-            key: config[key]
-            for key in scheduler_keys
-            if key in config
-        }
-        if scheduler_config:
-            changes["scheduler"] = self.scheduler.configure(**scheduler_config)
-
-        if "prefix_cache_max_entries" in config:
-            changes["prefix_kv_cache"] = self.prefix_kv_cache.configure(
-                max_entries=config["prefix_cache_max_entries"],
-            )
-
-        policy_changes = {}
-        with self.prefix_cache_build_lock:
-            if "prefix_cache_memory_limit_mb" in config:
-                before = self.prefix_cache_memory_limit_bytes
-                limit_mb = float(config["prefix_cache_memory_limit_mb"])
-                self.prefix_cache_memory_limit_bytes = (
-                    int(limit_mb * 1024 * 1024) if limit_mb > 0 else None
-                )
-                policy_changes["memory_limit_bytes"] = {
+        with self.runtime_config_lock:
+            changes: dict[str, Any] = {}
+            if "runtime_profile" in config:
+                before = self.runtime_profile
+                self.runtime_profile = config["runtime_profile"]
+                changes["runtime_profile"] = {
                     "before": before,
-                    "after": self.prefix_cache_memory_limit_bytes,
+                    "after": self.runtime_profile,
                 }
-            if "prefix_cache_min_entries" in config:
-                before = self.prefix_cache_min_entries
-                self.prefix_cache_min_entries = max(
-                    int(config["prefix_cache_min_entries"]),
-                    0,
-                )
-                policy_changes["min_entries"] = {
+            if "engine_preset" in config:
+                before = self.engine_preset
+                self.engine_preset = config["engine_preset"]
+                changes["engine_preset"] = {
                     "before": before,
-                    "after": self.prefix_cache_min_entries,
+                    "after": self.engine_preset,
                 }
-            if "prefix_cache_population_mode" in config:
-                before = self.prefix_cache_population_mode
-                mode = config["prefix_cache_population_mode"]
-                if mode not in {"sync", "async", "request", "off"}:
-                    raise ValueError(
-                        "prefix cache population mode must be sync, async, request, or off"
+
+            scheduler_keys = {
+                "max_concurrent_requests",
+                "max_queued_requests",
+                "queue_timeout_ms",
+            }
+            scheduler_config = {
+                key: config[key]
+                for key in scheduler_keys
+                if key in config
+            }
+            if scheduler_config:
+                changes["scheduler"] = self.scheduler.configure(**scheduler_config)
+
+            if "prefix_cache_max_entries" in config:
+                changes["prefix_kv_cache"] = self.prefix_kv_cache.configure(
+                    max_entries=config["prefix_cache_max_entries"],
+                )
+
+            policy_changes = {}
+            with self.prefix_cache_build_lock:
+                if "prefix_cache_memory_limit_mb" in config:
+                    before = self.prefix_cache_memory_limit_bytes
+                    limit_mb = float(config["prefix_cache_memory_limit_mb"])
+                    self.prefix_cache_memory_limit_bytes = (
+                        int(limit_mb * 1024 * 1024) if limit_mb > 0 else None
                     )
-                self.prefix_cache_population_mode = mode
-                policy_changes["population_mode"] = {
-                    "before": before,
-                    "after": self.prefix_cache_population_mode,
-                }
-            if "prefix_cache_async_idle_timeout_ms" in config:
-                before = self.prefix_cache_async_idle_timeout_ms
-                self.prefix_cache_async_idle_timeout_ms = max(
-                    int(config["prefix_cache_async_idle_timeout_ms"]),
-                    1,
-                )
-                policy_changes["async_idle_timeout_ms"] = {
-                    "before": before,
-                    "after": self.prefix_cache_async_idle_timeout_ms,
-                }
-            if "prefix_cache_async_idle_grace_ms" in config:
-                before = self.prefix_cache_async_idle_grace_ms
-                self.prefix_cache_async_idle_grace_ms = max(
-                    int(config["prefix_cache_async_idle_grace_ms"]),
-                    0,
-                )
-                policy_changes["async_idle_grace_ms"] = {
-                    "before": before,
-                    "after": self.prefix_cache_async_idle_grace_ms,
-                }
-            if "prefix_cache_pending_wait_ms" in config:
-                before = self.prefix_cache_pending_wait_ms
-                self.prefix_cache_pending_wait_ms = max(
-                    int(config["prefix_cache_pending_wait_ms"]),
-                    0,
-                )
-                policy_changes["pending_wait_ms"] = {
-                    "before": before,
-                    "after": self.prefix_cache_pending_wait_ms,
-                }
-        if policy_changes:
-            changes["prefix_cache_policy"] = policy_changes
+                    policy_changes["memory_limit_bytes"] = {
+                        "before": before,
+                        "after": self.prefix_cache_memory_limit_bytes,
+                    }
+                if "prefix_cache_min_entries" in config:
+                    before = self.prefix_cache_min_entries
+                    self.prefix_cache_min_entries = max(
+                        int(config["prefix_cache_min_entries"]),
+                        0,
+                    )
+                    policy_changes["min_entries"] = {
+                        "before": before,
+                        "after": self.prefix_cache_min_entries,
+                    }
+                if "prefix_cache_population_mode" in config:
+                    before = self.prefix_cache_population_mode
+                    mode = config["prefix_cache_population_mode"]
+                    if mode not in {"sync", "async", "request", "off"}:
+                        raise ValueError(
+                            "prefix cache population mode must be sync, async, request, or off"
+                        )
+                    self.prefix_cache_population_mode = mode
+                    policy_changes["population_mode"] = {
+                        "before": before,
+                        "after": self.prefix_cache_population_mode,
+                    }
+                if "prefix_cache_async_idle_timeout_ms" in config:
+                    before = self.prefix_cache_async_idle_timeout_ms
+                    self.prefix_cache_async_idle_timeout_ms = max(
+                        int(config["prefix_cache_async_idle_timeout_ms"]),
+                        1,
+                    )
+                    policy_changes["async_idle_timeout_ms"] = {
+                        "before": before,
+                        "after": self.prefix_cache_async_idle_timeout_ms,
+                    }
+                if "prefix_cache_async_idle_grace_ms" in config:
+                    before = self.prefix_cache_async_idle_grace_ms
+                    self.prefix_cache_async_idle_grace_ms = max(
+                        int(config["prefix_cache_async_idle_grace_ms"]),
+                        0,
+                    )
+                    policy_changes["async_idle_grace_ms"] = {
+                        "before": before,
+                        "after": self.prefix_cache_async_idle_grace_ms,
+                    }
+                if "prefix_cache_pending_wait_ms" in config:
+                    before = self.prefix_cache_pending_wait_ms
+                    self.prefix_cache_pending_wait_ms = max(
+                        int(config["prefix_cache_pending_wait_ms"]),
+                        0,
+                    )
+                    policy_changes["pending_wait_ms"] = {
+                        "before": before,
+                        "after": self.prefix_cache_pending_wait_ms,
+                    }
+            if policy_changes:
+                changes["prefix_cache_policy"] = policy_changes
 
-        if (
-            "prefix_cache_memory_limit_mb" in config
-            or "prefix_cache_min_entries" in config
-        ):
-            changes["memory_pressure_check"] = self.maybe_apply_memory_pressure_policy(
-                reason="runtime_config_update",
-            )
+            if (
+                "prefix_cache_memory_limit_mb" in config
+                or "prefix_cache_min_entries" in config
+            ):
+                changes["memory_pressure_check"] = self.maybe_apply_memory_pressure_policy(
+                    reason="runtime_config_update",
+                )
 
-        return {
-            "ok": True,
-            "dry_run": False,
-            "applied": config,
-            "changes": changes,
-            "engine": self.metadata(),
-        }
+            return {
+                "ok": True,
+                "dry_run": False,
+                "applied": config,
+                "changes": changes,
+                "engine": self.metadata(),
+            }
 
     def prune_prefix_cache(
         self,
@@ -1962,49 +1964,51 @@ class ResidentEngine:
         }
 
     def runtime_config_snapshot(self) -> dict[str, Any]:
-        scheduler = self.scheduler.snapshot()
-        cache = self.prefix_kv_cache.snapshot()
-        return {
-            "runtime_profile": self.runtime_profile,
-            "engine_preset": self.engine_preset,
-            "max_concurrent_requests": scheduler["max_concurrent_requests"],
-            "max_queued_requests": scheduler["max_queued_requests"],
-            "queue_timeout_ms": scheduler["queue_timeout_ms"],
-            "prefix_cache_max_entries": cache["max_entries"],
-            "prefix_cache_memory_limit_bytes": self.prefix_cache_memory_limit_bytes,
-            "prefix_cache_min_entries": self.prefix_cache_min_entries,
-            "prefix_cache_population_mode": self.prefix_cache_population_mode,
-            "prefix_cache_async_idle_timeout_ms": self.prefix_cache_async_idle_timeout_ms,
-            "prefix_cache_async_idle_grace_ms": self.prefix_cache_async_idle_grace_ms,
-            "prefix_cache_pending_wait_ms": self.prefix_cache_pending_wait_ms,
-        }
+        with self.runtime_config_lock:
+            scheduler = self.scheduler.snapshot()
+            cache = self.prefix_kv_cache.snapshot()
+            return {
+                "runtime_profile": self.runtime_profile,
+                "engine_preset": self.engine_preset,
+                "max_concurrent_requests": scheduler["max_concurrent_requests"],
+                "max_queued_requests": scheduler["max_queued_requests"],
+                "queue_timeout_ms": scheduler["queue_timeout_ms"],
+                "prefix_cache_max_entries": cache["max_entries"],
+                "prefix_cache_memory_limit_bytes": self.prefix_cache_memory_limit_bytes,
+                "prefix_cache_min_entries": self.prefix_cache_min_entries,
+                "prefix_cache_population_mode": self.prefix_cache_population_mode,
+                "prefix_cache_async_idle_timeout_ms": self.prefix_cache_async_idle_timeout_ms,
+                "prefix_cache_async_idle_grace_ms": self.prefix_cache_async_idle_grace_ms,
+                "prefix_cache_pending_wait_ms": self.prefix_cache_pending_wait_ms,
+            }
 
     def restore_runtime_config(self, snapshot: dict[str, Any]) -> None:
-        self.runtime_profile = snapshot["runtime_profile"]
-        self.engine_preset = snapshot["engine_preset"]
-        self.scheduler.configure(
-            max_concurrent_requests=snapshot["max_concurrent_requests"],
-            max_queued_requests=snapshot["max_queued_requests"],
-            queue_timeout_ms=snapshot["queue_timeout_ms"],
-        )
-        self.prefix_kv_cache.configure(max_entries=snapshot["prefix_cache_max_entries"])
-        with self.prefix_cache_build_lock:
-            self.prefix_cache_memory_limit_bytes = snapshot[
-                "prefix_cache_memory_limit_bytes"
-            ]
-            self.prefix_cache_min_entries = snapshot["prefix_cache_min_entries"]
-            self.prefix_cache_population_mode = snapshot[
-                "prefix_cache_population_mode"
-            ]
-            self.prefix_cache_async_idle_timeout_ms = snapshot[
-                "prefix_cache_async_idle_timeout_ms"
-            ]
-            self.prefix_cache_async_idle_grace_ms = snapshot[
-                "prefix_cache_async_idle_grace_ms"
-            ]
-            self.prefix_cache_pending_wait_ms = snapshot[
-                "prefix_cache_pending_wait_ms"
-            ]
+        with self.runtime_config_lock:
+            self.runtime_profile = snapshot["runtime_profile"]
+            self.engine_preset = snapshot["engine_preset"]
+            self.scheduler.configure(
+                max_concurrent_requests=snapshot["max_concurrent_requests"],
+                max_queued_requests=snapshot["max_queued_requests"],
+                queue_timeout_ms=snapshot["queue_timeout_ms"],
+            )
+            self.prefix_kv_cache.configure(max_entries=snapshot["prefix_cache_max_entries"])
+            with self.prefix_cache_build_lock:
+                self.prefix_cache_memory_limit_bytes = snapshot[
+                    "prefix_cache_memory_limit_bytes"
+                ]
+                self.prefix_cache_min_entries = snapshot["prefix_cache_min_entries"]
+                self.prefix_cache_population_mode = snapshot[
+                    "prefix_cache_population_mode"
+                ]
+                self.prefix_cache_async_idle_timeout_ms = snapshot[
+                    "prefix_cache_async_idle_timeout_ms"
+                ]
+                self.prefix_cache_async_idle_grace_ms = snapshot[
+                    "prefix_cache_async_idle_grace_ms"
+                ]
+                self.prefix_cache_pending_wait_ms = snapshot[
+                    "prefix_cache_pending_wait_ms"
+                ]
 
     @contextmanager
     def request_runtime_profile_scope(
@@ -2039,28 +2043,29 @@ class ResidentEngine:
             }
             return
 
-        snapshot = self.runtime_config_snapshot()
-        config = runtime_profile_defaults(profile)["config"]
-        config["runtime_profile"] = profile
-        self.configure_runtime(config)
-        try:
-            yield {
-                "request_runtime_profile": profile,
-                "request_runtime_profile_source": "request_metadata",
-                "request_runtime_profile_reason": reason,
-                "request_runtime_profile_applied": True,
-                "request_runtime_profile_scoped": True,
-                "workload_intent": request.workload_intent,
-                "memory_class_gb": request.memory_class_gb,
-                "immediate_second_turn": request.immediate_second_turn,
-                "low_memory": request.low_memory,
-                "diagnostics_workload": request.diagnostics_workload,
-                "interactive_workload": request.interactive_workload,
-                "agentic_workload": request.agentic_workload,
-                "repeated_workspace": request.repeated_workspace,
-            }
-        finally:
-            self.restore_runtime_config(snapshot)
+        with self.runtime_config_lock:
+            snapshot = self.runtime_config_snapshot()
+            config = runtime_profile_defaults(profile)["config"]
+            config["runtime_profile"] = profile
+            self.configure_runtime(config)
+            try:
+                yield {
+                    "request_runtime_profile": profile,
+                    "request_runtime_profile_source": "request_metadata",
+                    "request_runtime_profile_reason": reason,
+                    "request_runtime_profile_applied": True,
+                    "request_runtime_profile_scoped": True,
+                    "workload_intent": request.workload_intent,
+                    "memory_class_gb": request.memory_class_gb,
+                    "immediate_second_turn": request.immediate_second_turn,
+                    "low_memory": request.low_memory,
+                    "diagnostics_workload": request.diagnostics_workload,
+                    "interactive_workload": request.interactive_workload,
+                    "agentic_workload": request.agentic_workload,
+                    "repeated_workspace": request.repeated_workspace,
+                }
+            finally:
+                self.restore_runtime_config(snapshot)
 
     def apply_request_runtime_profile(
         self,

@@ -1722,3 +1722,42 @@ Decision:
   observed profile bleed before the passing rerun, so the next milestone should
   strengthen the lock/scope discipline and run repeated stress coverage before
   claiming complete request-profile isolation.
+
+## M151-M158 Result
+
+The next lane converted the M149 profile-bleed concern into lock hardening,
+stress coverage, parity checks, and a current performance report.
+
+Completed:
+
+- M151 concurrency stress hardening
+- M152 request-profile scope lock audit
+- M153 streaming and non-stream route parity
+- M154 product-profile policy stabilization
+- M155 live suite lock regression
+- M156 performance report
+- M157 operator visibility contract
+- M158 checkpoint and next milestone list
+
+Performance report:
+
+- `artifacts/m156-performance-report/performance-report-m156-qwen-a3b.md`
+
+Checkpoint:
+
+- `artifacts/m158-performance-checkpoint/performance-checkpoint-m158-qwen-a3b.md`
+
+Current performance:
+
+- M155 live suite: `PASS`, 15 artifacts, 0 failures
+- M151 stress: 12 iterations, 36 rows, 0 failures
+- repeated best-hit speedup: `6.949899063306281`
+- repeated best-hit service ms: `214.1152499243617`
+- repeated best-hit prefill tokens: `11`
+- resident prompt transport wall ms: `474.661166081205`
+- CLI prompt transport wall ms: `6038.545124931261`
+
+Next target:
+
+- Continue with deeper concurrency stress under external observer load, then
+  first reusable-turn latency tuning and cache admission threshold sweeps.

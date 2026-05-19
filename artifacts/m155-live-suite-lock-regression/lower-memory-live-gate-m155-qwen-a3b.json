@@ -1,0 +1,22 @@
+{
+  "failures": [],
+  "input": "artifacts/m155-live-suite-lock-regression/dax-low-memory-live-m155-qwen-a3b.jsonl",
+  "metrics": {
+    "conversion_prefill_tokens": 11.0,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_peak_memory_gb": 22.73242483,
+    "mean_peak_memory_gb": 22.719860316
+  },
+  "profiles": [
+    "agent-workspace-low-memory"
+  ],
+  "row_count": 4,
+  "tag": "m155-qwen-a3b",
+  "thresholds": {
+    "max_cache_memory_limit_mb": 64.0,
+    "max_conversion_prefill_tokens": 32.0,
+    "max_peak_memory_gb": 32.0
+  },
+  "type": "lower_memory_runtime_gate",
+  "verdict": "PASS"
+}

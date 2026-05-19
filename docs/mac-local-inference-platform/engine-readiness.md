@@ -1384,3 +1384,44 @@ Decision:
 - Do not claim complete request-scoped runtime isolation until the transient
   M149 profile-bleed observation is converted into a stronger repeated stress
   gate.
+
+## M151-M158 Lock Hardening And Performance Checkpoint
+
+M151-M158 hardens request-scoped runtime-profile handling and packages the next
+performance report.
+
+Code changes:
+
+- `mlx_engine/resident_service.py` now has `runtime_config_lock`.
+- runtime profile config changes, snapshots, restores, and request-scoped
+  profile overrides are serialized through that lock.
+
+Artifacts:
+
+- `artifacts/m151-concurrency-stress/request-scoped-concurrency-stress-m151-qwen-a3b.json`
+- `artifacts/m152-runtime-profile-scope-audit/runtime-profile-scope-audit-m152-qwen-a3b.json`
+- `artifacts/m153-route-parity/route-parity-m153-qwen-a3b.json`
+- `artifacts/m154-product-profile-policy/product-profile-policy-m154-qwen-a3b.json`
+- `artifacts/m155-live-suite-lock-regression/live-product-regression-suite-m155-qwen-a3b.json`
+- `artifacts/m156-performance-report/performance-report-m156-qwen-a3b.md`
+- `artifacts/m157-operator-visibility/operator-visibility-m157-qwen-a3b.json`
+- `artifacts/m158-performance-checkpoint/performance-checkpoint-m158-qwen-a3b.md`
+
+Result:
+
+- M151 stress: `PASS`, 12 iterations, 36 rows, 0 failures
+- M152 static scope audit: `PASS`
+- M153 route parity: `PASS`
+- M154 product-profile policy: `PASS`
+- M155 live suite: `PASS`, 15 artifacts, 0 failures
+- M156 performance report: `PASS`
+- M157 operator visibility contract: `PASS`
+- M158 checkpoint: `PASS`
+
+Performance summary:
+
+- repeated best-hit speedup: `6.949899063306281`
+- repeated best-hit service ms: `214.1152499243617`
+- repeated best-hit prefill tokens: `11`
+- resident prompt transport wall ms: `474.661166081205`
+- CLI prompt transport wall ms: `6038.545124931261`

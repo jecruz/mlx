@@ -1,0 +1,58 @@
+{
+  "artifacts": {
+    "m151_concurrency_stress": {
+      "path": "artifacts/m151-concurrency-stress/request-scoped-concurrency-stress-m151-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m152_scope_audit": {
+      "path": "artifacts/m152-runtime-profile-scope-audit/runtime-profile-scope-audit-m152-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m153_route_parity": {
+      "path": "artifacts/m153-route-parity/route-parity-m153-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m154_product_profile_policy": {
+      "path": "artifacts/m154-product-profile-policy/product-profile-policy-m154-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m155_live_suite": {
+      "artifact_count": 15,
+      "path": "artifacts/m155-live-suite-lock-regression/live-product-regression-suite-m155-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m156_performance_report": {
+      "path": "artifacts/m156-performance-report/performance-report-m156-qwen-a3b.json",
+      "verdict": "PASS"
+    },
+    "m157_operator_visibility": {
+      "path": "artifacts/m157-operator-visibility/operator-visibility-m157-qwen-a3b.json",
+      "verdict": "PASS"
+    }
+  },
+  "covered_milestones": [
+    "M151",
+    "M152",
+    "M153",
+    "M154",
+    "M155",
+    "M156",
+    "M157",
+    "M158"
+  ],
+  "failures": [],
+  "next_milestones": [
+    "M159 deeper concurrency stress under external observer load",
+    "M160 first reusable-turn latency tuning",
+    "M161 cache admission threshold sweep",
+    "M162 resident-vs-cli transport overhead reduction",
+    "M163 prompt-progress telemetry polish for operator UI",
+    "M164 Dax/TUI live metrics panel",
+    "M165 smaller-model prompt-processing baseline",
+    "M166 release candidate engine preset matrix"
+  ],
+  "readiness": "m151-m158-passing",
+  "tag": "m158-qwen-a3b",
+  "type": "performance_checkpoint",
+  "verdict": "PASS"
+}

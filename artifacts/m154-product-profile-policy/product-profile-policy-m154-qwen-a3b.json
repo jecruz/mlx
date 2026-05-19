@@ -1,0 +1,51 @@
+{
+  "failures": [],
+  "readiness": "product-profile-policy-stable",
+  "rows": [
+    {
+      "actual_profile": "interactive",
+      "case": "chat",
+      "expected_profile": "interactive",
+      "pass": true,
+      "reason": "foreground interactive use"
+    },
+    {
+      "actual_profile": "agent-workspace-async",
+      "case": "coding-agent",
+      "expected_profile": "agent-workspace-async",
+      "pass": true,
+      "reason": "steady-state coding-agent reuse"
+    },
+    {
+      "actual_profile": "agent-workspace-first-hit",
+      "case": "coding-agent-first-hit",
+      "expected_profile": "agent-workspace-first-hit",
+      "pass": true,
+      "reason": "immediate repeated-context second turn"
+    },
+    {
+      "actual_profile": "agent-workspace-low-memory",
+      "case": "coding-agent-low-memory",
+      "expected_profile": "agent-workspace-low-memory",
+      "pass": true,
+      "reason": "bounded memory mode"
+    },
+    {
+      "actual_profile": "diagnostics",
+      "case": "diagnostics",
+      "expected_profile": "diagnostics",
+      "pass": true,
+      "reason": "diagnostics requested"
+    },
+    {
+      "actual_profile": "memory-saver",
+      "case": "manual-override",
+      "expected_profile": "memory-saver",
+      "pass": true,
+      "reason": "request runtime_profile override"
+    }
+  ],
+  "tag": "m154-qwen-a3b",
+  "type": "product_profile_policy_gate",
+  "verdict": "PASS"
+}

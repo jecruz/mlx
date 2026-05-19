@@ -406,3 +406,25 @@ python3 benchmarks/python/dax_product_mode_smoke.py \
   --tag m148-qwen-a3b \
   --fail-on-fail
 ```
+
+## Operator Visibility Fields
+
+The operator/TUI surface should display these request fields when present:
+
+- `request_runtime_profile`
+- `request_runtime_profile_source`
+- `request_runtime_profile_applied`
+- `request_runtime_profile_scoped`
+- `workload_intent`
+- `actual_prefill_tokens`
+- `cached_prefix_tokens`
+- `cache_hit`
+- `cache_created`
+- `cache_scheduled`
+- `cache_population_mode`
+- `service_request_ms`
+- `scheduler_queue_wait_ms`
+- `engine_lock_wait_ms`
+- `prompt_progress_total_tokens`
+- `prompt_progress_processed_tokens`
+- `peak_memory_gb`

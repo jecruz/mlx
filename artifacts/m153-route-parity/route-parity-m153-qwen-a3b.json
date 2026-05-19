@@ -1,0 +1,55 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "readiness": "stream-and-nonstream-route-parity",
+  "rows": [
+    {
+      "actual_prefill_tokens": 14,
+      "case": "completion_nonstream",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_applied": true,
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 272.33312488533556
+    },
+    {
+      "actual_prefill_tokens": 13,
+      "case": "completion_stream",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_applied": true,
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 272.10858394391835
+    },
+    {
+      "actual_prefill_tokens": 24,
+      "case": "chat_nonstream",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_applied": true,
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 210.55962494574487
+    },
+    {
+      "actual_prefill_tokens": 23,
+      "case": "chat_stream",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_applied": true,
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 444.34754201211035
+    },
+    {
+      "actual_prefill_tokens": 13,
+      "case": "generate_json",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_applied": true,
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 400.2786250784993
+    }
+  ],
+  "tag": "m153-qwen-a3b",
+  "type": "route_parity_probe",
+  "verdict": "PASS"
+}

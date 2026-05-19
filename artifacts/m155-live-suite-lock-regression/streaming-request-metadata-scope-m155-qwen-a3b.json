@@ -1,0 +1,77 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "readiness": "streaming-request-scope-parity",
+  "row_count": 2,
+  "rows": [
+    {
+      "actual_prefill_tokens": 14,
+      "case": "completion_first_hit",
+      "checks": [
+        {
+          "actual": "request_metadata",
+          "expected": "request_metadata",
+          "name": "request_runtime_profile_source",
+          "pass": true
+        },
+        {
+          "actual": true,
+          "expected": true,
+          "name": "request_runtime_profile_applied",
+          "pass": true
+        },
+        {
+          "actual": true,
+          "expected": true,
+          "name": "request_runtime_profile_scoped",
+          "pass": true
+        },
+        {
+          "actual": "agent-workspace-first-hit",
+          "expected": "agent-workspace-first-hit",
+          "name": "request_runtime_profile",
+          "pass": true
+        }
+      ],
+      "event_count": 5,
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "service_request_ms": 207.07962499000132
+    },
+    {
+      "actual_prefill_tokens": 24,
+      "case": "chat_low_memory",
+      "checks": [
+        {
+          "actual": "request_metadata",
+          "expected": "request_metadata",
+          "name": "request_runtime_profile_source",
+          "pass": true
+        },
+        {
+          "actual": true,
+          "expected": true,
+          "name": "request_runtime_profile_applied",
+          "pass": true
+        },
+        {
+          "actual": true,
+          "expected": true,
+          "name": "request_runtime_profile_scoped",
+          "pass": true
+        },
+        {
+          "actual": "agent-workspace-low-memory",
+          "expected": "agent-workspace-low-memory",
+          "name": "request_runtime_profile",
+          "pass": true
+        }
+      ],
+      "event_count": 5,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "service_request_ms": 218.99566613137722
+    }
+  ],
+  "tag": "m155-qwen-a3b",
+  "type": "streaming_request_metadata_scope_probe",
+  "verdict": "PASS"
+}

@@ -1,0 +1,29 @@
+{
+  "failures": [],
+  "inputs": {
+    "m148_repeated": "artifacts/m155-live-suite-lock-regression/dax-resident-client-m155-qwen-a3b.json",
+    "m148_suite": "artifacts/m155-live-suite-lock-regression/live-product-regression-suite-m155-qwen-a3b.json",
+    "m148_transport": "artifacts/m155-live-suite-lock-regression/live-prompt-transport-sweep-m155-qwen-a3b.json",
+    "m151_stress": "artifacts/m151-concurrency-stress/request-scoped-concurrency-stress-m151-qwen-a3b.json",
+    "m64_gate": "artifacts/m64-real-suite/resident-regression-gate-m64-qwen-a3b.json"
+  },
+  "readiness": "performance-report-current",
+  "summary": {
+    "cli_prompt_transport_ms": 6038.545124931261,
+    "m148_artifacts": 15,
+    "m148_failures": 0,
+    "m148_suite_verdict": "PASS",
+    "m64_gate_verdict": "PASS",
+    "repeated_baseline_service_ms": 1488.0793748889118,
+    "repeated_best_hit_prefill_tokens": 11,
+    "repeated_best_hit_service_ms": 214.1152499243617,
+    "repeated_best_hit_speedup": 6.949899063306281,
+    "resident_prompt_transport_ms": 474.661166081205,
+    "stress_iterations": 12,
+    "stress_mean_service_ms": 428.3835810686772,
+    "stress_rows": 36
+  },
+  "tag": "m156-qwen-a3b",
+  "type": "performance_checkpoint_report",
+  "verdict": "PASS"
+}
