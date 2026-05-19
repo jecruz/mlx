@@ -567,3 +567,28 @@ Acceptance policy:
 
 The gate can return a successful report with `swap_decision=REJECT`; use
 `--fail-on-reject` when automation should exit non-zero for blocked swaps.
+
+Validate per-request memory metric wiring:
+
+```bash
+python3 benchmarks/python/request_memory_metrics_static_probe.py \
+  --output-json artifacts/m177-request-memory-metrics/request-memory-metrics-static-probe-m177-qwen-a3b.json \
+  --tag m177-qwen-a3b \
+  --fail-on-fail
+```
+
+Expected request metric fields after the resident server is restarted onto this
+commit:
+
+- `active_memory_gb`
+- `active_memory_bytes`
+- `cache_memory_gb`
+- `cache_memory_bytes`
+- `mlx_peak_memory_gb`
+- `peak_memory_bytes`
+
+Compatibility note:
+
+- Existing live server processes started before this commit will not emit these
+  fields. `lower_memory_runtime_gate.py --base-url ...` still falls back to
+  `/health` for those older processes.

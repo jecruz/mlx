@@ -1704,3 +1704,32 @@ Decision:
 - Quality passing is necessary but not sufficient for a model swap. The 27B
   candidate remains blocked because it is materially slower than the active A3B
   model on the quality-gate comparison.
+
+## M177 Per-Request Active Memory Metrics
+
+M177 adds current MLX memory fields to per-request engine metrics.
+
+Artifact:
+
+- `artifacts/m177-request-memory-metrics/request-memory-metrics-static-probe-m177-qwen-a3b.json`
+
+Added request metric fields:
+
+- `active_memory_gb`
+- `active_memory_bytes`
+- `cache_memory_gb`
+- `cache_memory_bytes`
+- `mlx_peak_memory_gb`
+- `peak_memory_bytes`
+
+Result:
+
+- static contract: `PASS`
+- request metric injection points: `3`
+- failures: `0`
+
+Decision:
+
+- Future lower-memory and operator gates can use per-request active memory
+  directly after the resident server is restarted onto this commit. The `/health`
+  fallback remains useful for older live server processes.

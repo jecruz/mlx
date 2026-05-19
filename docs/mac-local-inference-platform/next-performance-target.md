@@ -2023,3 +2023,29 @@ Decision:
 
 - Do not replace the active A3B model with the tested 27B dense model. The swap
   gate correctly blocks it even though quality checks pass.
+
+## M177 Result
+
+M177 adds per-request active memory fields to engine metrics.
+
+Artifact:
+
+- `artifacts/m177-request-memory-metrics/request-memory-metrics-static-probe-m177-qwen-a3b.json`
+
+Result:
+
+- static contract: `PASS`
+- request metric injection points: `3`
+- failures: `0`
+
+Fields:
+
+- `active_memory_gb`
+- `cache_memory_gb`
+- `mlx_peak_memory_gb`
+
+Decision:
+
+- Once the live resident server is restarted onto this commit, lower-memory
+  checks should prefer per-request `active_memory_gb` and only use `/health` as
+  compatibility fallback.

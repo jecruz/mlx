@@ -1251,6 +1251,23 @@ class ResidentEngine:
                 snapshot[key + "_error"] = str(exc)
         return snapshot
 
+    def mlx_request_memory_metrics(self) -> dict[str, Any]:
+        snapshot = self.mlx_memory_snapshot()
+        metrics: dict[str, Any] = {}
+        for source, target in [
+            ("active_memory_bytes", "active_memory_gb"),
+            ("cache_memory_bytes", "cache_memory_gb"),
+            ("peak_memory_bytes", "mlx_peak_memory_gb"),
+        ]:
+            value = snapshot.get(source)
+            if isinstance(value, int | float):
+                metrics[target] = float(value) / 1e9
+                metrics[source] = int(value)
+            error = snapshot.get(source + "_error")
+            if error is not None:
+                metrics[target + "_error"] = error
+        return metrics
+
     def prefix_cache_policy_snapshot(self) -> dict[str, Any]:
         with self.prefix_cache_build_lock:
             return {
@@ -2591,6 +2608,7 @@ class ResidentEngine:
             "prompt_tps": float(result.prompt_tps),
             "generation_tps": float(result.generation_tps),
             "peak_memory_gb": float(result.peak_memory),
+            **self.mlx_request_memory_metrics(),
             "stop_reason": forced_stop_reason or stop_reason or "max_tokens_or_eos",
             "generated_token_count_recorded": len(generated_token_ids),
             "_generated_token_ids": generated_token_ids,
@@ -2720,6 +2738,7 @@ class ResidentEngine:
             "prompt_tps": float(result.prompt_tps),
             "generation_tps": float(result.generation_tps),
             "peak_memory_gb": float(result.peak_memory),
+            **self.mlx_request_memory_metrics(),
             "stop_reason": forced_stop_reason or stop_reason or "max_tokens_or_eos",
             "stream_first_token_ms": first_token_ms,
             "stream_mean_token_gap_ms": (
@@ -2923,6 +2942,7 @@ class ResidentEngine:
                 "prompt_tps": float(result.prompt_tps),
                 "generation_tps": float(result.generation_tps),
                 "peak_memory_gb": float(result.peak_memory),
+                **self.mlx_request_memory_metrics(),
                 "stop_reason": forced_stop_reason or stop_reason or "max_tokens_or_eos",
                 "generated_token_count_recorded": len(generated_token_ids),
                 "stream_first_token_ms": first_token_ms,

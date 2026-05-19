@@ -1,0 +1,18 @@
+{
+  "failures": [],
+  "helper_present": true,
+  "metric_injections": 3,
+  "readiness": "request-memory-metrics-ready",
+  "required_fields": {
+    "active_memory_bytes": true,
+    "active_memory_gb": true,
+    "cache_memory_bytes": true,
+    "cache_memory_gb": true,
+    "mlx_peak_memory_gb": true,
+    "peak_memory_bytes": true
+  },
+  "source": "mlx_engine/resident_service.py",
+  "tag": "m177-qwen-a3b",
+  "type": "request_memory_metrics_static_probe",
+  "verdict": "PASS"
+}
