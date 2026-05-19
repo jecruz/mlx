@@ -1772,3 +1772,44 @@ Quality plan:
 
 - `docs/mac-local-inference-platform/inference-quality-gates.md`
 - `artifacts/m159-quality-gate-plan/quality-gate-plan-m159-qwen-a3b.md`
+
+## M159-M166 Quality Gate Execution
+
+The quality gate harness is now implemented and has live evidence.
+
+Result:
+
+- `M159` golden prompt set: `PASS`
+- `M160` deterministic quality regression: `PASS`
+- `M161` cache-enabled vs cache-disabled quality comparison: `FAIL`
+- `M162` streaming vs non-stream quality parity: `PASS`
+- `M163` loop/repetition detector: `PASS`
+- `M164` long-context RoPE/IMRoPE quality probe: `FAIL`
+- `M165` cross-engine Qwen3.6 rubric comparison: `FAIL`
+- `M166` quality-gated performance checkpoint: `FAIL`
+
+Blocking finding:
+
+- The Qwen3.6 MLX path retrieves the long-context sentinel facts, but for the
+  long-context RoPE/IMRoPE case it keeps emitting visible reasoning and does
+  not close the thinking block within the quality budget. That makes the
+  response unacceptable for release-quality user output even though the facts
+  are present inside the reasoning text.
+
+Artifacts:
+
+- `artifacts/m159-quality-golden-set/quality-golden-set-m159-qwen-a3b.json`
+- `artifacts/m160-deterministic-quality/deterministic-quality-m160-qwen-a3b.json`
+- `artifacts/m161-cache-quality/cache-quality-m161-qwen-a3b.json`
+- `artifacts/m162-streaming-quality/streaming-quality-m162-qwen-a3b.json`
+- `artifacts/m163-loop-quality/loop-quality-m163-qwen-a3b.json`
+- `artifacts/m164-long-context-quality/long-context-quality-m164-qwen-a3b.json`
+- `artifacts/m165-cross-engine-quality/cross-engine-quality-m165-qwen-a3b.json`
+- `artifacts/m166-quality-checkpoint/quality-checkpoint-m166-qwen-a3b.md`
+
+Decision:
+
+- Do not continue performance optimization as release-ready work until this
+  quality blocker is resolved.
+- Next work should diagnose Qwen3.6 chat-template/thinking-mode handling,
+  output post-processing policy, and long-context final-answer extraction.

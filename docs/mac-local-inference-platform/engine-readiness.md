@@ -1445,3 +1445,32 @@ Quality plan:
 
 - `docs/mac-local-inference-platform/inference-quality-gates.md`
 - `artifacts/m159-quality-gate-plan/quality-gate-plan-m159-qwen-a3b.md`
+
+## M159-M166 Quality Gate Result
+
+The quality-gated lane is implemented, but it is not passing end-to-end.
+
+Passing:
+
+- `M159` golden prompt set
+- `M160` deterministic quality regression
+- `M162` streaming vs non-stream quality parity
+- `M163` loop/repetition detector
+
+Failing:
+
+- `M161` cache-enabled vs cache-disabled quality comparison
+- `M164` long-context RoPE/IMRoPE quality probe
+- `M165` cross-engine Qwen3.6 rubric comparison
+- `M166` quality-gated performance checkpoint
+
+Blocker:
+
+- The long-context sentinel prompt retrieves `ORCHID-17`, `LANTERN-42`, and
+  `HARBOR-93` inside visible reasoning, but does not produce a clean final
+  answer. The quality gate treats this as a failure because user-visible
+  reasoning and unclosed thinking output are not acceptable release behavior.
+
+Primary artifact:
+
+- `artifacts/m166-quality-checkpoint/quality-checkpoint-m166-qwen-a3b.md`
