@@ -930,3 +930,30 @@ Decision:
   `overhead_ms`.
 - Next target is M106: define the profile auto-selection policy on top of the
   gate-backed profiles and operator controls.
+
+## M106 Result
+
+M106 defines and validates the profile auto-selection policy:
+
+- script: `benchmarks/python/dax_profile_auto_selection_policy.py`
+- artifact:
+  `artifacts/m106-profile-auto-selection/profile-auto-selection-m106-qwen-a3b.json`
+
+Result:
+
+- policy verdict: `PASS`
+- scenarios: `6`
+- failures: `0`
+- normal coding-agent -> `agent-workspace-async`
+- immediate second turn -> `agent-workspace-first-hit`
+- lower-memory Mac -> `agent-workspace-low-memory`
+- interactive foreground -> `interactive`
+- diagnostics -> `diagnostics`
+- manual override preserved
+
+Decision:
+
+- Auto-selection should be policy-driven with manual override support.
+- Low-memory selection should happen before generic repeated-workspace async
+  selection.
+- Next target is M107: make the lower-memory Mac runtime strategy concrete.

@@ -1,0 +1,87 @@
+{
+  "decision_gate": "artifacts/m101-default-profile-decision-gate/default-profile-decision-gate-m101-qwen-a3b.json",
+  "failures": [],
+  "rules": [
+    "manual profile overrides all automatic choices",
+    "diagnostics requests route to diagnostics",
+    "foreground non-agentic interactive work routes to interactive",
+    "16GB/24GB/32GB or explicit low-memory mode routes to agent-workspace-low-memory",
+    "immediate repeated-context second-turn work routes to agent-workspace-first-hit",
+    "agentic repeated-workspace work routes to agent-workspace-async",
+    "unknown foreground work falls back to interactive"
+  ],
+  "scenarios": [
+    {
+      "expected": "agent-workspace-async",
+      "name": "normal_coding_agent",
+      "reason": "steady-state coding-agent reuse",
+      "selected": "agent-workspace-async",
+      "signal": {
+        "agentic": true,
+        "memory_class_gb": 64,
+        "repeated_workspace": true
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected": "agent-workspace-first-hit",
+      "name": "immediate_second_turn",
+      "reason": "immediate repeated-context second turn",
+      "selected": "agent-workspace-first-hit",
+      "signal": {
+        "agentic": true,
+        "immediate_second_turn": true,
+        "memory_class_gb": 64
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected": "agent-workspace-low-memory",
+      "name": "lower_memory_mac",
+      "reason": "bounded memory mode",
+      "selected": "agent-workspace-low-memory",
+      "signal": {
+        "agentic": true,
+        "memory_class_gb": 32,
+        "repeated_workspace": true
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected": "interactive",
+      "name": "interactive_foreground",
+      "reason": "foreground interactive use",
+      "selected": "interactive",
+      "signal": {
+        "agentic": false,
+        "interactive": true,
+        "memory_class_gb": 64
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected": "diagnostics",
+      "name": "diagnostics",
+      "reason": "diagnostics requested",
+      "selected": "diagnostics",
+      "signal": {
+        "diagnostics": true
+      },
+      "verdict": "PASS"
+    },
+    {
+      "expected": "agent-workspace-first-hit",
+      "name": "manual_override",
+      "reason": "manual override",
+      "selected": "agent-workspace-first-hit",
+      "signal": {
+        "manual_profile": "agent-workspace-first-hit",
+        "memory_class_gb": 32
+      },
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m106-qwen-a3b",
+  "type": "dax_profile_auto_selection_policy",
+  "verdict": "PASS"
+}

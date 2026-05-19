@@ -512,6 +512,14 @@ Readiness interpretation:
   - result: `PASS`
   - recommended path: `resident-dax-client`
   - acceptance target: mean operator overhead `<=500 ms`
+- M106 defines profile auto-selection:
+  - script: `benchmarks/python/dax_profile_auto_selection_policy.py`
+  - artifact:
+    `artifacts/m106-profile-auto-selection/profile-auto-selection-m106-qwen-a3b.json`
+  - result: `PASS`, `6` scenarios, `0` failures
+  - normal coding-agent -> `agent-workspace-async`
+  - immediate second turn -> `agent-workspace-first-hit`
+  - lower-memory Mac -> `agent-workspace-low-memory`
 
 ## Current Qwen Result
 

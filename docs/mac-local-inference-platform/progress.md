@@ -2976,3 +2976,21 @@
   - M105 conclusion: the fast product path should reuse a loaded Dax
     process/client before falling back to per-request `npx`/`tsx` CLI
     invocation.
+- Completed M106 profile auto-selection policy:
+  - added `benchmarks/python/dax_profile_auto_selection_policy.py`
+  - generated artifact:
+    `artifacts/m106-profile-auto-selection/profile-auto-selection-m106-qwen-a3b.json`
+  - validation passed:
+    - policy verdict `PASS`
+    - `6` scenarios, `0` failures
+    - `python3 -m py_compile benchmarks/python/dax_profile_auto_selection_policy.py`
+    - `git diff --check`
+  - M106 result:
+    - normal coding-agent -> `agent-workspace-async`
+    - immediate second turn -> `agent-workspace-first-hit`
+    - lower-memory Mac -> `agent-workspace-low-memory`
+    - interactive foreground -> `interactive`
+    - diagnostics -> `diagnostics`
+    - manual override preserved
+  - M106 conclusion: product profile auto-selection can now be implemented
+    against a tested rule set instead of hardcoded one-off defaults.
