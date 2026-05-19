@@ -1,0 +1,174 @@
+{
+  "artifacts": {
+    "deterministic-quality-m172-qwen-a3b": {
+      "failure_count": 0,
+      "max_repetition_score": 0.0,
+      "missing_required_count": 0,
+      "path": "artifacts/m172-coding-agent-golden-set/deterministic-quality-m172-qwen-a3b.json",
+      "row_count": 12,
+      "row_failure_count": 0,
+      "tag": "m172-qwen-a3b",
+      "type": "deterministic_quality_regression",
+      "verdict": "PASS",
+      "visible_thinking_count": 0
+    },
+    "loop-quality-m172-qwen-a3b": {
+      "failure_count": 0,
+      "max_repetition_score": 0.0,
+      "missing_required_count": 0,
+      "path": "artifacts/m172-coding-agent-golden-set/loop-quality-m172-qwen-a3b.json",
+      "row_count": 13,
+      "row_failure_count": 0,
+      "tag": "m172-qwen-a3b",
+      "type": "loop_repetition_quality_gate",
+      "verdict": "PASS",
+      "visible_thinking_count": 0
+    }
+  },
+  "checks": [
+    {
+      "actual": "PASS",
+      "label": "deterministic-quality-m172-qwen-a3b.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "deterministic-quality-m172-qwen-a3b.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "deterministic-quality-m172-qwen-a3b.row_failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "deterministic-quality-m172-qwen-a3b.missing_required_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "deterministic-quality-m172-qwen-a3b.visible_thinking_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.0,
+      "label": "deterministic-quality-m172-qwen-a3b.max_repetition_score",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "loop-quality-m172-qwen-a3b.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "loop-quality-m172-qwen-a3b.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "loop-quality-m172-qwen-a3b.row_failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "loop-quality-m172-qwen-a3b.missing_required_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "loop-quality-m172-qwen-a3b.visible_thinking_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.0,
+      "label": "loop-quality-m172-qwen-a3b.max_repetition_score",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "operator_bundle.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "operator_bundle.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "operator_bundle.status_card.engine",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "operator_bundle.status_card.gpu",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "operator_bundle.status_card.quality",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "operator_bundle.status_card.model_comparison",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "operator_bundle": {
+    "path": "artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json",
+    "verdict": "PASS",
+    "warning_count": 1
+  },
+  "readiness": "ci-quality-ready",
+  "tag": "m173-qwen-a3b",
+  "thresholds": {
+    "allow_warnings": true,
+    "max_artifact_failures": 0,
+    "max_missing_required": 0,
+    "max_repetition_score": 0.2,
+    "max_row_failures": 0,
+    "max_visible_thinking": 0
+  },
+  "type": "quality_threshold_gate",
+  "verdict": "PASS"
+}

@@ -1627,3 +1627,27 @@ Decision:
 
 - Coding-agent quality now covers workspace lookup, edit planning, focused test
   selection, and failure triage before future speed claims can be accepted.
+
+## M173 CI Quality Threshold Gate
+
+M173 adds a CI-style threshold gate for quality artifacts and operator quality
+bundles.
+
+Artifact:
+
+- `artifacts/m173-quality-threshold-gate/quality-threshold-gate-m173-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `ci-quality-ready`
+- checks: `18`
+- failures: `0`
+- visible-thinking threshold: `0`
+- missing-required threshold: `0`
+- max repetition threshold: `0.2`
+
+Decision:
+
+- Future model/profile/speed changes should publish this threshold gate output
+  so automation can block regressions before operator surfaces claim a speed win.

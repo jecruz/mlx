@@ -1953,3 +1953,26 @@ Decision:
 
 - Continue prompt-processing and generation speed work only while preserving
   coding-agent task correctness, not just generic answer quality.
+
+## M173 Result
+
+M173 adds a CI-style threshold report for quality and operator readiness.
+
+Artifact:
+
+- `artifacts/m173-quality-threshold-gate/quality-threshold-gate-m173-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `ci-quality-ready`
+- checks: `18`
+- failures: `0`
+- deterministic quality verdict: `PASS`
+- loop quality verdict: `PASS`
+- operator bundle verdict: `PASS`
+
+Decision:
+
+- Any future model swap, profile change, cache change, or speed claim should
+  include this threshold gate or an equivalent stricter gate.

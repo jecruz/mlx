@@ -490,3 +490,26 @@ The bundle is the preferred compact surface for operator UI:
 - `models[].verdict`
 - `models[].mean_quality_gate_ms`
 - `warnings[]`
+
+Create a CI-style quality threshold gate:
+
+```bash
+python3 benchmarks/python/quality_threshold_gate.py \
+  --quality-artifact artifacts/m172-coding-agent-golden-set/deterministic-quality-m172-qwen-a3b.json \
+  --quality-artifact artifacts/m172-coding-agent-golden-set/loop-quality-m172-qwen-a3b.json \
+  --operator-bundle-json artifacts/m171-operator-quality-bundle/operator-quality-bundle-m171-qwen-a3b.json \
+  --output-json artifacts/m173-quality-threshold-gate/quality-threshold-gate-m173-qwen-a3b.json \
+  --tag m173-qwen-a3b \
+  --allow-warnings \
+  --fail-on-fail
+```
+
+The threshold gate is intended for automation. It fails when:
+
+- any quality artifact verdict is not `PASS`
+- artifact-level or row-level failures are present
+- required markers are missing
+- visible thinking appears
+- repetition exceeds the configured threshold
+- the operator quality bundle is not ready
+- engine, GPU, suite quality, or model comparison status is not `PASS`
