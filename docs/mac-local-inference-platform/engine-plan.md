@@ -5974,6 +5974,33 @@ M95 decision:
 - M96 should summarize profile tradeoffs and decide default product routing:
   steady-state async, first-hit conversion, and lower-memory bounded mode.
 
+## M96 Performance Decision Report
+
+M96 packages M91-M95 into a product-routing decision report.
+
+Report:
+
+- `docs/mac-local-inference-platform/performance-decision-report-m91-m96.md`
+
+Decision:
+
+- `agent-workspace-async`: default for long-running coding-agent sessions that
+  benefit from mature steady-state repeated-context reuse.
+- `agent-workspace-first-hit`: use when immediate second-turn latency matters.
+- `agent-workspace-low-memory`: use on smaller-memory Macs or when cache
+  residency must be bounded.
+- `interactive`: keep for low foreground latency when repeated context is not
+  expected.
+- `diagnostics`: keep for stable readiness and probe runs.
+
+M96 result:
+
+- decision report completed
+- M91-M95 artifacts mapped to concrete product defaults
+- remaining follow-up is live rerun after resident server restart so the new
+  `agent-workspace-first-hit` and `agent-workspace-low-memory` profile names
+  are exercised directly instead of through compatibility profiles
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

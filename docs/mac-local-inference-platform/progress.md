@@ -2771,3 +2771,18 @@
   - M95 conclusion: lower-memory product mode now has a dedicated profile and
     a validation path that accepts bounded conversion without requiring the
     exact split-prefill path.
+- Completed M96 performance decision report:
+  - added
+    `docs/mac-local-inference-platform/performance-decision-report-m91-m96.md`
+  - report maps M91-M95 evidence to product runtime-profile routing decisions
+  - recommended defaults:
+    - `agent-workspace-async` for long-running coding-agent sessions with
+      mature steady-state repeated-context reuse
+    - `agent-workspace-first-hit` for immediate second-turn responsiveness
+    - `agent-workspace-low-memory` for smaller-memory Macs or bounded cache
+      residency
+    - `interactive` for ordinary low-latency foreground interaction
+    - `diagnostics` for stable readiness/probe runs
+  - M96 conclusion: profile tradeoffs are now explicit and artifact-backed.
+    Follow-up is a live rerun after resident server restart so the new profile
+    names are exercised directly instead of through compatibility profiles.

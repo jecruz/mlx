@@ -433,6 +433,12 @@ Readiness interpretation:
   - result: lower-memory first-hit gate `PASS`, conversion turn `2`,
     conversion prefill `18` tokens, conversion ratio `0.588`, mature hit
     speedup `3.581x`, mature hit prefill `18` tokens
+- M96 records the routing decision:
+  - report:
+    `docs/mac-local-inference-platform/performance-decision-report-m91-m96.md`
+  - default long-session coding-agent profile: `agent-workspace-async`
+  - immediate second-turn profile: `agent-workspace-first-hit`
+  - lower-memory profile: `agent-workspace-low-memory`
 
 ## Current Qwen Result
 

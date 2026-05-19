@@ -658,3 +658,24 @@ Decision:
   because it trades cache capacity for safer memory behavior.
 - Next target is M96: performance decision report and default-routing
   recommendation.
+
+## M96 Result
+
+M96 adds the artifact-backed performance decision report:
+
+- `docs/mac-local-inference-platform/performance-decision-report-m91-m96.md`
+
+Default routing recommendation:
+
+- `agent-workspace-async` for long-running repeated-context coding-agent work.
+- `agent-workspace-first-hit` for immediate second-turn responsiveness.
+- `agent-workspace-low-memory` for smaller-memory Macs or bounded cache
+  residency.
+- `interactive` for ordinary foreground interaction.
+- `diagnostics` for stable readiness/probe runs.
+
+Next target after M96:
+
+- Restart the resident server on the new code and rerun product gates with the
+  new profile names directly.
+- Wire these profile choices into the product UI/Dax product mode.
