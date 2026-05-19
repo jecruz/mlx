@@ -839,3 +839,88 @@ Readiness position:
 
 - Product clients no longer need to hand-assemble request metadata fields.
 - The next integration step is to wire this into a concrete client path.
+
+## M127 Dax Request Metadata Integration
+
+Dax now sends MLX workload routing as per-request metadata for prompt and
+interactive generation instead of mutating the resident engine profile before
+each product request.
+
+Dax commit:
+
+- `28b5493f Add MLX request metadata to Dax prompts`
+
+Changed Dax behavior:
+
+- `dax mlx-engine --prompt ...` derives request metadata from `--intent`,
+  `--profile`, or the default coding-agent product path.
+- `dax mlx-engine --interactive` keeps the same per-request metadata for panel
+  generations.
+- status-only `--profile` and `--intent` operations still use `/engine/config`
+  as explicit operator controls.
+- in-panel `/profile` remains a deliberate global runtime-profile override.
+
+Validation:
+
+- Dax focused test:
+  `npm run test -- mlx-engine-status.test.ts`
+- result: `32` tests passed
+- Dax coding-agent build:
+  `npm run build`
+- Dax pre-commit checks passed during commit.
+
+Readiness position:
+
+- Dax no longer needs to globally change the server profile just to run the
+  normal coding-agent prompt path.
+
+## M128 Live Dax Request Metadata Smoke
+
+M128 validates the committed Dax path against the live Qwen A3B resident MLX
+server.
+
+Live command shape:
+
+```bash
+node /Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --prompt "M128 Dax request metadata artifact. Reply with one short sentence." \
+  --max-tokens 8 \
+  --json
+```
+
+Artifact:
+
+- `artifacts/m128-dax-request-metadata-smoke/dax-request-metadata-smoke-m128-qwen-a3b.json`
+
+Observed live metrics:
+
+- `engine_metrics.request_runtime_profile`: `agent-workspace-async`
+- `engine_metrics.request_runtime_profile_source`: `request_metadata`
+- `engine_metrics.request_runtime_profile_applied`: `true`
+- `engine_metrics.workload_intent`: `coding-agent`
+- `engine_metrics.agentic_workload`: `true`
+- `engine_metrics.repeated_workspace`: `true`
+
+Readiness position:
+
+- The Dax product/operator path is now live-proven to reach MLX's request
+  metadata router.
+
+## M129 Dax Operator Metadata Contract
+
+The Dax-facing request metadata behavior is documented in:
+
+- `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+- `docs/mac-local-inference-platform/resident-operator-runbook.md`
+
+Operator distinction:
+
+- `--prompt` and `--interactive` use per-request metadata.
+- status-only `--profile` and `--intent` mutate `/engine/config`.
+- interactive `/profile` is a deliberate global override for operators.
+
+Readiness position:
+
+- Future Dax, Prowl, or UI client work has a clear contract for when to use
+  request metadata versus global engine controls.

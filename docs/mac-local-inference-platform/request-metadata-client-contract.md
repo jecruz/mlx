@@ -21,6 +21,7 @@ Validated by:
 Current live validation artifact:
 
 - `artifacts/m124-live-product-regression-suite/live-product-regression-suite-m124-qwen-a3b.json`
+- `artifacts/m128-dax-request-metadata-smoke/dax-request-metadata-smoke-m128-qwen-a3b.json`
 
 ## Contract
 
@@ -173,6 +174,45 @@ Use these defaults:
 Do not require users to pick raw cache or prefill knobs in the UI. Present the
 above as product modes and let the server map them to runtime profiles.
 
+## Dax Client Behavior
+
+Dax uses request metadata for product generation paths:
+
+```bash
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --prompt "Use the current repo context and propose the next change." \
+  --max-tokens 128
+```
+
+Default prompt and interactive sessions send:
+
+```json
+{
+  "workload_intent": "coding-agent",
+  "agentic_workload": true,
+  "repeated_workspace": true
+}
+```
+
+Dax intent mapping:
+
+| Dax Option | Request Metadata |
+| --- | --- |
+| no `--intent` with `--prompt` or `--interactive` | `workload_intent=coding-agent`, `agentic_workload=true`, `repeated_workspace=true` |
+| `--intent interactive` | `workload_intent=interactive`, `interactive_workload=true` |
+| `--intent first-hit` | `workload_intent=first-hit`, `immediate_second_turn=true`, agent workspace flags |
+| `--intent low-memory` | `workload_intent=low-memory`, `low_memory=true`, agent workspace flags |
+| `--intent memory-saver` | `workload_intent=memory-saver`, `low_memory=true` |
+| `--intent diagnostics` | `workload_intent=diagnostics`, `diagnostics_workload=true` |
+| `--profile <name>` with generation | `runtime_profile=<name>` |
+
+Operator distinction:
+
+- `--prompt` and `--interactive` use request metadata.
+- status-only `--profile` and `--intent` still call `/engine/config`.
+- interactive `/profile` remains an explicit global profile override.
+
 ## Python Client Helper
 
 `mlx_engine.ui_client` exposes product-mode helpers so clients do not need to
@@ -235,6 +275,7 @@ payload = apply_product_mode(
 Validation artifact:
 
 - `artifacts/m126-product-mode-metadata/product-mode-metadata-m126-qwen-a3b.json`
+- `artifacts/m128-dax-request-metadata-smoke/dax-request-metadata-smoke-m128-qwen-a3b.json`
 
 ## Validation
 

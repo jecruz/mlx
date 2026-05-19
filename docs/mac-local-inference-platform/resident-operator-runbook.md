@@ -187,6 +187,38 @@ node packages/coding-agent/dist/cli.js mlx-engine \
   --interactive
 ```
 
+Generation routing:
+
+- `--prompt` and `--interactive` send per-request metadata to MLX.
+- Without `--intent`, those generation paths default to
+  `workload_intent=coding-agent`, `agentic_workload=true`, and
+  `repeated_workspace=true`.
+- `--intent first-hit`, `--intent low-memory`, `--intent interactive`, and
+  `--intent diagnostics` are request-level product hints for generation.
+- `--profile <name>` with generation is sent as a request-level
+  `runtime_profile` override.
+- status-only `--profile` and `--intent` still mutate `/engine/config` for
+  operator control.
+- interactive `/profile` remains a deliberate global runtime-profile override.
+
+Live Dax request-metadata smoke:
+
+```bash
+node packages/coding-agent/dist/cli.js mlx-engine \
+  --base-url http://127.0.0.1:8773 \
+  --prompt "M128 Dax request metadata artifact. Reply with one short sentence." \
+  --max-tokens 8 \
+  --json
+```
+
+Expected `engine_metrics`:
+
+- `request_runtime_profile_source=request_metadata`
+- `request_runtime_profile_applied=true`
+- `workload_intent=coding-agent`
+- `agentic_workload=true`
+- `repeated_workspace=true`
+
 Inside the panel:
 
 ```text

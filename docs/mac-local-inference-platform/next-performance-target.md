@@ -1413,3 +1413,83 @@ Decision:
 - The next target is M127: wire the helper into a concrete client path, likely
   Dax first, so operator commands can emit request metadata instead of changing
   server profile state.
+
+## M127 Result
+
+M127 wires request metadata into the Dax MLX command path.
+
+Dax commit:
+
+- `28b5493f Add MLX request metadata to Dax prompts`
+
+Implemented behavior:
+
+- prompt and interactive generation send request metadata in the completion
+  payload
+- default prompt and interactive sessions map to `workload_intent=coding-agent`
+- `--intent first-hit`, `--intent low-memory`, `--intent interactive`, and
+  `--intent diagnostics` map to explicit request metadata fields
+- `--profile` becomes a per-request `runtime_profile` override for generation
+- status-only profile/intent operations and interactive `/profile` remain
+  global operator controls
+
+Validation:
+
+- Dax focused MLX test: `32` passed
+- Dax coding-agent build: passed
+- Dax pre-commit checks: passed
+
+Decision:
+
+- Product generation should prefer request metadata over global profile
+  mutation.
+- The next target is M128: live-smoke the Dax request metadata path against the
+  running resident server.
+
+## M128 Result
+
+M128 live-validates Dax request metadata against the Qwen A3B resident server.
+
+Artifact:
+
+- `artifacts/m128-dax-request-metadata-smoke/dax-request-metadata-smoke-m128-qwen-a3b.json`
+
+Verified response metrics:
+
+- `request_runtime_profile=agent-workspace-async`
+- `request_runtime_profile_source=request_metadata`
+- `request_runtime_profile_applied=true`
+- `workload_intent=coding-agent`
+- `agentic_workload=true`
+- `repeated_workspace=true`
+
+Decision:
+
+- The operator-facing Dax command path reaches the same server-side request
+  metadata router validated by M123-M126.
+- The next target is M129: make the Dax operator contract explicit in docs so
+  future UI/Prowl clients do not confuse request metadata with global engine
+  configuration.
+
+## M129 Result
+
+M129 documents the Dax/operator contract for request metadata.
+
+Updated docs:
+
+- `docs/mac-local-inference-platform/request-metadata-client-contract.md`
+- `docs/mac-local-inference-platform/resident-operator-runbook.md`
+- `docs/mac-local-inference-platform/engine-readiness.md`
+
+Contract:
+
+- prompt and interactive product generation send per-request metadata
+- status-only profile/intent commands can still mutate `/engine/config`
+- interactive `/profile` remains a deliberate global override
+
+Decision:
+
+- Dax, Prowl, and future UI work should expose product modes while keeping raw
+  runtime profile mutation as an operator-only control.
+- The next target is M130: improve Dax operator UX so the active product mode
+  and metadata path are visible instead of implicit.
