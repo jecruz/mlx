@@ -24,6 +24,7 @@ def load_manifest(path: Path) -> dict[str, Any]:
 
 def print_manifest_summary(manifest: dict[str, Any]) -> None:
     gate_report = manifest.get("gate_report") or {}
+    dax_gate_report = manifest.get("dax_repeated_context_gate_report") or {}
     failure = manifest.get("failure") or {}
 
     print(
@@ -65,6 +66,20 @@ def print_manifest_summary(manifest: dict[str, Any]) -> None:
             print("gate_failure", failure_text)
     else:
         print("gate", "none")
+
+    if dax_gate_report:
+        print(
+            "dax_repeated_context_gate",
+            dax_gate_report.get("verdict"),
+            "checks",
+            len(dax_gate_report.get("checks") or []),
+            "failures",
+            len(dax_gate_report.get("failures") or []),
+        )
+        for failure_text in dax_gate_report.get("failures") or []:
+            print("dax_repeated_context_gate_failure", failure_text)
+    else:
+        print("dax_repeated_context_gate", "none")
 
     if failure:
         print(

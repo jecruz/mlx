@@ -5412,6 +5412,60 @@ M85 decision:
 - Future product/UI changes can run the M84 benchmark plus M85 gate instead of
   manually inspecting JSON metrics.
 
+## M86 Dax Product-Path Suite Integration
+
+M86 folds the M84 benchmark and M85 gate into the existing resident suite
+runner:
+
+- suite runner:
+  `benchmarks/python/run_resident_regression_suite.py`
+- summary helper:
+  `benchmarks/python/summarize_resident_suite_manifest.py`
+- suite artifact:
+  `artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json`
+- Dax benchmark artifact:
+  `artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.json`
+- Dax gate artifact:
+  `artifacts/m86-dax-suite-product-path/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
+
+Operator command:
+
+```text
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m86-dax-suite-product-path \
+  --tag m86-qwen-a3b-dax-product \
+  --skip-benchmarks \
+  --skip-compare \
+  --skip-gate \
+  --skip-generated-cache-safety \
+  --skip-generated-cache-edges \
+  --skip-concurrent-cancel-pressure \
+  --skip-async-cache-priority \
+  --include-dax-repeated-context \
+  --print-manifest-summary
+```
+
+Result:
+
+- suite verdict: `PASS`
+- Dax repeated-context gate: `PASS`
+- gate checks: `5`
+- gate failures: `0`
+- cache-hit turns: `2`
+- best-hit speedup: `22.06x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service: `241.70 ms`
+
+M86 decision:
+
+- Product-path cache reuse can now be run from the same resident suite command
+  and summarized through the same manifest surface used by Dax/operator tooling.
+- The Dax product-path step remains opt-in with `--include-dax-repeated-context`
+  so the lower-level resident suite does not require the external Dax checkout
+  unless product-path coverage is requested.
+
 ## Tensor Parallelism Position
 
 MLX supports tensor-parallel building blocks, but tensor parallelism is not

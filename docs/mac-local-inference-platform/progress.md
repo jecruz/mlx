@@ -2492,3 +2492,34 @@
     - best-hit service `234.69 <= 400.0 ms`
   - M85 conclusion: the automatic Dax coding-agent product path now has an
     explicit regression gate for repeated shared-context cache reuse.
+- Completed M86 Dax product-path suite integration:
+  - updated `benchmarks/python/run_resident_regression_suite.py` with opt-in
+    `--include-dax-repeated-context`
+  - the suite now writes and embeds:
+    - `dax-repeated-context-<tag>.jsonl`
+    - `dax-repeated-context-<tag>.json`
+    - `dax-repeated-context-gate-<tag>.json`
+    - `dax_repeated_context_report`
+    - `dax_repeated_context_gate_report`
+  - updated `benchmarks/python/summarize_resident_suite_manifest.py` so suite
+    summaries print `dax_repeated_context_gate PASS|FAIL`
+  - wrote artifacts:
+    - `artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.jsonl`
+    - `artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.json`
+    - `artifacts/m86-dax-suite-product-path/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
+    - `artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/run_resident_regression_suite.py benchmarks/python/summarize_resident_suite_manifest.py benchmarks/python/dax_repeated_context_bench.py benchmarks/python/dax_repeated_context_gate.py`
+    - live opt-in Dax product-path suite against `http://127.0.0.1:8773`
+    - `python3 -m json.tool artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json`
+    - `python3 benchmarks/python/summarize_resident_suite_manifest.py artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json --fail-on-fail`
+  - M86 result:
+    - suite verdict `PASS`
+    - Dax repeated-context gate `PASS`
+    - cache-hit turns `2`
+    - best-hit speedup `22.06x`
+    - baseline prefill `2092` tokens
+    - best-hit prefill `18` tokens
+    - best-hit service `241.70 ms`
+  - M86 conclusion: product-path cache reuse is now runnable and summarizable
+    through the same resident suite manifest surface used by operator tooling.

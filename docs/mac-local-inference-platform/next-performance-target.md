@@ -339,8 +339,44 @@ Decision:
 - The automatic Dax coding-agent product path now has an explicit regression
   gate for repeated shared-context cache reuse.
 
+## M86 Result
+
+M86 folded the M84 benchmark and M85 gate into the resident/operator suite.
+
+Added:
+
+- `run_resident_regression_suite.py --include-dax-repeated-context`
+- `dax_repeated_context_report` in suite manifests
+- `dax_repeated_context_gate_report` in suite manifests
+- `dax_repeated_context_gate PASS|FAIL` in suite manifest summaries
+
+Artifacts:
+
+- `artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.jsonl`
+- `artifacts/m86-dax-suite-product-path/dax-repeated-context-m86-qwen-a3b-dax-product.json`
+- `artifacts/m86-dax-suite-product-path/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
+- `artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json`
+
+Result:
+
+- suite verdict: `PASS`
+- Dax product-path gate: `PASS`
+- cache-hit turns: `2`
+- best-hit speedup: `22.06x`
+- baseline prefill: `2092` tokens
+- best-hit prefill: `18` tokens
+- best-hit service latency: `241.70 ms`
+
+Decision:
+
+- Future Dax, TUI, and UI changes can run the product-path repeated-context
+  regression from the resident suite command instead of hand-assembling the
+  benchmark and gate.
+- The step remains opt-in so lower-level resident suites do not depend on the
+  external Dax checkout unless product-path coverage is requested.
+
 Next target:
 
-- Fold the M84 benchmark and M85 gate into a repeatable resident/operator suite
-  command so future Dax, TUI, and UI changes can run this product-path
-  regression without hand-assembling commands.
+- Package the M86 product-path suite evidence into the existing handoff/evidence
+  flow, then decide whether Dax should expose the opt-in product-path suite
+  flag directly from `/bench run`.

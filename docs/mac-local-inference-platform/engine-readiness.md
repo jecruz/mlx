@@ -349,6 +349,14 @@ Readiness interpretation:
   - requires at least `1` cache-hit turn, at least `2.0x` best-hit speedup,
     baseline prefill of at least `512` tokens, hit prefill at most `32`
     tokens, and hit service latency at most `400.0 ms`
+- M86 wires the Dax product-path benchmark and gate into the resident suite:
+  - suite flag: `--include-dax-repeated-context`
+  - suite artifact:
+    `artifacts/m86-dax-suite-product-path/resident-regression-suite-m86-qwen-a3b-dax-product.json`
+  - Dax gate artifact:
+    `artifacts/m86-dax-suite-product-path/dax-repeated-context-gate-m86-qwen-a3b-dax-product.json`
+  - result: suite `PASS`, Dax gate `PASS`, `2` cache-hit turns,
+    `22.06x` best-hit speedup, and best-hit prefill `18` tokens
 
 ## Current Qwen Result
 

@@ -76,6 +76,39 @@ Primary outputs:
 - `resident-regression-gate-<tag>.json`
 - `resident-regression-suite-<tag>.json`
 
+## Run The Dax Product-Path Gate
+
+Use this when the target is the product-facing Dax coding-agent path rather
+than the lower-level resident benchmark harness:
+
+```bash
+python3 benchmarks/python/run_resident_regression_suite.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m86-dax-suite-product-path \
+  --tag m86-qwen-a3b-dax-product \
+  --skip-benchmarks \
+  --skip-compare \
+  --skip-gate \
+  --skip-generated-cache-safety \
+  --skip-generated-cache-edges \
+  --skip-concurrent-cancel-pressure \
+  --skip-async-cache-priority \
+  --include-dax-repeated-context \
+  --print-manifest-summary
+```
+
+Product-path outputs:
+
+- `dax-repeated-context-<tag>.jsonl`
+- `dax-repeated-context-<tag>.json`
+- `dax-repeated-context-gate-<tag>.json`
+- `resident-regression-suite-<tag>.json`
+
+The suite manifest embeds `dax_repeated_context_report` and
+`dax_repeated_context_gate_report`. The summary prints
+`dax_repeated_context_gate PASS|FAIL` separately from the lower-level
+resident regression gate.
+
 ## Summarize A Suite Manifest
 
 ```bash

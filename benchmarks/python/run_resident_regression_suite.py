@@ -138,6 +138,9 @@ def write_suite_manifest(
     prefill_artifact: Path,
     gate_artifact: Path,
     lifecycle_artifact: Path,
+    dax_repeated_context_artifact: Path,
+    dax_repeated_context_jsonl: Path,
+    dax_repeated_context_gate_artifact: Path,
     steps: dict[str, bool],
     failure: dict[str, Any] | None = None,
 ) -> None:
@@ -162,6 +165,21 @@ def write_suite_manifest(
             kind="resident_cold_start_lifecycle",
             enabled=steps["cold_start"],
         ),
+        "dax_repeated_context": artifact_entry(
+            dax_repeated_context_artifact,
+            kind="dax_repeated_context_bench",
+            enabled=steps["dax_repeated_context"],
+        ),
+        "dax_repeated_context_jsonl": artifact_entry(
+            dax_repeated_context_jsonl,
+            kind="dax_repeated_context_rows",
+            enabled=steps["dax_repeated_context"],
+        ),
+        "dax_repeated_context_gate": artifact_entry(
+            dax_repeated_context_gate_artifact,
+            kind="dax_repeated_context_gate",
+            enabled=steps["dax_repeated_context"],
+        ),
     }
     suite_report = {
         "type": "resident_regression_suite",
@@ -172,6 +190,12 @@ def write_suite_manifest(
         "artifacts": artifacts,
         "steps": steps,
         "gate_report": read_json_if_exists(gate_artifact),
+        "dax_repeated_context_report": read_json_if_exists(
+            dax_repeated_context_artifact
+        ),
+        "dax_repeated_context_gate_report": read_json_if_exists(
+            dax_repeated_context_gate_artifact
+        ),
         "failure": failure,
     }
     suite_manifest.write_text(json.dumps(suite_report, indent=2, sort_keys=True) + "\n")
@@ -295,6 +319,26 @@ def main() -> int:
     parser.add_argument("--skip-generated-cache-edges", action="store_true")
     parser.add_argument("--skip-concurrent-cancel-pressure", action="store_true")
     parser.add_argument("--skip-async-cache-priority", action="store_true")
+    parser.add_argument("--include-dax-repeated-context", action="store_true")
+    parser.add_argument(
+        "--dax-dir",
+        type=Path,
+        default=Path(
+            "/Users/jeffreycruz/Development/AI_AGENTS/dax-stereo/packages/coding-agent"
+        ),
+    )
+    parser.add_argument("--dax-repeated-turns", type=int, default=4)
+    parser.add_argument("--dax-repeated-shared-repeats", type=int, default=64)
+    parser.add_argument("--dax-repeated-max-tokens", type=int, default=4)
+    parser.add_argument("--dax-repeated-min-speedup", type=float, default=2.0)
+    parser.add_argument("--dax-repeated-max-hit-prefill-tokens", type=int, default=32)
+    parser.add_argument("--dax-repeated-min-hit-count", type=int, default=1)
+    parser.add_argument(
+        "--dax-repeated-min-baseline-prefill-tokens",
+        type=int,
+        default=512,
+    )
+    parser.add_argument("--dax-repeated-max-hit-service-ms", type=float, default=400.0)
     parser.add_argument("--print-manifest-summary", action="store_true")
     parser.add_argument("--generated-cache-long-max-tokens", type=int, default=32)
     parser.add_argument("--generated-cache-stream-max-tokens", type=int, default=12)
@@ -333,6 +377,15 @@ def main() -> int:
     prefill_artifact = args.output_dir / f"resident-prefill-isolation-sync-safe-{tag}.jsonl"
     lifecycle_artifact = args.output_dir / f"resident-cold-start-sync-safe-{tag}.jsonl"
     gate_artifact = args.output_dir / f"resident-regression-gate-{tag}.json"
+    dax_repeated_context_jsonl = (
+        args.output_dir / f"dax-repeated-context-{tag}.jsonl"
+    )
+    dax_repeated_context_artifact = (
+        args.output_dir / f"dax-repeated-context-{tag}.json"
+    )
+    dax_repeated_context_gate_artifact = (
+        args.output_dir / f"dax-repeated-context-gate-{tag}.json"
+    )
     suite_manifest = args.output_dir / f"resident-regression-suite-{tag}.json"
     steps = {
         "benchmarks": not args.skip_benchmarks,
@@ -343,6 +396,7 @@ def main() -> int:
         "generated_cache_edges": not args.skip_generated_cache_edges,
         "concurrent_cancel_pressure": not args.skip_concurrent_cancel_pressure,
         "async_cache_priority": not args.skip_async_cache_priority,
+        "dax_repeated_context": args.include_dax_repeated_context,
     }
     global ACTIVE_SUITE_CONTEXT
     global ACTIVE_PRINT_MANIFEST_SUMMARY
@@ -355,6 +409,9 @@ def main() -> int:
         "prefill_artifact": prefill_artifact,
         "gate_artifact": gate_artifact,
         "lifecycle_artifact": lifecycle_artifact,
+        "dax_repeated_context_artifact": dax_repeated_context_artifact,
+        "dax_repeated_context_jsonl": dax_repeated_context_jsonl,
+        "dax_repeated_context_gate_artifact": dax_repeated_context_gate_artifact,
         "steps": steps,
     }
     ACTIVE_PRINT_MANIFEST_SUMMARY = args.print_manifest_summary
@@ -513,6 +570,55 @@ def main() -> int:
             cwd=cwd,
         )
 
+    if args.include_dax_repeated_context:
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/dax_repeated_context_bench.py",
+                "--base-url",
+                args.base_url,
+                "--dax-dir",
+                str(args.dax_dir),
+                "--output-jsonl",
+                str(dax_repeated_context_jsonl),
+                "--output-json",
+                str(dax_repeated_context_artifact),
+                "--turns",
+                str(args.dax_repeated_turns),
+                "--shared-repeats",
+                str(args.dax_repeated_shared_repeats),
+                "--max-tokens",
+                str(args.dax_repeated_max_tokens),
+                "--min-speedup",
+                str(args.dax_repeated_min_speedup),
+                "--max-hit-prefill-tokens",
+                str(args.dax_repeated_max_hit_prefill_tokens),
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+        run(
+            [
+                sys.executable,
+                "benchmarks/python/dax_repeated_context_gate.py",
+                str(dax_repeated_context_artifact),
+                "--output-json",
+                str(dax_repeated_context_gate_artifact),
+                "--min-hit-count",
+                str(args.dax_repeated_min_hit_count),
+                "--min-speedup",
+                str(args.dax_repeated_min_speedup),
+                "--min-baseline-prefill-tokens",
+                str(args.dax_repeated_min_baseline_prefill_tokens),
+                "--max-hit-prefill-tokens",
+                str(args.dax_repeated_max_hit_prefill_tokens),
+                "--max-hit-service-ms",
+                str(args.dax_repeated_max_hit_service_ms),
+                "--fail-on-fail",
+            ],
+            cwd=cwd,
+        )
+
     write_suite_manifest(verdict="PASS", failure=None, **ACTIVE_SUITE_CONTEXT)
     if args.print_manifest_summary:
         manifest = read_json_if_exists(suite_manifest)
@@ -537,6 +643,8 @@ def main() -> int:
             not args.skip_concurrent_cancel_pressure,
             "async_cache_priority=",
             not args.skip_async_cache_priority,
+            "dax_repeated_context=",
+            args.include_dax_repeated_context,
         )
     else:
         print(
@@ -555,6 +663,8 @@ def main() -> int:
             not args.skip_concurrent_cancel_pressure,
             "async_cache_priority=",
             not args.skip_async_cache_priority,
+            "dax_repeated_context=",
+            args.include_dax_repeated_context,
         )
     return 0
 
