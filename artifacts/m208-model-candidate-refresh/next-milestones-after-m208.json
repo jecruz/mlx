@@ -1,0 +1,14 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "performance report shows M206 live-suite deltas versus M180 and M194 baselines and keeps quality threshold PASS",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m208-next-milestones",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

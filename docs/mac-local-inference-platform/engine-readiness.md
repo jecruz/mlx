@@ -2347,3 +2347,43 @@ Decision:
 - M208 should refresh the model candidate registry before the next report, so
   UI surfaces can present lower-memory candidates with explicit acceptance
   constraints.
+
+## M208 Model Candidate Registry Refresh
+
+M208 refreshes the local MLX candidate registry with explicit model paths and
+config metadata. The registry does not mark untested candidates as acceptable;
+it lists them as pending until they pass quality and speed acceptance.
+
+Artifacts:
+
+- `benchmarks/python/model_candidate_registry.py`
+- `artifacts/m208-model-candidate-refresh/model-candidate-registry-m208-qwen.json`
+- `artifacts/m208-model-candidate-refresh/milestone-completion-audit-m208.json`
+- `artifacts/m208-model-candidate-refresh/next-milestones-after-m208.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `model-candidate-registry-ready`
+- candidates: `5`
+- active model: `Qwen3.6-35B-A3B-UD-MLX-4bit`
+- active model size: `21.635 GB`
+- smallest listed candidate: `gpt-oss-20b-MXFP4-Q8`
+- smallest listed candidate size: `12.076 GB`
+- untested candidates are marked `PENDING`
+- completion audit: `PASS`
+
+Candidate status:
+
+- `qwen35b-a3b-ud-4bit`: active, `PASS`, `ACCEPT`
+- `qwen27b-ud-4bit`: tested quality `PASS`, swap `REJECT` due prior speed blocker
+- `qwen3-6-35b-a3b-mlx-8bit`: `UNTESTED`, swap `PENDING`
+- `qwen3-6-27b-mlx-8bit`: `UNTESTED`, swap `PENDING`
+- `gpt-oss-20b-mxfp4-q8`: `UNTESTED`, swap `PENDING`
+
+Decision:
+
+- Smaller candidates are now visible to UI/Prowl/TUI consumers without implying
+  they are production-ready.
+- M209 should refresh the performance report and make the M206 deltas explicit
+  before any candidate swap is considered.

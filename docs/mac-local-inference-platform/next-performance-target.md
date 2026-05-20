@@ -2579,3 +2579,33 @@ Decision:
 - The readiness surface is safe for a Prowl or TUI status card.
 - M208 should refresh model candidates; M209 should then report the measured
   performance delta against previous baselines.
+
+## M208 Result
+
+M208 refreshes the local model candidate registry using current readiness plus
+explicit local MLX model paths.
+
+Artifacts:
+
+- `benchmarks/python/model_candidate_registry.py`
+- `artifacts/m208-model-candidate-refresh/model-candidate-registry-m208-qwen.json`
+- `artifacts/m208-model-candidate-refresh/milestone-completion-audit-m208.json`
+- `artifacts/m208-model-candidate-refresh/next-milestones-after-m208.json`
+
+Result:
+
+- model candidate registry: `PASS`
+- readiness: `model-candidate-registry-ready`
+- candidate count: `5`
+- active A3B 4-bit model size: `21.635 GB`
+- smallest candidate: `gpt-oss-20b-MXFP4-Q8`
+- smallest candidate size: `12.076 GB`
+- pending candidates require model-swap quality and speed acceptance
+- completion audit: `PASS`
+
+Decision:
+
+- `gpt-oss-20b-MXFP4-Q8` is the best lower-memory candidate to evaluate next,
+  but it remains `PENDING`, not accepted.
+- M209 should publish the performance delta report for the current active model
+  before running a new candidate-swap test.

@@ -1,0 +1,20 @@
+{
+  "audited_count": 1,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M208",
+      "passed": true,
+      "path": "artifacts/m208-model-candidate-refresh/model-candidate-registry-m208-qwen.json",
+      "readiness": "model-candidate-registry-ready",
+      "type": "model_candidate_registry",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m208-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}
