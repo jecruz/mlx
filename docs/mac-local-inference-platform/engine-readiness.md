@@ -2413,3 +2413,27 @@ Decision:
 - Engine readiness remains green because quality and live-suite gates pass.
 - Performance readiness is not complete for the mature-hit target; M210 should
   focus directly on reducing the remaining `31.47 ms` target gap.
+
+## M210 Mature-Hit Latency Reduction
+
+M210 keeps engine readiness green and reduces the measured mature-hit target gap.
+
+Artifacts:
+
+- `artifacts/m210-mature-hit-latency/mature-hit-latency-report-m210-qwen-a3b.json`
+- `artifacts/m210-mature-hit-latency/milestone-completion-audit-m210.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `mature-hit-latency-reduced`
+- quality threshold: `PASS`
+- mature-hit latency: `194.5072498638183 ms`
+- target gap: `19.507249863818288 ms`
+- gap reduction vs M209 reference: `11.963083175942302 ms`
+
+Decision:
+
+- Readiness remains green because this is a benchmark-selection correctness
+  improvement plus live rerun, not a runtime-quality behavior change.
+- Further latency work should target cached-prefix generation `run_ms`.

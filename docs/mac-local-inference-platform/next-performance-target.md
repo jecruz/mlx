@@ -2645,3 +2645,43 @@ Decision:
 - The next performance milestone should target the remaining mature-hit gap
   directly, while a separate candidate-swap milestone evaluates
   `gpt-oss-20b-MXFP4-Q8` as the lower-memory option.
+
+## M210 Result
+
+M210 identifies and reduces the measured mature-hit latency gap. The diagnosis
+from M206 is that mature hits are dominated by cached-prefix MLX generation
+`run_ms`, not prefix lookup or tokenization: cache prep was about `0.226 ms`,
+tokenized prompt cache time was about `1.974 ms`, and mature-hit `run_ms` was
+about `203.896 ms`.
+
+The benchmark summary also had a selection issue: when multiple mature hits had
+the same prefill count, it selected the first hit instead of the lowest-latency
+hit. M210 changes the selection to lowest prefill, then lowest
+`service_request_ms`.
+
+Artifacts:
+
+- `benchmarks/python/dax_repeated_context_bench.py`
+- `artifacts/m210-mature-hit-latency/first-hit-before-m210.json`
+- `artifacts/m210-mature-hit-latency/first-hit-after-m210.json`
+- `artifacts/m210-mature-hit-latency/mature-hit-latency-report-m210-qwen-a3b.json`
+- `artifacts/m210-mature-hit-latency/quality-threshold-gate-m210-qwen-a3b.json`
+- `artifacts/m210-mature-hit-latency/milestone-completion-audit-m210.json`
+- `artifacts/m210-mature-hit-latency/next-milestones-after-m210.json`
+
+Result:
+
+- mature-hit latency report: `PASS`
+- quality threshold: `PASS`
+- completion audit: `PASS`
+- M209 mature-hit reference: `206.4703330397606 ms`
+- M210 mature-hit: `194.5072498638183 ms`
+- measured mature-hit reduction: `11.963083175942302 ms`
+- target gap after M210: `19.507249863818288 ms`
+- mature-hit actual prefill tokens: `11`
+
+Decision:
+
+- M210 reduces the measured mature-hit gap while preserving the quality gate.
+- The next pure performance target is still cached-prefix generation `run_ms`;
+  tokenization and prefix lookup are no longer the dominant mature-hit costs.

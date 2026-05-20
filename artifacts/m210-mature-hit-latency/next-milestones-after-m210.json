@@ -1,0 +1,29 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "run model-swap acceptance for gpt-oss-20b-MXFP4-Q8 against the active Qwen A3B model and keep coding quality PASS",
+      "milestone": "M211",
+      "title": "GPT-OSS lower-memory candidate acceptance"
+    },
+    {
+      "acceptance": "measure tokenized-prompt cache and prefix fast-path hit rates in live traffic, not only synthetic probes",
+      "milestone": "M212",
+      "title": "Live cache-hit instrumentation report"
+    },
+    {
+      "acceptance": "wire the Prowl/UI readiness card into the selected host surface and verify field parity with M207",
+      "milestone": "M213",
+      "title": "Readiness card integration"
+    },
+    {
+      "acceptance": "continue reducing cached-prefix MLX generation run_ms toward the remaining 19.507 ms target gap without failing quality",
+      "milestone": "M214",
+      "title": "Cached-prefix run_ms reduction"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m210-next-milestones",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

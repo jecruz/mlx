@@ -233,7 +233,10 @@ def summarize(
     hit_rows = [row for row in rows[1:] if row["cache_hit"]]
     best_hit = min(
         hit_rows,
-        key=lambda row: float(row["actual_prefill_tokens"] or 1e9),
+        key=lambda row: (
+            float(row["actual_prefill_tokens"] or 1e9),
+            float(row["service_request_ms"] or 1e9),
+        ),
         default=None,
     )
     baseline_service = float(baseline["service_request_ms"] or 0.0)
@@ -256,6 +259,7 @@ def summarize(
         "verdict": verdict,
         "baseline": baseline,
         "best_hit": best_hit,
+        "best_hit_selection": "lowest_prefill_then_lowest_service_request_ms",
         "hit_count": len(hit_rows),
         "baseline_service_request_ms": baseline_service,
         "best_hit_service_request_ms": best_hit_service if best_hit else None,

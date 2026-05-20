@@ -299,3 +299,23 @@ The report keeps quality as a hard constraint:
 The performance warning is intentional: mature repeated-context latency remains
 above target, but quality is still green. Future latency work must continue to
 carry these quality gates forward.
+
+## M210 Quality Boundary
+
+M210 changes the repeated-context benchmark's mature-hit selection rule. It does
+not change model execution, prompt-cache contents, decoding settings, or
+RoPE/IMRoPE behavior.
+
+Artifacts:
+
+- `artifacts/m210-mature-hit-latency/mature-hit-latency-report-m210-qwen-a3b.json`
+- `artifacts/m210-mature-hit-latency/quality-threshold-gate-m210-qwen-a3b.json`
+
+Quality result:
+
+- quality threshold gate: `PASS`
+- deterministic quality source: M206 deterministic quality artifact
+- loop quality source: M206 loop quality artifact
+
+Future M211 model-swap work must run fresh quality acceptance for the candidate
+model rather than relying only on M210's report-only quality boundary.

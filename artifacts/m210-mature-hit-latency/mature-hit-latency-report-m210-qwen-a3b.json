@@ -1,0 +1,41 @@
+{
+  "acceptance": {
+    "quality_threshold_verdict": "PASS",
+    "target_mature_hit_service_request_ms": 175.0
+  },
+  "baseline": {
+    "m209_mature_hit_service_request_ms": 206.4703330397606,
+    "m209_target_gap_ms": 31.47033303976059
+  },
+  "current": {
+    "best_hit_selection": "lowest_prefill_then_lowest_service_request_ms",
+    "hit_count": 2,
+    "mature_hit_actual_prefill_tokens": 11,
+    "mature_hit_service_request_ms": 194.5072498638183,
+    "target_gap_ms": 19.507249863818288
+  },
+  "delta": {
+    "gap_reduction_ms": 11.963083175942302,
+    "mature_hit_delta_ms": -11.963083175942302
+  },
+  "diagnosis": {
+    "cache_prepare_ms_on_m206_mature_hit": 0.22604106925427914,
+    "finding": "The remaining mature-hit cost is dominated by cached-prefix MLX generation run_ms, not tokenization or prefix lookup.",
+    "m206_mature_hit_run_ms": 203.89641588553786,
+    "m206_tokenized_prompt_cache_ms": 1.9740830175578594
+  },
+  "failures": [],
+  "readiness": "mature-hit-latency-reduced",
+  "source_artifacts": {
+    "after_json": "artifacts/m210-mature-hit-latency/first-hit-after-m210.json",
+    "before_json": "artifacts/m210-mature-hit-latency/first-hit-before-m210.json",
+    "m209_delta_report": "artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.json",
+    "quality_threshold_json": "artifacts/m210-mature-hit-latency/quality-threshold-gate-m210-qwen-a3b.json"
+  },
+  "tag": "m210-qwen-a3b",
+  "type": "mature_hit_latency_report",
+  "verdict": "PASS",
+  "warnings": [
+    "M210 reduced the measured mature-hit gap but did not yet reach the 175 ms target."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "audited_count": 2,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M210",
+      "passed": true,
+      "path": "artifacts/m210-mature-hit-latency/mature-hit-latency-report-m210-qwen-a3b.json",
+      "readiness": "mature-hit-latency-reduced",
+      "type": "mature_hit_latency_report",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M210-quality",
+      "passed": true,
+      "path": "artifacts/m210-mature-hit-latency/quality-threshold-gate-m210-qwen-a3b.json",
+      "readiness": "ci-quality-ready",
+      "type": "quality_threshold_gate",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m210-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}
