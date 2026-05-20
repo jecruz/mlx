@@ -2548,3 +2548,34 @@ Decision:
 - The next lane should connect the readiness surface to UI/Prowl consumption in
   M207, refresh model candidates in M208, and produce a baseline delta report in
   M209.
+
+## M207 Result
+
+M207 verifies a Prowl/UI-style readiness consumer rather than adding another
+backend endpoint. The probe fetches live operator readiness and UI status, then
+maps runtime, memory, quality, and model-swap status into a compact consumer
+card.
+
+Artifacts:
+
+- `benchmarks/python/prowl_operator_readiness_smoke.py`
+- `artifacts/m207-prowl-readiness/prowl-operator-readiness-m207-qwen-a3b.json`
+- `artifacts/m207-prowl-readiness/milestone-completion-audit-m207.json`
+- `artifacts/m207-prowl-readiness/next-milestones-after-m207.json`
+
+Result:
+
+- Prowl/UI readiness smoke: `PASS`
+- readiness: `prowl-operator-readiness-ready`
+- failures: `0`
+- quality badge: `PASS`
+- live model-swap badge: `PASS`
+- candidate model-swap decision retained: `REJECT`
+- memory source: `engine_ui`
+- completion audit: `PASS`
+
+Decision:
+
+- The readiness surface is safe for a Prowl or TUI status card.
+- M208 should refresh model candidates; M209 should then report the measured
+  performance delta against previous baselines.

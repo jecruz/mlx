@@ -2313,3 +2313,37 @@ Decision:
 - The engine remains ready for the next integration pass.
 - M207 should smoke the operator-readiness endpoint from the UI/Prowl side,
   because the backend readiness and quality gates are now live-regression green.
+
+## M207 Prowl/UI Readiness Smoke
+
+M207 adds a consumer-side smoke probe for Prowl/UI-style cards. The probe reads
+live `/engine/operator-readiness` and `/engine/ui`, then joins those live fields
+with quality-threshold and model-swap artifacts so the consumer surface does not
+drop critical status.
+
+Artifacts:
+
+- `benchmarks/python/prowl_operator_readiness_smoke.py`
+- `artifacts/m207-prowl-readiness/prowl-operator-readiness-m207-qwen-a3b.json`
+- `artifacts/m207-prowl-readiness/milestone-completion-audit-m207.json`
+- `artifacts/m207-prowl-readiness/next-milestones-after-m207.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `prowl-operator-readiness-ready`
+- failures: `0`
+- live endpoints consumed: `/engine/operator-readiness`, `/engine/ui`
+- quality source retained: `quality_threshold_gate`
+- live model-swap source retained: `live_model_swap_probe`
+- candidate swap decision retained: `REJECT`
+- memory source retained: `engine_ui`
+- completion audit: `PASS`
+
+Decision:
+
+- Prowl/UI integrations can consume the operator readiness endpoint without
+  losing quality, memory, or model-swap status.
+- M208 should refresh the model candidate registry before the next report, so
+  UI surfaces can present lower-memory candidates with explicit acceptance
+  constraints.

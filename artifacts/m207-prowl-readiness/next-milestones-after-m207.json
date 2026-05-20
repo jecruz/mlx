@@ -1,0 +1,19 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "candidate registry includes any new smaller/lower-memory MLX candidates with explicit model-swap acceptance constraints",
+      "milestone": "M208",
+      "title": "Candidate model registry refresh"
+    },
+    {
+      "acceptance": "performance report shows M206 live-suite deltas versus M180 and M194 baselines and keeps quality threshold PASS",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m207-next-milestones",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

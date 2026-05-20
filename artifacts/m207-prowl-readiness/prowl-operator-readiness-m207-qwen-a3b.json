@@ -1,0 +1,67 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "card": {
+    "badges": {
+      "can_generate": "PASS",
+      "candidate_swap_decision": "REJECT",
+      "gpu": "PASS",
+      "live_model_swap": "PASS",
+      "quality": "PASS",
+      "runtime": "PASS",
+      "warm": "PASS"
+    },
+    "details": {
+      "backend": "text",
+      "can_reload": true,
+      "can_unload": true,
+      "engine_preset": "async-experimental",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "runtime_profile": "interactive",
+      "strategy": "split_prefill_or_async_build"
+    },
+    "failures": [],
+    "memory": {
+      "active_memory_bytes": 21275878666,
+      "cache_memory_bytes": 25784976,
+      "peak_memory_bytes": 23364380150,
+      "source": "engine_ui"
+    },
+    "model_swap": {
+      "candidate_blockers": [
+        "candidate_speed: slowdown_ratio=9.968977, threshold=1.0"
+      ],
+      "candidate_decision": "REJECT",
+      "candidate_readiness": "swap-blocked",
+      "candidate_source": "model_swap_workflow",
+      "candidate_verdict": "PASS",
+      "live_readiness": "live-model-swap-safe",
+      "live_source": "live_model_swap_probe",
+      "live_verdict": "PASS",
+      "restore_model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit"
+    },
+    "quality": {
+      "failures": [],
+      "readiness": "ci-quality-ready",
+      "source": "quality_threshold_gate",
+      "verdict": "PASS"
+    },
+    "subtitle": "Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "title": "MLX Engine PASS",
+    "warnings": [
+      "arrays_cache_has_recurrent_state_without_offset_or_trim"
+    ]
+  },
+  "consumer": "prowl-ui-card",
+  "evidence": {
+    "candidate_workflow_json": "artifacts/m179-model-swap-workflow/model-swap-workflow-m179-qwen27b.json",
+    "engine_ui_endpoint": "/engine/ui",
+    "live_model_swap_json": "artifacts/m181-live-model-swap/live-model-swap-m181-qwen-a3b.json",
+    "operator_readiness_endpoint": "/engine/operator-readiness",
+    "quality_json": "artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json"
+  },
+  "failures": [],
+  "readiness": "prowl-operator-readiness-ready",
+  "tag": "m207-qwen-a3b",
+  "type": "prowl_operator_readiness_smoke",
+  "verdict": "PASS"
+}

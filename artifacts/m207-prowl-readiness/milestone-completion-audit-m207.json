@@ -1,0 +1,20 @@
+{
+  "audited_count": 1,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M207",
+      "passed": true,
+      "path": "artifacts/m207-prowl-readiness/prowl-operator-readiness-m207-qwen-a3b.json",
+      "readiness": "prowl-operator-readiness-ready",
+      "type": "prowl_operator_readiness_smoke",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m207-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}
