@@ -1,0 +1,109 @@
+{
+  "comparisons": {
+    "operator_overhead_vs_m180": {
+      "mean_overhead_ms": {
+        "baseline": 4.099721942717831,
+        "current": 4.1426667012274265,
+        "delta": 0.043,
+        "percent_delta": 1.048,
+        "ratio": 1.01
+      },
+      "p95_overhead_ms": {
+        "baseline": 4.481458105146885,
+        "current": 4.81424992904067,
+        "delta": 0.333,
+        "percent_delta": 7.426,
+        "ratio": 1.074
+      }
+    },
+    "prompt_report_vs_m194": {
+      "mature_hit_service_request_ms": {
+        "baseline": 204.03116615489125,
+        "current": 206.4703330397606,
+        "delta": 2.439,
+        "percent_delta": 1.195
+      },
+      "speedup_vs_baseline": {
+        "baseline": 6.91600447859388,
+        "current": 15.826689407494138,
+        "delta": 8.911,
+        "percent_delta": 128.842
+      }
+    },
+    "repeated_context_vs_m180": {
+      "baseline_service_request_ms": {
+        "baseline": 1411.08045889996,
+        "current": 3267.741832882166,
+        "delta": 1856.661,
+        "percent_delta": 131.577,
+        "ratio": 2.316
+      },
+      "best_hit_service_request_ms": {
+        "baseline": 204.03116615489125,
+        "current": 206.4703330397606,
+        "delta": 2.439,
+        "percent_delta": 1.195,
+        "ratio": 1.012
+      },
+      "best_hit_speedup_vs_baseline": {
+        "baseline": 6.91600447859388,
+        "current": 15.826689407494138,
+        "delta": 8.911,
+        "percent_delta": 128.842,
+        "ratio": 2.288
+      }
+    }
+  },
+  "current_prompt_transport": [
+    {
+      "actual_prefill_tokens": 657,
+      "prompt_tps": 1885.2870766442693,
+      "service_request_ms": 482.88341611623764,
+      "target_prompt_tokens": 512,
+      "wall_ms": 485.6872500386089
+    },
+    {
+      "actual_prefill_tokens": 1333,
+      "prompt_tps": 2212.0054268689755,
+      "service_request_ms": 730.9445841237903,
+      "target_prompt_tokens": 1024,
+      "wall_ms": 738.1190001033247
+    },
+    {
+      "actual_prefill_tokens": 2659,
+      "prompt_tps": 2222.3561038933985,
+      "service_request_ms": 1634.837333112955,
+      "target_prompt_tokens": 2048,
+      "wall_ms": 1643.649874953553
+    }
+  ],
+  "failures": [],
+  "quality": {
+    "live_suite_readiness": "live-regression-passing",
+    "live_suite_verdict": "PASS",
+    "threshold_readiness": "ci-quality-ready",
+    "threshold_verdict": "PASS"
+  },
+  "readiness": "prompt-processing-delta-reported",
+  "source_artifacts": {
+    "baseline_overhead_json": "artifacts/m180-live-request-memory-suite/fast-path-overhead-gate-m180-qwen-a3b.json",
+    "baseline_prompt_report_json": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+    "baseline_repeated_json": "artifacts/m180-live-request-memory-suite/dax-resident-client-m180-qwen-a3b.json",
+    "current_live_suite_json": "artifacts/m206-live-performance-suite/live-product-regression-suite-m206-qwen-a3b.json",
+    "current_overhead_json": "artifacts/m206-live-performance-suite/fast-path-overhead-gate-m206-qwen-a3b.json",
+    "current_prompt_transport_json": "artifacts/m206-live-performance-suite/live-prompt-transport-sweep-m206-qwen-a3b.json",
+    "current_quality_threshold_json": "artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json",
+    "current_repeated_json": "artifacts/m206-live-performance-suite/dax-resident-client-m206-qwen-a3b.json"
+  },
+  "tag": "m209-qwen-a3b",
+  "target": {
+    "current_gap_ms": 31.47,
+    "mature_hit_service_request_ms": 175.0
+  },
+  "type": "prompt_processing_delta_report",
+  "verdict": "PASS",
+  "warnings": [
+    "current mature-hit latency is 206.470ms; target is 175.000ms",
+    "mature repeated-context latency regressed by 2.439ms vs M180"
+  ]
+}

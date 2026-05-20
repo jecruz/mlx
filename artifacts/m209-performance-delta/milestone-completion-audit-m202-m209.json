@@ -1,0 +1,90 @@
+{
+  "audited_count": 8,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M202",
+      "passed": true,
+      "path": "artifacts/m202-cache-lookup-fast-path/cache-lookup-fast-path-m202-qwen-a3b.json",
+      "readiness": "cache-lookup-fast-path-ready",
+      "type": "cache_lookup_fast_path_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M203",
+      "passed": true,
+      "path": "artifacts/m203-tokenized-prompt-reuse/tokenized-prompt-reuse-m203-qwen-a3b.json",
+      "readiness": "tokenized-prompt-reuse-ready",
+      "type": "tokenized_prompt_reuse_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M204",
+      "passed": true,
+      "path": "artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-m204-qwen-a3b.json",
+      "readiness": "async-cache-completion-wait-ready",
+      "type": "async_cache_completion_wait_report",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M205",
+      "passed": true,
+      "path": "artifacts/m205-response-metrics-trim/response-metrics-trim-m205-qwen-a3b.json",
+      "readiness": "response-metrics-trim-ready",
+      "type": "response_metrics_trim_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M206",
+      "passed": true,
+      "path": "artifacts/m206-live-performance-suite/live-product-regression-suite-m206-qwen-a3b.json",
+      "readiness": "live-regression-passing",
+      "type": "live_product_regression_suite",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M207",
+      "passed": true,
+      "path": "artifacts/m207-prowl-readiness/prowl-operator-readiness-m207-qwen-a3b.json",
+      "readiness": "prowl-operator-readiness-ready",
+      "type": "prowl_operator_readiness_smoke",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M208",
+      "passed": true,
+      "path": "artifacts/m208-model-candidate-refresh/model-candidate-registry-m208-qwen.json",
+      "readiness": "model-candidate-registry-ready",
+      "type": "model_candidate_registry",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M209",
+      "passed": true,
+      "path": "artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.json",
+      "readiness": "prompt-processing-delta-reported",
+      "type": "prompt_processing_delta_report",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m202-m209-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

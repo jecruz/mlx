@@ -2609,3 +2609,39 @@ Decision:
   but it remains `PENDING`, not accepted.
 - M209 should publish the performance delta report for the current active model
   before running a new candidate-swap test.
+
+## M209 Result
+
+M209 publishes the prompt-processing delta report against the M180/M194
+baselines and the M206 live-suite rerun.
+
+Artifacts:
+
+- `benchmarks/python/prompt_processing_delta_report.py`
+- `artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.json`
+- `artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.md`
+- `artifacts/m209-performance-delta/milestone-completion-audit-m209.json`
+- `artifacts/m209-performance-delta/milestone-completion-audit-m202-m209.json`
+- `artifacts/m209-performance-delta/next-milestones-after-m209.json`
+
+Result:
+
+- prompt-processing delta report: `PASS`
+- M202-M209 completion audit: `PASS`, `8` audited, `0` failures
+- quality threshold: `PASS`
+- live product regression suite: `PASS`
+- M180/M194 mature-hit latency: `204.03116615489125 ms`
+- M206 mature-hit latency: `206.4703330397606 ms`
+- mature-hit delta: `+2.439 ms`
+- M206 mature-hit target gap: `31.47 ms`
+- M180 speedup: `6.91600447859388x`
+- M206 speedup: `15.826689407494138x`
+- mean operator overhead delta: `+0.043 ms`
+
+Decision:
+
+- The current batch preserved quality and product readiness, but did not yet
+  reduce mature-hit latency toward the `175 ms` target.
+- The next performance milestone should target the remaining mature-hit gap
+  directly, while a separate candidate-swap milestone evaluates
+  `gpt-oss-20b-MXFP4-Q8` as the lower-memory option.

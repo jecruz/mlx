@@ -2387,3 +2387,29 @@ Decision:
   they are production-ready.
 - M209 should refresh the performance report and make the M206 deltas explicit
   before any candidate swap is considered.
+
+## M209 Performance Delta Readiness
+
+M209 closes the M202-M209 batch with an explicit performance delta report.
+
+Artifacts:
+
+- `artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.json`
+- `artifacts/m209-performance-delta/milestone-completion-audit-m202-m209.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `prompt-processing-delta-reported`
+- M202-M209 audit: `PASS`
+- quality threshold: `PASS`
+- live suite: `PASS`
+- mature-hit latency: `206.4703330397606 ms`
+- mature-hit target gap: `31.47 ms`
+- warning count: `2`
+
+Decision:
+
+- Engine readiness remains green because quality and live-suite gates pass.
+- Performance readiness is not complete for the mature-hit target; M210 should
+  focus directly on reducing the remaining `31.47 ms` target gap.

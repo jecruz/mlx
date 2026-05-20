@@ -1,0 +1,30 @@
+{
+  "audited_count": 2,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M209",
+      "passed": true,
+      "path": "artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.json",
+      "readiness": "prompt-processing-delta-reported",
+      "type": "prompt_processing_delta_report",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M209-quality",
+      "passed": true,
+      "path": "artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json",
+      "readiness": "ci-quality-ready",
+      "type": "quality_threshold_gate",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m209-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

@@ -279,3 +279,23 @@ The live suite verifies:
 This keeps the current speed work inside the quality envelope: performance
 changes are acceptable only while deterministic behavior, cache parity,
 streaming parity, loop control, and RoPE/IMRoPE checks remain green.
+
+## M209 Quality Boundary
+
+M209 is a report-only milestone. It does not change runtime behavior.
+
+Artifacts:
+
+- `artifacts/m209-performance-delta/prompt-processing-delta-report-m209-qwen-a3b.json`
+- `artifacts/m209-performance-delta/milestone-completion-audit-m202-m209.json`
+- `artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json`
+
+The report keeps quality as a hard constraint:
+
+- live product regression suite: `PASS`
+- quality threshold gate: `PASS`
+- M202-M209 completion audit: `PASS`
+
+The performance warning is intentional: mature repeated-context latency remains
+above target, but quality is still green. Future latency work must continue to
+carry these quality gates forward.
