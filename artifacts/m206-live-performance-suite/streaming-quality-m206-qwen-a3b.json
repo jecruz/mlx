@@ -1,0 +1,144 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [],
+  "rows": [
+    {
+      "case": "exact_answer",
+      "nonstream": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 245.1663340907544,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "stream": {
+        "actual_prefill_tokens": 22,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "exact_answer",
+        "category": "instruction_following",
+        "failures": [],
+        "final_answer": "QUALITY_OK",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "QUALITY_OK",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "QUALITY_OK"
+        ],
+        "service_request_ms": 979.0484581608325,
+        "stream": true,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "code_review",
+      "nonstream": {
+        "actual_prefill_tokens": 1,
+        "cache_hit": true,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "code_review",
+        "category": "coding_agent_review",
+        "failures": [],
+        "final_answer": "BUG_FOUND",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "BUG_FOUND",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "BUG_FOUND"
+        ],
+        "service_request_ms": 168.10604091733694,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "stream": {
+        "actual_prefill_tokens": 1,
+        "cache_hit": true,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "code_review",
+        "category": "coding_agent_review",
+        "failures": [],
+        "final_answer": "BUG_FOUND",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "BUG_FOUND",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "BUG_FOUND"
+        ],
+        "service_request_ms": 170.47720798291266,
+        "stream": true,
+        "visible_thinking": false
+      }
+    },
+    {
+      "case": "reasoning",
+      "nonstream": {
+        "actual_prefill_tokens": 40,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "reasoning",
+        "category": "reasoning",
+        "failures": [],
+        "final_answer": "12",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "12",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "12"
+        ],
+        "service_request_ms": 228.85754192247987,
+        "stream": false,
+        "visible_thinking": false
+      },
+      "stream": {
+        "actual_prefill_tokens": 40,
+        "cache_hit": false,
+        "cache_mode": null,
+        "cache_population_mode": "async",
+        "case": "reasoning",
+        "category": "reasoning",
+        "failures": [],
+        "final_answer": "12",
+        "json_valid": null,
+        "missing": [],
+        "raw_text": "12",
+        "repetition_score": 0.0,
+        "request_runtime_profile": "interactive",
+        "required": [
+          "12"
+        ],
+        "service_request_ms": 244.53758401796222,
+        "stream": true,
+        "visible_thinking": false
+      }
+    }
+  ],
+  "tag": "m206-qwen-a3b",
+  "type": "streaming_quality_parity",
+  "verdict": "PASS"
+}

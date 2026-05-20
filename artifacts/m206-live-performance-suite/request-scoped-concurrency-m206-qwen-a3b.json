@@ -1,0 +1,36 @@
+{
+  "after_runtime_profile": "interactive",
+  "base_url": "http://127.0.0.1:8773",
+  "before_runtime_profile": "interactive",
+  "failures": [],
+  "readiness": "request-profile-no-bleed",
+  "rows": [
+    {
+      "case": "first_hit",
+      "expected_profile": "agent-workspace-first-hit",
+      "request_runtime_profile": "agent-workspace-first-hit",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 195.58075000531971
+    },
+    {
+      "case": "low_memory",
+      "expected_profile": "agent-workspace-low-memory",
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 575.8211251813918
+    },
+    {
+      "case": "diagnostics",
+      "expected_profile": "diagnostics",
+      "request_runtime_profile": "diagnostics",
+      "request_runtime_profile_scoped": true,
+      "request_runtime_profile_source": "request_metadata",
+      "service_request_ms": 384.5877081621438
+    }
+  ],
+  "tag": "m206-qwen-a3b",
+  "type": "request_scoped_concurrency_probe",
+  "verdict": "PASS"
+}

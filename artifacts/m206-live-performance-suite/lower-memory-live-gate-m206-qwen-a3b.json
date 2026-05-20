@@ -1,0 +1,26 @@
+{
+  "failures": [],
+  "input": "artifacts/m206-live-performance-suite/dax-low-memory-live-m206-qwen-a3b.jsonl",
+  "metrics": {
+    "conversion_prefill_tokens": 11.0,
+    "health_active_memory_gb": null,
+    "max_active_memory_gb": 21.08747905,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_peak_memory_gb": 23.36438015,
+    "mean_peak_memory_gb": 23.36438015,
+    "memory_source": "request_metrics"
+  },
+  "profiles": [
+    "agent-workspace-low-memory"
+  ],
+  "row_count": 3,
+  "tag": "m206-qwen-a3b",
+  "thresholds": {
+    "max_active_memory_gb": 32.0,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_conversion_prefill_tokens": 32.0,
+    "max_peak_memory_gb": 32.0
+  },
+  "type": "lower_memory_runtime_gate",
+  "verdict": "PASS"
+}

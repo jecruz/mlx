@@ -1,0 +1,30 @@
+{
+  "audited_count": 2,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M206",
+      "passed": true,
+      "path": "artifacts/m206-live-performance-suite/live-product-regression-suite-m206-qwen-a3b.json",
+      "readiness": "live-regression-passing",
+      "type": "live_product_regression_suite",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M206-quality",
+      "passed": true,
+      "path": "artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json",
+      "readiness": "ci-quality-ready",
+      "type": "quality_threshold_gate",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m206-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

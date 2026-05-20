@@ -1,0 +1,19 @@
+{
+  "failures": [],
+  "input": "artifacts/m206-live-performance-suite/dax-resident-client-m206-qwen-a3b.jsonl",
+  "metrics": {
+    "max_overhead_ms": 4.81424992904067,
+    "mean_overhead_ms": 4.1426667012274265,
+    "min_overhead_ms": 3.8035421166568995,
+    "p95_overhead_ms": 4.81424992904067
+  },
+  "overhead_count": 3,
+  "row_count": 3,
+  "tag": "m206-qwen-a3b",
+  "thresholds": {
+    "max_mean_overhead_ms": 500.0,
+    "max_p95_overhead_ms": null
+  },
+  "type": "dax_operator_overhead_gate",
+  "verdict": "PASS"
+}

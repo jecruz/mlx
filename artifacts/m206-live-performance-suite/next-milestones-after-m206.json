@@ -1,0 +1,24 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "Prowl or UI-side probe consumes /engine/operator-readiness without losing quality, memory, or model-swap status fields",
+      "milestone": "M207",
+      "title": "Prowl/UI readiness endpoint smoke"
+    },
+    {
+      "acceptance": "candidate registry includes any new smaller/lower-memory MLX candidates with explicit model-swap acceptance constraints",
+      "milestone": "M208",
+      "title": "Candidate model registry refresh"
+    },
+    {
+      "acceptance": "performance report shows M206 live-suite deltas versus M180 and M194 baselines and keeps quality threshold PASS",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m206-next-milestones",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

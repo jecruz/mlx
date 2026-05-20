@@ -2287,3 +2287,29 @@ Decision:
 
 - Compact metrics are opt-in only; existing clients keep full diagnostics.
 - Operator/debug behavior is protected through the diagnostics full override.
+
+## M206 Live Suite Readiness
+
+M206 reran the live product regression suite after M202-M205.
+
+Artifacts:
+
+- `artifacts/m206-live-performance-suite/live-product-regression-suite-m206-qwen-a3b.json`
+- `artifacts/m206-live-performance-suite/milestone-completion-audit-m206.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-regression-passing`
+- artifacts: `24`
+- failures: `0`
+- resident repeated-context hit speedup: `15.826689407494138x`
+- low-memory repeated-context hit speedup: `5.861557000343265x`
+- mean operator overhead: `4.1426667012274265 ms`
+- quality threshold: `PASS`
+
+Decision:
+
+- The engine remains ready for the next integration pass.
+- M207 should smoke the operator-readiness endpoint from the UI/Prowl side,
+  because the backend readiness and quality gates are now live-regression green.

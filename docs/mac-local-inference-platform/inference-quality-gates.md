@@ -254,3 +254,28 @@ The probe verifies:
 
 No model execution, prompt processing, cache behavior, or decoding quality logic
 is changed by this milestone.
+
+## M206 Quality Boundary
+
+M206 is a live regression rerun, not a new decoding or prompt-cache behavior
+change.
+
+Artifacts:
+
+- `artifacts/m206-live-performance-suite/live-product-regression-suite-m206-qwen-a3b.json`
+- `artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json`
+- `artifacts/m206-live-performance-suite/quality-checkpoint-m206-qwen-a3b.json`
+
+The live suite verifies:
+
+- deterministic quality regression: `PASS`
+- cache quality comparison: `PASS`
+- streaming quality parity: `PASS`
+- loop/repetition quality gate: `PASS`
+- long-context RoPE/IMRoPE quality: `PASS`
+- cross-engine quality comparison: `PASS`
+- quality threshold gate: `PASS`
+
+This keeps the current speed work inside the quality envelope: performance
+changes are acceptable only while deterministic behavior, cache parity,
+streaming parity, loop control, and RoPE/IMRoPE checks remain green.

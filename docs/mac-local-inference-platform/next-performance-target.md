@@ -2513,3 +2513,38 @@ Decision:
   forcing full metrics for diagnostics workloads.
 - M206 should now rerun the live performance suite when the resident server is
   available, so the M202-M205 latency impact can be measured against M194.
+
+## M206 Result
+
+M206 reran the live product regression suite against the Qwen3.6 A3B MLX model
+with the M202-M205 prompt-processing changes in place.
+
+Artifacts:
+
+- `artifacts/m206-live-performance-suite/live-product-regression-suite-m206-qwen-a3b.json`
+- `artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json`
+- `artifacts/m206-live-performance-suite/milestone-completion-audit-m206.json`
+- `artifacts/m206-live-performance-suite/next-milestones-after-m206.json`
+
+Result:
+
+- live product regression suite: `PASS`
+- readiness: `live-regression-passing`
+- artifact count: `24`
+- failure count: `0`
+- resident repeated-context hit speedup: `15.826689407494138x`
+- low-memory repeated-context hit speedup: `5.861557000343265x`
+- operator overhead mean: `4.1426667012274265 ms`
+- prompt transport sweep: `PASS` for `512`, `1024`, and `2048` prompt-token targets
+- lower-memory gate max peak memory: `23.36438015 GB`
+- quality threshold gate: `PASS`
+- completion audit: `PASS`
+
+Decision:
+
+- M206 confirms the prompt-processing changes did not break live request
+  routing, request-scoped cache admission, streaming metadata scope, concurrency,
+  lower-memory constraints, or quality gates.
+- The next lane should connect the readiness surface to UI/Prowl consumption in
+  M207, refresh model candidates in M208, and produce a baseline delta report in
+  M209.

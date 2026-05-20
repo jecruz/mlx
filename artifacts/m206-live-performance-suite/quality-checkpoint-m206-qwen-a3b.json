@@ -1,0 +1,54 @@
+{
+  "artifacts": {
+    "m159": {
+      "failures": 0,
+      "type": "quality_golden_set",
+      "verdict": "PASS"
+    },
+    "m160": {
+      "failures": 0,
+      "type": "deterministic_quality_regression",
+      "verdict": "PASS"
+    },
+    "m161": {
+      "failures": 0,
+      "type": "cache_quality_comparison",
+      "verdict": "PASS"
+    },
+    "m162": {
+      "failures": 0,
+      "type": "streaming_quality_parity",
+      "verdict": "PASS"
+    },
+    "m163": {
+      "failures": 0,
+      "type": "loop_repetition_quality_gate",
+      "verdict": "PASS"
+    },
+    "m164": {
+      "failures": 0,
+      "type": "long_context_rope_imrope_quality",
+      "verdict": "PASS"
+    },
+    "m165": {
+      "failures": 0,
+      "type": "cross_engine_quality_comparison",
+      "verdict": "PASS"
+    }
+  },
+  "covered_milestones": [
+    "M159",
+    "M160",
+    "M161",
+    "M162",
+    "M163",
+    "M164",
+    "M165",
+    "M166",
+    "M172"
+  ],
+  "failures": [],
+  "tag": "m206-qwen-a3b",
+  "type": "quality_gated_performance_checkpoint",
+  "verdict": "PASS"
+}

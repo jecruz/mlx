@@ -1,0 +1,27 @@
+{
+  "failures": [],
+  "low_memory_best_hit_prefill": 11,
+  "low_memory_speedup_vs_baseline": 5.861557000343265,
+  "metadata_low_memory_row": {
+    "actual_prefill_tokens": 966,
+    "cache_candidate": false,
+    "cache_created": false,
+    "cache_hit": false,
+    "cache_pending": false,
+    "cache_population_mode": "request",
+    "cache_reuse_enabled": false,
+    "cache_scheduled": false,
+    "case": "low_memory",
+    "generated_prefix_cache_recorded": true,
+    "peak_memory_gb": 23.36438015,
+    "request_runtime_profile": "agent-workspace-low-memory",
+    "request_runtime_profile_applied": true,
+    "request_runtime_profile_scoped": true,
+    "request_runtime_profile_source": "request_metadata",
+    "service_request_ms": 679.2379999533296,
+    "wall_ms": 795.4501251224428
+  },
+  "tag": "m206-qwen-a3b",
+  "type": "memory_bounded_cache_policy_gate",
+  "verdict": "PASS"
+}
