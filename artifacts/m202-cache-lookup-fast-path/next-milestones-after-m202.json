@@ -1,0 +1,49 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "identical repeated workspace prompts reduce prompt overhead without route bleed",
+      "milestone": "M203",
+      "title": "Tokenized prompt reuse probe"
+    },
+    {
+      "acceptance": "conversion-turn latency improves without queue wait regression",
+      "milestone": "M204",
+      "title": "Async cache completion wait sweep"
+    },
+    {
+      "acceptance": "hot response overhead drops and operator debug mode preserves full metrics",
+      "milestone": "M205",
+      "title": "Response metrics trim experiment"
+    },
+    {
+      "acceptance": "M180-equivalent suite stays PASS with quality threshold PASS",
+      "milestone": "M206",
+      "title": "Live performance suite rerun"
+    },
+    {
+      "acceptance": "Prowl or UI-side probe consumes /engine/operator-readiness",
+      "milestone": "M207",
+      "title": "Prowl/UI readiness endpoint smoke"
+    },
+    {
+      "acceptance": "registry includes any new smaller/lower-memory candidates",
+      "milestone": "M208",
+      "title": "Candidate model registry refresh"
+    },
+    {
+      "acceptance": "new report shows latency delta versus M194 baseline",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    },
+    {
+      "acceptance": "post-M202/M203 measurements identify the next concrete latency bottleneck",
+      "milestone": "M210",
+      "title": "Post-fast-path bottleneck audit"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m202-next",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

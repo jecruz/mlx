@@ -2173,3 +2173,33 @@ Decision:
 - The next implementation lane should target mature reusable-turn latency
   reduction while preserving the existing quality threshold and at least `4x`
   speedup versus baseline.
+
+## M202 Cache Lookup Fast Path
+
+M202 moves exact repeated-prompt detection into a lightweight prefix-cache helper
+module and adds an exact token-hash index to avoid scanning recent prompt
+candidates on mature exact hits.
+
+Artifacts:
+
+- `benchmarks/python/cache_lookup_fast_path_probe.py`
+- `artifacts/m202-cache-lookup-fast-path/cache-lookup-fast-path-m202-qwen-a3b.json`
+- `artifacts/m202-cache-lookup-fast-path/next-milestones-after-m202.json`
+- `artifacts/m202-cache-lookup-fast-path/milestone-completion-audit-m202.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `cache-lookup-fast-path-ready`
+- exact repeated prompt fast path: `true`
+- exact scan candidates: `0`
+- near-match scan behavior preserved: `true`
+- completion audit: `PASS`
+- quality threshold baseline: `PASS`
+
+Decision:
+
+- Exact repeated prompts now skip redundant prefix-candidate scans before cache
+  reuse.
+- Non-exact prefix matches still use the existing scan path, preserving route and
+  cache-scope safety.

@@ -173,7 +173,25 @@ performance:
 - `M199` performance report renderer
 - `M200` next milestone plan
 - `M201` performance batch report and completion audit
+- `M202` cache lookup fast-path implementation
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport
 overhead reduction, or smaller-model substitution.
+
+## M202 Quality Boundary
+
+M202 is intentionally limited to prefix-lookup bookkeeping:
+
+- exact repeated prompts use an exact token-hash fast path
+- near-match prompts still use the existing longest-prefix scan
+- cache scope and prompt-cache reuse semantics are unchanged
+- the M194 quality threshold baseline remains `PASS`
+
+Artifact:
+
+- `artifacts/m202-cache-lookup-fast-path/cache-lookup-fast-path-m202-qwen-a3b.json`
+
+This keeps the speed work inside the existing quality envelope: no decoding
+parameters, prompt-cache mutation behavior, RoPE/IMRoPE handling, or output
+quality gates were changed.

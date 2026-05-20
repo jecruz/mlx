@@ -2391,3 +2391,36 @@ Decision:
 
 - Performance reporting is now explicit enough to start the M202 implementation
   lane with a clear baseline, target, and quality floor.
+
+## M202 Result
+
+M202 implements the first low-risk prompt-processing optimization from the M195
+matrix: exact repeated prompts now use an exact token-hash fast path in the
+prefix opportunity tracker instead of scanning every recent prompt candidate.
+
+Artifacts:
+
+- `artifacts/m202-cache-lookup-fast-path/cache-lookup-fast-path-m202-qwen-a3b.json`
+- `artifacts/m202-cache-lookup-fast-path/next-milestones-after-m202.json`
+- `artifacts/m202-cache-lookup-fast-path/milestone-completion-audit-m202.json`
+
+Result:
+
+- cache lookup fast-path probe: `PASS`
+- exact repeated prompt fast path: `true`
+- exact scan candidates: `0`
+- near-match prefix scan preserved: `true`
+- recent index eviction respected: `true`
+- completion audit: `PASS`
+- baseline mature reusable-turn latency: `204.03116615489125 ms`
+- target mature reusable-turn latency: `175 ms`
+- quality threshold carried from M194 baseline: `PASS`
+
+Decision:
+
+- M202 removes redundant prefix-analysis work from mature exact-hit requests
+  without changing cache scope, prompt-cache mutation behavior, or quality
+  gates.
+- The next lane should move to M203 tokenized prompt reuse, because tokenization
+  and hash construction remain on the foreground path even after exact prefix
+  scans are skipped.

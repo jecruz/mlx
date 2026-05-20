@@ -34,6 +34,7 @@ if str(BENCHMARKS_PYTHON) not in sys.path:
     sys.path.insert(0, str(BENCHMARKS_PYTHON))
 
 from inprocess_prompt_sweep import build_token_prompt, detect_backend, runtime_device_info
+from mlx_engine.prefix_cache import PrefixOpportunityTracker
 
 
 MODULE_IMPORTED_AT_EPOCH = time.time()
@@ -403,6 +404,9 @@ class EngineMetrics:
                 "longest_prefix_match_tokens": row.get("longest_prefix_match_tokens"),
                 "prefix_reuse_ratio": row.get("prefix_reuse_ratio"),
                 "estimated_recompute_tokens": row.get("estimated_recompute_tokens"),
+                "prefix_lookup_fast_path": row.get("prefix_lookup_fast_path"),
+                "prefix_lookup_path": row.get("prefix_lookup_path"),
+                "prefix_scan_candidates": row.get("prefix_scan_candidates"),
                 "cache_candidate": row.get("cache_candidate"),
                 "cache_reuse_enabled": row.get("cache_reuse_enabled"),
                 "cache_hit": row.get("cache_hit"),
@@ -604,95 +608,6 @@ class RequestRegistry:
                 "active": [self._public(entry) for entry in self.active.values()],
                 "completed": list(self.completed),
             }
-
-
-class PrefixOpportunityTracker:
-    def __init__(self, *, max_recent: int = 32, min_match_tokens: int = 32):
-        self.max_recent = max_recent
-        self.min_match_tokens = min_match_tokens
-        self.lock = threading.Lock()
-        self.recent_prompts = deque(maxlen=max_recent)
-
-    @staticmethod
-    def _hash_text(text: str) -> str:
-        return hashlib.blake2b(text.encode("utf-8"), digest_size=16).hexdigest()
-
-    @staticmethod
-    def _hash_tokens(tokens: list[int]) -> str:
-        payload = ",".join(str(token) for token in tokens).encode("utf-8")
-        return hashlib.blake2b(payload, digest_size=16).hexdigest()
-
-    @staticmethod
-    def _common_prefix_len(left: list[int], right: list[int]) -> int:
-        count = 0
-        for left_token, right_token in zip(left, right, strict=False):
-            if left_token != right_token:
-                break
-            count += 1
-        return count
-
-    def inspect(self, *, prompt: str, tokens: list[int]) -> dict[str, Any]:
-        prompt_hash = self._hash_text(prompt)
-        token_hash = self._hash_tokens(tokens)
-        token_count = len(tokens)
-
-        with self.lock:
-            best_match = {
-                "request_id": None,
-                "prompt_hash": None,
-                "tokenized_prompt_hash": None,
-                "tokens": [],
-                "match_tokens": 0,
-            }
-            for prior in self.recent_prompts:
-                match_tokens = self._common_prefix_len(tokens, prior["tokens"])
-                if match_tokens > best_match["match_tokens"]:
-                    best_match = {**prior, "match_tokens": match_tokens}
-
-            longest_prefix_match_tokens = int(best_match["match_tokens"])
-            prefix_reuse_ratio = (
-                longest_prefix_match_tokens / token_count if token_count else 0.0
-            )
-            estimated_recompute_tokens = max(token_count - longest_prefix_match_tokens, 0)
-            cache_candidate = longest_prefix_match_tokens >= self.min_match_tokens
-            analysis = {
-                "prompt_hash": prompt_hash,
-                "tokenized_prompt_hash": token_hash,
-                "prefix_signature": (
-                    self._hash_tokens(tokens[: min(token_count, self.min_match_tokens)])
-                    if tokens
-                    else None
-                ),
-                "longest_prefix_match_tokens": longest_prefix_match_tokens,
-                "prefix_reuse_ratio": prefix_reuse_ratio,
-                "estimated_recompute_tokens": estimated_recompute_tokens,
-                "cache_candidate": cache_candidate,
-                "matched_request_id": best_match["request_id"],
-                "matched_prompt_hash": best_match["prompt_hash"],
-                "matched_tokenized_prompt_hash": best_match["tokenized_prompt_hash"],
-                "prefix_tracker_recent_size": len(self.recent_prompts),
-            }
-            return analysis
-
-    def record(self, *, request_id: str, prompt: str, tokens: list[int]) -> None:
-        with self.lock:
-            self.recent_prompts.append(
-                {
-                    "request_id": request_id,
-                    "prompt_hash": self._hash_text(prompt),
-                    "tokenized_prompt_hash": self._hash_tokens(tokens),
-                    "tokens": list(tokens),
-                }
-            )
-
-    def record_tokens(
-        self,
-        *,
-        request_id: str,
-        prompt: str,
-        tokens: list[int],
-    ) -> None:
-        self.record(request_id=request_id, prompt=prompt, tokens=tokens)
 
 
 class PrefixKVCacheStore:

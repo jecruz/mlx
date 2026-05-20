@@ -1,0 +1,91 @@
+{
+  "acceptance": {
+    "exact_repeated_prompt_uses_fast_path": true,
+    "exact_scan_candidates": 0,
+    "near_match_preserves_prefix_scan": true,
+    "recent_index_respects_eviction": true
+  },
+  "expected_latency_effect": "Exact mature prompt-cache hits skip the recent-prompt prefix scan. This removes redundant admission analysis work before the cache lookup while preserving scan behavior for non-exact prefix matches.",
+  "failures": [],
+  "observations": {
+    "after_eviction": {
+      "cache_candidate": true,
+      "estimated_recompute_tokens": 1,
+      "longest_prefix_match_tokens": 2047,
+      "matched_prompt_hash": "372de00d814f4365bf474b14d80f7eab",
+      "matched_request_id": "req_2",
+      "matched_tokenized_prompt_hash": "974cd528ed5640ff3ea31f2aa476d437",
+      "prefix_lookup_fast_path": false,
+      "prefix_lookup_path": "scan",
+      "prefix_reuse_ratio": 0.99951171875,
+      "prefix_scan_candidates": 2,
+      "prefix_signature": "23b917d21fc05ea2a72c189a74387b71",
+      "prefix_tracker_recent_size": 2,
+      "prompt_hash": "bf53ebea50f9d790288710f6e9841bff",
+      "tokenized_prompt_hash": "6368b30422b991df5b2da50ee517542f"
+    },
+    "cold": {
+      "cache_candidate": false,
+      "estimated_recompute_tokens": 2048,
+      "longest_prefix_match_tokens": 0,
+      "matched_prompt_hash": null,
+      "matched_request_id": null,
+      "matched_tokenized_prompt_hash": null,
+      "prefix_lookup_fast_path": false,
+      "prefix_lookup_path": "scan",
+      "prefix_reuse_ratio": 0.0,
+      "prefix_scan_candidates": 0,
+      "prefix_signature": "23b917d21fc05ea2a72c189a74387b71",
+      "prefix_tracker_recent_size": 0,
+      "prompt_hash": "bf53ebea50f9d790288710f6e9841bff",
+      "tokenized_prompt_hash": "6368b30422b991df5b2da50ee517542f"
+    },
+    "exact": {
+      "cache_candidate": true,
+      "estimated_recompute_tokens": 0,
+      "longest_prefix_match_tokens": 2048,
+      "matched_prompt_hash": "bf53ebea50f9d790288710f6e9841bff",
+      "matched_request_id": "req_1",
+      "matched_tokenized_prompt_hash": "6368b30422b991df5b2da50ee517542f",
+      "prefix_lookup_fast_path": true,
+      "prefix_lookup_path": "exact_token_hash",
+      "prefix_reuse_ratio": 1.0,
+      "prefix_scan_candidates": 0,
+      "prefix_signature": "23b917d21fc05ea2a72c189a74387b71",
+      "prefix_tracker_recent_size": 1,
+      "prompt_hash": "bf53ebea50f9d790288710f6e9841bff",
+      "tokenized_prompt_hash": "6368b30422b991df5b2da50ee517542f"
+    },
+    "near_match": {
+      "cache_candidate": true,
+      "estimated_recompute_tokens": 1,
+      "longest_prefix_match_tokens": 2047,
+      "matched_prompt_hash": "bf53ebea50f9d790288710f6e9841bff",
+      "matched_request_id": "req_1",
+      "matched_tokenized_prompt_hash": "6368b30422b991df5b2da50ee517542f",
+      "prefix_lookup_fast_path": false,
+      "prefix_lookup_path": "scan",
+      "prefix_reuse_ratio": 0.99951171875,
+      "prefix_scan_candidates": 1,
+      "prefix_signature": "23b917d21fc05ea2a72c189a74387b71",
+      "prefix_tracker_recent_size": 1,
+      "prompt_hash": "372de00d814f4365bf474b14d80f7eab",
+      "tokenized_prompt_hash": "974cd528ed5640ff3ea31f2aa476d437"
+    }
+  },
+  "performance_baseline": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "readiness": "cache-lookup-fast-path-ready",
+  "tag": "m202-qwen-a3b",
+  "target": {
+    "mature_hit_service_request_ms": 175.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "type": "cache_lookup_fast_path_probe",
+  "verdict": "PASS"
+}

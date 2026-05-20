@@ -1,0 +1,30 @@
+{
+  "audited_count": 2,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M202",
+      "passed": true,
+      "path": "artifacts/m202-cache-lookup-fast-path/cache-lookup-fast-path-m202-qwen-a3b.json",
+      "readiness": "cache-lookup-fast-path-ready",
+      "type": "cache_lookup_fast_path_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M202_NEXT",
+      "passed": true,
+      "path": "artifacts/m202-cache-lookup-fast-path/next-milestones-after-m202.json",
+      "readiness": "next-milestones-planned",
+      "type": "next_milestone_plan",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m202-cache-lookup-fast-path",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}
