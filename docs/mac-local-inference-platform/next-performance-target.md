@@ -2424,3 +2424,34 @@ Decision:
 - The next lane should move to M203 tokenized prompt reuse, because tokenization
   and hash construction remain on the foreground path even after exact prefix
   scans are skipped.
+
+## M203 Result
+
+M203 adds bounded tokenized prompt reuse for identical repeated workspace
+prompts. The cache key includes model, backend, tokenizer class, and chat
+template hash so token IDs are not reused across incompatible tokenizer scopes.
+
+Artifacts:
+
+- `artifacts/m203-tokenized-prompt-reuse/tokenized-prompt-reuse-m203-qwen-a3b.json`
+- `artifacts/m203-tokenized-prompt-reuse/next-milestones-after-m203.json`
+- `artifacts/m203-tokenized-prompt-reuse/milestone-completion-audit-m203.json`
+
+Result:
+
+- tokenized prompt reuse probe: `PASS`
+- identical prompt hit: `true`
+- returned token lists are copy-safe: `true`
+- tokenizer-scope separation: `true`
+- LRU eviction bounds the cache: `true`
+- completion audit: `PASS`
+- baseline mature reusable-turn latency: `204.03116615489125 ms`
+- target mature reusable-turn latency: `175 ms`
+- quality threshold carried from M194 baseline: `PASS`
+
+Decision:
+
+- Identical repeated prompts can now bypass repeated tokenizer encode work before
+  prefix analysis.
+- The next performance milestone should focus on M204 async cache completion
+  waits, then M205 response-metrics overhead.

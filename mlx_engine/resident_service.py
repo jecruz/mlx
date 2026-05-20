@@ -34,7 +34,7 @@ if str(BENCHMARKS_PYTHON) not in sys.path:
     sys.path.insert(0, str(BENCHMARKS_PYTHON))
 
 from inprocess_prompt_sweep import build_token_prompt, detect_backend, runtime_device_info
-from mlx_engine.prefix_cache import PrefixOpportunityTracker
+from mlx_engine.prefix_cache import PrefixOpportunityTracker, TokenizedPromptCache
 
 
 MODULE_IMPORTED_AT_EPOCH = time.time()
@@ -407,6 +407,11 @@ class EngineMetrics:
                 "prefix_lookup_fast_path": row.get("prefix_lookup_fast_path"),
                 "prefix_lookup_path": row.get("prefix_lookup_path"),
                 "prefix_scan_candidates": row.get("prefix_scan_candidates"),
+                "tokenized_prompt_cache_hit": row.get("tokenized_prompt_cache_hit"),
+                "tokenized_prompt_cache_ms": row.get("tokenized_prompt_cache_ms"),
+                "tokenized_prompt_cache_scope_hash": row.get(
+                    "tokenized_prompt_cache_scope_hash"
+                ),
                 "cache_candidate": row.get("cache_candidate"),
                 "cache_reuse_enabled": row.get("cache_reuse_enabled"),
                 "cache_hit": row.get("cache_hit"),
@@ -1070,6 +1075,7 @@ class ResidentEngine:
         self.runtime_config_lock = threading.RLock()
         self.execution_lock = EngineExecutionLock()
         self.prefix_tracker = PrefixOpportunityTracker()
+        self.tokenized_prompt_cache = TokenizedPromptCache()
         self.prefix_kv_cache = PrefixKVCacheStore(max_entries=prefix_cache_max_entries)
         self.prefix_cache_memory_limit_bytes = (
             int(prefix_cache_memory_limit_mb * 1024 * 1024)
@@ -1730,6 +1736,14 @@ class ResidentEngine:
                     self.scheduler.condition.notify_all()
 
     def cache_scope(self, metadata: dict[str, Any]) -> dict[str, Any]:
+        return {
+            **self.tokenizer_scope(),
+            "profile_path": str(self.profile_path) if self.profile_path else None,
+            "effective_policy": metadata["effective_policy"],
+            "prefill_step_size": metadata["prefill_step_size"],
+        }
+
+    def tokenizer_scope(self) -> dict[str, Any]:
         tokenizer = (
             self.tokenizer.tokenizer
             if hasattr(self.tokenizer, "tokenizer")
@@ -1738,10 +1752,7 @@ class ResidentEngine:
         chat_template = getattr(tokenizer, "chat_template", None)
         return {
             "model": self.model_path,
-            "profile_path": str(self.profile_path) if self.profile_path else None,
             "backend": self.backend,
-            "effective_policy": metadata["effective_policy"],
-            "prefill_step_size": metadata["prefill_step_size"],
             "tokenizer_class": type(tokenizer).__name__,
             "chat_template_hash": (
                 hashlib.blake2b(str(chat_template).encode("utf-8"), digest_size=16).hexdigest()
@@ -1867,9 +1878,41 @@ class ResidentEngine:
         return len(self.prompt_tokens(prompt))
 
     def prompt_tokens(self, prompt: str) -> list[int]:
+        tokens, _cache_info = self.prompt_tokens_with_cache(prompt)
+        return tokens
+
+    def prompt_tokens_with_cache(self, prompt: str) -> tuple[list[int], dict[str, Any]]:
+        t0 = time.perf_counter()
         prompt = qwen_no_think_prefill(prompt)
+        scope = self.tokenizer_scope()
+        scope_hash = hashlib.blake2b(
+            json.dumps(scope, sort_keys=True, separators=(",", ":")).encode("utf-8"),
+            digest_size=16,
+        ).hexdigest()
+        prompt_hash = hashlib.blake2b(prompt.encode("utf-8"), digest_size=16).hexdigest()
+        key = TokenizedPromptCache.key_for_prompt(prompt, scope=scope)
+        cached = self.tokenized_prompt_cache.get(key)
+        if cached is not None:
+            return cached, {
+                "tokenized_prompt_cache_hit": True,
+                "tokenized_prompt_cache_key": key,
+                "tokenized_prompt_cache_scope_hash": scope_hash,
+                "tokenized_prompt_cache_ms": 1e3 * (time.perf_counter() - t0),
+            }
         tokenizer = self.tokenizer.tokenizer if hasattr(self.tokenizer, "tokenizer") else self.tokenizer
-        return list(tokenizer.encode(prompt))
+        tokens = list(tokenizer.encode(prompt))
+        self.tokenized_prompt_cache.put(
+            key=key,
+            prompt_hash=prompt_hash,
+            scope=scope,
+            tokens=tokens,
+        )
+        return tokens, {
+            "tokenized_prompt_cache_hit": False,
+            "tokenized_prompt_cache_key": key,
+            "tokenized_prompt_cache_scope_hash": scope_hash,
+            "tokenized_prompt_cache_ms": 1e3 * (time.perf_counter() - t0),
+        }
 
     def request_metadata(
         self,
@@ -1880,7 +1923,7 @@ class ResidentEngine:
         profile_selection: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         prompt = qwen_no_think_prefill(prompt)
-        tokens = self.prompt_tokens(prompt)
+        tokens, tokenized_cache_info = self.prompt_tokens_with_cache(prompt)
         prompt_tokens_estimate = len(tokens)
         prefill_step_size, prefill_selection = self.selected_prefill_policy(
             policy,
@@ -1905,6 +1948,7 @@ class ResidentEngine:
                 prefill_selection["band_max_prompt_tokens"]
             ),
             "prompt_tokens_estimate": prompt_tokens_estimate,
+            **tokenized_cache_info,
             "default_device": self.device_info["default_device"],
             "metal_available": self.device_info["metal_available"],
             **(profile_selection or {}),
@@ -3069,6 +3113,7 @@ class ResidentEngine:
             "runtime_profile": self.runtime_profile,
             "metrics": self.metrics.snapshot(),
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
+            "tokenized_prompt_cache": self.tokenized_prompt_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
             "prompt_cache_capabilities": self.prompt_cache_capabilities_snapshot(),
             "prompt_cache_continuation": self.prompt_cache_continuation_snapshot(),
@@ -3099,6 +3144,7 @@ class ResidentEngine:
             "warmup": self.warmup_snapshot(),
             "metrics": self.metrics.snapshot(),
             "prefix_kv_cache": self.prefix_kv_cache.snapshot(),
+            "tokenized_prompt_cache": self.tokenized_prompt_cache.snapshot(),
             "prefix_cache_policy": self.prefix_cache_policy_snapshot(),
             "prompt_cache_capabilities": self.prompt_cache_capabilities_snapshot(),
             "prompt_cache_continuation": self.prompt_cache_continuation_snapshot(),

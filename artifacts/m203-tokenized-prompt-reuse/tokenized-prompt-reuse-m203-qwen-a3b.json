@@ -1,0 +1,68 @@
+{
+  "acceptance": {
+    "cold_lookup_misses": true,
+    "identical_prompt_hits": true,
+    "lru_eviction_bounds_cache": true,
+    "returned_tokens_are_copied": true,
+    "scope_separation_prevents_route_bleed": true
+  },
+  "cache_snapshot": {
+    "entries": 2,
+    "evictions": 1,
+    "hits": 2,
+    "keys": [
+      {
+        "hits": 0,
+        "key": "4e6dafc7c088b3251f88b52fe07f03e8",
+        "prompt_hash": "prompt-a",
+        "scope": {
+          "backend": "text",
+          "chat_template_hash": "template-b",
+          "model": "model-a",
+          "tokenizer_class": "TokenizerA"
+        },
+        "tokens": 2
+      },
+      {
+        "hits": 0,
+        "key": "d7670fd375008854df91515f323a2c0c",
+        "prompt_hash": "prompt-c",
+        "scope": {
+          "backend": "text",
+          "chat_template_hash": "template-a",
+          "model": "model-a",
+          "tokenizer_class": "TokenizerA"
+        },
+        "tokens": 2
+      }
+    ],
+    "max_entries": 2,
+    "misses": 3
+  },
+  "expected_latency_effect": "Identical repeated workspace prompts can reuse tokenized prompt IDs before prefix analysis, avoiding repeated tokenizer.encode work while keeping tokenizer/model/template scope in the cache key.",
+  "failures": [],
+  "m202_dependency": {
+    "artifact": "artifacts/m202-cache-lookup-fast-path/cache-lookup-fast-path-m202-qwen-a3b.json",
+    "readiness": "cache-lookup-fast-path-ready",
+    "verdict": "PASS"
+  },
+  "performance_baseline": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "memory_source": "request_metrics",
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "performance_target": {
+    "mature_hit_service_request_ms": 175.0,
+    "minimum_speedup_vs_baseline": 4.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "readiness": "tokenized-prompt-reuse-ready",
+  "tag": "m203-qwen-a3b",
+  "type": "tokenized_prompt_reuse_probe",
+  "verdict": "PASS"
+}

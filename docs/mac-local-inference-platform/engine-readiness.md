@@ -2203,3 +2203,31 @@ Decision:
   reuse.
 - Non-exact prefix matches still use the existing scan path, preserving route and
   cache-scope safety.
+
+## M203 Tokenized Prompt Reuse
+
+M203 adds a bounded tokenized-prompt cache for identical repeated workspace
+prompts. The cache is keyed by normalized prompt plus tokenizer scope, not by
+route-level request metadata.
+
+Artifacts:
+
+- `benchmarks/python/tokenized_prompt_reuse_probe.py`
+- `artifacts/m203-tokenized-prompt-reuse/tokenized-prompt-reuse-m203-qwen-a3b.json`
+- `artifacts/m203-tokenized-prompt-reuse/next-milestones-after-m203.json`
+- `artifacts/m203-tokenized-prompt-reuse/milestone-completion-audit-m203.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `tokenized-prompt-reuse-ready`
+- identical prompt cache hit: `true`
+- token list copy safety: `true`
+- tokenizer-scope separation: `true`
+- completion audit: `PASS`
+
+Decision:
+
+- Repeated workspace prompts can now reuse token IDs before prefix lookup.
+- Cache scope includes model, backend, tokenizer class, and chat template hash to
+  avoid unsafe reuse across tokenizer/template changes.

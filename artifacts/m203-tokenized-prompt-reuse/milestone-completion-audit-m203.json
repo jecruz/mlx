@@ -1,0 +1,30 @@
+{
+  "audited_count": 2,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M203",
+      "passed": true,
+      "path": "artifacts/m203-tokenized-prompt-reuse/tokenized-prompt-reuse-m203-qwen-a3b.json",
+      "readiness": "tokenized-prompt-reuse-ready",
+      "type": "tokenized_prompt_reuse_probe",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M203_NEXT",
+      "passed": true,
+      "path": "artifacts/m203-tokenized-prompt-reuse/next-milestones-after-m203.json",
+      "readiness": "next-milestones-planned",
+      "type": "next_milestone_plan",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m203-tokenized-prompt-reuse",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

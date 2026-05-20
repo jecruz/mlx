@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import threading
 from collections import deque
 from typing import Any
@@ -113,3 +114,91 @@ class PrefixOpportunityTracker:
         tokens: list[int],
     ) -> None:
         self.record(request_id=request_id, prompt=prompt, tokens=tokens)
+
+
+class TokenizedPromptCache:
+    def __init__(self, *, max_entries: int = 128):
+        self.max_entries = max(max_entries, 0)
+        self.lock = threading.RLock()
+        self.entries: dict[str, dict[str, Any]] = {}
+        self.lru = deque()
+        self.hits = 0
+        self.misses = 0
+        self.evictions = 0
+
+    @staticmethod
+    def key_for_prompt(prompt: str, *, scope: dict[str, Any]) -> str:
+        payload = json.dumps(
+            {
+                "prompt": prompt,
+                "scope": scope,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        return hashlib.blake2b(payload, digest_size=16).hexdigest()
+
+    def get(self, key: str) -> list[int] | None:
+        with self.lock:
+            entry = self.entries.get(key)
+            if entry is None:
+                self.misses += 1
+                return None
+            try:
+                self.lru.remove(key)
+            except ValueError:
+                pass
+            self.lru.append(key)
+            entry["hits"] += 1
+            self.hits += 1
+            return list(entry["tokens"])
+
+    def put(
+        self,
+        *,
+        key: str,
+        prompt_hash: str,
+        scope: dict[str, Any],
+        tokens: list[int],
+    ) -> None:
+        with self.lock:
+            if self.max_entries <= 0:
+                return
+            if key in self.entries:
+                try:
+                    self.lru.remove(key)
+                except ValueError:
+                    pass
+            self.entries[key] = {
+                "prompt_hash": prompt_hash,
+                "scope": dict(scope),
+                "tokens": list(tokens),
+                "hits": 0,
+            }
+            self.lru.append(key)
+            while len(self.lru) > self.max_entries:
+                old_key = self.lru.popleft()
+                if old_key in self.entries:
+                    self.entries.pop(old_key, None)
+                    self.evictions += 1
+
+    def snapshot(self) -> dict[str, Any]:
+        with self.lock:
+            return {
+                "entries": len(self.entries),
+                "max_entries": self.max_entries,
+                "hits": self.hits,
+                "misses": self.misses,
+                "evictions": self.evictions,
+                "keys": [
+                    {
+                        "key": key,
+                        "prompt_hash": self.entries[key]["prompt_hash"],
+                        "tokens": len(self.entries[key]["tokens"]),
+                        "hits": self.entries[key]["hits"],
+                        "scope": self.entries[key]["scope"],
+                    }
+                    for key in self.lru
+                    if key in self.entries
+                ],
+            }

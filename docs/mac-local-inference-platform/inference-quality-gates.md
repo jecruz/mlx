@@ -174,6 +174,7 @@ performance:
 - `M200` next milestone plan
 - `M201` performance batch report and completion audit
 - `M202` cache lookup fast-path implementation
+- `M203` tokenized prompt reuse probe
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport
@@ -195,3 +196,22 @@ Artifact:
 This keeps the speed work inside the existing quality envelope: no decoding
 parameters, prompt-cache mutation behavior, RoPE/IMRoPE handling, or output
 quality gates were changed.
+
+## M203 Quality Boundary
+
+M203 caches tokenized prompt IDs only when the normalized prompt and tokenizer
+scope match exactly.
+
+Artifact:
+
+- `artifacts/m203-tokenized-prompt-reuse/tokenized-prompt-reuse-m203-qwen-a3b.json`
+
+The probe verifies:
+
+- identical prompts hit the tokenized cache
+- returned token lists are copies, so callers cannot mutate cached entries
+- tokenizer/template scope changes do not reuse token IDs
+- LRU eviction bounds memory growth
+
+This changes prompt preprocessing only; decoding settings, generated output
+handling, prompt-cache mutation behavior, and RoPE/IMRoPE behavior are unchanged.
