@@ -1,0 +1,49 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "hot response overhead drops and operator debug mode preserves full metrics",
+      "milestone": "M205",
+      "title": "Response metrics trim experiment"
+    },
+    {
+      "acceptance": "M180-equivalent suite stays PASS with quality threshold PASS",
+      "milestone": "M206",
+      "title": "Live performance suite rerun"
+    },
+    {
+      "acceptance": "Prowl or UI-side probe consumes /engine/operator-readiness",
+      "milestone": "M207",
+      "title": "Prowl/UI readiness endpoint smoke"
+    },
+    {
+      "acceptance": "registry includes any new smaller/lower-memory candidates",
+      "milestone": "M208",
+      "title": "Candidate model registry refresh"
+    },
+    {
+      "acceptance": "new report shows latency delta versus M194 baseline",
+      "milestone": "M209",
+      "title": "Performance report refresh"
+    },
+    {
+      "acceptance": "post-M202/M203 measurements identify the next concrete latency bottleneck",
+      "milestone": "M210",
+      "title": "Post-fast-path bottleneck audit"
+    },
+    {
+      "acceptance": "operator docs and UI fields include tokenized-cache hit state where useful",
+      "milestone": "M211",
+      "title": "Tokenized cache operator surface"
+    },
+    {
+      "acceptance": "runtime profile defaults encode the selected pending-wait recommendation where appropriate",
+      "milestone": "M212",
+      "title": "Async wait runtime profile policy"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m204-next",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

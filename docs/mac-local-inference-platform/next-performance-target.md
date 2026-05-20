@@ -2455,3 +2455,32 @@ Decision:
   prefix analysis.
 - The next performance milestone should focus on M204 async cache completion
   waits, then M205 response-metrics overhead.
+
+## M204 Result
+
+M204 packages the async cache completion wait decision from the existing live
+maturation sweep and gate. The selected conversion-turn policy is a bounded
+pending wait that turns an already-pending async prefix build into a cache hit.
+
+Artifacts:
+
+- `artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-m204-qwen-a3b.json`
+- `artifacts/m204-async-cache-completion-wait/next-milestones-after-m204.json`
+- `artifacts/m204-async-cache-completion-wait/milestone-completion-audit-m204.json`
+
+Result:
+
+- async cache completion wait report: `PASS`
+- recommended `prefix_cache_async_idle_grace_ms`: `0`
+- recommended `prefix_cache_pending_wait_ms`: `1000`
+- observed pending wait: `801.0062498506159 ms`
+- wait-hit actual prefill tokens: `10`
+- mature-hit service request after wait profile: `238.06241690181196 ms`
+- completion audit: `PASS`
+
+Decision:
+
+- M204 should use the bounded wait only when a duplicate request sees an async
+  prefix build already pending.
+- The next latency work should trim hot response overhead in M205 and then rerun
+  the live performance suite in M206.

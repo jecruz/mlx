@@ -1,0 +1,30 @@
+{
+  "audited_count": 2,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M204",
+      "passed": true,
+      "path": "artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-m204-qwen-a3b.json",
+      "readiness": "async-cache-completion-wait-ready",
+      "type": "async_cache_completion_wait_report",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M204_NEXT",
+      "passed": true,
+      "path": "artifacts/m204-async-cache-completion-wait/next-milestones-after-m204.json",
+      "readiness": "next-milestones-planned",
+      "type": "next_milestone_plan",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m204-async-cache-completion-wait",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

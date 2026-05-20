@@ -1,0 +1,63 @@
+{
+  "acceptance": {
+    "actual_prefill_tokens_within_budget": true,
+    "cache_hit": true,
+    "gate_passed": true,
+    "pending_wait_hit": true,
+    "wait_within_budget": true
+  },
+  "best_mature_no_wait": {
+    "mature_hit_service_request_ms": 248.66099981591105,
+    "mature_hit_speedup_vs_baseline": 6.889396947855158,
+    "prefix_cache_async_idle_grace_ms": 0,
+    "prefix_cache_pending_wait_ms": 0
+  },
+  "decision": "Use a bounded pending wait around 1000 ms for conversion turns when the async prefix build is already pending. It converts the duplicate request into a cache hit with low actual prefill while preserving foreground queue safety through the existing pending-wait accounting.",
+  "failures": [],
+  "live_rerun_command": "python3 benchmarks/python/async_maturation_sweep.py --base-url http://127.0.0.1:8773 --output-jsonl artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-live-m204-qwen-a3b.jsonl --output-json artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-live-m204-qwen-a3b.json --grace-ms 0,25,50 --pending-wait-ms 0,500,1000,1500 --fail-on-no-hit",
+  "performance_baseline": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "memory_source": "request_metrics",
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "performance_target": {
+    "mature_hit_service_request_ms": 175.0,
+    "minimum_speedup_vs_baseline": 4.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "readiness": "async-cache-completion-wait-ready",
+  "recommended_runtime_config": {
+    "cache_pending_wait_observed_ms": 801.0062498506159,
+    "mature_hit_service_request_ms": 238.06241690181196,
+    "mature_hit_speedup_vs_baseline": 4.311898938834208,
+    "policy_deltas": {
+      "async_builds_completed": 1,
+      "async_builds_failed": 0,
+      "async_builds_skipped": 0,
+      "async_builds_started": 1,
+      "pending_build_deduplications": 1,
+      "pending_wait_hits": 1,
+      "pending_wait_misses": 0,
+      "pending_wait_timeouts": 0,
+      "pending_waits": 1
+    },
+    "prefix_cache_async_idle_grace_ms": 0,
+    "prefix_cache_pending_wait_ms": 1000,
+    "wait_hit_actual_prefill_tokens": 10,
+    "wait_hit_service_request_ms": 1047.6069159340113,
+    "wait_hit_speedup_vs_baseline": 0.979853289628234
+  },
+  "source_artifacts": {
+    "gate_json": "artifacts/m80-agent-workspace-async/async-maturation-gate-qwen-a3b-m80.json",
+    "performance_report": "artifacts/m194-performance-report/prompt-processing-performance-report-m194-qwen-a3b.json",
+    "sweep_json": "artifacts/m79-async-maturation/async-maturation-qwen-a3b-m79-stable.json"
+  },
+  "tag": "m204-qwen-a3b",
+  "type": "async_cache_completion_wait_report",
+  "verdict": "PASS"
+}

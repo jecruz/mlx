@@ -2231,3 +2231,30 @@ Decision:
 - Repeated workspace prompts can now reuse token IDs before prefix lookup.
 - Cache scope includes model, backend, tokenizer class, and chat template hash to
   avoid unsafe reuse across tokenizer/template changes.
+
+## M204 Async Cache Completion Wait
+
+M204 turns the prior async maturation sweep into an explicit runtime
+recommendation for duplicate requests that arrive while an async prefix build is
+already pending.
+
+Artifacts:
+
+- `benchmarks/python/async_cache_completion_wait_report.py`
+- `artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-m204-qwen-a3b.json`
+- `artifacts/m204-async-cache-completion-wait/next-milestones-after-m204.json`
+- `artifacts/m204-async-cache-completion-wait/milestone-completion-audit-m204.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `async-cache-completion-wait-ready`
+- recommended pending wait: `1000 ms`
+- observed pending wait: `801.0062498506159 ms`
+- wait-hit actual prefill tokens: `10`
+- source async maturation gate: `PASS`
+
+Decision:
+
+- Keep pending waits bounded and conditional on an already-pending async build.
+- Do not use pending waits as a general foreground delay mechanism.

@@ -175,6 +175,7 @@ performance:
 - `M201` performance batch report and completion audit
 - `M202` cache lookup fast-path implementation
 - `M203` tokenized prompt reuse probe
+- `M204` async cache completion wait sweep
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport
@@ -215,3 +216,20 @@ The probe verifies:
 
 This changes prompt preprocessing only; decoding settings, generated output
 handling, prompt-cache mutation behavior, and RoPE/IMRoPE behavior are unchanged.
+
+## M204 Quality Boundary
+
+M204 does not alter model output, decoding parameters, or prompt-cache contents.
+It only documents and gates a bounded pending wait for duplicate requests when an
+async prefix build is already pending.
+
+Artifact:
+
+- `artifacts/m204-async-cache-completion-wait/async-cache-completion-wait-m204-qwen-a3b.json`
+
+The quality boundary is:
+
+- pending waits are conditional on an existing async build
+- the recommendation remains bounded at `1000 ms`
+- actual prefill after the wait-hit path remains low at `10` tokens
+- the source async maturation gate is `PASS`
