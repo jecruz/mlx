@@ -2460,3 +2460,26 @@ Decision:
 - Engine readiness remains on Qwen A3B.
 - The gpt-oss candidate should stay blocked in UI/operator surfaces until a
   fresh quality run passes.
+
+## M212 Live Cache-Hit Instrumentation
+
+M212 verifies that cache instrumentation works on live requests.
+
+Artifacts:
+
+- `artifacts/m212-live-cache-hit-instrumentation/live-cache-hit-instrumentation-m212-qwen-a3b.json`
+- `artifacts/m212-live-cache-hit-instrumentation/milestone-completion-audit-m212.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `live-cache-hit-instrumentation-ready`
+- rows: `8`
+- exact-repeat tokenized cache hit rate after first: `1.0`
+- exact-repeat prefix fast-path rate after first: `1.0`
+- near-prefix scan candidate mean: `11.0`
+
+Decision:
+
+- Operator surfaces can expose tokenized prompt cache and prefix fast-path hit
+  rates from live request metadata.

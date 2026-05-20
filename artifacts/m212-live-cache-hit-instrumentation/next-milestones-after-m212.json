@@ -1,0 +1,24 @@
+{
+  "failures": [],
+  "next_milestones": [
+    {
+      "acceptance": "wire the Prowl/UI readiness card into the selected host surface and verify field parity with M207",
+      "milestone": "M213",
+      "title": "Readiness card integration"
+    },
+    {
+      "acceptance": "continue reducing cached-prefix MLX generation run_ms toward the remaining 19.507 ms target gap without failing quality",
+      "milestone": "M214",
+      "title": "Cached-prefix run_ms reduction"
+    },
+    {
+      "acceptance": "evaluate another lower-memory MLX candidate or a different gpt-oss prompt template only if deterministic coding quality can pass",
+      "milestone": "M215",
+      "title": "Lower-memory candidate replacement"
+    }
+  ],
+  "readiness": "next-milestones-planned",
+  "tag": "m212-next-milestones",
+  "type": "next_milestone_plan",
+  "verdict": "PASS"
+}

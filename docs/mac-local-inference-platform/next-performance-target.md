@@ -2721,3 +2721,33 @@ Decision:
   but not as a quality-accepted replacement for Qwen A3B.
 - M212 should continue with live cache-hit instrumentation on the accepted Qwen
   path rather than spending more performance work on this rejected candidate.
+
+## M212 Result
+
+M212 measures tokenized prompt cache and prefix fast-path behavior in live
+traffic rather than synthetic unit probes.
+
+Artifacts:
+
+- `benchmarks/python/live_cache_hit_instrumentation_report.py`
+- `artifacts/m212-live-cache-hit-instrumentation/live-cache-hit-instrumentation-m212-qwen-a3b.json`
+- `artifacts/m212-live-cache-hit-instrumentation/milestone-completion-audit-m212.json`
+- `artifacts/m212-live-cache-hit-instrumentation/next-milestones-after-m212.json`
+
+Result:
+
+- live cache-hit instrumentation report: `PASS`
+- exact-repeat tokenized prompt cache hit rate after first: `1.0`
+- exact-repeat prefix fast-path rate after first: `1.0`
+- exact-repeat cache hit rate after first: `0.6666666666666666`
+- near-prefix tokenized prompt cache hit rate after first: `0.0`
+- near-prefix prefix fast-path rate after first: `0.0`
+- near-prefix mean prefix scan candidates: `11.0`
+- completion audit: `PASS`
+
+Decision:
+
+- M202 and M203 are now proven in live traffic, not only synthetic probes.
+- Exact repeated prompts take the tokenized prompt cache and exact prefix
+  fast-path. Near-prefix prompts correctly avoid the exact fast-path and still
+  exercise scan-based prefix matching.
