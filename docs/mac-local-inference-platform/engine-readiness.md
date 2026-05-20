@@ -2437,3 +2437,26 @@ Decision:
 - Readiness remains green because this is a benchmark-selection correctness
   improvement plus live rerun, not a runtime-quality behavior change.
 - Further latency work should target cached-prefix generation `run_ms`.
+
+## M211 GPT-OSS Candidate Readiness
+
+M211 tested `gpt-oss-20b-MXFP4-Q8` as the lower-memory candidate.
+
+Artifacts:
+
+- `artifacts/m211-gpt-oss-candidate/gpt-oss-candidate-report-m211.json`
+- `artifacts/m211-gpt-oss-candidate/model-swap-acceptance-m211-gpt-oss.json`
+
+Result:
+
+- live reload/swap safety: `PASS`
+- deterministic candidate quality: `FAIL`
+- model-swap decision: `REJECT`
+- readiness: `swap-blocked`
+- active Qwen model restored: `true`
+
+Decision:
+
+- Engine readiness remains on Qwen A3B.
+- The gpt-oss candidate should stay blocked in UI/operator surfaces until a
+  fresh quality run passes.

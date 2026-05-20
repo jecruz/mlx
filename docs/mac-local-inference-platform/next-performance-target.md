@@ -2685,3 +2685,39 @@ Decision:
 - M210 reduces the measured mature-hit gap while preserving the quality gate.
 - The next pure performance target is still cached-prefix generation `run_ms`;
   tokenization and prefix lookup are no longer the dominant mature-hit costs.
+
+## M211 Result
+
+M211 evaluates `gpt-oss-20b-MXFP4-Q8` as the lower-memory candidate. The model
+loads and generates through the live swap probe, but it is rejected for coding
+quality and speed.
+
+Artifacts:
+
+- `artifacts/m211-gpt-oss-candidate/live-model-swap-m211-gpt-oss.json`
+- `artifacts/m211-gpt-oss-candidate/deterministic-quality-m211-gpt-oss.json`
+- `artifacts/m211-gpt-oss-candidate/model-quality-comparison-m211-gpt-oss.json`
+- `artifacts/m211-gpt-oss-candidate/model-swap-acceptance-m211-gpt-oss.json`
+- `artifacts/m211-gpt-oss-candidate/gpt-oss-candidate-report-m211.json`
+- `artifacts/m211-gpt-oss-candidate/milestone-completion-audit-m211.json`
+- `artifacts/m211-gpt-oss-candidate/next-milestones-after-m211.json`
+
+Result:
+
+- live model swap probe: `PASS`
+- candidate reload: `9447.31 ms`
+- restore reload: `6670.6 ms`
+- candidate deterministic quality: `FAIL`
+- deterministic quality failures: `7`
+- model quality comparison: `FAIL`
+- model-swap acceptance gate: `PASS`, decision `REJECT`
+- candidate slowdown ratio: `2.205501`
+- completion audit: `PASS`
+
+Decision:
+
+- Do not promote `gpt-oss-20b-MXFP4-Q8` for coding-agent use.
+- The lower-memory model remains useful as a load/swap compatibility candidate,
+  but not as a quality-accepted replacement for Qwen A3B.
+- M212 should continue with live cache-hit instrumentation on the accepted Qwen
+  path rather than spending more performance work on this rejected candidate.

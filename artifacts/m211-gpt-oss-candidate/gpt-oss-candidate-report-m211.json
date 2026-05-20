@@ -1,0 +1,44 @@
+{
+  "candidate": {
+    "label": "gpt-oss-20b-mxfp4-q8",
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8"
+  },
+  "current": {
+    "label": "qwen35b-a3b-ud-4bit",
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit"
+  },
+  "decision": {
+    "readiness": "swap-blocked",
+    "swap_decision": "REJECT"
+  },
+  "failures": [],
+  "findings": [
+    "The gpt-oss candidate loads and generates through the live model-swap probe.",
+    "The candidate fails deterministic coding quality with 7 failures.",
+    "The candidate is slower than the current model on the compared deterministic quality gate, with slowdown_ratio 2.205501.",
+    "The active Qwen A3B model was restored after candidate testing."
+  ],
+  "quality": {
+    "candidate_deterministic_failures": [
+      "coding_task: missing required markers: ['a + b']",
+      "json_schema: missing required markers: ['status', 'ok']",
+      "json_schema: invalid json",
+      "workspace_symbol_lookup: repetition score too high: 0.375",
+      "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+      "test_selection: missing required markers: ['pytest tests/test_cache.py']",
+      "failure_triage: missing required markers: ['TRIAGE_CACHE_REUSE']"
+    ],
+    "candidate_deterministic_verdict": "FAIL",
+    "current_quality_threshold_verdict": "PASS"
+  },
+  "readiness": "gpt-oss-candidate-rejected",
+  "source_artifacts": {
+    "candidate_deterministic_quality": "artifacts/m211-gpt-oss-candidate/deterministic-quality-m211-gpt-oss.json",
+    "live_model_swap": "artifacts/m211-gpt-oss-candidate/live-model-swap-m211-gpt-oss.json",
+    "model_quality_comparison": "artifacts/m211-gpt-oss-candidate/model-quality-comparison-m211-gpt-oss.json",
+    "model_swap_acceptance": "artifacts/m211-gpt-oss-candidate/model-swap-acceptance-m211-gpt-oss.json"
+  },
+  "tag": "m211-gpt-oss",
+  "type": "gpt_oss_candidate_acceptance_report",
+  "verdict": "PASS"
+}

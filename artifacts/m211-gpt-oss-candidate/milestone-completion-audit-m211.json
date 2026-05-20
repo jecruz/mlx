@@ -1,0 +1,40 @@
+{
+  "audited_count": 3,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M211",
+      "passed": true,
+      "path": "artifacts/m211-gpt-oss-candidate/gpt-oss-candidate-report-m211.json",
+      "readiness": "gpt-oss-candidate-rejected",
+      "type": "gpt_oss_candidate_acceptance_report",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M211-swap",
+      "passed": true,
+      "path": "artifacts/m211-gpt-oss-candidate/model-swap-acceptance-m211-gpt-oss.json",
+      "readiness": "swap-blocked",
+      "type": "model_swap_acceptance_gate",
+      "verdict": "PASS"
+    },
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M211-live",
+      "passed": true,
+      "path": "artifacts/m211-gpt-oss-candidate/live-model-swap-m211-gpt-oss.json",
+      "readiness": "live-model-swap-safe",
+      "type": "live_model_swap_probe",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m211-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

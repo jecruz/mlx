@@ -1,0 +1,294 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [
+    "coding_task: missing required markers: ['a + b']",
+    "json_schema: missing required markers: ['status', 'ok']",
+    "json_schema: invalid json",
+    "workspace_symbol_lookup: repetition score too high: 0.375",
+    "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+    "test_selection: missing required markers: ['pytest tests/test_cache.py']",
+    "failure_triage: missing required markers: ['TRIAGE_CACHE_REUSE']"
+  ],
+  "rows": [
+    {
+      "actual_prefill_tokens": 37,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "We need to output \"QUALITY_OK\" only.<|end|><|start|>assistant<|channel|>final>QUALITY_OK",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output \"QUALITY_OK\" only.<|end|><|start|>assistant<|channel|>final>QUALITY_OK",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 1714.579459046945,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 41,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [
+        "missing required markers: ['a + b']"
+      ],
+      "final_answer": "",
+      "json_valid": null,
+      "missing": [
+        "a + b"
+      ],
+      "raw_text": "",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 213.47645786590874,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 50,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "We need to output \"BUG_FOUND\" only. The user says: \"Review this code: def add(a,b): return a-b. Output only: BUG_FOUND\". So we just output BUG_FOUND. No other text.<|end|><|start|>assistant<|channel|>final<|message|>BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output \"BUG_FOUND\" only. The user says: \"Review this code: def add(a,b): return a-b. Output only: BUG_FOUND\". So we just output BUG_FOUND. No other text.<|end|><|start|>assistant<|channel|>final<|message|>BUG_FOUND",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 575.7076248992234,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 48,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "We need to output \"EDIT_AND_TEST\". The instruction: \"Output only: EDIT_AND_TEST\". So just that.<|end|><|start|>assistant<|channel|>final>EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output \"EDIT_AND_TEST\". The instruction: \"Output only: EDIT_AND_TEST\". So just that.<|end|><|start|>assistant<|channel|>final>EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 425.11775018647313,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 55,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "We need to output only the total minutes. The tasks: 2+4+6=12. So output \"",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only the total minutes. The tasks: 2+4+6=12. So output \"",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 366.0493749193847,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 42,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "json_schema",
+      "category": "json",
+      "failures": [
+        "missing required markers: ['status', 'ok']",
+        "invalid json"
+      ],
+      "final_answer": "",
+      "json_valid": false,
+      "missing": [
+        "status",
+        "ok"
+      ],
+      "raw_text": "",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 215.49579198472202,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 52,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "summary",
+      "category": "summarization",
+      "failures": [],
+      "final_answer": "We need to produce a summary exactly \"SUMMARY_OK: MLX ...\". The instruction: \"Summarize this text as exactly SUMMARY_OK: MLX quality gates protect response quality while speed improves.\" So we output that string. No extra.<|end|><|start|>assistant<|channel|>final>SUMMARY_OK: MLX quality gates protect response",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to produce a summary exactly \"SUMMARY_OK: MLX ...\". The instruction: \"Summarize this text as exactly SUMMARY_OK: MLX quality gates protect response quality while speed improves.\" So we output that string. No extra.<|end|><|start|>assistant<|channel|>final>SUMMARY_OK: MLX quality gates protect response",
+      "repetition_score": 0.11904761904761904,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 651.2504590209574,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 61,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [
+        "repetition score too high: 0.375"
+      ],
+      "final_answer": "We need to answer: \"Which symbol handles the generation of the resident engine?\" The question: \"Which symbol handles the generation of the resident engine?\" The repo map: src/server.py defines ResidentEngine; src/cache.py defines PrefixCache. The question: \"Which symbol handles the generation of the resident engine?\" The answer",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to answer: \"Which symbol handles the generation of the resident engine?\" The question: \"Which symbol handles the generation of the resident engine?\" The repo map: src/server.py defines ResidentEngine; src/cache.py defines PrefixCache. The question: \"Which symbol handles the generation of the resident engine?\" The answer",
+      "repetition_score": 0.375,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 662.1824589092284,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 60,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [
+        "missing required markers: ['PATCH_SRC_CACHE_AND_TEST']"
+      ],
+      "final_answer": "We need to inspect repository.<|end|><|start|>assistant<|channel|>analysis to=container.exec code<|message|>{\"cmd\":[\"bash\",\"-lc\",\"ls -R\"]}",
+      "json_valid": null,
+      "missing": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "raw_text": "We need to inspect repository.<|end|><|start|>assistant<|channel|>analysis to=container.exec code<|message|>{\"cmd\":[\"bash\",\"-lc\",\"ls -R\"]}",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 410.9904158394784,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 58,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [
+        "missing required markers: ['pytest tests/test_cache.py']"
+      ],
+      "final_answer": "We run tests. But we can't run. Let's inspect repository.<|end|><|start|>assistant<|channel|>analysis to=repo_browser.print_tree code<|message|>{\"path\": \"\", \"depth\": 3}",
+      "json_valid": null,
+      "missing": [
+        "pytest tests/test_cache.py"
+      ],
+      "raw_text": "We run tests. But we can't run. Let's inspect repository.<|end|><|start|>assistant<|channel|>analysis to=repo_browser.print_tree code<|message|>{\"path\": \"\", \"depth\": 3}\n",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 454.6462919097394,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 60,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [
+        "missing required markers: ['TRIAGE_CACHE_REUSE']"
+      ],
+      "final_answer": "We need to inspect repository.<|end|><|start|>assistant<|channel|>analysis to=repo_browser.print_tree code<|message|>{\"path\": \"\", \"depth\": 3}",
+      "json_valid": null,
+      "missing": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "raw_text": "We need to inspect repository.<|end|><|start|>assistant<|channel|>analysis to=repo_browser.print_tree code<|message|>{\"path\": \"\", \"depth\": 3}\n",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 400.5163749679923,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 42,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "SAFE_SUMMARY: The user wants to read a summary of a text. \nWe have to read the content. The user says: \"Output only SAFE_SUM",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SAFE_SUMMARY: The user wants to read a summary of a text. \nWe have to read the content. The user says: \"Output only SAFE_SUM",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 409.9065421614796,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m211-gpt-oss",
+  "type": "deterministic_quality_regression",
+  "verdict": "FAIL"
+}

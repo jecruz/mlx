@@ -319,3 +319,23 @@ Quality result:
 
 Future M211 model-swap work must run fresh quality acceptance for the candidate
 model rather than relying only on M210's report-only quality boundary.
+
+## M211 Quality Boundary
+
+M211 ran fresh candidate quality for `gpt-oss-20b-MXFP4-Q8`.
+
+Artifacts:
+
+- `artifacts/m211-gpt-oss-candidate/deterministic-quality-m211-gpt-oss.json`
+- `artifacts/m211-gpt-oss-candidate/model-quality-comparison-m211-gpt-oss.json`
+- `artifacts/m211-gpt-oss-candidate/model-swap-acceptance-m211-gpt-oss.json`
+
+Quality result:
+
+- current Qwen deterministic quality source: `PASS`
+- candidate deterministic quality: `FAIL`
+- candidate deterministic failures: `7`
+- model-swap decision: `REJECT`
+
+This is the intended quality gate behavior: a smaller model that loads and
+generates is still blocked if coding quality regresses.

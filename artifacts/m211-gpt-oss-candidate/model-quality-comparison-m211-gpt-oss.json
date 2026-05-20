@@ -1,0 +1,57 @@
+{
+  "failures": [
+    "gpt-oss-20b-mxfp4-q8:deterministic-quality-m211-gpt-oss: FAIL failures=7"
+  ],
+  "models": [
+    {
+      "artifacts": {
+        "deterministic-quality-m206-qwen-a3b": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": 245.595,
+          "path": "artifacts/m206-live-performance-suite/deterministic-quality-m206-qwen-a3b.json",
+          "row_count": 12,
+          "tag": "m206-qwen-a3b",
+          "type": "deterministic_quality_regression",
+          "verdict": "PASS"
+        }
+      },
+      "failures": [],
+      "label": "qwen35b-a3b-ud-4bit",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "verdict": "PASS"
+    },
+    {
+      "artifacts": {
+        "deterministic-quality-m211-gpt-oss": {
+          "failure_count": 7,
+          "failures": [
+            "coding_task: missing required markers: ['a + b']",
+            "json_schema: missing required markers: ['status', 'ok']",
+            "json_schema: invalid json",
+            "workspace_symbol_lookup: repetition score too high: 0.375",
+            "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+            "test_selection: missing required markers: ['pytest tests/test_cache.py']",
+            "failure_triage: missing required markers: ['TRIAGE_CACHE_REUSE']"
+          ],
+          "mean_service_request_ms": 541.66,
+          "path": "artifacts/m211-gpt-oss-candidate/deterministic-quality-m211-gpt-oss.json",
+          "row_count": 12,
+          "tag": "m211-gpt-oss",
+          "type": "deterministic_quality_regression",
+          "verdict": "FAIL"
+        }
+      },
+      "failures": [
+        "gpt-oss-20b-mxfp4-q8:deterministic-quality-m211-gpt-oss: FAIL failures=7"
+      ],
+      "label": "gpt-oss-20b-mxfp4-q8",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+      "verdict": "FAIL"
+    }
+  ],
+  "readiness": "quality-regression-detected",
+  "tag": "m211-gpt-oss",
+  "type": "model_quality_comparison",
+  "verdict": "FAIL"
+}

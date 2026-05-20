@@ -1,0 +1,64 @@
+{
+  "blockers": [
+    "model_comparison: verdict='FAIL'",
+    "candidate_quality: verdict='FAIL'",
+    "candidate_speed: slowdown_ratio=2.205501, threshold=1.0"
+  ],
+  "candidate": {
+    "label": "gpt-oss-20b-mxfp4-q8",
+    "mean_quality_gate_ms": 541.66,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+    "verdict": "FAIL"
+  },
+  "checks": [
+    {
+      "detail": "verdict='FAIL'",
+      "label": "model_comparison",
+      "verdict": "FAIL"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "quality_threshold",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "current_quality",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='FAIL'",
+      "label": "candidate_quality",
+      "verdict": "FAIL"
+    },
+    {
+      "detail": "slowdown_ratio=2.205501, threshold=1.0",
+      "label": "candidate_speed",
+      "verdict": "FAIL"
+    }
+  ],
+  "current": {
+    "label": "qwen35b-a3b-ud-4bit",
+    "mean_quality_gate_ms": 245.595,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "verdict": "PASS"
+  },
+  "derived": {
+    "candidate_slowdown_ratio": 2.205501,
+    "max_candidate_slowdown_ratio": 1.0
+  },
+  "model_comparison": {
+    "path": "artifacts/m211-gpt-oss-candidate/model-quality-comparison-m211-gpt-oss.json",
+    "verdict": "FAIL"
+  },
+  "quality_threshold": {
+    "path": "artifacts/m206-live-performance-suite/quality-threshold-gate-m206-qwen-a3b.json",
+    "readiness": "ci-quality-ready",
+    "verdict": "PASS"
+  },
+  "readiness": "swap-blocked",
+  "swap_decision": "REJECT",
+  "tag": "m211-gpt-oss",
+  "type": "model_swap_acceptance_gate",
+  "verdict": "PASS"
+}
