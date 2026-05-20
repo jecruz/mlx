@@ -2258,3 +2258,32 @@ Decision:
 
 - Keep pending waits bounded and conditional on an already-pending async build.
 - Do not use pending waits as a general foreground delay mechanism.
+
+## M205 Response Metrics Trim
+
+M205 adds response metrics shaping for hot OpenAI-compatible responses:
+
+- `metrics_detail="full"` preserves existing behavior and remains the default
+- `metrics_detail="compact"` returns hot-path fields only
+- `metrics_detail="off"` omits `engine_metrics`
+- diagnostics workloads force full metrics
+
+Artifacts:
+
+- `benchmarks/python/response_metrics_trim_probe.py`
+- `artifacts/m205-response-metrics-trim/response-metrics-trim-m205-qwen-a3b.json`
+- `artifacts/m205-response-metrics-trim/next-milestones-after-m205.json`
+- `artifacts/m205-response-metrics-trim/milestone-completion-audit-m205.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `response-metrics-trim-ready`
+- compact reduction ratio: `0.842`
+- diagnostics full override: `true`
+- completion audit: `PASS`
+
+Decision:
+
+- Compact metrics are opt-in only; existing clients keep full diagnostics.
+- Operator/debug behavior is protected through the diagnostics full override.

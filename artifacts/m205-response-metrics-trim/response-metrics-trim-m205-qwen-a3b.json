@@ -1,0 +1,34 @@
+{
+  "acceptance": {
+    "compact_drops_heavy_fields": true,
+    "compact_metrics_available": true,
+    "compact_reduction_ratio": 0.8420168067226891,
+    "diagnostics_forces_full_metrics": true,
+    "off_metrics_omits_payload": true
+  },
+  "failures": [],
+  "performance_baseline": {
+    "baseline_service_request_ms": 1411.08045889996,
+    "mature_hit_service_request_ms": 204.03116615489125,
+    "max_active_memory_gb": 21.02259841,
+    "max_peak_memory_gb": 22.31961337,
+    "memory_source": "request_metrics",
+    "quality_threshold_verdict": "PASS",
+    "speedup_vs_baseline": 6.91600447859388
+  },
+  "performance_target": {
+    "mature_hit_service_request_ms": 175.0,
+    "minimum_speedup_vs_baseline": 4.0,
+    "required_reduction_ms": 29.031,
+    "required_reduction_percent": 14.229
+  },
+  "readiness": "response-metrics-trim-ready",
+  "sizes": {
+    "compact_json_bytes": 846,
+    "full_json_bytes": 5355,
+    "reduction_ratio": 0.8420168067226891
+  },
+  "tag": "m205-qwen-a3b",
+  "type": "response_metrics_trim_probe",
+  "verdict": "PASS"
+}

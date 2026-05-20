@@ -35,6 +35,7 @@ if str(BENCHMARKS_PYTHON) not in sys.path:
 
 from inprocess_prompt_sweep import build_token_prompt, detect_backend, runtime_device_info
 from mlx_engine.prefix_cache import PrefixOpportunityTracker, TokenizedPromptCache
+from mlx_engine.response_metrics import MetricsDetail, attach_engine_metrics
 
 
 MODULE_IMPORTED_AT_EPOCH = time.time()
@@ -280,6 +281,7 @@ class RequestProfileHints(BaseModel):
     runtime_profile: RuntimeProfileName | None = None
     workload_intent: WorkloadIntent | None = None
     memory_class_gb: int | None = Field(default=None, ge=1)
+    metrics_detail: MetricsDetail = "full"
     immediate_second_turn: bool = False
     low_memory: bool = False
     diagnostics_workload: bool = False
@@ -3447,8 +3449,19 @@ class ResidentEngine:
                 "completion_tokens": row["generation_tokens"],
                 "total_tokens": row["prompt_tokens"] + row["generation_tokens"],
             },
-            "engine_metrics": row,
-        }
+        } | (
+            {"engine_metrics": metrics}
+            if (
+                metrics := attach_engine_metrics(
+                    {},
+                    row,
+                    requested=request.metrics_detail,
+                    diagnostics_workload=request.diagnostics_workload,
+                ).get("engine_metrics")
+            )
+            is not None
+            else {}
+        )
 
     def stream_openai_completion(self, request: CompletionRequest):
         request_t0 = time.perf_counter()
@@ -3532,8 +3545,13 @@ class ResidentEngine:
                                 "completion_tokens": event["generation_tokens"],
                                 "total_tokens": event["prompt_tokens"] + event["generation_tokens"],
                             },
-                            "engine_metrics": event,
                         }
+                        attach_engine_metrics(
+                            chunk,
+                            event,
+                            requested=request.metrics_detail,
+                            diagnostics_workload=request.diagnostics_workload,
+                        )
                         yield f"data: {json.dumps(chunk)}\n\n"
                     elif event["type"] == "cancelled":
                         self.request_registry.finish(
@@ -3610,8 +3628,19 @@ class ResidentEngine:
                 "completion_tokens": row["generation_tokens"],
                 "total_tokens": row["prompt_tokens"] + row["generation_tokens"],
             },
-            "engine_metrics": row,
-        }
+        } | (
+            {"engine_metrics": metrics}
+            if (
+                metrics := attach_engine_metrics(
+                    {},
+                    row,
+                    requested=request.metrics_detail,
+                    diagnostics_workload=request.diagnostics_workload,
+                ).get("engine_metrics")
+            )
+            is not None
+            else {}
+        )
 
     def stream_openai_chat_completion(self, request: ChatCompletionRequest):
         if not request.messages:
@@ -3698,8 +3727,13 @@ class ResidentEngine:
                                 "completion_tokens": event["generation_tokens"],
                                 "total_tokens": event["prompt_tokens"] + event["generation_tokens"],
                             },
-                            "engine_metrics": event,
                         }
+                        attach_engine_metrics(
+                            chunk,
+                            event,
+                            requested=request.metrics_detail,
+                            diagnostics_workload=request.diagnostics_workload,
+                        )
                         yield f"data: {json.dumps(chunk)}\n\n"
                     elif event["type"] == "cancelled":
                         self.request_registry.finish(

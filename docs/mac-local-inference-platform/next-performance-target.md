@@ -2484,3 +2484,32 @@ Decision:
   prefix build already pending.
 - The next latency work should trim hot response overhead in M205 and then rerun
   the live performance suite in M206.
+
+## M205 Result
+
+M205 adds an opt-in response metrics detail mode for OpenAI-compatible
+responses. Defaults remain `full`; `compact` returns only hot-path fields, and
+`off` omits `engine_metrics`. Diagnostics requests force full metrics.
+
+Artifacts:
+
+- `artifacts/m205-response-metrics-trim/response-metrics-trim-m205-qwen-a3b.json`
+- `artifacts/m205-response-metrics-trim/next-milestones-after-m205.json`
+- `artifacts/m205-response-metrics-trim/milestone-completion-audit-m205.json`
+
+Result:
+
+- response metrics trim probe: `PASS`
+- compact response size reduction: `0.842`
+- full metrics bytes in probe: `5355`
+- compact metrics bytes in probe: `846`
+- diagnostics full-metrics override: `true`
+- off mode omits metrics payload: `true`
+- completion audit: `PASS`
+
+Decision:
+
+- M205 keeps operator/debug safety by preserving full metrics as the default and
+  forcing full metrics for diagnostics workloads.
+- M206 should now rerun the live performance suite when the resident server is
+  available, so the M202-M205 latency impact can be measured against M194.

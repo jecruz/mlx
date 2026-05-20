@@ -176,6 +176,7 @@ performance:
 - `M202` cache lookup fast-path implementation
 - `M203` tokenized prompt reuse probe
 - `M204` async cache completion wait sweep
+- `M205` response metrics trim experiment
 
 Only after the relevant quality gates pass should the engine continue deeper
 speed work such as first reusable-turn tuning, cache admission sweeps, transport
@@ -233,3 +234,23 @@ The quality boundary is:
 - the recommendation remains bounded at `1000 ms`
 - actual prefill after the wait-hit path remains low at `10` tokens
 - the source async maturation gate is `PASS`
+
+## M205 Quality Boundary
+
+M205 changes response metadata shape only when clients explicitly request it.
+The default response still includes full `engine_metrics`, and diagnostics
+workloads force full metrics even if compact mode is requested.
+
+Artifact:
+
+- `artifacts/m205-response-metrics-trim/response-metrics-trim-m205-qwen-a3b.json`
+
+The probe verifies:
+
+- compact metrics drop heavy debug fields
+- full metrics preserve the complete row
+- off mode omits the metrics payload
+- diagnostics workloads force full metrics
+
+No model execution, prompt processing, cache behavior, or decoding quality logic
+is changed by this milestone.
