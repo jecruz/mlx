@@ -3443,3 +3443,34 @@
     split-prefill prepare-time reduction without quality regression. Larger
     first-duplicate gains likely require proactive cache creation before the
     duplicate request arrives.
+- Completed M226 lower-memory first-hit conversion compatibility:
+  - updated `mlx_engine/resident_service.py`
+  - `agent-workspace-first-hit` and `agent-workspace-low-memory` now force
+    request-derived split-prefill conversion even when the model has trimmable
+    KV caches
+  - generic `agent-workspace-request` still keeps deferred request-store
+    behavior for trimmable caches
+  - generated artifacts under
+    `artifacts/m226-lower-memory-first-hit-conversion/`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py`
+    - repeated-context benchmark verdict `PASS`
+    - first duplicate conversion turn `2`
+    - first duplicate actual prefill tokens `11`
+    - conversion path `cache_split_prefill=True`
+    - conversion reason `first_hit_profile_request_conversion`
+    - mature-hit actual prefill tokens `11`
+    - adapted chat-template quality verdict `PASS`
+    - quality threshold verdict `PASS`
+  - performance:
+    - M222 candidate turn-2 actual prefill tokens `2081`
+    - M226 candidate turn-2 actual prefill tokens `11`
+    - M226 conversion service `3626.465 ms`
+    - M226 conversion cache prepare `3366.409 ms`
+    - M226 strict conversion service ratio `0.912` vs target `0.800`
+    - M226 mature-hit service `185.817 ms`
+    - M226 mature-hit speedup `21.390x`
+    - M226 loaded lower-memory candidate active memory `8.309 GB`
+  - M226 conclusion: lower-memory first-hit conversion compatibility is fixed
+    without quality regression. This is not yet a first-duplicate latency win;
+    the synchronous cache-build cost is now the explicit M229 target.

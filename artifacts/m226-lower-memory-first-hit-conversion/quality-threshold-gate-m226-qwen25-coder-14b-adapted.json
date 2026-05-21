@@ -1,0 +1,74 @@
+{
+  "artifacts": {
+    "chat-template-quality-adapted-m226-qwen25-coder-14b": {
+      "failure_count": 0,
+      "max_repetition_score": 0.045455,
+      "missing_required_count": 0,
+      "path": "artifacts/m226-lower-memory-first-hit-conversion/chat-template-quality-adapted-m226-qwen25-coder-14b.json",
+      "row_count": 12,
+      "row_failure_count": 0,
+      "tag": "m226-qwen25-coder-14b-chat-template-adapted",
+      "type": "chat_template_quality_regression",
+      "verdict": "PASS",
+      "visible_thinking_count": 0
+    }
+  },
+  "checks": [
+    {
+      "actual": "PASS",
+      "label": "chat-template-quality-adapted-m226-qwen25-coder-14b.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m226-qwen25-coder-14b.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m226-qwen25-coder-14b.row_failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m226-qwen25-coder-14b.missing_required_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m226-qwen25-coder-14b.visible_thinking_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.045455,
+      "label": "chat-template-quality-adapted-m226-qwen25-coder-14b.max_repetition_score",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "operator_bundle": null,
+  "readiness": "ci-quality-ready",
+  "tag": "m173-quality-threshold-gate",
+  "thresholds": {
+    "allow_warnings": false,
+    "max_artifact_failures": 0,
+    "max_missing_required": 0,
+    "max_repetition_score": 0.2,
+    "max_row_failures": 0,
+    "max_visible_thinking": 0
+  },
+  "type": "quality_threshold_gate",
+  "verdict": "PASS"
+}

@@ -2462,7 +2462,12 @@ class ResidentEngine:
                 return rest_tokens, request_cache, cache_info
 
             prompt_cache = self.make_prompt_cache(self.model)
-            if not self.can_trim_prompt_cache(prompt_cache):
+            request_cache_trimmable = self.can_trim_prompt_cache(prompt_cache)
+            force_split_prefill = self.runtime_profile in {
+                "agent-workspace-first-hit",
+                "agent-workspace-low-memory",
+            }
+            if force_split_prefill or not request_cache_trimmable:
                 effective_prefill_step_size = self.prefix_cache_build_prefill_step_size(
                     prefix_tokens=prefix_tokens,
                     prefill_step_size=metadata["prefill_step_size"],
@@ -2490,7 +2495,9 @@ class ResidentEngine:
                         "cache_exact_match_trimmed": exact_match_trimmed,
                         "cache_split_prefill": True,
                         "cache_split_prefill_reason": (
-                            "non_trimmable_request_cache"
+                            "first_hit_profile_request_conversion"
+                            if force_split_prefill
+                            else "non_trimmable_request_cache"
                         ),
                         "cache_request_store_reason": "split_prefill",
                         "cache_build_prefill_step_size": effective_prefill_step_size,
