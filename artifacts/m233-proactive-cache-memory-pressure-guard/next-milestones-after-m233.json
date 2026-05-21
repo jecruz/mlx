@@ -1,0 +1,28 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m233-next-milestones",
+  "after": "M233",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M234",
+      "title": "Lower-memory default-routing policy",
+      "acceptance": "define when the lower-memory promotable profile should become default for low-memory Mac/product requests without regressing A3B quality or first-hit speed"
+    },
+    {
+      "milestone": "M235",
+      "title": "Prowl lower-memory promotion visibility",
+      "acceptance": "surface the M231 PASS artifact-root state and lower-memory promotion decision clearly in Prowl so operators can see the selected profile, quality status, swap decision, and carried-forward performance evidence"
+    },
+    {
+      "milestone": "M236",
+      "title": "Lifecycle gate CI packaging",
+      "acceptance": "package the M232 lifecycle gate with the resident regression evidence bundle so release and CI runs can execute it with one command"
+    },
+    {
+      "milestone": "M237",
+      "title": "Bounded first-hit live revalidation",
+      "acceptance": "rerun the first-hit repeated-context benchmark with the bounded first-hit profile and prove first duplicate latency remains within the M230 promotion budget"
+    }
+  ]
+}

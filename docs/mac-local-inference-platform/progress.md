@@ -3665,3 +3665,32 @@
       `94.68%`
   - M232 conclusion: lifecycle safety is now a repeatable regression gate
     instead of one-off validation notes.
+- Completed M233 proactive cache memory-pressure guard:
+  - updated `mlx_engine/resident_service.py`
+  - added `benchmarks/python/proactive_cache_memory_pressure_guard.py`
+  - generated artifacts under
+    `artifacts/m233-proactive-cache-memory-pressure-guard/`
+  - policy change:
+    - `agent-workspace-first-hit` now has bounded proactive cache policy:
+      `prefix_cache_max_entries=8`, `prefix_cache_memory_limit_mb=128.0`,
+      `prefix_cache_min_entries=5`
+    - `agent-workspace-low-memory` remains bounded at
+      `prefix_cache_max_entries=4`, `prefix_cache_memory_limit_mb=64.0`,
+      `prefix_cache_min_entries=1`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/proactive_cache_memory_pressure_guard.py`
+    - proactive cache memory-pressure guard verdict `PASS`
+    - readiness `proactive-cache-memory-guard-ready`
+    - checks `14`
+    - failures `0`
+  - performance:
+    - no inference hot path changed in M233
+    - first duplicate service remains budgeted from M230 at `193.098 ms`
+    - first duplicate prefill remains `11` tokens
+    - first duplicate cache hit remains `true`
+    - mature-hit speedup remains `23.445x`
+    - observed M229 first-request cache memory was about `20.82 MB`, below
+      the new first-hit `128 MB` cap and low-memory `64 MB` cap
+  - M233 conclusion: proactive cache growth is now bounded for the first-hit
+    and lower-memory routes without lowering the cache floor below the 5
+    proactive prefixes that made the first duplicate request fast.

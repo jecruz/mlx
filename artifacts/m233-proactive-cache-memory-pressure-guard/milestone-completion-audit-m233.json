@@ -1,0 +1,51 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M233",
+  "tag": "m233-proactive-cache-memory-pressure-guard",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "artifacts": [
+    {
+      "path": "artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.json",
+      "type": "proactive_cache_memory_pressure_guard",
+      "verdict": "PASS",
+      "readiness": "proactive-cache-memory-guard-ready",
+      "checks": 14,
+      "failures": 0
+    }
+  ],
+  "code_changes": [
+    {
+      "path": "mlx_engine/resident_service.py",
+      "change": "agent-workspace-first-hit now sets prefix_cache_max_entries=8, prefix_cache_memory_limit_mb=128.0, prefix_cache_min_entries=5"
+    },
+    {
+      "path": "benchmarks/python/proactive_cache_memory_pressure_guard.py",
+      "change": "new gate validates bounded first-hit/low-memory profile policies against carried-forward M229/M230 performance evidence"
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/proactive_cache_memory_pressure_guard.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/proactive_cache_memory_pressure_guard.py --repeated-context-json artifacts/m229-proactive-first-duplicate-cache/dax-first-hit-conversion-gate-m229-qwen25-coder-14b-resident-agent-workspace-first-hit.json --promotion-gate-json artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b.json --output-json artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.json --output-md artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.md --tag m233-proactive-cache-memory-pressure --fail-on-fail",
+      "result": "PASS"
+    }
+  ],
+  "performance": {
+    "hot_path_changed": false,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "first_duplicate_prefill_tokens": 11,
+    "first_duplicate_cache_hit": true,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "m226_first_duplicate_service_ms": 3626.465,
+    "service_improvement_ms": 3433.367,
+    "service_improvement_percent": 94.68,
+    "observed_first_request_cache_memory_mb": 20.81775188446045,
+    "first_hit_memory_limit_mb": 128.0,
+    "low_memory_limit_mb": 64.0
+  },
+  "failures": []
+}

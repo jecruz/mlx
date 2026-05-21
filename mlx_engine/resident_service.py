@@ -215,6 +215,9 @@ def runtime_profile_defaults(name: RuntimeProfileName) -> dict[str, Any]:
             "config": {
                 **engine_preset_defaults("request-derived"),
                 "engine_preset": "request-derived",
+                "prefix_cache_max_entries": 8,
+                "prefix_cache_memory_limit_mb": 128.0,
+                "prefix_cache_min_entries": 5,
             },
         },
         "agent-workspace-low-memory": {
