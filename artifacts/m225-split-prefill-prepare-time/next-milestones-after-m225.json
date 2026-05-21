@@ -1,0 +1,25 @@
+{
+  "after": "M225",
+  "next": [
+    {
+      "acceptance": "make the Qwen2.5 Coder 14B lower-memory candidate hit request-derived first duplicate conversion instead of waiting until turn 3",
+      "id": "M226",
+      "name": "Lower-memory first-hit conversion compatibility"
+    },
+    {
+      "acceptance": "Prowl shows latest M223 artifact-root validation output from the configured MLX root without needing app rebuilds",
+      "id": "M227",
+      "name": "Prowl artifact-root live smoke"
+    },
+    {
+      "acceptance": "join or cancel resident warmup/background cache threads cleanly during shutdown and reload",
+      "id": "M228",
+      "name": "Resident warmup shutdown safety"
+    },
+    {
+      "acceptance": "reduce first duplicate request latency by creating reusable cache state before request-derived split-prefill is needed",
+      "id": "M229",
+      "name": "Proactive first-duplicate cache creation"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "artifacts": {
+    "accepted_conversion_gate": "artifacts/m225-split-prefill-prepare-time/dax-first-hit-conversion-gate-m225b-qwen-a3b-resident-agent-workspace-first-hit.json",
+    "accepted_repeated_context": "artifacts/m225-split-prefill-prepare-time/dax-repeated-context-m225b-qwen-a3b-resident-agent-workspace-first-hit.json",
+    "accepted_sweep": "artifacts/m225-split-prefill-prepare-time/dax-first-hit-scheduling-sweep-m225b-qwen-a3b-resident.json",
+    "deterministic_quality": "artifacts/m225-split-prefill-prepare-time/deterministic-quality-m225-qwen-a3b.json",
+    "performance_report": "artifacts/m225-split-prefill-prepare-time/split-prefill-prepare-time-m225.md",
+    "quality_threshold": "artifacts/m225-split-prefill-prepare-time/quality-threshold-gate-m225-qwen-a3b.json"
+  },
+  "code_changes": [
+    "mlx_engine/resident_service.py uses a prefix-length-aware default prefill step size for prefix cache builds",
+    "mlx_engine/resident_service.py reports cache_build_prefill_step_size on split-prefill conversions"
+  ],
+  "milestone": "M225",
+  "name": "Split-prefill prepare-time reduction",
+  "performance": {
+    "m221_split_prefill_prepare_ms": 903.934,
+    "m225_split_prefill_prepare_ms": 866.7197078466415,
+    "prepare_improvement_ms": 37.21429215335852,
+    "prepare_improvement_percent": 4.116928155004329,
+    "m225_conversion_service_ms": 1080.9680419042706,
+    "m225_mature_hit_speedup": 7.067831789380015
+  },
+  "quality": {
+    "deterministic_quality_verdict": "PASS",
+    "quality_threshold_readiness": "ci-quality-ready",
+    "quality_threshold_verdict": "PASS"
+  },
+  "status": "complete",
+  "validation": {
+    "conversion_gate_verdict": "PASS",
+    "mature_hit_speedup_floor": 5.0,
+    "py_compile": "PASS",
+    "sweep_target_verdict": "PASS",
+    "sweep_verdict": "PASS"
+  }
+}

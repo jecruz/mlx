@@ -1,0 +1,262 @@
+{
+  "base_url": "http://127.0.0.1:8774",
+  "failures": [],
+  "rows": [
+    {
+      "actual_prefill_tokens": 22,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "QUALITY_OK",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "QUALITY_OK",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 622.1121249254793,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 25,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "a + b",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "a + b",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 209.50383297167718,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 34,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "BUG_FOUND",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 214.36754101887345,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 32,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 225.9251249488443,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 40,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 225.14904104173183,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "json_schema",
+      "category": "json",
+      "failures": [],
+      "final_answer": "{\"status\": \"ok\"}",
+      "json_valid": true,
+      "missing": [],
+      "raw_text": "{\"status\": \"ok\"}",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 245.83091703243554,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 37,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "summary",
+      "category": "summarization",
+      "failures": [],
+      "final_answer": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 361.93220783025026,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 45,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [],
+      "final_answer": "ResidentEngine",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ResidentEngine",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 268.55941698886454,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 44,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [],
+      "final_answer": "PATCH_SRC_CACHE_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "PATCH_SRC_CACHE_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 254.51579201035202,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 42,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [],
+      "final_answer": "pytest tests/test_cache.py",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "pytest tests/test_cache.py",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 252.2479579783976,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 42,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [],
+      "final_answer": "TRIAGE_CACHE_REUSE",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "TRIAGE_CACHE_REUSE",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 243.56675008311868,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "SAFE_SUMMARY",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SAFE_SUMMARY",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 216.69383393600583,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m225-qwen-a3b",
+  "type": "deterministic_quality_regression",
+  "verdict": "PASS"
+}

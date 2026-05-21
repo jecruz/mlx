@@ -1616,12 +1616,16 @@ class ResidentEngine:
 
         prompt_cache = self.make_prompt_cache(self.model)
         prefix_array = mx.array(prefix_tokens)
+        effective_prefill_step_size = self.prefix_cache_build_prefill_step_size(
+            prefix_tokens=prefix_tokens,
+            prefill_step_size=prefill_step_size,
+        )
         for _ in self.generate_step(
             prefix_array,
             self.model,
             max_tokens=0,
             prompt_cache=prompt_cache,
-            prefill_step_size=prefill_step_size or 2048,
+            prefill_step_size=effective_prefill_step_size,
         ):
             pass
         # Materialize cache state before it is copied or reused.
@@ -1633,6 +1637,16 @@ class ResidentEngine:
             prompt_cache=prompt_cache,
         )
         return self.prefix_kv_cache.get(key)
+
+    @staticmethod
+    def prefix_cache_build_prefill_step_size(
+        *,
+        prefix_tokens: list[int],
+        prefill_step_size: int | None,
+    ) -> int:
+        if prefill_step_size:
+            return prefill_step_size
+        return min(max(len(prefix_tokens), 2048), 4096)
 
     def schedule_prefix_cache_build(
         self,
@@ -2346,6 +2360,7 @@ class ResidentEngine:
             "cache_build_dedup_reason": None,
             "cache_pending_wait_ms": 0.0,
             "cache_pending_wait_result": None,
+            "cache_build_prefill_step_size": None,
         }
         prepare_t0 = time.perf_counter()
         if (
@@ -2448,6 +2463,10 @@ class ResidentEngine:
 
             prompt_cache = self.make_prompt_cache(self.model)
             if not self.can_trim_prompt_cache(prompt_cache):
+                effective_prefill_step_size = self.prefix_cache_build_prefill_step_size(
+                    prefix_tokens=prefix_tokens,
+                    prefill_step_size=metadata["prefill_step_size"],
+                )
                 self.execution_lock.acquire_foreground()
                 try:
                     entry = self.build_prefix_cache_locked(
@@ -2474,6 +2493,7 @@ class ResidentEngine:
                             "non_trimmable_request_cache"
                         ),
                         "cache_request_store_reason": "split_prefill",
+                        "cache_build_prefill_step_size": effective_prefill_step_size,
                     }
                 )
                 return rest_tokens, request_cache, cache_info

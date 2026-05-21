@@ -3419,3 +3419,27 @@
       startup before uvicorn bind failure
   - M224 conclusion: duplicate resident launches now fail cheaply before the
     crash-prone MLX warmup path observed in `crash_2.log`.
+- Completed M225 split-prefill prepare-time reduction:
+  - updated `mlx_engine/resident_service.py`
+  - prefix-cache builds now use a prefix-length-aware fallback prefill step:
+    `min(max(prefix_tokens, 2048), 4096)` when no explicit step is selected
+  - split-prefill conversion metrics now report
+    `cache_build_prefill_step_size`
+  - generated artifacts under `artifacts/m225-split-prefill-prepare-time/`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py`
+    - first-hit scheduling sweep verdict `PASS`
+    - conversion gate verdict `PASS`
+    - deterministic quality verdict `PASS`
+    - quality threshold verdict `PASS`
+  - performance:
+    - M221 split-prefill cache prepare `903.934 ms`
+    - M225 accepted split-prefill cache prepare `866.720 ms`
+    - improvement `37.214 ms` / `4.12%`
+    - M225 conversion service `1080.968 ms`
+    - M225 mature-hit speedup `7.068x`
+    - M225 actual conversion prefill tokens `11`
+  - M225 conclusion: prefill-step tuning produced a modest accepted
+    split-prefill prepare-time reduction without quality regression. Larger
+    first-duplicate gains likely require proactive cache creation before the
+    duplicate request arrives.
