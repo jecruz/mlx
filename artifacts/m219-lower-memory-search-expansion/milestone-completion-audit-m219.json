@@ -1,0 +1,30 @@
+{
+  "type": "milestone_completion_audit",
+  "tag": "m219-completion-audit",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "failures": [],
+  "audited_count": 2,
+  "rows": [
+    {
+      "milestone": "M219",
+      "path": "artifacts/m219-lower-memory-search-expansion/lower-memory-search-expansion-m219-qwen25-coder-14b.json",
+      "exists": true,
+      "passed": true,
+      "type": "lower_memory_search_expansion_report",
+      "verdict": "PASS",
+      "readiness": "lower-memory-search-expanded-candidate-rejected",
+      "failure_count": 0
+    },
+    {
+      "milestone": "M219_NEXT",
+      "path": "artifacts/m219-lower-memory-search-expansion/next-milestones-after-m219.json",
+      "exists": true,
+      "passed": true,
+      "type": "next_milestone_plan",
+      "verdict": "PASS",
+      "readiness": "next-milestones-planned",
+      "failure_count": 0
+    }
+  ]
+}

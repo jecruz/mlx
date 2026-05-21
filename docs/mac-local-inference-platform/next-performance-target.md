@@ -2957,3 +2957,41 @@ Decision:
   scheduled pre-hit row.
 - Scheduled-pre-hit and request-conversion profiles are both still measured,
   but by their correct runtime shape.
+
+## M219 Result
+
+M219 expands the lower-memory model search beyond the local inventory and tests
+the best smaller MLX coding candidate before any speed comparison.
+
+Artifacts:
+
+- `artifacts/m219-lower-memory-search-expansion/lower-memory-search-expansion-m219-qwen25-coder-14b.json`
+- `artifacts/m219-lower-memory-search-expansion/deterministic-quality-m219-qwen25-coder-14b.json`
+- `artifacts/m219-lower-memory-search-expansion/quality-threshold-gate-m219-qwen25-coder-14b.json`
+- `artifacts/m219-lower-memory-search-expansion/milestone-completion-audit-m219.json`
+
+Candidate:
+
+- repo: `lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+- source: `https://hf.co/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+- local path:
+  `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+- local size: `7.8 GB`
+- active model size: `20 GB`
+- candidate load time: `1056.7015421111137 ms`
+
+Quality result:
+
+- deterministic quality: `FAIL`
+- quality threshold: `FAIL`
+- failures: `4`
+- blocked cases: `json_schema`, `summary`, `patch_plan`
+- visible thinking failures: `0`
+- max repetition score: `0.259259`
+
+Decision:
+
+- Reject the candidate for now.
+- Do not run a speed comparison yet; quality failed first.
+- Keep the active model restored to
+  `Qwen3.6-35B-A3B-UD-MLX-4bit`.

@@ -1,0 +1,84 @@
+{
+  "type": "lower_memory_search_expansion_report",
+  "tag": "m219-qwen25-coder-14b",
+  "verdict": "PASS",
+  "readiness": "lower-memory-search-expanded-candidate-rejected",
+  "failures": [],
+  "acceptance": {
+    "expanded_beyond_local_inventory": true,
+    "identified_genuinely_smaller_mlx_coding_candidate": true,
+    "downloaded_candidate_for_local_testing": true,
+    "ran_deterministic_quality_before_performance_comparison": true,
+    "candidate_promoted": false
+  },
+  "active_model": {
+    "label": "qwen3.6-35b-a3b-ud-mlx-4bit",
+    "path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "local_size_gb": 20.0,
+    "restored_after_test": true
+  },
+  "local_candidates_before_expansion": [
+    {
+      "label": "gpt-oss-20b-MXFP4-Q8",
+      "path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+      "local_size_gb": 11.0,
+      "status": "previously_rejected",
+      "evidence": "artifacts/m216-lower-memory-candidate-replacement/lower-memory-candidate-report-m216-gpt-oss.json"
+    },
+    {
+      "label": "Qwen3.6-27B-UD-MLX-4bit",
+      "path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      "local_size_gb": 24.0,
+      "status": "not_lower_memory_than_active"
+    },
+    {
+      "label": "NVIDIA-Nemotron-3-Nano-30B-A3B-MLX-8bit",
+      "path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/NVIDIA-Nemotron-3-Nano-30B-A3B-MLX-8bit",
+      "local_size_gb": 31.0,
+      "status": "not_lower_memory_than_active"
+    }
+  ],
+  "remote_search_sources": [
+    {
+      "repo": "lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+      "url": "https://hf.co/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+      "reason_selected": "highest-download smaller MLX coding-specific candidate found in Hugging Face search",
+      "license": "apache-2.0",
+      "library": "mlx",
+      "task": "text-generation",
+      "tags": ["mlx", "qwen-coder", "code", "4-bit"]
+    },
+    {
+      "repo": "mlx-community/Qwen3-14B-4bit",
+      "url": "https://hf.co/mlx-community/Qwen3-14B-4bit",
+      "reason_not_selected": "general Qwen3 14B candidate; less coding-specific than Qwen2.5 Coder"
+    },
+    {
+      "repo": "mlx-community/ABEJA-Qwen3-14B-Agentic-256k-v0.1-MLX-4bit",
+      "url": "https://hf.co/mlx-community/ABEJA-Qwen3-14B-Agentic-256k-v0.1-MLX-4bit",
+      "reason_not_selected": "agentic 14B candidate, but Japanese-tagged and much lower observed download signal"
+    }
+  ],
+  "tested_candidate": {
+    "label": "qwen2.5-coder-14b-instruct-mlx-4bit",
+    "repo": "lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+    "path": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+    "local_size_gb": 7.8,
+    "lower_memory_than_active": true,
+    "load_ms": 1056.7015421111137,
+    "deterministic_quality_verdict": "FAIL",
+    "quality_threshold_verdict": "FAIL",
+    "promotion_decision": "REJECT"
+  },
+  "quality_failures": [
+    "json_schema: invalid json",
+    "summary: missing required markers: ['SUMMARY_OK']",
+    "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+    "patch_plan: repetition score too high: 0.259"
+  ],
+  "artifacts": {
+    "deterministic_quality": "artifacts/m219-lower-memory-search-expansion/deterministic-quality-m219-qwen25-coder-14b.json",
+    "quality_threshold": "artifacts/m219-lower-memory-search-expansion/quality-threshold-gate-m219-qwen25-coder-14b.json"
+  },
+  "decision": "Do not compare speed or promote the Qwen2.5 Coder 14B MLX candidate yet. It is materially smaller and loads cleanly, but deterministic quality fails. Speed work remains blocked until quality passes."
+}

@@ -2635,3 +2635,30 @@ Readiness note:
   from immediate second-turn request conversion.
 - This prevents the first-hit profile from being marked failed for not having a
   scheduled pre-hit row, which is absent by design.
+
+## M219 Lower-Memory Search Expansion
+
+M219 downloads and tests a new smaller MLX coding candidate before considering
+speed.
+
+Artifacts:
+
+- `artifacts/m219-lower-memory-search-expansion/lower-memory-search-expansion-m219-qwen25-coder-14b.json`
+- `artifacts/m219-lower-memory-search-expansion/deterministic-quality-m219-qwen25-coder-14b.json`
+- `artifacts/m219-lower-memory-search-expansion/quality-threshold-gate-m219-qwen25-coder-14b.json`
+
+Result:
+
+- candidate: `lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+- candidate size: `7.8 GB`
+- active model size: `20 GB`
+- candidate reload: `1056.7015421111137 ms`
+- deterministic quality: `FAIL`
+- quality threshold: `FAIL`
+- active model restored: `true`
+
+Readiness note:
+
+- The smaller candidate is useful evidence, but not promotable.
+- No speed comparison should be accepted until the deterministic quality gate
+  passes.

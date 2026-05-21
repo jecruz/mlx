@@ -1,0 +1,80 @@
+{
+  "artifacts": {
+    "deterministic-quality-m219-qwen25-coder-14b": {
+      "failure_count": 4,
+      "max_repetition_score": 0.259259,
+      "missing_required_count": 2,
+      "path": "artifacts/m219-lower-memory-search-expansion/deterministic-quality-m219-qwen25-coder-14b.json",
+      "row_count": 12,
+      "row_failure_count": 4,
+      "tag": "m219-qwen25-coder-14b",
+      "type": "deterministic_quality_regression",
+      "verdict": "FAIL",
+      "visible_thinking_count": 0
+    }
+  },
+  "checks": [
+    {
+      "actual": "FAIL",
+      "label": "deterministic-quality-m219-qwen25-coder-14b.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 4,
+      "label": "deterministic-quality-m219-qwen25-coder-14b.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 4,
+      "label": "deterministic-quality-m219-qwen25-coder-14b.row_failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 2,
+      "label": "deterministic-quality-m219-qwen25-coder-14b.missing_required_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 0,
+      "label": "deterministic-quality-m219-qwen25-coder-14b.visible_thinking_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.259259,
+      "label": "deterministic-quality-m219-qwen25-coder-14b.max_repetition_score",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "FAIL"
+    }
+  ],
+  "failures": [
+    "deterministic-quality-m219-qwen25-coder-14b.verdict: 'FAIL' == 'PASS' failed",
+    "deterministic-quality-m219-qwen25-coder-14b.failure_count: 4 <= 0 failed",
+    "deterministic-quality-m219-qwen25-coder-14b.row_failure_count: 4 <= 0 failed",
+    "deterministic-quality-m219-qwen25-coder-14b.missing_required_count: 2 <= 0 failed",
+    "deterministic-quality-m219-qwen25-coder-14b.max_repetition_score: 0.259259 <= 0.2 failed"
+  ],
+  "operator_bundle": null,
+  "readiness": "ci-quality-blocked",
+  "tag": "m219-qwen25-coder-14b",
+  "thresholds": {
+    "allow_warnings": false,
+    "max_artifact_failures": 0,
+    "max_missing_required": 0,
+    "max_repetition_score": 0.2,
+    "max_row_failures": 0,
+    "max_visible_thinking": 0
+  },
+  "type": "quality_threshold_gate",
+  "verdict": "FAIL"
+}
