@@ -62,6 +62,11 @@ RuntimeProfileName = Literal[
     "memory-saver",
     "diagnostics",
 ]
+PROACTIVE_PREFIX_SUFFIX_TOKENS = (8, 11, 16, 32, 64)
+PROACTIVE_PREFIX_RUNTIME_PROFILES = {
+    "agent-workspace-first-hit",
+    "agent-workspace-low-memory",
+}
 WarmupMode = Literal["sync", "async", "off"]
 PrefixCachePopulationMode = Literal["sync", "async", "request", "off"]
 StopValue = str | list[str]
@@ -473,8 +478,21 @@ class EngineMetrics:
                 "cache_prepare_ms": row.get("cache_prepare_ms"),
                 "cache_scope_hash": row.get("cache_scope_hash"),
                 "cached_prefix_tokens": row.get("cached_prefix_tokens"),
+                "cache_prefix_fallback": row.get("cache_prefix_fallback"),
                 "actual_prefill_tokens": row.get("actual_prefill_tokens"),
                 "cache_exact_match_trimmed": row.get("cache_exact_match_trimmed"),
+                "proactive_prefix_cache_enabled": row.get(
+                    "proactive_prefix_cache_enabled"
+                ),
+                "proactive_prefix_cache_created": row.get(
+                    "proactive_prefix_cache_created"
+                ),
+                "proactive_prefix_cache_tokens": row.get(
+                    "proactive_prefix_cache_tokens"
+                ),
+                "proactive_prefix_cache_reason": row.get(
+                    "proactive_prefix_cache_reason"
+                ),
                 "prompt_progress_events": row.get("prompt_progress_events"),
                 "prompt_progress_total_tokens": row.get(
                     "prompt_progress_total_tokens"
@@ -689,6 +707,41 @@ class PrefixKVCacheStore:
             self.lru.append(key)
             entry["hits"] += 1
             return entry
+
+    def longest_prefix_entry(
+        self,
+        *,
+        tokens: list[int],
+        scope: dict[str, Any],
+        max_tokens: int,
+        min_tokens: int,
+    ):
+        best_key = None
+        best_entry = None
+        best_len = 0
+        with self.lock:
+            for key, entry in self.entries.items():
+                entry_tokens = entry["tokens"]
+                entry_len = len(entry_tokens)
+                if entry_len < min_tokens or entry_len > max_tokens:
+                    continue
+                if entry["scope"] != scope:
+                    continue
+                if tokens[:entry_len] != entry_tokens:
+                    continue
+                if entry_len > best_len:
+                    best_key = key
+                    best_entry = entry
+                    best_len = entry_len
+            if best_key is None or best_entry is None:
+                return None
+            try:
+                self.lru.remove(best_key)
+            except ValueError:
+                pass
+            self.lru.append(best_key)
+            best_entry["hits"] += 1
+            return best_entry
 
     def put(
         self,
@@ -2406,6 +2459,82 @@ class ResidentEngine:
             "cache_request_store_reason": "stored",
         }
 
+    def store_proactive_prefix_caches(
+        self,
+        *,
+        metadata: dict[str, Any],
+        prompt_cache,
+        generated_token_count: int,
+    ) -> dict[str, Any]:
+        if (
+            self.prefix_cache_population_mode != "request"
+            or self.runtime_profile not in PROACTIVE_PREFIX_RUNTIME_PROFILES
+            or prompt_cache is None
+            or self.shutdown_requested.is_set()
+        ):
+            return {
+                "proactive_prefix_cache_enabled": False,
+                "proactive_prefix_cache_created": 0,
+                "proactive_prefix_cache_tokens": [],
+                "proactive_prefix_cache_reason": "disabled",
+            }
+        if not self.can_trim_prompt_cache(prompt_cache):
+            return {
+                "proactive_prefix_cache_enabled": True,
+                "proactive_prefix_cache_created": 0,
+                "proactive_prefix_cache_tokens": [],
+                "proactive_prefix_cache_reason": "prompt_cache_not_trimmable",
+            }
+
+        tokens = list(metadata["_prompt_tokens"])
+        scope = self.cache_scope(metadata)
+        created_tokens: list[int] = []
+        skipped_existing = 0
+        trim_failures = 0
+        for suffix_tokens in PROACTIVE_PREFIX_SUFFIX_TOKENS:
+            prefix_len = len(tokens) - suffix_tokens
+            if prefix_len < self.prefix_tracker.min_match_tokens:
+                continue
+            prefix_tokens = tokens[:prefix_len]
+            key = PrefixKVCacheStore.key_for_tokens(prefix_tokens, scope=scope)
+            with self.prefix_cache_build_lock:
+                existing = self.prefix_kv_cache.get(key)
+                if existing is not None and existing["scope"] == scope:
+                    skipped_existing += 1
+                    continue
+
+            request_cache = copy.deepcopy(prompt_cache)
+            trim_tokens = suffix_tokens + int(generated_token_count)
+            trimmed = self.trim_prompt_cache(request_cache, trim_tokens)
+            if trimmed != trim_tokens:
+                trim_failures += 1
+                continue
+            mx.eval([c.state for c in request_cache])
+            with self.prefix_cache_build_lock:
+                existing = self.prefix_kv_cache.get(key)
+                if existing is not None and existing["scope"] == scope:
+                    skipped_existing += 1
+                    continue
+                self.prefix_kv_cache.put(
+                    key=key,
+                    tokens=prefix_tokens,
+                    scope=scope,
+                    prompt_cache=request_cache,
+                )
+                created_tokens.append(prefix_len)
+
+        reason = "stored" if created_tokens else "no_new_prefixes"
+        if trim_failures and not created_tokens:
+            reason = "trim_incomplete"
+        return {
+            "proactive_prefix_cache_enabled": True,
+            "proactive_prefix_cache_created": len(created_tokens),
+            "proactive_prefix_cache_tokens": created_tokens,
+            "proactive_prefix_cache_skipped_existing": skipped_existing,
+            "proactive_prefix_cache_trim_failures": trim_failures,
+            "proactive_prefix_cache_reason": reason,
+        }
+
     @staticmethod
     def public_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -2527,6 +2656,21 @@ class ResidentEngine:
 
         if self.prefix_cache_population_mode == "request":
             entry = self.prefix_kv_cache.get(key)
+            cache_prefix_fallback = False
+            if entry is None:
+                fallback_entry = self.prefix_kv_cache.longest_prefix_entry(
+                    tokens=tokens,
+                    scope=scope,
+                    max_tokens=cache_prefix_tokens,
+                    min_tokens=self.prefix_tracker.min_match_tokens,
+                )
+                if fallback_entry is not None:
+                    entry = fallback_entry
+                    cache_prefix_tokens = len(entry["tokens"])
+                    prefix_tokens = tokens[:cache_prefix_tokens]
+                    rest_tokens = tokens[cache_prefix_tokens:]
+                    exact_match_trimmed = match_tokens >= len(tokens)
+                    cache_prefix_fallback = True
             if entry is not None and entry["scope"] == scope:
                 request_cache = copy.deepcopy(entry["prompt_cache"])
                 cache_info.update(
@@ -2539,6 +2683,7 @@ class ResidentEngine:
                         "cached_prefix_tokens": cache_prefix_tokens,
                         "actual_prefill_tokens": len(rest_tokens),
                         "cache_exact_match_trimmed": exact_match_trimmed,
+                        "cache_prefix_fallback": cache_prefix_fallback,
                     }
                 )
                 return rest_tokens, request_cache, cache_info
@@ -3092,6 +3237,13 @@ class ResidentEngine:
                             prompt_cache=worker_prompt_cache,
                         )
                     )
+                row.update(
+                    self.store_proactive_prefix_caches(
+                        metadata=generated_metadata,
+                        prompt_cache=worker_prompt_cache,
+                        generated_token_count=len(generated_token_ids),
+                    )
+                )
             except Exception as exc:
                 event_queue.put(
                     {
@@ -3477,6 +3629,13 @@ class ResidentEngine:
                                 prompt_cache=row_prompt_cache,
                             )
                         )
+                    row.update(
+                        self.store_proactive_prefix_caches(
+                            metadata=metadata,
+                            prompt_cache=row_prompt_cache,
+                            generated_token_count=len(generated_token_ids),
+                        )
+                    )
                     row = self.schedule_deferred_prefix_cache_build(row)
                     row.update(self.maybe_apply_memory_pressure_policy(reason="request"))
                     self.metrics.record_success(row)

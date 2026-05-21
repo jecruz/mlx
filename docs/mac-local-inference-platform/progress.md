@@ -3536,3 +3536,35 @@
       at `3366.409 ms`
   - M228 conclusion: reload, unload, and process shutdown now signal old
     engines and join or clean tracked warmup/background cache-build work.
+- Completed M229 proactive first-duplicate cache creation:
+  - updated `mlx_engine/resident_service.py`
+  - generated artifacts under
+    `artifacts/m229-proactive-first-duplicate-cache/`
+  - implementation:
+    - `agent-workspace-first-hit` and `agent-workspace-low-memory` proactively
+      store trimmed prefix caches from the first request
+    - prefix cache lookup can reuse the longest already-cached prefix when an
+      exact candidate length is unavailable
+    - full engine metrics now include proactive prefix-cache fields
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py mlx_engine/prefix_cache.py benchmarks/python/resident_shutdown_safety_probe.py`
+    - first-hit scheduling sweep verdict `PASS`
+    - first-hit conversion gate verdict `PASS`
+    - adapted chat-template quality verdict `PASS`
+    - quality threshold verdict `PASS`
+    - shutdown safety probe verdict `PASS`
+  - performance:
+    - M226 first duplicate service `3626.465 ms`
+    - M229 first duplicate service `193.098 ms`
+    - improvement `3433.367 ms` / `94.68%`
+    - M226 first duplicate cache prepare `3366.409 ms`
+    - M229 first duplicate cache prepare `0.253 ms`
+    - M229 first duplicate prefill tokens `11`
+    - M229 conversion ratio `0.043`
+    - M229 mature-hit speedup `23.445x`
+  - quality:
+    - adapted chat-template quality `PASS`
+    - quality threshold `PASS`
+    - readiness `ci-quality-ready`
+  - M229 conclusion: proactive cache creation converts the M226 compatibility
+    fix into a real first-duplicate latency win for the lower-memory candidate.

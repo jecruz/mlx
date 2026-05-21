@@ -1,0 +1,217 @@
+{
+  "base_url": "http://127.0.0.1:8777",
+  "failures": [],
+  "prompt_adapter": "qwen25-coder-lower-memory",
+  "route": "/v1/chat/completions",
+  "rows": [
+    {
+      "actual_prefill_tokens": 60,
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "<final>\nQUALITY_OK\n</final>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<final>\nQUALITY_OK\n</final>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 635.4155831504613,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 63,
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "```python\na + b\n```",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "```python\na + b\n```",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 360.697333002463,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 72,
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "BUG_FOUND",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 308.13066591508687,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 70,
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 316.24237494543195,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 77,
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 305.60800014063716,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 79,
+      "case": "json_schema",
+      "category": "json",
+      "failures": [],
+      "final_answer": "{\n  \"status\": \"ok\"\n}",
+      "json_valid": true,
+      "missing": [],
+      "raw_text": "```json\n{\n  \"status\": \"ok\"\n}\n```",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 461.5141248796135,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 74,
+      "case": "summary",
+      "category": "summarization",
+      "failures": [],
+      "final_answer": "<SUMMARY_OK> MLX quality gates ensure response quality, while speed enhancements improve efficiency. </SUMMARY_OK>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<SUMMARY_OK> MLX quality gates ensure response quality, while speed enhancements improve efficiency. </SUMMARY_OK>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 609.5129998866469,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 83,
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [],
+      "final_answer": "ResidentEngine",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ResidentEngine",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 314.1378329601139,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 82,
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [],
+      "final_answer": "PATCH_SRC_CACHE_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "PATCH_SRC_CACHE_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 345.154708949849,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 80,
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [],
+      "final_answer": "pytest tests/test_cache.py",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "pytest tests/test_cache.py",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 339.9047090206295,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 80,
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [],
+      "final_answer": "<final>\nTRIAGE_CACHE_REUSE\n</final>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<final>\nTRIAGE_CACHE_REUSE\n</final>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 438.9871668536216,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 64,
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "<SAFE_SUMMARY>\nThe user has requested a summary of a harmless request. The request is to output only the SAFE_SUMMARY for a harmless request summary.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<SAFE_SUMMARY>\nThe user has requested a summary of a harmless request. The request is to output only the SAFE_SUMMARY for a harmless request summary.\n",
+      "repetition_score": 0.045454545454545456,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 683.3437918685377,
+      "visible_thinking": false
+    }
+  ],
+  "system_prompt": "You are a deterministic coding assistant. Follow the user's output format exactly. Do not call tools. Put only the requested final answer in the final response.",
+  "tag": "m229-qwen25-coder-14b-chat-template-adapted",
+  "type": "chat_template_quality_regression",
+  "verdict": "PASS"
+}

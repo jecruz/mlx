@@ -1,0 +1,25 @@
+{
+  "after": "M229",
+  "next": [
+    {
+      "id": "M230",
+      "name": "Lower-memory profile promotion gate",
+      "acceptance": "define and pass a promotion gate for lower-memory models that combines memory ceiling, first-hit behavior, mature-hit speedup, and quality threshold"
+    },
+    {
+      "id": "M231",
+      "name": "Model-swap artifact freshness refresh",
+      "acceptance": "produce current model-swap acceptance evidence so Prowl artifact-root status can move from STALE to PASS when the chosen model swap is valid"
+    },
+    {
+      "id": "M232",
+      "name": "Resident lifecycle regression gate",
+      "acceptance": "add lifecycle shutdown, reload, unload, and startup-preflight probes to a repeatable resident regression gate"
+    },
+    {
+      "id": "M233",
+      "name": "Proactive cache memory-pressure guard",
+      "acceptance": "bound proactive prefix-cache memory growth across lower-memory and first-hit profiles while preserving M229 first-duplicate latency"
+    }
+  ]
+}

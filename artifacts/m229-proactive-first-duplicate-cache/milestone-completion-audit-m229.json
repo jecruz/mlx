@@ -1,0 +1,60 @@
+{
+  "milestone": "M229",
+  "name": "Proactive first-duplicate cache creation",
+  "status": "complete",
+  "acceptance": "reduce first duplicate request latency by creating reusable cache state before request-derived split-prefill is needed",
+  "code_changes": [
+    "request-derived first-hit profiles proactively store trimmed prefix caches from the first request",
+    "agent-workspace-first-hit and agent-workspace-low-memory enable proactive prefix cache creation",
+    "prefix cache lookup can reuse the longest already-cached prefix when an exact candidate length is unavailable",
+    "full engine metrics report proactive_prefix_cache_* fields"
+  ],
+  "artifacts": {
+    "repeated_context": "artifacts/m229-proactive-first-duplicate-cache/dax-repeated-context-m229-qwen25-coder-14b-resident-agent-workspace-first-hit.json",
+    "conversion_gate": "artifacts/m229-proactive-first-duplicate-cache/dax-first-hit-conversion-gate-m229-qwen25-coder-14b-resident-agent-workspace-first-hit.json",
+    "sweep": "artifacts/m229-proactive-first-duplicate-cache/dax-first-hit-scheduling-sweep-m229-qwen25-coder-14b-resident.json",
+    "chat_template_quality": "artifacts/m229-proactive-first-duplicate-cache/chat-template-quality-adapted-m229-qwen25-coder-14b.json",
+    "quality_threshold": "artifacts/m229-proactive-first-duplicate-cache/quality-threshold-gate-m229-qwen25-coder-14b-adapted.json",
+    "performance_report": "artifacts/m229-proactive-first-duplicate-cache/proactive-first-duplicate-cache-m229.md"
+  },
+  "acceptance_evidence": {
+    "turn1_proactive_prefix_cache_created": 5,
+    "turn1_proactive_prefix_cache_tokens": [
+      2073,
+      2070,
+      2065,
+      2049,
+      2017
+    ],
+    "turn2_cache_hit": true,
+    "turn2_cache_created": false,
+    "turn2_cached_prefix_tokens": 2070,
+    "turn2_actual_prefill_tokens": 11,
+    "turn2_cache_prepare_ms": 0.253,
+    "turn2_service_ms": 193.0981669574976
+  },
+  "performance": {
+    "m226_conversion_service_ms": 3626.4648749493062,
+    "m229_conversion_service_ms": 193.0981669574976,
+    "conversion_improvement_ms": 3433.3667079918087,
+    "conversion_improvement_percent": 94.67530574220172,
+    "m226_conversion_ratio_vs_baseline": 0.9124036902376473,
+    "m229_conversion_ratio_vs_baseline": 0.04265265991536023,
+    "m229_mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "m229_first_mature_hit_service_ms": 193.0981669574976
+  },
+  "quality": {
+    "chat_template_quality_verdict": "PASS",
+    "quality_threshold_readiness": "ci-quality-ready",
+    "quality_threshold_verdict": "PASS",
+    "max_repetition_score": 0.045455
+  },
+  "validation": {
+    "py_compile": "PASS",
+    "sweep_verdict": "PASS",
+    "conversion_gate_verdict": "PASS",
+    "quality_gate": "PASS",
+    "shutdown_safety_probe": "PASS",
+    "git_diff_check": "PASS"
+  }
+}
