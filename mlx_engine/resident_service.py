@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import queue
+import socket
 import sys
 import threading
 import time
@@ -15,9 +16,8 @@ from collections import deque
 from contextlib import contextmanager
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Callable, Literal
 
-import mlx.core as mx
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -33,12 +33,15 @@ BENCHMARKS_PYTHON = ROOT / "benchmarks" / "python"
 if str(BENCHMARKS_PYTHON) not in sys.path:
     sys.path.insert(0, str(BENCHMARKS_PYTHON))
 
-from inprocess_prompt_sweep import build_token_prompt, detect_backend, runtime_device_info
 from mlx_engine.prefix_cache import PrefixOpportunityTracker, TokenizedPromptCache
 from mlx_engine.response_metrics import MetricsDetail, attach_engine_metrics
 
 
 MODULE_IMPORTED_AT_EPOCH = time.time()
+mx: Any | None = None
+build_token_prompt: Callable[..., list[int]] | None = None
+detect_backend: Callable[[str], str] | None = None
+runtime_device_info: Callable[[], dict[str, Any]] | None = None
 
 PolicyName = Literal["auto", "throughput_default", "balanced", "memory_saver"]
 EnginePresetName = Literal[
@@ -61,6 +64,41 @@ RuntimeProfileName = Literal[
 WarmupMode = Literal["sync", "async", "off"]
 PrefixCachePopulationMode = Literal["sync", "async", "request", "off"]
 StopValue = str | list[str]
+
+
+def ensure_mlx_runtime_imported() -> None:
+    global mx, build_token_prompt, detect_backend, runtime_device_info
+    if mx is not None:
+        return
+    import mlx.core as imported_mx
+    from inprocess_prompt_sweep import (
+        build_token_prompt as imported_build_token_prompt,
+        detect_backend as imported_detect_backend,
+        runtime_device_info as imported_runtime_device_info,
+    )
+
+    mx = imported_mx
+    build_token_prompt = imported_build_token_prompt
+    detect_backend = imported_detect_backend
+    runtime_device_info = imported_runtime_device_info
+
+
+def assert_port_available(host: str, port: int) -> None:
+    candidates = [host]
+    if host in {"0.0.0.0", "::"}:
+        candidates.append("127.0.0.1")
+    last_error: OSError | None = None
+    for candidate in dict.fromkeys(candidates):
+        family = socket.AF_INET6 if ":" in candidate else socket.AF_INET
+        with socket.socket(family, socket.SOCK_STREAM) as sock:
+            try:
+                sock.bind((candidate, port))
+            except OSError as exc:
+                last_error = exc
+                continue
+            return
+    detail = f": {last_error}" if last_error is not None else ""
+    raise RuntimeError(f"port unavailable before MLX import: {host}:{port}{detail}")
 
 
 def engine_preset_defaults(name: EnginePresetName) -> dict[str, Any]:
@@ -1028,6 +1066,13 @@ class ResidentEngine:
         self.warmup_thread: threading.Thread | None = None
         self.warmup_started_at: float | None = None
         self.warmup_completed_at: float | None = None
+        t0 = time.perf_counter()
+        ensure_mlx_runtime_imported()
+        self.startup_timings["import_mlx_runtime_ms"] = 1e3 * (
+            time.perf_counter() - t0
+        )
+        assert runtime_device_info is not None
+        assert detect_backend is not None
         t0 = time.perf_counter()
         self.device_info = runtime_device_info()
         self.startup_timings["runtime_device_info_ms"] = 1e3 * (
@@ -3017,6 +3062,7 @@ class ResidentEngine:
 
     def _warmup(self):
         results = []
+        assert build_token_prompt is not None
         tokenizer = self.tokenizer.tokenizer if hasattr(self.tokenizer, "tokenizer") else self.tokenizer
         for target in self.warmup_targets():
             prompt_tokens = int(target["prompt_tokens"])
@@ -4546,6 +4592,11 @@ def create_app(manager: EngineManager):
 def main():
     main_started_at_epoch = time.time()
     args = parse_args()
+    try:
+        assert_port_available(args.host, args.port)
+    except RuntimeError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 98
     parent_started_at_epoch = None
     raw_parent_started_at = os.environ.get("MLX_ENGINE_PARENT_STARTED_AT_EPOCH")
     if raw_parent_started_at:
@@ -4583,7 +4634,8 @@ def main():
         startup_context=startup_context,
     )
     uvicorn.run(create_app(manager), host=args.host, port=args.port, log_level="info")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

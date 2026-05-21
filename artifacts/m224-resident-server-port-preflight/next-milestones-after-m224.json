@@ -1,0 +1,25 @@
+{
+  "after": "M224",
+  "next": [
+    {
+      "acceptance": "reduce split-prefill cache preparation below the M221 903.934 ms observed cost while preserving quality PASS and mature-hit speedup >= 5x",
+      "id": "M225",
+      "name": "Split-prefill prepare-time reduction"
+    },
+    {
+      "acceptance": "make the Qwen2.5 Coder 14B lower-memory candidate hit request-derived first duplicate conversion instead of waiting until turn 3",
+      "id": "M226",
+      "name": "Lower-memory first-hit conversion compatibility"
+    },
+    {
+      "acceptance": "Prowl shows latest M223 artifact-root validation output from the configured MLX root without needing app rebuilds",
+      "id": "M227",
+      "name": "Prowl artifact-root live smoke"
+    },
+    {
+      "acceptance": "join or cancel resident warmup/background cache threads cleanly during shutdown and reload",
+      "id": "M228",
+      "name": "Resident warmup shutdown safety"
+    }
+  ]
+}

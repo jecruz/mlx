@@ -3397,3 +3397,25 @@
   - M223 conclusion: Prowl can now distinguish missing, stale, and PASS MLX
     artifacts from the configured root instead of hiding all artifact problems
     behind an unavailable badge.
+- Completed M224 resident server port preflight:
+  - updated `mlx_engine/resident_service.py`
+  - updated `benchmarks/python/resident_mlx_service.py`
+  - added `benchmarks/python/resident_port_preflight_probe.py`
+  - resident service no longer imports `mlx.core` at module import time
+  - startup now checks host/port availability immediately after argument
+    parsing and exits with code `98` before model validation or warmup when
+    the port is occupied
+  - generated artifacts under
+    `artifacts/m224-resident-server-port-preflight/`
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/resident_mlx_service.py benchmarks/python/resident_port_preflight_probe.py`
+    - port preflight probe verdict `PASS`
+    - import probe showed `mlx.core` not loaded by module import
+    - occupied-port launch exited `98`
+    - occupied-port launch did not reach model validation
+  - performance note:
+    - no inference hot path changed
+    - this prevents duplicate-start MLX/Metal allocation and warmup-thread
+      startup before uvicorn bind failure
+  - M224 conclusion: duplicate resident launches now fail cheaply before the
+    crash-prone MLX warmup path observed in `crash_2.log`.

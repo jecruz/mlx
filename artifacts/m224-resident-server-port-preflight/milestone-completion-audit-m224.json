@@ -1,0 +1,29 @@
+{
+  "artifacts": {
+    "performance_report": "artifacts/m224-resident-server-port-preflight/resident-server-port-preflight-m224.md",
+    "probe": "artifacts/m224-resident-server-port-preflight/resident-port-preflight-m224.json"
+  },
+  "code_changes": [
+    "mlx_engine/resident_service.py adds pre-MLX port preflight and lazy MLX runtime imports",
+    "benchmarks/python/resident_mlx_service.py propagates resident_service.main() exit codes",
+    "benchmarks/python/resident_port_preflight_probe.py validates occupied-port behavior"
+  ],
+  "milestone": "M224",
+  "name": "Resident server port preflight",
+  "performance": {
+    "inference_hot_path_changed": false,
+    "m221_a3b_first_duplicate_conversion_ratio": 0.774588705514579,
+    "m221_a3b_mature_hit_best_service_ms": 205.462,
+    "m222_qwen25_coder_14b_active_memory_gb": 8.360,
+    "m222_qwen25_coder_14b_mature_hit_best_service_ms": 182.281
+  },
+  "status": "complete",
+  "validation": {
+    "import_probe_mlx_core_loaded": false,
+    "occupied_port_exit_code": 98,
+    "occupied_port_reached_model_validation": false,
+    "probe_readiness": "resident-port-preflight-ready",
+    "probe_verdict": "PASS",
+    "py_compile": "PASS"
+  }
+}
