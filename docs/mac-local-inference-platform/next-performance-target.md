@@ -2918,3 +2918,42 @@ Decision:
   swap state.
 - M220 should replace the hardcoded local MLX artifact root with a settings
   value before this is treated as distributable UI behavior.
+
+## M218 Result
+
+M218 splits first-hit profile gating into two explicit shapes.
+
+Artifacts:
+
+- `artifacts/m218-first-hit-gate-shape-split/dax-first-hit-gate-shape-split-m218-qwen-a3b-resident.json`
+- `artifacts/m218-first-hit-gate-shape-split/first-hit-gate-shape-split-m218-qwen-a3b.json`
+- `artifacts/m218-first-hit-gate-shape-split/milestone-completion-audit-m218.json`
+
+Implementation:
+
+- `benchmarks/python/dax_first_hit_scheduling_sweep.py` now assigns each
+  variant a `gate_shape`.
+- scheduled-pre-hit variants still use
+  `benchmarks/python/dax_first_hit_latency_gate.py`.
+- `agent-workspace-first-hit` now uses
+  `benchmarks/python/dax_first_hit_conversion_gate.py`.
+
+Fresh resident result:
+
+- `agent-workspace-async`: scheduled-pre-hit gate `PASS`
+- scheduled pre-hit latency: `1086.892040912062 ms`
+- scheduled pre-hit ratio vs baseline: `0.2594507801803887`
+- first cache-hit latency: `208.10625003650784 ms`
+- first cache-hit speedup vs baseline: `20.130117227502666x`
+- `agent-workspace-first-hit`: request-conversion gate `PASS`
+- conversion turn: `2`
+- conversion latency: `1121.6122088953853 ms`
+- conversion ratio vs baseline: `1.0268218745577977`
+- mature-hit speedup vs baseline: `5.24180757860939x`
+
+Decision:
+
+- A request-derived first-hit profile must no longer fail because it lacks a
+  scheduled pre-hit row.
+- Scheduled-pre-hit and request-conversion profiles are both still measured,
+  but by their correct runtime shape.

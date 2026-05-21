@@ -1,0 +1,69 @@
+{
+  "type": "first_hit_gate_shape_split_report",
+  "tag": "m218-qwen-a3b",
+  "verdict": "PASS",
+  "readiness": "first-hit-gate-shapes-split",
+  "failures": [],
+  "acceptance": {
+    "scheduled_pre_hit_async_gating_remains_enforced": true,
+    "request_derived_first_hit_uses_conversion_gate": true,
+    "first_hit_profile_not_failed_for_missing_scheduled_pre_hit": true,
+    "fresh_resident_sweep_passed": true
+  },
+  "implementation": {
+    "changed_file": "benchmarks/python/dax_first_hit_scheduling_sweep.py",
+    "scheduled_gate": "benchmarks/python/dax_first_hit_latency_gate.py",
+    "conversion_gate": "benchmarks/python/dax_first_hit_conversion_gate.py",
+    "new_gate_shape_field": "gate_shape",
+    "request_conversion_variant": "agent-workspace-first-hit"
+  },
+  "artifacts": {
+    "sweep": "artifacts/m218-first-hit-gate-shape-split/dax-first-hit-gate-shape-split-m218-qwen-a3b-resident.json",
+    "scheduled_pre_hit_gate": "artifacts/m218-first-hit-gate-shape-split/dax-first-hit-latency-gate-m218-qwen-a3b-resident-agent-workspace-async.json",
+    "request_conversion_gate": "artifacts/m218-first-hit-gate-shape-split/dax-first-hit-conversion-gate-m218-qwen-a3b-resident-agent-workspace-first-hit.json",
+    "scheduled_benchmark": "artifacts/m218-first-hit-gate-shape-split/dax-repeated-context-m218-qwen-a3b-resident-agent-workspace-async.json",
+    "request_conversion_benchmark": "artifacts/m218-first-hit-gate-shape-split/dax-repeated-context-m218-qwen-a3b-resident-agent-workspace-first-hit.json"
+  },
+  "scheduled_pre_hit_result": {
+    "variant": "agent-workspace-async",
+    "gate_shape": "scheduled-pre-hit",
+    "gate_verdict": "PASS",
+    "scheduled_pre_hit_service_request_ms": 1086.892040912062,
+    "scheduled_pre_hit_ratio_vs_baseline": 0.2594507801803887,
+    "scheduled_pre_hit_actual_prefill_tokens": 2082.0,
+    "first_hit_service_request_ms": 208.10625003650784,
+    "first_hit_speedup_vs_baseline": 20.130117227502666,
+    "first_hit_actual_prefill_tokens": 11.0
+  },
+  "request_conversion_result": {
+    "variant": "agent-workspace-first-hit",
+    "gate_shape": "request-conversion",
+    "gate_verdict": "PASS",
+    "scheduled_pre_hit_service_request_ms": null,
+    "conversion_turn": 2,
+    "conversion_service_request_ms": 1121.6122088953853,
+    "conversion_ratio_vs_baseline": 1.0268218745577977,
+    "conversion_actual_prefill_tokens": 11.0,
+    "mature_hit_speedup_vs_baseline": 5.24180757860939,
+    "mature_hit_actual_prefill_tokens": 11.0
+  },
+  "validation": [
+    {
+      "command": "python3 -m py_compile benchmarks/python/dax_first_hit_scheduling_sweep.py",
+      "verdict": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/dax_first_hit_conversion_gate.py artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-first-hit.json --output-json /private/tmp/m218-first-hit-conversion-check.json --conversion-path any --max-conversion-ratio 1.10 --min-mature-hit-speedup 2.0 --max-mature-hit-prefill-tokens 16 --max-conversion-prefill-tokens 16",
+      "verdict": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/dax_first_hit_latency_gate.py artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-async.json --output-json /private/tmp/m218-scheduled-pre-hit-check.json --max-scheduled-pre-hit-ratio 1.0 --min-first-hit-speedup 1.1 --max-first-hit-prefill-tokens 16",
+      "verdict": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/dax_first_hit_scheduling_sweep.py --base-url http://127.0.0.1:8773 --output-dir artifacts/m218-first-hit-gate-shape-split --output-json artifacts/m218-first-hit-gate-shape-split/dax-first-hit-gate-shape-split-m218-qwen-a3b-resident.json --tag m218-qwen-a3b-resident --client-mode resident --variants agent-workspace-async,agent-workspace-first-hit --turns 5 --shared-repeats 64 --max-tokens 4 --max-scheduled-pre-hit-ratio 1.0 --min-first-hit-speedup 1.1 --max-first-hit-prefill-tokens 16 --max-conversion-ratio 1.10 --fail-on-fail",
+      "verdict": "PASS"
+    }
+  ],
+  "decision": "M218 accepts separate gate shapes: scheduled-pre-hit profiles remain measured by scheduled latency/prefill checks, while request-derived first-hit profiles are measured by conversion turn, conversion prefill, conversion ratio, and mature-hit speedup."
+}

@@ -1,0 +1,30 @@
+{
+  "type": "milestone_completion_audit",
+  "tag": "m218-completion-audit",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "failures": [],
+  "audited_count": 2,
+  "rows": [
+    {
+      "milestone": "M218",
+      "path": "artifacts/m218-first-hit-gate-shape-split/first-hit-gate-shape-split-m218-qwen-a3b.json",
+      "exists": true,
+      "passed": true,
+      "type": "first_hit_gate_shape_split_report",
+      "verdict": "PASS",
+      "readiness": "first-hit-gate-shapes-split",
+      "failure_count": 0
+    },
+    {
+      "milestone": "M218_NEXT",
+      "path": "artifacts/m218-first-hit-gate-shape-split/next-milestones-after-m218.json",
+      "exists": true,
+      "passed": true,
+      "type": "next_milestone_plan",
+      "verdict": "PASS",
+      "readiness": "next-milestones-planned",
+      "failure_count": 0
+    }
+  ]
+}

@@ -2610,3 +2610,28 @@ Readiness note:
 
 - The UI now makes quality visible beside speed/runtime state.
 - The artifact root is still local-path based and should move to settings.
+
+## M218 First-Hit Gate Shape Split
+
+M218 makes first-hit readiness stricter and more accurate by separating
+scheduled-pre-hit async behavior from request-derived first-hit conversion.
+
+Artifacts:
+
+- `artifacts/m218-first-hit-gate-shape-split/first-hit-gate-shape-split-m218-qwen-a3b.json`
+- `artifacts/m218-first-hit-gate-shape-split/dax-first-hit-gate-shape-split-m218-qwen-a3b-resident.json`
+
+Result:
+
+- scheduled-pre-hit profile: `agent-workspace-async`
+- scheduled-pre-hit gate: `PASS`
+- request-conversion profile: `agent-workspace-first-hit`
+- request-conversion gate: `PASS`
+- benchmark sweep: `PASS`
+
+Readiness note:
+
+- UI/operator surfaces can now distinguish steady-state async cache maturity
+  from immediate second-turn request conversion.
+- This prevents the first-hit profile from being marked failed for not having a
+  scheduled pre-hit row, which is absent by design.

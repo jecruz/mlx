@@ -30,18 +30,32 @@ def numeric(value: Any) -> float | None:
 
 def variant_config(name: str) -> dict[str, str | None]:
     variants: dict[str, dict[str, str | None]] = {
-        "auto": {"profile": None, "intent": None},
-        "agent-workspace-async": {"profile": "agent-workspace-async", "intent": None},
+        "auto": {"profile": None, "intent": None, "gate_shape": "scheduled-pre-hit"},
+        "agent-workspace-async": {
+            "profile": "agent-workspace-async",
+            "intent": None,
+            "gate_shape": "scheduled-pre-hit",
+        },
         "agent-workspace-first-hit": {
             "profile": "agent-workspace-first-hit",
             "intent": None,
+            "gate_shape": "request-conversion",
         },
         "agent-workspace-low-memory": {
             "profile": "agent-workspace-low-memory",
             "intent": None,
+            "gate_shape": "scheduled-pre-hit",
         },
-        "agent-workspace": {"profile": "agent-workspace", "intent": None},
-        "agent-workspace-request": {"profile": "agent-workspace-request", "intent": None},
+        "agent-workspace": {
+            "profile": "agent-workspace",
+            "intent": None,
+            "gate_shape": "scheduled-pre-hit",
+        },
+        "agent-workspace-request": {
+            "profile": "agent-workspace-request",
+            "intent": None,
+            "gate_shape": "scheduled-pre-hit",
+        },
     }
     if name not in variants:
         raise argparse.ArgumentTypeError(f"unknown variant: {name}")
@@ -51,14 +65,23 @@ def variant_config(name: str) -> dict[str, str | None]:
 def summarize_variant(
     *,
     name: str,
+    gate_shape: str,
     benchmark: dict[str, Any],
-    first_hit_gate: dict[str, Any],
+    gate: dict[str, Any],
 ) -> dict[str, Any]:
-    derived = first_hit_gate.get("derived") or {}
+    derived = gate.get("derived") or {}
+    first_hit_ms = derived.get("first_hit_service_request_ms")
+    first_hit_speedup = derived.get("first_hit_speedup_vs_baseline")
+    first_hit_prefill = derived.get("first_hit_actual_prefill_tokens")
+    if gate_shape == "request-conversion":
+        first_hit_ms = derived.get("conversion_service_request_ms")
+        first_hit_speedup = derived.get("mature_hit_speedup_vs_baseline")
+        first_hit_prefill = derived.get("conversion_actual_prefill_tokens")
     return {
         "variant": name,
+        "gate_shape": gate_shape,
         "benchmark_verdict": benchmark.get("verdict"),
-        "first_hit_gate_verdict": first_hit_gate.get("verdict"),
+        "first_hit_gate_verdict": gate.get("verdict"),
         "hit_count": benchmark.get("hit_count"),
         "best_hit_speedup_vs_baseline": benchmark.get("best_hit_speedup_vs_baseline"),
         "scheduled_pre_hit_service_request_ms": derived.get(
@@ -70,10 +93,14 @@ def summarize_variant(
         "scheduled_pre_hit_actual_prefill_tokens": derived.get(
             "scheduled_pre_hit_actual_prefill_tokens"
         ),
-        "first_hit_service_request_ms": derived.get("first_hit_service_request_ms"),
-        "first_hit_speedup_vs_baseline": derived.get("first_hit_speedup_vs_baseline"),
-        "first_hit_actual_prefill_tokens": derived.get("first_hit_actual_prefill_tokens"),
-        "failures": first_hit_gate.get("failures") or [],
+        "first_hit_service_request_ms": first_hit_ms,
+        "first_hit_speedup_vs_baseline": first_hit_speedup,
+        "first_hit_actual_prefill_tokens": first_hit_prefill,
+        "conversion_service_request_ms": derived.get("conversion_service_request_ms"),
+        "conversion_ratio_vs_baseline": derived.get("conversion_ratio_vs_baseline"),
+        "conversion_actual_prefill_tokens": derived.get("conversion_actual_prefill_tokens"),
+        "conversion_turn": derived.get("conversion_turn"),
+        "failures": gate.get("failures") or [],
     }
 
 
@@ -137,6 +164,7 @@ def main() -> int:
     parser.add_argument("--min-scheduled-pre-hit-prefill-tokens", type=int, default=512)
     parser.add_argument("--min-first-hit-speedup", type=float, default=2.0)
     parser.add_argument("--max-first-hit-prefill-tokens", type=int, default=32)
+    parser.add_argument("--max-conversion-ratio", type=float, default=1.10)
     parser.add_argument("--fail-on-fail", action="store_true")
     args = parser.parse_args()
 
@@ -149,7 +177,13 @@ def main() -> int:
         config = variant_config(name)
         benchmark_jsonl = args.output_dir / f"dax-repeated-context-{args.tag}-{name}.jsonl"
         benchmark_json = args.output_dir / f"dax-repeated-context-{args.tag}-{name}.json"
-        gate_json = args.output_dir / f"dax-first-hit-latency-gate-{args.tag}-{name}.json"
+        gate_shape = str(config["gate_shape"])
+        gate_slug = (
+            "dax-first-hit-conversion-gate"
+            if gate_shape == "request-conversion"
+            else "dax-first-hit-latency-gate"
+        )
+        gate_json = args.output_dir / f"{gate_slug}-{args.tag}-{name}.json"
         bench_cmd = [
             sys.executable,
             "benchmarks/python/dax_repeated_context_bench.py",
@@ -175,8 +209,26 @@ def main() -> int:
         if config["intent"]:
             bench_cmd.extend(["--dax-intent", str(config["intent"])])
         run(bench_cmd, cwd=cwd)
-        run(
-            [
+        if gate_shape == "request-conversion":
+            gate_cmd = [
+                sys.executable,
+                "benchmarks/python/dax_first_hit_conversion_gate.py",
+                str(benchmark_json),
+                "--output-json",
+                str(gate_json),
+                "--max-conversion-prefill-tokens",
+                str(args.max_first_hit_prefill_tokens),
+                "--max-conversion-ratio",
+                str(args.max_conversion_ratio),
+                "--conversion-path",
+                "any",
+                "--min-mature-hit-speedup",
+                str(args.min_first_hit_speedup),
+                "--max-mature-hit-prefill-tokens",
+                str(args.max_first_hit_prefill_tokens),
+            ]
+        else:
+            gate_cmd = [
                 sys.executable,
                 "benchmarks/python/dax_first_hit_latency_gate.py",
                 str(benchmark_json),
@@ -192,15 +244,22 @@ def main() -> int:
                 str(args.min_first_hit_speedup),
                 "--max-first-hit-prefill-tokens",
                 str(args.max_first_hit_prefill_tokens),
-            ],
-            cwd=cwd,
-        )
+            ]
+        run(gate_cmd, cwd=cwd)
         benchmark = load_json(benchmark_json)
         gate = load_json(gate_json)
-        summaries.append(summarize_variant(name=name, benchmark=benchmark, first_hit_gate=gate))
+        summaries.append(
+            summarize_variant(
+                name=name,
+                gate_shape=gate_shape,
+                benchmark=benchmark,
+                gate=gate,
+            )
+        )
         artifacts[name] = {
             "benchmark_json": str(benchmark_json),
             "benchmark_jsonl": str(benchmark_jsonl),
+            "gate_shape": gate_shape,
             "first_hit_gate_json": str(gate_json),
         }
 

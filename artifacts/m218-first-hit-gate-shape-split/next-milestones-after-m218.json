@@ -1,0 +1,24 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m218-next-milestones",
+  "verdict": "PASS",
+  "readiness": "next-milestones-planned",
+  "failures": [],
+  "next_milestones": [
+    {
+      "milestone": "M219",
+      "title": "Lower-memory search expansion",
+      "acceptance": "identify or convert a genuinely smaller MLX coding model candidate and run the deterministic quality gate before any performance comparison"
+    },
+    {
+      "milestone": "M220",
+      "title": "Configurable Prowl artifact roots",
+      "acceptance": "replace the hardcoded MLX artifact root with a settings-backed local artifact directory"
+    },
+    {
+      "milestone": "M221",
+      "title": "First-hit conversion budget tightening",
+      "acceptance": "use the split M218 gate to reduce request-conversion latency without weakening quality or mature-hit speedup"
+    }
+  ]
+}

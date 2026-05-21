@@ -1,0 +1,105 @@
+{
+  "artifacts": {
+    "agent-workspace-async": {
+      "benchmark_json": "artifacts/m218-first-hit-gate-shape-split/dax-repeated-context-m218-qwen-a3b-resident-agent-workspace-async.json",
+      "benchmark_jsonl": "artifacts/m218-first-hit-gate-shape-split/dax-repeated-context-m218-qwen-a3b-resident-agent-workspace-async.jsonl",
+      "first_hit_gate_json": "artifacts/m218-first-hit-gate-shape-split/dax-first-hit-latency-gate-m218-qwen-a3b-resident-agent-workspace-async.json",
+      "gate_shape": "scheduled-pre-hit"
+    },
+    "agent-workspace-first-hit": {
+      "benchmark_json": "artifacts/m218-first-hit-gate-shape-split/dax-repeated-context-m218-qwen-a3b-resident-agent-workspace-first-hit.json",
+      "benchmark_jsonl": "artifacts/m218-first-hit-gate-shape-split/dax-repeated-context-m218-qwen-a3b-resident-agent-workspace-first-hit.jsonl",
+      "first_hit_gate_json": "artifacts/m218-first-hit-gate-shape-split/dax-first-hit-conversion-gate-m218-qwen-a3b-resident-agent-workspace-first-hit.json",
+      "gate_shape": "request-conversion"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "best_observed": {
+    "benchmark_verdict": "PASS",
+    "best_hit_speedup_vs_baseline": 20.403512173536537,
+    "conversion_actual_prefill_tokens": null,
+    "conversion_ratio_vs_baseline": null,
+    "conversion_service_request_ms": null,
+    "conversion_turn": null,
+    "failures": [],
+    "first_hit_actual_prefill_tokens": 11.0,
+    "first_hit_gate_verdict": "PASS",
+    "first_hit_service_request_ms": 208.10625003650784,
+    "first_hit_speedup_vs_baseline": 20.130117227502666,
+    "gate_shape": "scheduled-pre-hit",
+    "hit_count": 2,
+    "scheduled_pre_hit_actual_prefill_tokens": 2082.0,
+    "scheduled_pre_hit_ratio_vs_baseline": 0.2594507801803887,
+    "scheduled_pre_hit_service_request_ms": 1086.892040912062,
+    "variant": "agent-workspace-async"
+  },
+  "best_passing": {
+    "benchmark_verdict": "PASS",
+    "best_hit_speedup_vs_baseline": 20.403512173536537,
+    "conversion_actual_prefill_tokens": null,
+    "conversion_ratio_vs_baseline": null,
+    "conversion_service_request_ms": null,
+    "conversion_turn": null,
+    "failures": [],
+    "first_hit_actual_prefill_tokens": 11.0,
+    "first_hit_gate_verdict": "PASS",
+    "first_hit_service_request_ms": 208.10625003650784,
+    "first_hit_speedup_vs_baseline": 20.130117227502666,
+    "gate_shape": "scheduled-pre-hit",
+    "hit_count": 2,
+    "scheduled_pre_hit_actual_prefill_tokens": 2082.0,
+    "scheduled_pre_hit_ratio_vs_baseline": 0.2594507801803887,
+    "scheduled_pre_hit_service_request_ms": 1086.892040912062,
+    "variant": "agent-workspace-async"
+  },
+  "client_mode": "resident",
+  "summaries": [
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 20.403512173536537,
+      "conversion_actual_prefill_tokens": null,
+      "conversion_ratio_vs_baseline": null,
+      "conversion_service_request_ms": null,
+      "conversion_turn": null,
+      "failures": [],
+      "first_hit_actual_prefill_tokens": 11.0,
+      "first_hit_gate_verdict": "PASS",
+      "first_hit_service_request_ms": 208.10625003650784,
+      "first_hit_speedup_vs_baseline": 20.130117227502666,
+      "gate_shape": "scheduled-pre-hit",
+      "hit_count": 2,
+      "scheduled_pre_hit_actual_prefill_tokens": 2082.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.2594507801803887,
+      "scheduled_pre_hit_service_request_ms": 1086.892040912062,
+      "variant": "agent-workspace-async"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 5.24180757860939,
+      "conversion_actual_prefill_tokens": 11.0,
+      "conversion_ratio_vs_baseline": 1.0268218745577977,
+      "conversion_service_request_ms": 1121.6122088953853,
+      "conversion_turn": 2,
+      "failures": [],
+      "first_hit_actual_prefill_tokens": 11.0,
+      "first_hit_gate_verdict": "PASS",
+      "first_hit_service_request_ms": 1121.6122088953853,
+      "first_hit_speedup_vs_baseline": 5.24180757860939,
+      "gate_shape": "request-conversion",
+      "hit_count": 3,
+      "scheduled_pre_hit_actual_prefill_tokens": null,
+      "scheduled_pre_hit_ratio_vs_baseline": null,
+      "scheduled_pre_hit_service_request_ms": null,
+      "variant": "agent-workspace-first-hit"
+    }
+  ],
+  "tag": "m218-qwen-a3b-resident",
+  "target_verdict": "PASS",
+  "type": "dax_first_hit_scheduling_sweep",
+  "variant_failures": [],
+  "variants": [
+    "agent-workspace-async",
+    "agent-workspace-first-hit"
+  ],
+  "verdict": "PASS"
+}
