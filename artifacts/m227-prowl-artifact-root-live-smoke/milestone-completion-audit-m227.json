@@ -1,0 +1,46 @@
+{
+  "milestone": "M227",
+  "name": "Prowl artifact-root live smoke",
+  "status": "complete",
+  "acceptance": "Prowl shows latest M223 artifact-root validation output from the configured MLX root without needing app rebuilds",
+  "configured_mlx_artifact_root": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench",
+  "live_smoke": {
+    "client": "MLXOperatorArtifactClient",
+    "configured_root_source": "AppModel.defaultMLXArtifactRootDirectory",
+    "temporary_test": "ProwlTests.MLXOperatorArtifactClientTests/testConfiguredDefaultRootReadsLatestM226QualityArtifact",
+    "temporary_test_result": "PASS",
+    "temporary_test_failures": 0,
+    "temporary_test_committed": false
+  },
+  "app_visible_artifact_state": {
+    "root_status": "STALE",
+    "quality_status": "PASS",
+    "quality_verdict": "PASS",
+    "quality_readiness": "ci-quality-ready",
+    "quality_source": "artifacts/m226-lower-memory-first-hit-conversion/quality-threshold-gate-m226-qwen25-coder-14b-adapted.json",
+    "swap_status": "STALE",
+    "swap_decision": "REJECT",
+    "swap_readiness": "swap-blocked",
+    "swap_source": "artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json"
+  },
+  "validation": {
+    "temporary_live_smoke_command": "swift test --package-path apps/prowl-macos -c release --filter ProwlTests.MLXOperatorArtifactClientTests/testConfiguredDefaultRootReadsLatestM226QualityArtifact",
+    "temporary_live_smoke_result": "PASS",
+    "full_prowl_test_command": "swift test --package-path apps/prowl-macos -c release",
+    "full_prowl_test_result": "PASS",
+    "full_prowl_tests_passed": 16,
+    "full_prowl_tests_failed": 0,
+    "prowl_repo_clean_after_smoke": true
+  },
+  "performance": {
+    "inference_runtime_changed": false,
+    "m226_lower_memory_turn2_prefill_tokens": 11,
+    "m226_mature_hit_service_ms": 185.817,
+    "m226_mature_hit_speedup_vs_baseline": 21.39,
+    "m226_loaded_lower_memory_active_gb": 8.309,
+    "m226_conversion_cache_prepare_ms": 3366.409
+  },
+  "artifacts": {
+    "performance_report": "artifacts/m227-prowl-artifact-root-live-smoke/prowl-artifact-root-live-smoke-m227.md"
+  }
+}

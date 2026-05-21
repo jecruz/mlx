@@ -3474,3 +3474,34 @@
   - M226 conclusion: lower-memory first-hit conversion compatibility is fixed
     without quality regression. This is not yet a first-duplicate latency win;
     the synchronous cache-build cost is now the explicit M229 target.
+- Completed M227 Prowl artifact-root live smoke:
+  - no Prowl code change was required
+  - generated artifacts under
+    `artifacts/m227-prowl-artifact-root-live-smoke/`
+  - validation used a temporary Prowl XCTest against the real configured MLX
+    root and removed it before completion
+  - live-smoke validation passed:
+    - command:
+      `swift test --package-path apps/prowl-macos -c release --filter ProwlTests.MLXOperatorArtifactClientTests/testConfiguredDefaultRootReadsLatestM226QualityArtifact`
+    - selected test passed with `0` failures
+    - exercised `MLXOperatorArtifactClient`
+    - exercised `AppModel.defaultMLXArtifactRootDirectory`
+  - full Prowl regression validation passed:
+    - command: `swift test --package-path apps/prowl-macos -c release`
+    - full suite: `16` passed, `0` failed
+  - app-visible artifact state:
+    - root status `STALE`
+    - quality status `PASS`
+    - quality source
+      `artifacts/m226-lower-memory-first-hit-conversion/quality-threshold-gate-m226-qwen25-coder-14b-adapted.json`
+    - model-swap status `STALE`
+    - model-swap source
+      `artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json`
+  - performance:
+    - no MLX inference runtime path changed
+    - M226 lower-memory turn-2 prefill remains `11` tokens
+    - M226 mature-hit service remains `185.817 ms`
+    - M226 mature-hit speedup remains `21.390x`
+  - M227 conclusion: Prowl sees the configured MLX artifact root live without
+    an app rebuild. The current `STALE` warning is correct because model-swap
+    evidence is older than the latest quality milestone.
