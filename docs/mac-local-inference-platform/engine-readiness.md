@@ -2514,3 +2514,27 @@ Decision:
 - Prowl now has a live MLX readiness card surface.
 - M216 should replace quality/model-swap placeholders with artifact-backed badge
   ingestion if the UI needs those fields live.
+
+## M214 Cached-Prefix Run Time
+
+M214 keeps engine readiness green on the Qwen A3B path and records a same-shape
+cached-prefix latency reduction.
+
+Artifacts:
+
+- `artifacts/m214-cached-prefix-run-ms-reduction/cached-prefix-run-ms-report-m214-qwen-a3b.json`
+- `artifacts/m214-cached-prefix-run-ms-reduction/quality-threshold-gate-m214-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `cached-prefix-run-ms-reduced`
+- M210 mature hit: `194.5072498638183 ms`
+- M214 mature hit: `193.38075001724064 ms`
+- quality threshold: `PASS`
+
+Readiness note:
+
+- The product first-hit profile remains required for DAX repeated-context cache
+  hits.
+- The default async profile is not yet readiness-equivalent for this benchmark.

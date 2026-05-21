@@ -1,0 +1,20 @@
+{
+  "audited_count": 1,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M214",
+      "passed": true,
+      "path": "artifacts/m214-cached-prefix-run-ms-reduction/cached-prefix-run-ms-report-m214-qwen-a3b.json",
+      "readiness": "cached-prefix-run-ms-reduced",
+      "type": "cached_prefix_run_ms_report",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m214-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

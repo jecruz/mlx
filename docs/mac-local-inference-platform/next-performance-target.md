@@ -2776,3 +2776,38 @@ Decision:
 - The next performance milestone returns to cached-prefix generation `run_ms`;
   the next UI milestone should ingest quality/model-swap artifacts instead of
   placeholder labels.
+
+## M214 Result
+
+M214 re-ran the cached-prefix DAX path with the same shape as M210 and measured
+a small mature-hit latency reduction.
+
+Artifacts:
+
+- `artifacts/m214-cached-prefix-run-ms-reduction/dax-repeated-context-m210-shape-m214.json`
+- `artifacts/m214-cached-prefix-run-ms-reduction/cached-prefix-run-ms-report-m214-qwen-a3b.json`
+- `artifacts/m214-cached-prefix-run-ms-reduction/quality-threshold-gate-m214-qwen-a3b.json`
+- `artifacts/m214-cached-prefix-run-ms-reduction/next-milestones-after-m214.json`
+
+Result:
+
+- M210 mature hit: `194.5072498638183 ms`
+- M214 mature hit: `193.38075001724064 ms`
+- measured reduction: `1.1264998465776443 ms`
+- remaining gap to `175 ms`: `18.380750017240644 ms`
+- mature-hit `run_ms`: `190.9171249717474 ms`
+- mature-hit actual prefill tokens: `11`
+- quality threshold: `PASS`
+
+Negative control:
+
+- The default `interactive`/`async` path failed the DAX repeated-context cache
+  hit check with `0` hits.
+- Product first-hit behavior still depends on `agent-workspace-first-hit` /
+  request population until async pending-wait behavior is tuned.
+
+Decision:
+
+- Count M214 as a small same-shape reduction, not target closure.
+- M215 should recover cache hits for the default async path or make the product
+  profile requirement explicit in the gate.

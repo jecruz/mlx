@@ -1,0 +1,46 @@
+{
+  "type": "cached_prefix_run_ms_report",
+  "tag": "m214-qwen-a3b",
+  "verdict": "PASS",
+  "readiness": "cached-prefix-run-ms-reduced",
+  "acceptance": {
+    "target_mature_hit_service_request_ms": 175.0,
+    "quality_threshold_verdict": "PASS",
+    "required_profile": "agent-workspace-first-hit"
+  },
+  "baseline": {
+    "m210_mature_hit_service_request_ms": 194.5072498638183,
+    "m210_target_gap_ms": 19.507249863818288
+  },
+  "current": {
+    "mature_hit_service_request_ms": 193.38075001724064,
+    "mature_hit_run_ms": 190.9171249717474,
+    "mature_hit_actual_prefill_tokens": 11,
+    "hit_count": 2,
+    "best_hit_speedup_vs_baseline": 5.674369516404647,
+    "target_gap_ms": 18.380750017240644
+  },
+  "delta": {
+    "mature_hit_service_request_delta_ms": -1.1264998465776443,
+    "target_gap_reduction_ms": 1.1264998465776443
+  },
+  "negative_control": {
+    "profile": "interactive",
+    "population_mode": "async",
+    "verdict": "FAIL",
+    "hit_count": 0,
+    "finding": "The default interactive async path did not complete a cache hit within the four-turn DAX benchmark. M214 remains tied to the product first-hit profile until async pending-wait behavior is tuned."
+  },
+  "source_artifacts": {
+    "m210_report": "artifacts/m210-mature-hit-latency/mature-hit-latency-report-m210-qwen-a3b.json",
+    "same_shape_benchmark": "artifacts/m214-cached-prefix-run-ms-reduction/dax-repeated-context-m210-shape-m214.json",
+    "same_shape_jsonl": "artifacts/m214-cached-prefix-run-ms-reduction/dax-repeated-context-m210-shape-m214.jsonl",
+    "negative_control_benchmark": "artifacts/m214-cached-prefix-run-ms-reduction/dax-repeated-context-m214.json",
+    "quality_threshold": "artifacts/m214-cached-prefix-run-ms-reduction/quality-threshold-gate-m214-qwen-a3b.json"
+  },
+  "warnings": [
+    "M214 is a small measured reduction, not a target closure.",
+    "The remaining mature-hit cost is still dominated by MLX generation run_ms."
+  ],
+  "failures": []
+}
