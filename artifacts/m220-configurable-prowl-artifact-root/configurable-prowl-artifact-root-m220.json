@@ -1,0 +1,42 @@
+{
+  "type": "configurable_prowl_artifact_root",
+  "tag": "m220-prowl-artifact-root",
+  "verdict": "PASS",
+  "readiness": "prowl-artifact-root-settings-backed",
+  "failures": [],
+  "acceptance": {
+    "hardcoded_artifact_root_removed_from_client_construction": true,
+    "artifact_root_persisted_in_settings": true,
+    "settings_ui_exposes_artifact_root": true,
+    "browse_action_available": true,
+    "swift_build_passed": true
+  },
+  "prowl": {
+    "repo": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm",
+    "commit": "e4c6ba8",
+    "branch": "main",
+    "remote": "origin/main"
+  },
+  "changed_files": [
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/AppState/AppModel.swift",
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/Features/Settings/SettingsEndpointField.swift",
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/Features/Settings/SettingsModelSourcesCard.swift",
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/Features/Settings/SettingsPage.swift"
+  ],
+  "settings_contract": {
+    "user_defaults_key": "mlxArtifactRootDirectory",
+    "default_directory": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench",
+    "published_property": "mlxArtifactRootDirectoryText",
+    "settings_field": "MLX artifact root",
+    "focused_field": "mlxArtifacts",
+    "artifact_client_input": "MLXOperatorArtifactClient(rootURL: configured settings URL)"
+  },
+  "validation": [
+    {
+      "command": "swift build",
+      "workdir": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos",
+      "verdict": "PASS"
+    }
+  ],
+  "decision": "Prowl no longer requires a rebuild to point artifact-backed quality and model-swap badges at a different MLX worktree. The artifact root is a persisted Settings value with default and browse controls."
+}

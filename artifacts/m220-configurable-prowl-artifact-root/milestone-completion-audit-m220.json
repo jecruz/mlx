@@ -1,0 +1,30 @@
+{
+  "type": "milestone_completion_audit",
+  "tag": "m220-completion-audit",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "failures": [],
+  "audited_count": 2,
+  "rows": [
+    {
+      "milestone": "M220",
+      "path": "artifacts/m220-configurable-prowl-artifact-root/configurable-prowl-artifact-root-m220.json",
+      "exists": true,
+      "passed": true,
+      "type": "configurable_prowl_artifact_root",
+      "verdict": "PASS",
+      "readiness": "prowl-artifact-root-settings-backed",
+      "failure_count": 0
+    },
+    {
+      "milestone": "M220_NEXT",
+      "path": "artifacts/m220-configurable-prowl-artifact-root/next-milestones-after-m220.json",
+      "exists": true,
+      "passed": true,
+      "type": "next_milestone_plan",
+      "verdict": "PASS",
+      "readiness": "next-milestones-planned",
+      "failure_count": 0
+    }
+  ]
+}

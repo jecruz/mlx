@@ -1,0 +1,24 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m220-next-milestones",
+  "verdict": "PASS",
+  "readiness": "next-milestones-planned",
+  "failures": [],
+  "next_milestones": [
+    {
+      "milestone": "M221",
+      "title": "First-hit conversion budget tightening",
+      "acceptance": "use the split M218 gate to reduce request-conversion latency without weakening quality or mature-hit speedup"
+    },
+    {
+      "milestone": "M222",
+      "title": "Lower-memory candidate prompt adapter",
+      "acceptance": "test whether a candidate-specific strict-output adapter can make Qwen2.5 Coder 14B pass deterministic quality without hiding real instruction-following failures"
+    },
+    {
+      "milestone": "M223",
+      "title": "Prowl artifact-root status validation",
+      "acceptance": "show whether the configured MLX artifact root is readable and contains the required quality/swap JSON files"
+    }
+  ]
+}

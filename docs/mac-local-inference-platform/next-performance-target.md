@@ -2995,3 +2995,32 @@ Decision:
 - Do not run a speed comparison yet; quality failed first.
 - Keep the active model restored to
   `Qwen3.6-35B-A3B-UD-MLX-4bit`.
+
+## M220 Result
+
+M220 makes the Prowl MLX artifact root configurable instead of hardcoded.
+
+Artifacts:
+
+- `artifacts/m220-configurable-prowl-artifact-root/configurable-prowl-artifact-root-m220.json`
+- `artifacts/m220-configurable-prowl-artifact-root/milestone-completion-audit-m220.json`
+
+Prowl change:
+
+- repo: `/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm`
+- commit: `e4c6ba8`
+- validation: `swift build` passed
+
+Settings contract:
+
+- UserDefaults key: `mlxArtifactRootDirectory`
+- published setting: `mlxArtifactRootDirectoryText`
+- default path:
+  `/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench`
+- Settings UI label: `MLX artifact root`
+- browse action: enabled
+
+Decision:
+
+- Prowl can now point quality/model-swap badges at a different MLX artifact
+  worktree without rebuilding the app.

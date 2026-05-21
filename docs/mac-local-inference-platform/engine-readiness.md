@@ -2662,3 +2662,27 @@ Readiness note:
 - The smaller candidate is useful evidence, but not promotable.
 - No speed comparison should be accepted until the deterministic quality gate
   passes.
+
+## M220 Configurable Prowl Artifact Root
+
+M220 replaces the Prowl readiness-card artifact root hardcoding with a persisted
+Settings value.
+
+Artifacts:
+
+- `artifacts/m220-configurable-prowl-artifact-root/configurable-prowl-artifact-root-m220.json`
+
+Result:
+
+- Prowl commit: `e4c6ba8`
+- build validation: `swift build` passed
+- settings key: `mlxArtifactRootDirectory`
+- default artifact root remains the current MLX worktree
+- Settings now exposes `MLX artifact root`, `Browse`, and `Use default`
+
+Readiness note:
+
+- Artifact-backed quality/swap badges are no longer tied to one developer
+  checkout at compile time.
+- The next UI hardening step is to validate that the configured directory is
+  readable and contains the expected artifact files.
