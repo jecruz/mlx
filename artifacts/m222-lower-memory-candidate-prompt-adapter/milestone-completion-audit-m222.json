@@ -1,0 +1,38 @@
+{
+  "artifacts": {
+    "adapted_chat_quality": "artifacts/m222-lower-memory-candidate-prompt-adapter/chat-template-quality-adapted-m222-qwen25-coder-14b.json",
+    "completion_quality": "artifacts/m222-lower-memory-candidate-prompt-adapter/deterministic-quality-completion-m222-qwen25-coder-14b.json",
+    "default_chat_quality": "artifacts/m222-lower-memory-candidate-prompt-adapter/chat-template-quality-m222-qwen25-coder-14b.json",
+    "live_model_swap": "artifacts/m222-lower-memory-candidate-prompt-adapter/live-model-swap-m222-qwen25-coder-14b.json",
+    "performance_benchmark": "artifacts/m222-lower-memory-candidate-prompt-adapter/dax-repeated-context-m222-qwen25-coder-14b.json",
+    "performance_report": "artifacts/m222-lower-memory-candidate-prompt-adapter/lower-memory-candidate-prompt-adapter-m222.md",
+    "quality_threshold": "artifacts/m222-lower-memory-candidate-prompt-adapter/quality-threshold-gate-m222-qwen25-coder-14b-adapted.json",
+    "strict_chat_quality": "artifacts/m222-lower-memory-candidate-prompt-adapter/chat-template-quality-strict-m222-qwen25-coder-14b.json"
+  },
+  "code_changes": [
+    "benchmarks/python/chat_template_quality_probe.py adds --prompt-adapter qwen25-coder-lower-memory",
+    "benchmarks/python/chat_template_quality_probe.py normalizes JSON markdown fences for the lower-memory candidate adapter while preserving raw output"
+  ],
+  "decision": "Candidate is quality-eligible for lower-memory steady-cache workflows, but not promoted as default because cold/full-prefill and first duplicate turns remain slower than A3B.",
+  "milestone": "M222",
+  "name": "Lower-memory candidate prompt adapter",
+  "quality": {
+    "adapted_chat_template_verdict": "PASS",
+    "completion_route_verdict": "FAIL",
+    "default_chat_template_verdict": "FAIL",
+    "quality_threshold_readiness": "ci-quality-ready",
+    "quality_threshold_verdict": "PASS"
+  },
+  "resident_restore": {
+    "active_model_after_tests": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "default_device_after_tests": "Device(gpu, 0)",
+    "health_ok_after_tests": true,
+    "runtime_profile_after_tests": "interactive"
+  },
+  "status": "complete",
+  "validation": {
+    "candidate_benchmark_verdict": "PASS",
+    "live_model_swap_verdict": "PASS",
+    "py_compile": "PASS"
+  }
+}

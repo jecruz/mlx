@@ -1,0 +1,25 @@
+{
+  "after": "M222",
+  "next": [
+    {
+      "acceptance": "Prowl settings exposes configured MLX artifact root status and clearly reports missing, stale, or PASS artifacts",
+      "id": "M223",
+      "name": "Prowl artifact-root status validation"
+    },
+    {
+      "acceptance": "prevent duplicate resident server launches from importing MLX and starting warmup when the target port is already bound",
+      "id": "M224",
+      "name": "Resident server port preflight"
+    },
+    {
+      "acceptance": "reduce split-prefill cache preparation below the M221 903.934 ms observed cost while preserving quality PASS and mature-hit speedup >= 5x",
+      "id": "M225",
+      "name": "Split-prefill prepare-time reduction"
+    },
+    {
+      "acceptance": "make the Qwen2.5 Coder 14B lower-memory candidate hit request-derived first duplicate conversion instead of waiting until turn 3",
+      "id": "M226",
+      "name": "Lower-memory first-hit conversion compatibility"
+    }
+  ]
+}

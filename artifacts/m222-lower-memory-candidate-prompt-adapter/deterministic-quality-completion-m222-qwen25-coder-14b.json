@@ -1,0 +1,278 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [
+    "json_schema: invalid json",
+    "summary: missing required markers: ['SUMMARY_OK']",
+    "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+    "patch_plan: repetition score too high: 0.259"
+  ],
+  "rows": [
+    {
+      "actual_prefill_tokens": 24,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "<output>\nQUALITY_OK\n</output>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<output>\nQUALITY_OK\n</output>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 497.23712517879903,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "```python\na + b\n```",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "```python\na + b\n```",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 288.8179998844862,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 36,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "<output>\nBUG_FOUND\n</output>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<output>\nBUG_FOUND\n</output>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 367.3030419740826,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 34,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 280.83508322015405,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 41,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 657.3960410896689,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 28,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "json_schema",
+      "category": "json",
+      "failures": [
+        "invalid json"
+      ],
+      "final_answer": "```json\n{\n  \"status\": \"ok\"\n}\n```",
+      "json_valid": false,
+      "missing": [],
+      "raw_text": "```json\n{\n  \"status\": \"ok\"\n}\n```",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 667.4423748627305,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 38,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "summary",
+      "category": "summarization",
+      "failures": [
+        "missing required markers: ['SUMMARY_OK']"
+      ],
+      "final_answer": "<summary>\nMLX quality gates ensure response quality, while speed is enhanced.\n</summary>",
+      "json_valid": null,
+      "missing": [
+        "SUMMARY_OK"
+      ],
+      "raw_text": "<summary>\nMLX quality gates ensure response quality, while speed is enhanced.\n</summary>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 804.154000012204,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 47,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [],
+      "final_answer": "ResidentEngine",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ResidentEngine",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 597.6930418983102,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 46,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [
+        "missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+        "repetition score too high: 0.259"
+      ],
+      "final_answer": "```diff\ndiff --git a/src/cache.py b/src/cache.py\nindex 1234567..89abcde 100644\n--- a/src/cache.py\n+++ b/src/cache.py\n@@ -10,7 +10,7 @@ class Cache:",
+      "json_valid": null,
+      "missing": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "raw_text": "```diff\ndiff --git a/src/cache.py b/src/cache.py\nindex 1234567..89abcde 100644\n--- a/src/cache.py\n+++ b/src/cache.py\n@@ -10,7 +10,7 @@ class Cache:\n",
+      "repetition_score": 0.25925925925925924,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 1427.7565001975745,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 44,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [],
+      "final_answer": "pytest tests/test_cache.py",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "pytest tests/test_cache.py",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 730.5332499090582,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 44,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [],
+      "final_answer": "<output>\nTRIAGE_CACHE_REUSE\n</output>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<output>\nTRIAGE_CACHE_REUSE\n</output>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 1015.2261250186712,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 28,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "async",
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "SAFE_SUMMARY: The user is requesting a summary of a harmless request.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SAFE_SUMMARY: The user is requesting a summary of a harmless request.",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 714.5894579589367,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m222-qwen25-coder-14b-completion",
+  "type": "deterministic_quality_regression",
+  "verdict": "FAIL"
+}

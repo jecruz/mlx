@@ -3352,3 +3352,27 @@
     selector that correctly handles request-conversion gate shapes. The next
     raw performance target is reducing the observed `903.934 ms` split-prefill
     cache-prepare cost.
+- Completed M222 lower-memory candidate prompt adapter:
+  - updated `benchmarks/python/chat_template_quality_probe.py`
+  - added `--prompt-adapter qwen25-coder-lower-memory`
+  - adapter keeps the chat-template route, adds a JSON-specific prompt
+    clarification, and normalizes JSON markdown fences for validation while
+    preserving raw output in artifacts
+  - generated artifacts under
+    `artifacts/m222-lower-memory-candidate-prompt-adapter/`
+  - validation passed:
+    - live model swap verdict `PASS`
+    - adapted chat-template quality verdict `PASS`
+    - quality threshold verdict `PASS`
+    - candidate repeated-context benchmark verdict `PASS`
+    - candidate active memory `8.360 GB` vs A3B `20.781 GB`
+    - candidate mature hit best service `182.281 ms` vs A3B `205.462 ms`
+    - `python3 -m py_compile benchmarks/python/chat_template_quality_probe.py`
+  - validation still blocking default promotion:
+    - completion route quality remains `FAIL`
+    - unadapted chat-template route remains `FAIL`
+    - candidate cold/full-prefill service `3515.255 ms` vs A3B `1431.913 ms`
+    - candidate first duplicate request stayed full-prefill at `2081` tokens
+  - M222 conclusion: Qwen2.5 Coder 14B MLX is quality-eligible for
+    lower-memory steady-cache workflows, but not a default replacement until
+    first-hit conversion and cold/full-prefill latency improve.
