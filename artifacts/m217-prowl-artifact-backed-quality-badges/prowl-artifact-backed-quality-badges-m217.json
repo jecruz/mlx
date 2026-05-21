@@ -1,0 +1,34 @@
+{
+  "type": "prowl_artifact_backed_quality_badges",
+  "tag": "m217-prowl-artifact-badges",
+  "verdict": "PASS",
+  "readiness": "prowl-artifact-badges-integrated",
+  "host_surface": {
+    "repo": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm",
+    "commit": "a57b26f",
+    "card": "apps/prowl-macos/Sources/ProwlMac/Features/Engine/MLXOperatorReadinessCard.swift",
+    "state": "apps/prowl-macos/Sources/ProwlMac/AppState/AppModel.swift",
+    "host_view": "apps/prowl-macos/Sources/ProwlMac/Features/Engine/EngineView.swift"
+  },
+  "artifact_sources": {
+    "quality": "artifacts/m214-cached-prefix-run-ms-reduction/quality-threshold-gate-m214-qwen-a3b.json",
+    "swap": "artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json"
+  },
+  "field_parity": {
+    "quality_placeholder_removed": true,
+    "swap_placeholder_removed": true,
+    "quality_verdict_displayed": true,
+    "quality_readiness_displayed": true,
+    "swap_decision_displayed": true,
+    "swap_readiness_displayed": true
+  },
+  "validation": {
+    "command": "swift build",
+    "workdir": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos",
+    "result": "PASS"
+  },
+  "failures": [],
+  "warnings": [
+    "Artifact paths are currently local-worktree defaults and should become user-configurable before broader distribution."
+  ]
+}

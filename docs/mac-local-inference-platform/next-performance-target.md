@@ -2887,3 +2887,34 @@ Decision:
 - Do not promote gpt-oss as the lower-memory coding-agent replacement.
 - It is smaller and reload-safe, but quality is still not acceptable.
 - The Qwen A3B model remains the active accepted coding-agent model.
+
+## M217 Result
+
+M217 replaces Prowl's placeholder quality/swap rows with artifact-backed values.
+
+Artifacts:
+
+- `artifacts/m217-prowl-artifact-backed-quality-badges/prowl-artifact-backed-quality-badges-m217.json`
+- `artifacts/m217-prowl-artifact-backed-quality-badges/next-milestones-after-m217.json`
+
+Prowl changes:
+
+- repo: `/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm`
+- commit: `a57b26f`
+- build validation: `swift build` passed
+- quality source: `artifacts/m214-cached-prefix-run-ms-reduction/quality-threshold-gate-m214-qwen-a3b.json`
+- swap source: `artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json`
+
+Result:
+
+- quality placeholder removed
+- swap placeholder removed
+- quality verdict/readiness displayed from JSON artifacts
+- swap decision/readiness displayed from JSON artifacts
+
+Decision:
+
+- Prowl can now show live runtime readiness plus artifact-backed quality/model
+  swap state.
+- M220 should replace the hardcoded local MLX artifact root with a settings
+  value before this is treated as distributable UI behavior.

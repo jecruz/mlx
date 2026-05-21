@@ -2586,3 +2586,27 @@ Readiness note:
 
 - Smaller candidate models must pass deterministic coding quality before any UI
   or operator surface may present them as acceptable replacements.
+
+## M217 Prowl Artifact Badges
+
+M217 upgrades the Prowl readiness card from placeholder quality/swap labels to
+artifact-backed values.
+
+Artifacts:
+
+- `artifacts/m217-prowl-artifact-backed-quality-badges/prowl-artifact-backed-quality-badges-m217.json`
+
+Prowl commit:
+
+- `a57b26f`
+
+Result:
+
+- quality row reads the Qwen quality-threshold artifact
+- swap row reads the gpt-oss model-swap acceptance artifact
+- `swift build` passed
+
+Readiness note:
+
+- The UI now makes quality visible beside speed/runtime state.
+- The artifact root is still local-path based and should move to settings.

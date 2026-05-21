@@ -1,0 +1,20 @@
+{
+  "audited_count": 1,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M217",
+      "passed": true,
+      "path": "artifacts/m217-prowl-artifact-backed-quality-badges/prowl-artifact-backed-quality-badges-m217.json",
+      "readiness": "prowl-artifact-badges-integrated",
+      "type": "prowl_artifact_backed_quality_badges",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m217-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}
