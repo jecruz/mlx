@@ -128,6 +128,7 @@ def main() -> int:
     parser.add_argument("--output-json", type=Path)
     parser.add_argument("--tag", default="m91-qwen-a3b")
     parser.add_argument("--variants", default="auto,agent-workspace,agent-workspace-async")
+    parser.add_argument("--client-mode", choices=("cli", "resident"), default="cli")
     parser.add_argument("--turns", type=int, default=4)
     parser.add_argument("--shared-repeats", type=int, default=64)
     parser.add_argument("--max-tokens", type=int, default=4)
@@ -166,7 +167,8 @@ def main() -> int:
             str(args.shared_repeats),
             "--max-tokens",
             str(args.max_tokens),
-            "--fail-on-fail",
+            "--client-mode",
+            args.client_mode,
         ]
         if config["profile"]:
             bench_cmd.extend(["--dax-profile", str(config["profile"])])
@@ -204,16 +206,22 @@ def main() -> int:
 
     best_passing = choose_best(summaries)
     best_observed = choose_best_observed(summaries)
-    sweep_completed = len(summaries) == len(variant_names) and all(
-        item.get("benchmark_verdict") == "PASS" for item in summaries
-    )
+    sweep_completed = len(summaries) == len(variant_names)
+    variant_failures = [
+        item
+        for item in summaries
+        if item.get("benchmark_verdict") != "PASS"
+        or item.get("first_hit_gate_verdict") != "PASS"
+    ]
     report = {
         "type": "dax_first_hit_scheduling_sweep",
         "verdict": "PASS" if sweep_completed else "FAIL",
         "target_verdict": "PASS" if best_passing is not None else "FAIL",
         "base_url": args.base_url,
+        "client_mode": args.client_mode,
         "tag": args.tag,
         "variants": variant_names,
+        "variant_failures": variant_failures,
         "artifacts": artifacts,
         "summaries": summaries,
         "best_passing": best_passing,

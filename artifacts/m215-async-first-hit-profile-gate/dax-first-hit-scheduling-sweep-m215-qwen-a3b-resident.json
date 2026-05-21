@@ -1,0 +1,172 @@
+{
+  "artifacts": {
+    "agent-workspace": {
+      "benchmark_json": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace.json",
+      "benchmark_jsonl": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace.jsonl",
+      "first_hit_gate_json": "artifacts/m215-async-first-hit-profile-gate/dax-first-hit-latency-gate-m215-qwen-a3b-resident-agent-workspace.json"
+    },
+    "agent-workspace-async": {
+      "benchmark_json": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-async.json",
+      "benchmark_jsonl": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-async.jsonl",
+      "first_hit_gate_json": "artifacts/m215-async-first-hit-profile-gate/dax-first-hit-latency-gate-m215-qwen-a3b-resident-agent-workspace-async.json"
+    },
+    "agent-workspace-first-hit": {
+      "benchmark_json": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-first-hit.json",
+      "benchmark_jsonl": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-first-hit.jsonl",
+      "first_hit_gate_json": "artifacts/m215-async-first-hit-profile-gate/dax-first-hit-latency-gate-m215-qwen-a3b-resident-agent-workspace-first-hit.json"
+    },
+    "auto": {
+      "benchmark_json": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-auto.json",
+      "benchmark_jsonl": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-auto.jsonl",
+      "first_hit_gate_json": "artifacts/m215-async-first-hit-profile-gate/dax-first-hit-latency-gate-m215-qwen-a3b-resident-auto.json"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "best_observed": {
+    "benchmark_verdict": "PASS",
+    "best_hit_speedup_vs_baseline": 6.589135847911084,
+    "failures": [],
+    "first_hit_actual_prefill_tokens": 11.0,
+    "first_hit_gate_verdict": "PASS",
+    "first_hit_service_request_ms": 927.8082919772714,
+    "first_hit_speedup_vs_baseline": 1.3873109285485625,
+    "hit_count": 3,
+    "scheduled_pre_hit_actual_prefill_tokens": 1570.0,
+    "scheduled_pre_hit_ratio_vs_baseline": 0.6433907102025461,
+    "scheduled_pre_hit_service_request_ms": 828.1458748970181,
+    "variant": "agent-workspace"
+  },
+  "best_passing": {
+    "benchmark_verdict": "PASS",
+    "best_hit_speedup_vs_baseline": 6.589135847911084,
+    "failures": [],
+    "first_hit_actual_prefill_tokens": 11.0,
+    "first_hit_gate_verdict": "PASS",
+    "first_hit_service_request_ms": 927.8082919772714,
+    "first_hit_speedup_vs_baseline": 1.3873109285485625,
+    "hit_count": 3,
+    "scheduled_pre_hit_actual_prefill_tokens": 1570.0,
+    "scheduled_pre_hit_ratio_vs_baseline": 0.6433907102025461,
+    "scheduled_pre_hit_service_request_ms": 828.1458748970181,
+    "variant": "agent-workspace"
+  },
+  "client_mode": "resident",
+  "summaries": [
+    {
+      "benchmark_verdict": "FAIL",
+      "best_hit_speedup_vs_baseline": null,
+      "failures": [
+        "source verdict was 'FAIL'",
+        "missing first cache-hit row",
+        "first_hit_speedup_vs_baseline: None >= 1.1 failed",
+        "first_hit_actual_prefill_tokens: None <= 16 failed"
+      ],
+      "first_hit_actual_prefill_tokens": null,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": null,
+      "first_hit_speedup_vs_baseline": null,
+      "hit_count": 0,
+      "scheduled_pre_hit_actual_prefill_tokens": 1570.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.7516224875529331,
+      "scheduled_pre_hit_service_request_ms": 833.5228748619556,
+      "variant": "auto"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 6.589135847911084,
+      "failures": [],
+      "first_hit_actual_prefill_tokens": 11.0,
+      "first_hit_gate_verdict": "PASS",
+      "first_hit_service_request_ms": 927.8082919772714,
+      "first_hit_speedup_vs_baseline": 1.3873109285485625,
+      "hit_count": 3,
+      "scheduled_pre_hit_actual_prefill_tokens": 1570.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.6433907102025461,
+      "scheduled_pre_hit_service_request_ms": 828.1458748970181,
+      "variant": "agent-workspace"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 4.285813835949868,
+      "failures": [],
+      "first_hit_actual_prefill_tokens": 11.0,
+      "first_hit_gate_verdict": "PASS",
+      "first_hit_service_request_ms": 198.1192498933524,
+      "first_hit_speedup_vs_baseline": 4.274711868960359,
+      "hit_count": 2,
+      "scheduled_pre_hit_actual_prefill_tokens": 1570.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.98349215122878,
+      "scheduled_pre_hit_service_request_ms": 832.9221671447158,
+      "variant": "agent-workspace-async"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 4.420285584544812,
+      "failures": [
+        "missing scheduled pre-hit row",
+        "scheduled_pre_hit_service_request_ms: None <= 1600.0 failed",
+        "scheduled_pre_hit_ratio_vs_baseline: None <= 1.0 failed",
+        "scheduled_pre_hit_actual_prefill_tokens: None >= 512 failed"
+      ],
+      "first_hit_actual_prefill_tokens": 11.0,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": 191.58133398741484,
+      "first_hit_speedup_vs_baseline": 4.420285584544812,
+      "hit_count": 3,
+      "scheduled_pre_hit_actual_prefill_tokens": null,
+      "scheduled_pre_hit_ratio_vs_baseline": null,
+      "scheduled_pre_hit_service_request_ms": null,
+      "variant": "agent-workspace-first-hit"
+    }
+  ],
+  "tag": "m215-qwen-a3b-resident",
+  "target_verdict": "PASS",
+  "type": "dax_first_hit_scheduling_sweep",
+  "variant_failures": [
+    {
+      "benchmark_verdict": "FAIL",
+      "best_hit_speedup_vs_baseline": null,
+      "failures": [
+        "source verdict was 'FAIL'",
+        "missing first cache-hit row",
+        "first_hit_speedup_vs_baseline: None >= 1.1 failed",
+        "first_hit_actual_prefill_tokens: None <= 16 failed"
+      ],
+      "first_hit_actual_prefill_tokens": null,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": null,
+      "first_hit_speedup_vs_baseline": null,
+      "hit_count": 0,
+      "scheduled_pre_hit_actual_prefill_tokens": 1570.0,
+      "scheduled_pre_hit_ratio_vs_baseline": 0.7516224875529331,
+      "scheduled_pre_hit_service_request_ms": 833.5228748619556,
+      "variant": "auto"
+    },
+    {
+      "benchmark_verdict": "PASS",
+      "best_hit_speedup_vs_baseline": 4.420285584544812,
+      "failures": [
+        "missing scheduled pre-hit row",
+        "scheduled_pre_hit_service_request_ms: None <= 1600.0 failed",
+        "scheduled_pre_hit_ratio_vs_baseline: None <= 1.0 failed",
+        "scheduled_pre_hit_actual_prefill_tokens: None >= 512 failed"
+      ],
+      "first_hit_actual_prefill_tokens": 11.0,
+      "first_hit_gate_verdict": "FAIL",
+      "first_hit_service_request_ms": 191.58133398741484,
+      "first_hit_speedup_vs_baseline": 4.420285584544812,
+      "hit_count": 3,
+      "scheduled_pre_hit_actual_prefill_tokens": null,
+      "scheduled_pre_hit_ratio_vs_baseline": null,
+      "scheduled_pre_hit_service_request_ms": null,
+      "variant": "agent-workspace-first-hit"
+    }
+  ],
+  "variants": [
+    "auto",
+    "agent-workspace",
+    "agent-workspace-async",
+    "agent-workspace-first-hit"
+  ],
+  "verdict": "PASS"
+}

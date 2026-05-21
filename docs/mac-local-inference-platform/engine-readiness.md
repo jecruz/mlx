@@ -2538,3 +2538,27 @@ Readiness note:
 - The product first-hit profile remains required for DAX repeated-context cache
   hits.
 - The default async profile is not yet readiness-equivalent for this benchmark.
+
+## M215 Profile Boundary
+
+M215 verifies the resident profile boundary for repeated coding-agent prompts.
+
+Artifacts:
+
+- `artifacts/m215-async-first-hit-profile-gate/dax-first-hit-scheduling-sweep-m215-qwen-a3b-resident.json`
+- `artifacts/m215-async-first-hit-profile-gate/async-first-hit-profile-gate-m215-qwen-a3b.json`
+
+Result:
+
+- verdict: `PASS`
+- no-intent `interactive`: `0` cache hits
+- `agent-workspace`: gate `PASS`
+- `agent-workspace-async`: gate `PASS`
+- `agent-workspace-first-hit`: fast mature hit, but needs a first-hit-specific
+  gate shape
+
+Readiness note:
+
+- Operator/client surfaces should require an explicit coding-agent or first-hit
+  workload intent for repeated-context acceleration.
+- Plain interactive mode is not a readiness signal for coding-agent cache reuse.

@@ -1,0 +1,20 @@
+{
+  "audited_count": 1,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M215",
+      "passed": true,
+      "path": "artifacts/m215-async-first-hit-profile-gate/async-first-hit-profile-gate-m215-qwen-a3b.json",
+      "readiness": "async-profile-gated",
+      "type": "async_first_hit_profile_gate",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m215-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

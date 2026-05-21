@@ -2811,3 +2811,40 @@ Decision:
 - Count M214 as a small same-shape reduction, not target closure.
 - M215 should recover cache hits for the default async path or make the product
   profile requirement explicit in the gate.
+
+## M215 Result
+
+M215 makes the async/default profile boundary explicit with a resident-mode
+scheduling sweep.
+
+Artifacts:
+
+- `benchmarks/python/dax_first_hit_scheduling_sweep.py`
+- `artifacts/m215-async-first-hit-profile-gate/dax-first-hit-scheduling-sweep-m215-qwen-a3b-resident.json`
+- `artifacts/m215-async-first-hit-profile-gate/async-first-hit-profile-gate-m215-qwen-a3b.json`
+- `artifacts/m215-async-first-hit-profile-gate/next-milestones-after-m215.json`
+
+Harness change:
+
+- `dax_first_hit_scheduling_sweep.py` now accepts `--client-mode`.
+- The sweep now records failed variants instead of aborting on the first failed
+  candidate, so the comparison artifact remains complete.
+
+Result:
+
+- resident sweep verdict: `PASS`
+- target verdict: `PASS`
+- no-intent auto/interactive: `FAIL`, `0` hits
+- `agent-workspace`: `PASS`, `3` hits, first hit `927.8082919772714 ms`
+- `agent-workspace-async`: `PASS`, `2` hits, first hit `198.1192498933524 ms`
+- `agent-workspace-first-hit`: benchmark `PASS`, best hit `191.58133398741484 ms`
+  but scheduled-pre-hit gate `FAIL` because that profile has no scheduled
+  pre-hit row by design
+
+Decision:
+
+- Do not treat no-intent `interactive` as a coding-agent repeated-context mode.
+- Keep `agent-workspace-async` as the steady-state async mode.
+- Keep `agent-workspace-first-hit` for immediate second-turn product mode.
+- M218 should split the first-hit gate shape so request-derived first-hit
+  profiles are not penalized for lacking a scheduled pre-hit row.

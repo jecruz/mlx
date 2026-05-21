@@ -1,0 +1,43 @@
+{
+  "type": "async_first_hit_profile_gate",
+  "tag": "m215-qwen-a3b",
+  "verdict": "PASS",
+  "readiness": "async-profile-gated",
+  "acceptance": {
+    "client_mode": "resident",
+    "prompt_shape": {
+      "shared_repeats": 48,
+      "max_tokens": 3,
+      "turns": 5
+    },
+    "target_verdict": "PASS"
+  },
+  "result": {
+    "best_passing_variant": "agent-workspace",
+    "agent_workspace_async_hit_count": 2,
+    "agent_workspace_async_first_hit_service_request_ms": 198.1192498933524,
+    "agent_workspace_async_first_hit_actual_prefill_tokens": 11,
+    "auto_hit_count": 0,
+    "auto_gate_verdict": "FAIL",
+    "first_hit_profile_best_hit_service_request_ms": 191.58133398741484,
+    "first_hit_profile_actual_prefill_tokens": 11
+  },
+  "decision": {
+    "default_interactive": "not accepted for coding-agent repeated-context cache-hit behavior",
+    "agent_workspace": "accepted when scheduled-pre-hit gating is required",
+    "agent_workspace_async": "accepted for steady-state async cache hits by turn 4/5",
+    "agent_workspace_first_hit": "accepted for immediate second-turn product mode, but excluded from scheduled-pre-hit gate because it has no scheduled pre-hit row by design"
+  },
+  "source_artifacts": {
+    "resident_sweep": "artifacts/m215-async-first-hit-profile-gate/dax-first-hit-scheduling-sweep-m215-qwen-a3b-resident.json",
+    "auto_benchmark": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-auto.json",
+    "agent_workspace_benchmark": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace.json",
+    "agent_workspace_async_benchmark": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-async.json",
+    "agent_workspace_first_hit_benchmark": "artifacts/m215-async-first-hit-profile-gate/dax-repeated-context-m215-qwen-a3b-resident-agent-workspace-first-hit.json"
+  },
+  "warnings": [
+    "No-intent resident auto mode stayed on interactive and did not produce a cache hit.",
+    "The first-hit profile needs a separate first-hit conversion gate rather than the scheduled-pre-hit async gate."
+  ],
+  "failures": []
+}
