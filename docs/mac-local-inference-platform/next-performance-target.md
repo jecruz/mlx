@@ -2751,3 +2751,28 @@ Decision:
 - Exact repeated prompts take the tokenized prompt cache and exact prefix
   fast-path. Near-prefix prompts correctly avoid the exact fast-path and still
   exercise scan-based prefix matching.
+
+## M213 Result
+
+M213 integrates the operator readiness card into Prowl's macOS Engine view and
+keeps the MLX-side evidence trail.
+
+Artifacts:
+
+- `artifacts/m213-readiness-card-integration/readiness-card-integration-m213.json`
+- `artifacts/m213-readiness-card-integration/next-milestones-after-m213.json`
+
+Result:
+
+- Prowl commit: `0067c42`
+- validation: `swift build` passed
+- live endpoint consumed: `/engine/operator-readiness`
+- M207 live runtime/detail/memory fields are represented
+- M207 quality/model-swap fields are currently artifact-backed placeholders
+
+Decision:
+
+- UI/Prowl integration is now concrete.
+- The next performance milestone returns to cached-prefix generation `run_ms`;
+  the next UI milestone should ingest quality/model-swap artifacts instead of
+  placeholder labels.

@@ -1,0 +1,55 @@
+{
+  "failures": [],
+  "host_surface": {
+    "commit": "0067c42",
+    "repo": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm",
+    "surface": "apps/prowl-macos/Sources/ProwlMac/Features/Engine/EngineView.swift"
+  },
+  "integration": {
+    "fetcher": "AppModel.fetchMLXOperatorReadiness",
+    "live_endpoint": "http://127.0.0.1:8773/engine/operator-readiness",
+    "model": "MLXOperatorReadinessResponse",
+    "view": "MLXOperatorReadinessCard"
+  },
+  "parity_with_m207": {
+    "badges": {
+      "can_generate": "supported",
+      "candidate_swap_decision": "artifact-backed placeholder",
+      "gpu": "supported",
+      "live_model_swap": "artifact-backed placeholder",
+      "quality": "artifact-backed placeholder",
+      "runtime": "supported",
+      "warm": "supported"
+    },
+    "details": {
+      "backend": "supported",
+      "can_reload": "supported",
+      "can_unload": "supported",
+      "engine_preset": "supported",
+      "model": "supported",
+      "runtime_profile": "supported",
+      "strategy": "supported"
+    },
+    "memory": {
+      "active_memory_bytes": "supported",
+      "cache_memory_bytes": "supported",
+      "peak_memory_bytes": "supported",
+      "source": "supported"
+    },
+    "source": "artifacts/m207-prowl-readiness/prowl-operator-readiness-m207-qwen-a3b.json"
+  },
+  "readiness": "readiness-card-integrated",
+  "source_files": [
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/AppState/AppModel.swift",
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/Features/Engine/EngineView.swift",
+    "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos/Sources/ProwlMac/Features/Engine/MLXOperatorReadinessCard.swift"
+  ],
+  "tag": "m213-readiness-card-integration",
+  "type": "readiness_card_integration_report",
+  "validation": {
+    "command": "swift build",
+    "result": "PASS",
+    "workdir": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm/apps/prowl-macos"
+  },
+  "verdict": "PASS"
+}

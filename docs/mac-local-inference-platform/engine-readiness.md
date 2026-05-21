@@ -2483,3 +2483,34 @@ Decision:
 
 - Operator surfaces can expose tokenized prompt cache and prefix fast-path hit
   rates from live request metadata.
+
+## M213 Readiness Card Integration
+
+M213 wires the MLX operator readiness card into the Prowl macOS Engine view.
+
+Artifacts:
+
+- `artifacts/m213-readiness-card-integration/readiness-card-integration-m213.json`
+- `artifacts/m213-readiness-card-integration/next-milestones-after-m213.json`
+
+Prowl changes:
+
+- repo: `/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm`
+- commit: `0067c42`
+- build validation: `swift build` passed
+- host view: `apps/prowl-macos/Sources/ProwlMac/Features/Engine/EngineView.swift`
+- card view: `apps/prowl-macos/Sources/ProwlMac/Features/Engine/MLXOperatorReadinessCard.swift`
+
+Result:
+
+- verdict: `PASS`
+- readiness: `readiness-card-integrated`
+- live endpoint: `http://127.0.0.1:8773/engine/operator-readiness`
+- M207 runtime/gpu/warm/generate/detail/memory fields: supported
+- M207 quality/model-swap fields: represented as artifact-backed placeholders
+
+Decision:
+
+- Prowl now has a live MLX readiness card surface.
+- M216 should replace quality/model-swap placeholders with artifact-backed badge
+  ingestion if the UI needs those fields live.
