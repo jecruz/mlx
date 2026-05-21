@@ -1,0 +1,98 @@
+{
+  "carried_forward_performance": {
+    "first_duplicate_cache_hit": true,
+    "first_duplicate_prefill_tokens": 11.0,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_peak_memory_gb": 11.048436144
+  },
+  "checks": [
+    {
+      "detail": "verdict='PASS'",
+      "label": "auto_selection_gate",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "observed='agent-workspace-low-memory', expected='agent-workspace-low-memory'",
+      "label": "route.lower_memory_mac_32gb",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "observed='agent-workspace-first-hit', expected='agent-workspace-first-hit'",
+      "label": "route.manual_override",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "observed='agent-workspace-async', expected='agent-workspace-async'",
+      "label": "route.normal_coding_agent",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "observed='agent-workspace-first-hit', expected='agent-workspace-first-hit'",
+      "label": "route.immediate_second_turn",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "observed='interactive', expected='interactive'",
+      "label": "route.interactive_foreground",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "observed='diagnostics', expected='diagnostics'",
+      "label": "route.diagnostics",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "decision='ACCEPT', readiness='swap-acceptable'",
+      "label": "model_swap_acceptance",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS', readiness='ci-quality-ready'",
+      "label": "quality_threshold",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "memory_guard",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "first_duplicate_service_ms=193.0981669574976",
+      "label": "first_duplicate_service_budget",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "cache_hit=True",
+      "label": "first_duplicate_cache_hit",
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "inputs": {
+    "auto_selection": "artifacts/m234-lower-memory-default-routing-policy/profile-auto-selection-runtime-gate-m234.json",
+    "memory_guard": "artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.json",
+    "model_swap": "artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json",
+    "promotion_gate": "artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b.json",
+    "quality_threshold": "artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json"
+  },
+  "readiness": "lower-memory-default-routing-ready",
+  "routing_policy": {
+    "default_low_memory_profile": "agent-workspace-low-memory",
+    "default_when": [
+      "explicit low_memory=true",
+      "memory_class_gb is 16, 24, or 32",
+      "workload_intent is low-memory or coding-agent-low-memory"
+    ],
+    "do_not_default_when": [
+      "manual profile override is present",
+      "interactive foreground work is non-agentic",
+      "diagnostics workload is requested",
+      "64GB+ agentic work without low-memory signal should use agent-workspace-async",
+      "immediate second-turn work without low-memory signal should use agent-workspace-first-hit"
+    ]
+  },
+  "tag": "m234-lower-memory-default-routing",
+  "type": "lower_memory_default_routing_policy_gate",
+  "verdict": "PASS"
+}

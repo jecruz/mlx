@@ -1,0 +1,71 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M234",
+  "tag": "m234-lower-memory-default-routing-policy",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "artifacts": [
+    {
+      "path": "artifacts/m234-lower-memory-default-routing-policy/profile-auto-selection-runtime-gate-m234.json",
+      "type": "profile_auto_selection_runtime_gate",
+      "verdict": "PASS",
+      "scenarios": 6,
+      "failures": 0
+    },
+    {
+      "path": "artifacts/m234-lower-memory-default-routing-policy/lower-memory-default-routing-policy-gate-m234.json",
+      "type": "lower_memory_default_routing_policy_gate",
+      "verdict": "PASS",
+      "readiness": "lower-memory-default-routing-ready",
+      "checks": 12,
+      "failures": 0
+    }
+  ],
+  "documents": [
+    {
+      "path": "docs/mac-local-inference-platform/lower-memory-default-routing-policy.md",
+      "purpose": "product/operator routing contract"
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 benchmarks/python/profile_auto_selection_runtime_gate.py --output-json artifacts/m234-lower-memory-default-routing-policy/profile-auto-selection-runtime-gate-m234.json --tag m234-lower-memory-default-routing --fail-on-fail",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 -m py_compile benchmarks/python/lower_memory_default_routing_policy_gate.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/lower_memory_default_routing_policy_gate.py --auto-selection-json artifacts/m234-lower-memory-default-routing-policy/profile-auto-selection-runtime-gate-m234.json --model-swap-json artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json --quality-threshold-json artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json --memory-guard-json artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.json --promotion-gate-json artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b.json --output-json artifacts/m234-lower-memory-default-routing-policy/lower-memory-default-routing-policy-gate-m234.json --output-md artifacts/m234-lower-memory-default-routing-policy/lower-memory-default-routing-policy-gate-m234.md --tag m234-lower-memory-default-routing --fail-on-fail",
+      "result": "PASS"
+    }
+  ],
+  "routing_policy": {
+    "default_low_memory_profile": "agent-workspace-low-memory",
+    "default_when": [
+      "explicit low_memory=true",
+      "memory_class_gb is 16, 24, or 32",
+      "workload_intent is low-memory or coding-agent-low-memory"
+    ],
+    "do_not_default_when": [
+      "manual profile override is present",
+      "non-agentic interactive foreground work",
+      "diagnostics workload",
+      "64GB+ agentic work without low-memory signal",
+      "immediate second-turn work without low-memory signal"
+    ]
+  },
+  "performance": {
+    "hot_path_changed": false,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "first_duplicate_prefill_tokens": 11,
+    "first_duplicate_cache_hit": true,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_peak_memory_gb": 11.048436144,
+    "quality_threshold": "PASS",
+    "model_swap_decision": "ACCEPT",
+    "memory_guard": "PASS"
+  },
+  "failures": []
+}

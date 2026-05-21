@@ -3694,3 +3694,28 @@
   - M233 conclusion: proactive cache growth is now bounded for the first-hit
     and lower-memory routes without lowering the cache floor below the 5
     proactive prefixes that made the first duplicate request fast.
+- Completed M234 lower-memory default-routing policy:
+  - added `benchmarks/python/lower_memory_default_routing_policy_gate.py`
+  - added
+    `docs/mac-local-inference-platform/lower-memory-default-routing-policy.md`
+  - generated artifacts under
+    `artifacts/m234-lower-memory-default-routing-policy/`
+  - policy:
+    - default to `agent-workspace-low-memory` for `low_memory=true`,
+      `memory_class_gb` of `16`, `24`, or `32`, or low-memory workload intents
+    - preserve manual overrides, interactive foreground work, diagnostics,
+      64GB+ steady-state agentic work, and immediate second-turn routing
+  - validation passed:
+    - profile auto-selection runtime gate verdict `PASS`
+    - lower-memory default-routing policy gate verdict `PASS`
+    - policy checks `12`
+    - failures `0`
+  - performance and quality evidence:
+    - M231 model-swap decision `ACCEPT`
+    - M231 quality threshold `PASS`
+    - M233 proactive-cache memory guard `PASS`
+    - first duplicate service remains `193.098 ms`
+    - first duplicate prefill remains `11` tokens
+    - mature-hit speedup remains `23.445x`
+  - M234 conclusion: lower-memory routing is now explicit and gated by current
+    quality, swap, memory-guard, and first-hit performance evidence.
