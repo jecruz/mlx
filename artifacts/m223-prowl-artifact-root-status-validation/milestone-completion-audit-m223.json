@@ -1,0 +1,34 @@
+{
+  "artifacts": {
+    "performance_report": "artifacts/m223-prowl-artifact-root-status-validation/prowl-artifact-root-status-validation-m223.md"
+  },
+  "code_changes": {
+    "prowl_commit": "d06f1e0 feat(macos): validate MLX artifact root status",
+    "prowl_files": [
+      "apps/prowl-macos/Sources/ProwlMac/Features/Engine/MLXOperatorReadinessCard.swift",
+      "apps/prowl-macos/Sources/ProwlMac/Features/Settings/SettingsModelSourcesCard.swift",
+      "apps/prowl-macos/Tests/ProwlTests/MLXOperatorArtifactClientTests.swift"
+    ]
+  },
+  "milestone": "M223",
+  "name": "Prowl artifact-root status validation",
+  "performance": {
+    "inference_runtime_changed": false,
+    "m221_a3b_first_duplicate_conversion_ratio": 0.774588705514579,
+    "m221_a3b_mature_hit_best_service_ms": 205.462,
+    "m222_qwen25_coder_14b_active_memory_gb": 8.360,
+    "m222_qwen25_coder_14b_mature_hit_best_service_ms": 182.281
+  },
+  "status": "complete",
+  "validation": {
+    "artifact_states_covered": [
+      "MISSING",
+      "PASS",
+      "STALE"
+    ],
+    "swift_test_command": "swift test --package-path apps/prowl-macos -c release",
+    "swift_test_result": "PASS",
+    "swift_tests_failed": 0,
+    "swift_tests_passed": 16
+  }
+}

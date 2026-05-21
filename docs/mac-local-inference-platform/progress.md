@@ -3376,3 +3376,24 @@
   - M222 conclusion: Qwen2.5 Coder 14B MLX is quality-eligible for
     lower-memory steady-cache workflows, but not a default replacement until
     first-hit conversion and cold/full-prefill latency improve.
+- Completed M223 Prowl artifact-root status validation:
+  - Prowl commit:
+    `d06f1e0 feat(macos): validate MLX artifact root status`
+  - updated Prowl artifact handling:
+    - root status: `PASS`, `MISSING`, `STALE`, or `INVALID`
+    - latest quality/model-swap artifact discovery from the configured
+      `artifacts/` tree
+    - Settings > Model Sources shows artifact-root status below the picker
+    - MLX Operator Readiness card shows artifact source paths and issues
+  - generated artifacts under
+    `artifacts/m223-prowl-artifact-root-status-validation/`
+  - validation passed:
+    - `swift test --package-path apps/prowl-macos -c release`
+    - full Prowl test suite: `16` passed, `0` failed
+    - new artifact-client tests cover `MISSING`, `PASS`, and `STALE`
+  - performance note:
+    - no MLX runtime path changed
+    - M221/M222 inference performance evidence remains unchanged
+  - M223 conclusion: Prowl can now distinguish missing, stale, and PASS MLX
+    artifacts from the configured root instead of hiding all artifact problems
+    behind an unavailable badge.
