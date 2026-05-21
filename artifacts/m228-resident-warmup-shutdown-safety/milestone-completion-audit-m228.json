@@ -1,0 +1,56 @@
+{
+  "milestone": "M228",
+  "name": "Resident warmup shutdown safety",
+  "status": "complete",
+  "acceptance": "join or cancel resident warmup/background cache threads cleanly during shutdown and reload",
+  "code_changes": [
+    "ResidentEngine now owns a shutdown_requested event",
+    "ResidentEngine tracks async prefix-cache build threads",
+    "async prefix-cache builds skip when shutdown is requested",
+    "warmup records cancelled state when shutdown interrupts it",
+    "ResidentEngine.shutdown joins warmup and async cache-build threads",
+    "EngineManager.reload requests shutdown and joins old-engine background work",
+    "EngineManager.unload requests shutdown and joins old-engine background work",
+    "FastAPI app shutdown uses lifespan to call EngineManager.shutdown"
+  ],
+  "artifacts": {
+    "performance_report": "artifacts/m228-resident-warmup-shutdown-safety/resident-warmup-shutdown-safety-m228.md"
+  },
+  "validation": {
+    "py_compile": "PASS",
+    "shutdown_probe": {
+      "command": "python3 benchmarks/python/resident_shutdown_safety_probe.py",
+      "verdict": "PASS",
+      "warmup_alive_before": true,
+      "warmup_joined": true,
+      "warmup_alive_after": false,
+      "async_threads_before": 1,
+      "async_threads_joined": 1,
+      "async_threads_alive_after": 0,
+      "pending_async_builds_after": 0,
+      "tracked_async_threads_after": 0
+    },
+    "live_reload_unload": {
+      "server_port": 8775,
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+      "health_result": "True Device(gpu, 0)",
+      "reload_result": "True True 1 async True False",
+      "unload_result": "True False 1",
+      "server_shutdown": "PASS"
+    },
+    "lifespan_shutdown": {
+      "server_port": 8776,
+      "health_result": "True True off True",
+      "deprecated_on_event_warning": false,
+      "server_shutdown": "PASS"
+    }
+  },
+  "performance": {
+    "inference_runtime_changed": false,
+    "shutdown_probe_elapsed_ms": 0.073,
+    "m226_lower_memory_turn2_prefill_tokens": 11,
+    "m226_mature_hit_service_ms": 185.817,
+    "m226_mature_hit_speedup_vs_baseline": 21.39,
+    "m226_conversion_cache_prepare_ms": 3366.409
+  }
+}

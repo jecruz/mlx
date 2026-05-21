@@ -1,0 +1,25 @@
+{
+  "after": "M228",
+  "next": [
+    {
+      "id": "M229",
+      "name": "Proactive first-duplicate cache creation",
+      "acceptance": "reduce first duplicate request latency by creating reusable cache state before request-derived split-prefill is needed"
+    },
+    {
+      "id": "M230",
+      "name": "Lower-memory profile promotion gate",
+      "acceptance": "define and pass a promotion gate for lower-memory models that combines memory ceiling, first-hit behavior, mature-hit speedup, and quality threshold"
+    },
+    {
+      "id": "M231",
+      "name": "Model-swap artifact freshness refresh",
+      "acceptance": "produce current model-swap acceptance evidence so Prowl artifact-root status can move from STALE to PASS when the chosen model swap is valid"
+    },
+    {
+      "id": "M232",
+      "name": "Resident lifecycle regression gate",
+      "acceptance": "add lifecycle shutdown, reload, unload, and startup-preflight probes to a repeatable resident regression gate"
+    }
+  ]
+}

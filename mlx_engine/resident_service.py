@@ -1,6 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 
 import argparse
+from contextlib import asynccontextmanager
 import copy
 import gc
 import hashlib
@@ -1066,6 +1067,8 @@ class ResidentEngine:
         self.warmup_thread: threading.Thread | None = None
         self.warmup_started_at: float | None = None
         self.warmup_completed_at: float | None = None
+        self.warmup_cancelled = False
+        self.shutdown_requested = threading.Event()
         t0 = time.perf_counter()
         ensure_mlx_runtime_imported()
         self.startup_timings["import_mlx_runtime_ms"] = 1e3 * (
@@ -1139,6 +1142,7 @@ class ResidentEngine:
         self.prefix_cache_population_mode = prefix_cache_population_mode
         self.prefix_cache_pending_builds: set[str] = set()
         self.prefix_cache_build_lock = threading.RLock()
+        self.prefix_cache_build_threads: dict[str, threading.Thread] = {}
         self.prefix_cache_async_builds_started = 0
         self.prefix_cache_async_builds_completed = 0
         self.prefix_cache_async_builds_failed = 0
@@ -1657,6 +1661,12 @@ class ResidentEngine:
         prefill_step_size: int | None,
     ) -> bool:
         with self.prefix_cache_build_lock:
+            if self.shutdown_requested.is_set():
+                self.prefix_cache_async_builds_skipped += 1
+                self.last_prefix_cache_async_error = (
+                    "async prefix cache build skipped: engine shutdown requested"
+                )
+                return False
             existing = self.prefix_kv_cache.get(key)
             if existing is not None and existing["scope"] == scope:
                 self.prefix_cache_existing_build_reuses += 1
@@ -1669,6 +1679,13 @@ class ResidentEngine:
 
         def worker() -> None:
             try:
+                if self.shutdown_requested.is_set():
+                    with self.prefix_cache_build_lock:
+                        self.prefix_cache_async_builds_skipped += 1
+                        self.last_prefix_cache_async_error = (
+                            "async prefix cache build skipped: engine shutdown requested"
+                        )
+                    return
                 idle, grace_wait_ms, grace_resets = self.scheduler.wait_until_idle_for(
                     timeout_ms=self.prefix_cache_async_idle_timeout_ms,
                     grace_ms=self.prefix_cache_async_idle_grace_ms,
@@ -1682,6 +1699,13 @@ class ResidentEngine:
                         self.last_prefix_cache_async_error = (
                             "async prefix cache build skipped: engine did not become "
                             "idle before timeout"
+                        )
+                    return
+                if self.shutdown_requested.is_set():
+                    with self.prefix_cache_build_lock:
+                        self.prefix_cache_async_builds_skipped += 1
+                        self.last_prefix_cache_async_error = (
+                            "async prefix cache build skipped: engine shutdown requested"
                         )
                     return
                 background_wait_ms, priority_deferrals = (
@@ -1709,14 +1733,72 @@ class ResidentEngine:
             finally:
                 with self.prefix_cache_build_lock:
                     self.prefix_cache_pending_builds.discard(key)
+                    self.prefix_cache_build_threads.pop(key, None)
 
         thread = threading.Thread(
             target=worker,
             name=f"prefix-cache-build-{key[:8]}",
             daemon=True,
         )
+        with self.prefix_cache_build_lock:
+            self.prefix_cache_build_threads[key] = thread
         thread.start()
         return True
+
+    def request_shutdown(self) -> None:
+        self.shutdown_requested.set()
+
+    def shutdown(self, *, timeout_ms: int = 2000) -> dict[str, Any]:
+        shutdown_t0 = time.perf_counter()
+        self.request_shutdown()
+
+        warmup_thread = self.warmup_thread
+        warmup_alive_before = bool(warmup_thread and warmup_thread.is_alive())
+        warmup_joined = False
+        if warmup_thread is not None and warmup_thread.is_alive():
+            warmup_thread.join(timeout=timeout_ms / 1000)
+            warmup_joined = not warmup_thread.is_alive()
+
+        with self.prefix_cache_build_lock:
+            async_threads = list(self.prefix_cache_build_threads.items())
+
+        async_joined = 0
+        async_alive_after: list[str] = []
+        deadline = shutdown_t0 + (timeout_ms / 1000)
+        for key, thread in async_threads:
+            remaining = max(deadline - time.perf_counter(), 0.0)
+            if thread.is_alive() and remaining > 0:
+                thread.join(timeout=remaining)
+            if thread.is_alive():
+                async_alive_after.append(key)
+            else:
+                async_joined += 1
+
+        with self.prefix_cache_build_lock:
+            for key in list(self.prefix_cache_build_threads):
+                thread = self.prefix_cache_build_threads[key]
+                if not thread.is_alive():
+                    self.prefix_cache_build_threads.pop(key, None)
+                    self.prefix_cache_pending_builds.discard(key)
+            pending_after = len(self.prefix_cache_pending_builds)
+            tracked_after = len(self.prefix_cache_build_threads)
+
+        warmup_alive_after = bool(warmup_thread and warmup_thread.is_alive())
+        return {
+            "shutdown_requested": True,
+            "timeout_ms": timeout_ms,
+            "elapsed_ms": 1e3 * (time.perf_counter() - shutdown_t0),
+            "warmup_thread_present": warmup_thread is not None,
+            "warmup_alive_before": warmup_alive_before,
+            "warmup_joined": warmup_joined,
+            "warmup_alive_after": warmup_alive_after,
+            "async_threads_before": len(async_threads),
+            "async_threads_joined": async_joined,
+            "async_threads_alive_after": len(async_alive_after),
+            "async_threads_alive_keys": async_alive_after,
+            "pending_async_builds_after": pending_after,
+            "tracked_async_threads_after": tracked_after,
+        }
 
     def schedule_deferred_prefix_cache_build(
         self,
@@ -3092,6 +3174,8 @@ class ResidentEngine:
         assert build_token_prompt is not None
         tokenizer = self.tokenizer.tokenizer if hasattr(self.tokenizer, "tokenizer") else self.tokenizer
         for target in self.warmup_targets():
+            if self.shutdown_requested.is_set():
+                break
             prompt_tokens = int(target["prompt_tokens"])
             prefill_step_size, prefill_selection = self.selected_prefill_policy(
                 "throughput_default",
@@ -3124,6 +3208,7 @@ class ResidentEngine:
             self.warmup_started_at = time.time()
             self.warmup_completed_at = None
             self.warmup_error = None
+            self.warmup_cancelled = False
         warmup_t0 = time.perf_counter()
         try:
             results = self._warmup() if self.warmup_prompt_tokens else []
@@ -3132,12 +3217,14 @@ class ResidentEngine:
                 self.warmup_results = results
                 self.warmup_completed_at = time.time()
                 self.warmup_error = None
+                self.warmup_cancelled = self.shutdown_requested.is_set()
             self.startup_timings["warmup_ms"] = elapsed_ms
         except Exception as exc:
             elapsed_ms = 1e3 * (time.perf_counter() - warmup_t0)
             with self.warmup_lock:
                 self.warmup_completed_at = time.time()
                 self.warmup_error = str(exc)
+                self.warmup_cancelled = self.shutdown_requested.is_set()
             self.startup_timings["warmup_ms"] = elapsed_ms
             if self.warmup_mode == "sync":
                 raise
@@ -3155,6 +3242,7 @@ class ResidentEngine:
                 "profile_prefill": self.warmup_profile_prefill,
                 "running": running,
                 "completed": completed,
+                "cancelled": self.warmup_cancelled,
                 "error": self.warmup_error,
                 "started_at": self.warmup_started_at,
                 "completed_at": self.warmup_completed_at,
@@ -4344,6 +4432,7 @@ class EngineManager:
                     warmup_mode=warmup_mode,
                 )
                 if old_engine is not None:
+                    old_engine.request_shutdown()
                     old_engine.execution_lock.acquire_foreground()
                 try:
                     self.engine = new_engine
@@ -4359,6 +4448,7 @@ class EngineManager:
                     if old_engine is not None:
                         old_engine.execution_lock.release()
                 if old_engine is not None:
+                    old_engine.shutdown()
                     del old_engine
                 gc.collect()
                 if hasattr(mx, "clear_cache"):
@@ -4373,6 +4463,7 @@ class EngineManager:
             old_engine = self.engine
             if old_engine is None:
                 return self.metadata()
+            old_engine.request_shutdown()
             old_engine.execution_lock.acquire_foreground()
             try:
                 self.last_model_path = old_engine.model_path
@@ -4382,11 +4473,24 @@ class EngineManager:
                 self.last_unloaded_at = time.time()
             finally:
                 old_engine.execution_lock.release()
+            old_engine.shutdown()
             del old_engine
             gc.collect()
             if hasattr(mx, "clear_cache"):
                 mx.clear_cache()
             return self.metadata()
+
+    def shutdown(self) -> dict[str, Any]:
+        with self.lock:
+            old_engine = self.engine
+            self.engine = None
+        if old_engine is None:
+            return {"ok": True, "shutdown": None}
+        result = old_engine.shutdown()
+        gc.collect()
+        if hasattr(mx, "clear_cache"):
+            mx.clear_cache()
+        return {"ok": True, "shutdown": result}
 
 
 def parse_args():
@@ -4443,7 +4547,14 @@ def parse_warmup_tokens(raw: str):
 
 
 def create_app(manager: EngineManager):
-    app = FastAPI(title="Resident MLX Engine", version="0.2")
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        try:
+            yield
+        finally:
+            manager.shutdown()
+
+    app = FastAPI(title="Resident MLX Engine", version="0.2", lifespan=lifespan)
 
     @app.get("/health")
     def health():

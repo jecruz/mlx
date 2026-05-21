@@ -3505,3 +3505,34 @@
   - M227 conclusion: Prowl sees the configured MLX artifact root live without
     an app rebuild. The current `STALE` warning is correct because model-swap
     evidence is older than the latest quality milestone.
+- Completed M228 resident warmup shutdown safety:
+  - updated `mlx_engine/resident_service.py`
+  - added `benchmarks/python/resident_shutdown_safety_probe.py`
+  - generated artifacts under
+    `artifacts/m228-resident-warmup-shutdown-safety/`
+  - implementation:
+    - per-engine shutdown event
+    - tracked async prefix-cache build threads
+    - shutdown-aware async cache-build scheduling
+    - warmup cancellation state in `/health`
+    - old-engine shutdown during reload and unload
+    - FastAPI lifespan shutdown hook
+  - validation passed:
+    - `python3 -m py_compile mlx_engine/resident_service.py benchmarks/python/resident_shutdown_safety_probe.py`
+    - shutdown probe verdict `PASS`
+    - warmup thread joined `True`
+    - async cache-build threads joined `1`
+    - async cache-build threads alive after shutdown `0`
+    - pending async builds after shutdown `0`
+    - live temporary server reload returned `True True 1 async True False`
+    - live temporary server unload returned `True False 1`
+    - lifespan server health returned `True True off True`
+    - temporary servers shut down cleanly
+  - performance:
+    - no inference hot path changed
+    - shutdown probe elapsed about `0.073 ms`
+    - M226 lower-memory mature-hit service remains `185.817 ms`
+    - M226 first-duplicate cache prepare remains the next latency bottleneck
+      at `3366.409 ms`
+  - M228 conclusion: reload, unload, and process shutdown now signal old
+    engines and join or clean tracked warmup/background cache-build work.
