@@ -3568,3 +3568,41 @@
     - readiness `ci-quality-ready`
   - M229 conclusion: proactive cache creation converts the M226 compatibility
     fix into a real first-duplicate latency win for the lower-memory candidate.
+- Completed M230 lower-memory profile promotion gate:
+  - added `benchmarks/python/lower_memory_profile_promotion_gate.py`
+  - generated artifacts under
+    `artifacts/m230-lower-memory-profile-promotion-gate/`
+  - gate definition combines:
+    - quality threshold verdict/readiness
+    - first-hit conversion gate verdict
+    - max active memory
+    - max peak memory
+    - first duplicate service latency
+    - first duplicate prefill tokens
+    - first duplicate cache-hit behavior
+    - conversion ratio vs baseline
+    - mature-hit speedup
+    - proactive prefix-cache creation
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/lower_memory_profile_promotion_gate.py`
+    - promotion gate verdict `PASS`
+    - checks `12`
+    - failures `0`
+  - calibrated memory ceiling:
+    - `10 GB` calibration gate failed because active memory reached
+      `11.028 GB` and peak memory reached `11.048 GB`
+    - accepted M230 ceiling is `12 GB`
+  - performance:
+    - max active memory `11.028 GB`
+    - max peak memory `11.048 GB`
+    - first duplicate service `193.098 ms`
+    - first duplicate prefill `11` tokens
+    - first duplicate cache hit `true`
+    - conversion ratio `0.043`
+    - mature-hit speedup `23.445x`
+  - quality:
+    - quality threshold `PASS`
+    - readiness `ci-quality-ready`
+  - M230 conclusion: the lower-memory Qwen2.5 Coder 14B candidate is
+    promotable under a concrete memory, speed, first-hit, proactive-cache, and
+    quality gate.

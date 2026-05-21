@@ -1,0 +1,138 @@
+{
+  "checks": [
+    {
+      "actual": "PASS",
+      "label": "quality_threshold_verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "ci-quality-ready",
+      "label": "quality_threshold_readiness",
+      "operator": "==",
+      "threshold": "ci-quality-ready",
+      "verdict": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "label": "conversion_gate_verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 11.027572744,
+      "label": "max_active_memory_gb",
+      "operator": "<=",
+      "threshold": 10.0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 11.048436144,
+      "label": "max_peak_memory_gb",
+      "operator": "<=",
+      "threshold": 10.0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 193.0981669574976,
+      "label": "first_duplicate_service_ms",
+      "operator": "<=",
+      "threshold": 250.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 11.0,
+      "label": "first_duplicate_prefill_tokens",
+      "operator": "<=",
+      "threshold": 32.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "label": "first_duplicate_cache_hit",
+      "operator": "==",
+      "threshold": true,
+      "verdict": "PASS"
+    },
+    {
+      "actual": false,
+      "label": "first_duplicate_cache_created",
+      "operator": "==",
+      "threshold": false,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.04265265991536023,
+      "label": "conversion_ratio_vs_baseline",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 23.445196664976958,
+      "label": "mature_hit_speedup_vs_baseline",
+      "operator": ">=",
+      "threshold": 5.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 5.0,
+      "label": "proactive_prefix_cache_created",
+      "operator": ">=",
+      "threshold": 1,
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [
+    {
+      "actual": 11.027572744,
+      "label": "max_active_memory_gb",
+      "operator": "<=",
+      "threshold": 10.0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 11.048436144,
+      "label": "max_peak_memory_gb",
+      "operator": "<=",
+      "threshold": 10.0,
+      "verdict": "FAIL"
+    }
+  ],
+  "inputs": {
+    "conversion_gate_json": "artifacts/m229-proactive-first-duplicate-cache/dax-first-hit-conversion-gate-m229-qwen25-coder-14b-resident-agent-workspace-first-hit.json",
+    "quality_threshold_json": "artifacts/m229-proactive-first-duplicate-cache/quality-threshold-gate-m229-qwen25-coder-14b-adapted.json",
+    "repeated_context_json": "artifacts/m229-proactive-first-duplicate-cache/dax-repeated-context-m229-qwen25-coder-14b-resident-agent-workspace-first-hit.json"
+  },
+  "metrics": {
+    "conversion_ratio_vs_baseline": 0.04265265991536023,
+    "first_duplicate_cache_created": false,
+    "first_duplicate_cache_hit": true,
+    "first_duplicate_prefill_tokens": 11.0,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_active_memory_gb": 11.027572744,
+    "max_peak_memory_gb": 11.048436144,
+    "proactive_prefix_cache_created": 5.0
+  },
+  "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+  "quality": {
+    "readiness": "ci-quality-ready",
+    "verdict": "PASS"
+  },
+  "readiness": "lower-memory-profile-blocked",
+  "tag": "m230-qwen25-coder-14b-10gb-calibration",
+  "thresholds": {
+    "max_active_memory_gb": 10.0,
+    "max_conversion_ratio": 0.2,
+    "max_first_duplicate_prefill_tokens": 32.0,
+    "max_first_duplicate_service_ms": 250.0,
+    "max_peak_memory_gb": 10.0,
+    "min_mature_hit_speedup": 5.0,
+    "require_proactive_prefix_cache": true
+  },
+  "type": "lower_memory_profile_promotion_gate",
+  "verdict": "FAIL"
+}

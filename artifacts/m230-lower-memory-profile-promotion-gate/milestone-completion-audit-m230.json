@@ -1,0 +1,59 @@
+{
+  "milestone": "M230",
+  "name": "Lower-memory profile promotion gate",
+  "status": "complete",
+  "acceptance": "define and pass a promotion gate for lower-memory models that combines memory ceiling, first-hit behavior, mature-hit speedup, and quality threshold",
+  "code_changes": [
+    "added benchmarks/python/lower_memory_profile_promotion_gate.py",
+    "gate combines quality threshold, conversion gate, memory ceiling, first-duplicate cache behavior, mature-hit speedup, and proactive cache creation"
+  ],
+  "artifacts": {
+    "promotion_gate": "artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b.json",
+    "calibration_10gb_gate": "artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b-10gb-calibration.json",
+    "performance_report": "artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230.md"
+  },
+  "promotion_gate": {
+    "verdict": "PASS",
+    "readiness": "lower-memory-profile-promotable",
+    "checks": 12,
+    "failures": 0
+  },
+  "thresholds": {
+    "max_active_memory_gb": 12.0,
+    "max_peak_memory_gb": 12.0,
+    "max_first_duplicate_service_ms": 250.0,
+    "max_first_duplicate_prefill_tokens": 32.0,
+    "max_conversion_ratio": 0.2,
+    "min_mature_hit_speedup": 5.0,
+    "require_proactive_prefix_cache": true
+  },
+  "metrics": {
+    "max_active_memory_gb": 11.027572744,
+    "max_peak_memory_gb": 11.048436144,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "first_duplicate_prefill_tokens": 11.0,
+    "first_duplicate_cache_hit": true,
+    "first_duplicate_cache_created": false,
+    "conversion_ratio_vs_baseline": 0.04265265991536023,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "proactive_prefix_cache_created": 5.0
+  },
+  "quality": {
+    "verdict": "PASS",
+    "readiness": "ci-quality-ready",
+    "max_repetition_score": 0.045455
+  },
+  "calibration": {
+    "ten_gb_gate_verdict": "FAIL",
+    "ten_gb_failures": [
+      "max_active_memory_gb 11.027572744 <= 10.0",
+      "max_peak_memory_gb 11.048436144 <= 10.0"
+    ],
+    "accepted_memory_ceiling_gb": 12.0
+  },
+  "validation": {
+    "py_compile": "PASS",
+    "promotion_gate": "PASS",
+    "git_diff_check": "PASS"
+  }
+}
