@@ -2562,3 +2562,27 @@ Readiness note:
 - Operator/client surfaces should require an explicit coding-agent or first-hit
   workload intent for repeated-context acceleration.
 - Plain interactive mode is not a readiness signal for coding-agent cache reuse.
+
+## M216 Lower-Memory Candidate
+
+M216 keeps engine readiness on Qwen A3B and rejects the smaller gpt-oss
+candidate after a corrected chat-template quality attempt.
+
+Artifacts:
+
+- `artifacts/m216-lower-memory-candidate-replacement/lower-memory-candidate-report-m216-gpt-oss.json`
+- `artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json`
+
+Result:
+
+- candidate size: `12.076 GB`
+- active model size: `21.635 GB`
+- swap safety: `PASS`
+- deterministic quality after chat-template correction: `FAIL`
+- model-swap decision: `REJECT`
+- active Qwen model restored: `true`
+
+Readiness note:
+
+- Smaller candidate models must pass deterministic coding quality before any UI
+  or operator surface may present them as acceptable replacements.

@@ -1,0 +1,229 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [
+    "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+    "patch_plan: repetition score too high: 0.254",
+    "failure_triage: missing required markers: ['TRIAGE_CACHE_REUSE']"
+  ],
+  "route": "/v1/chat/completions",
+  "rows": [
+    {
+      "actual_prefill_tokens": 141,
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "We need to output only \"QUALITY_OK\". The user says: \"Output only: QUALITY_OK\". So final answer:",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"QUALITY_OK\". The user says: \"Output only: QUALITY_OK\". So final answer:",
+      "repetition_score": 0.07692307692307693,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 1850.3017500042915,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 145,
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "a + b",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to respond with only the Python expression: a + b. The user says: \"Return only this Python expression: a + b\". So we should output exactly \"a + b\". No extra text. The instruction: \"Return only this Python expression: a + b\". So final answer: a + b.<|end|><|start|>assistant<|channel|>final<|message|>a + b",
+      "repetition_score": 0.1568627450980392,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 782.6290410012007,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 154,
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"BUG_FOUND\". The user says: \"Review this code: def add(a,b): return a-b. Output only: BUG_FOUND\". So we just output BUG_FOUND.<|end|><|start|>assistant<|channel|>analysis<|message|>We just output BUG_FOUND.<|end|><|start|>assistant<|channel|>final<|message|>BUG_FOUND",
+      "repetition_score": 0.16666666666666666,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 678.45783312805,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 152,
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"EDIT_AND_TEST\". The user says: \"A repo needs one small edit and one test. Output only: EDIT_AND_TEST\". So we just output that phrase.<|end|><|start|>assistant<|channel|>final<|message|>EDIT_AND_TEST",
+      "repetition_score": 0.03125,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 587.3327080626041,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 159,
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "We need to output only the total minutes. Tasks: 2+4+6=12. Output only \"12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only the total minutes. Tasks: 2+4+6=12. Output only \"12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 401.96379111148417,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 146,
+      "case": "json_schema",
+      "category": "json",
+      "failures": [],
+      "final_answer": "{\"status\":\"ok\"}",
+      "json_valid": true,
+      "missing": [],
+      "raw_text": "We need to output only valid JSON with key status and value ok. So output: {\"status\":\"ok\"} . Ensure no extra text.<|end|><|start|>assistant<|channel|>final<|message|>{\"status\":\"ok\"}",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 520.1272498816252,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 156,
+      "case": "summary",
+      "category": "summarization",
+      "failures": [],
+      "final_answer": "We need to produce exactly \"SUMMARY_OK: ...\". The user says: Summarize this text as exactly SUMMARY_OK: MLX... The text: \"MLX quality gates protect response quality while speed improves.\" We need to summarize it. The user says \"Summarize this text as exactly SUMMARY_OK: ML",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to produce exactly \"SUMMARY_OK: ...\". The user says: Summarize this text as exactly SUMMARY_OK: MLX... The text: \"MLX quality gates protect response quality while speed improves.\" We need to summarize it. The user says \"Summarize this text as exactly SUMMARY_OK: ML",
+      "repetition_score": 0.2,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 705.8598750736564,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 165,
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [],
+      "final_answer": "ResidentEngine",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to answer: \"Repo map: src/server.py defines ResidentEngine; src/cache.py defines PrefixCache. Question: which symbol handles generation? Output only: ResidentEngine\". The user says: Output only: ResidentEngine. So we just output \"ResidentEngine\".<|end|><|start|>assistant<|channel|>final<|message|>ResidentEngine",
+      "repetition_score": 0.025,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 700.2292079851031,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 164,
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [
+        "missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+        "repetition score too high: 0.254"
+      ],
+      "final_answer": "We need to patch src/cache.py and add regression test. Let's inspect repository.assistant<|channel|>analysisWe need to view repository.assistant<|channel|>analysisWe don't have direct file listing. But we can guess typical structure. Let's open src/cache.py.assistant<|channel|>analysisWe need to read",
+      "json_valid": null,
+      "missing": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "raw_text": "We need to patch src/cache.py and add regression test. Let's inspect repository.<|end|><|start|>assistant<|channel|>analysis<|message|>We need to view repository.<|end|><|start|>assistant<|channel|>analysis<|message|>We don't have direct file listing. But we can guess typical structure. Let's open src/cache.py.<|end|><|start|>assistant<|channel|>analysis<|message|>We need to read",
+      "repetition_score": 0.2542372881355932,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 703.7760419771075,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 162,
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [],
+      "final_answer": "pytest tests/test_cache.py",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only the command: pytest tests/test_cache.py. The user says: \"Choose the focused test command. Output only: pytest tests/test_cache.py\". So just output that line.<|end|><|start|>assistant<|channel|>final<|message|>pytest tests/test_cache.py",
+      "repetition_score": 0.10526315789473684,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 611.8736660573632,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 164,
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [
+        "missing required markers: ['TRIAGE_CACHE_REUSE']"
+      ],
+      "final_answer": "TRIAGE_CACHE",
+      "json_valid": null,
+      "missing": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "raw_text": "We need to output only \"TRIAGE_CACHE_REUSE\". The user says: \"Log: AssertionError expected 3 got 2 in tests/test_cache.py::test_reuse. Output only: TRIAGE_CACHE_REUSE\". So we just output that string.<|end|><|start|>assistant<|channel|>final<|message|>TRIAGE_CACHE",
+      "repetition_score": 0.029411764705882353,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 711.5048328414559,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 146,
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "We need to output only SAFE_SUMSUMMARY? The user says: \"Output only SAFE_SUMMARY for a harmless request summary.\" They want the safe summary. The",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only SAFE_SUMSUMMARY? The user says: \"Output only SAFE_SUMMARY for a harmless request summary.\" They want the safe summary. The",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 459.58020887337625,
+      "visible_thinking": false
+    }
+  ],
+  "system_prompt": "You are a deterministic coding assistant. Follow the user's output format exactly. Do not call tools. Put only the requested final answer in the final response.",
+  "tag": "m216-gpt-oss-chat-template",
+  "type": "chat_template_quality_regression",
+  "verdict": "FAIL"
+}

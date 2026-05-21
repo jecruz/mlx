@@ -1,0 +1,20 @@
+{
+  "audited_count": 1,
+  "failures": [],
+  "readiness": "milestone-batch-complete",
+  "rows": [
+    {
+      "exists": true,
+      "failure_count": 0,
+      "milestone": "M216",
+      "passed": true,
+      "path": "artifacts/m216-lower-memory-candidate-replacement/lower-memory-candidate-report-m216-gpt-oss.json",
+      "readiness": "lower-memory-candidate-rejected",
+      "type": "lower_memory_candidate_report",
+      "verdict": "PASS"
+    }
+  ],
+  "tag": "m216-completion-audit",
+  "type": "milestone_completion_audit",
+  "verdict": "PASS"
+}

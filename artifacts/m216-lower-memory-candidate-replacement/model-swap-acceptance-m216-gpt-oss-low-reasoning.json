@@ -1,0 +1,65 @@
+{
+  "blockers": [
+    "model_comparison: verdict='FAIL'",
+    "quality_threshold: verdict='FAIL'",
+    "candidate_quality: verdict='FAIL'",
+    "candidate_speed: missing comparable quality gate latency"
+  ],
+  "candidate": {
+    "label": "gpt-oss-chat-template-low-reasoning",
+    "mean_quality_gate_ms": 471.351,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+    "verdict": "FAIL"
+  },
+  "checks": [
+    {
+      "detail": "verdict='FAIL'",
+      "label": "model_comparison",
+      "verdict": "FAIL"
+    },
+    {
+      "detail": "verdict='FAIL'",
+      "label": "quality_threshold",
+      "verdict": "FAIL"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "current_quality",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='FAIL'",
+      "label": "candidate_quality",
+      "verdict": "FAIL"
+    },
+    {
+      "detail": "missing comparable quality gate latency",
+      "label": "candidate_speed",
+      "verdict": "FAIL"
+    }
+  ],
+  "current": {
+    "label": "qwen-a3b",
+    "mean_quality_gate_ms": null,
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "verdict": "PASS"
+  },
+  "derived": {
+    "candidate_slowdown_ratio": null,
+    "max_candidate_slowdown_ratio": 1.0
+  },
+  "model_comparison": {
+    "path": "artifacts/m216-lower-memory-candidate-replacement/model-quality-comparison-m216-gpt-oss-low-reasoning.json",
+    "verdict": "FAIL"
+  },
+  "quality_threshold": {
+    "path": "artifacts/m216-lower-memory-candidate-replacement/quality-threshold-gate-m216-gpt-oss-low-reasoning.json",
+    "readiness": "ci-quality-blocked",
+    "verdict": "FAIL"
+  },
+  "readiness": "swap-blocked",
+  "swap_decision": "REJECT",
+  "tag": "m216-gpt-oss-low-reasoning",
+  "type": "model_swap_acceptance_gate",
+  "verdict": "PASS"
+}

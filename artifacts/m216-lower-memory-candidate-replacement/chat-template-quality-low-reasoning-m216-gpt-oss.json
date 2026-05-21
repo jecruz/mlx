@@ -1,0 +1,231 @@
+{
+  "base_url": "http://127.0.0.1:8773",
+  "failures": [
+    "code_review: repetition score too high: 0.227",
+    "summary: repetition score too high: 0.268",
+    "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+    "safety_boundary: repetition score too high: 0.273"
+  ],
+  "route": "/v1/chat/completions",
+  "rows": [
+    {
+      "actual_prefill_tokens": 141,
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "We need to output only \"QUALITY_OK\".assistant<|channel|>analysisUser wants output only: QUALITY_OK.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"QUALITY_OK\".<|end|><|start|>assistant<|channel|>analysis<|message|>User wants output only: QUALITY_OK.<|end|>",
+      "repetition_score": 0.125,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 547.4343749228865,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 145,
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "a + b",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only the Python expression: a + b. So just that.<|end|><|start|>assistant<|channel|>final<|message|>a + b",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 419.945458881557,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 154,
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [
+        "repetition score too high: 0.227"
+      ],
+      "final_answer": "BUG_FOUND",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"BUG_FOUND\".<|end|><|start|>assistant<|channel|>analysis<|message|>User wants output only BUG_FOUND.<|end|><|start|>assistant<|channel|>final<|message|>BUG_FOUND",
+      "repetition_score": 0.22727272727272727,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 457.6803748495877,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 152,
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"EDIT_AND_TEST\".<|end|><|start|>assistant<|channel|>final<|message|>EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 367.41274991072714,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 159,
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "We just sum 2+4+6=12.assistant<|channel|>analysisNeed output only total minutes.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We just sum 2+4+6=12.<|end|><|start|>assistant<|channel|>analysis<|message|>Need output only total minutes.",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 421.081000007689,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 146,
+      "case": "json_schema",
+      "category": "json",
+      "failures": [],
+      "final_answer": "{\"status\":\"ok\"}",
+      "json_valid": true,
+      "missing": [],
+      "raw_text": "We need to output only valid JSON with key status and value ok. So {\"status\":\"ok\"}<|end|><|start|>assistant<|channel|>final<|message|>{\"status\":\"ok\"}",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 457.2356669232249,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 156,
+      "case": "summary",
+      "category": "summarization",
+      "failures": [
+        "repetition score too high: 0.268"
+      ],
+      "final_answer": "SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output exactly \"SUMMARY_OK: MLX...\".<|end|><|start|>assistant<|channel|>analysis<|message|>User wants summary exactly \"SUMMARY_OK: MLX quality gates protect response quality while speed improves.\"<|end|><|start|>assistant<|channel|>final<|message|>SUMMARY_OK: MLX quality gates protect response quality while speed improves.",
+      "repetition_score": 0.2682926829268293,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 660.9320829156786,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 165,
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [],
+      "final_answer": "ResidentEngine",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"ResidentEngine\".<|end|><|start|>assistant<|channel|>final<|message|>ResidentEngine",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 359.1229591984302,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 164,
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [
+        "missing required markers: ['PATCH_SRC_CACHE_AND_TEST']"
+      ],
+      "final_answer": "We need to patch src/cache.py and add regression test. Let's inspect repository.assistant<|channel|>analysisWe need to view files.assistant<|channel|>analysisWe don't have file listing. But we can guess. Let's assume cache.py has bug. We need to patch. Without context, maybe bug is about",
+      "json_valid": null,
+      "missing": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "raw_text": "We need to patch src/cache.py and add regression test. Let's inspect repository.<|end|><|start|>assistant<|channel|>analysis<|message|>We need to view files.<|end|><|start|>assistant<|channel|>analysis<|message|>We don't have file listing. But we can guess. Let's assume cache.py has bug. We need to patch. Without context, maybe bug is about",
+      "repetition_score": 0.14035087719298245,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 706.1712089926004,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 162,
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [],
+      "final_answer": "pytest tests/test_cache.py",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only the command.<|end|><|start|>assistant<|channel|>final<|message|>pytest tests/test_cache.py",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 375.46483310870826,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 164,
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [],
+      "final_answer": "TRIAGE_CACHE_REUSE",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only \"TRIAGE_CACHE_REUSE\".<|end|><|start|>assistant<|channel|>final<|message|>TRIAGE_CACHE_REUSE",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 417.2267080284655,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 146,
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [
+        "repetition score too high: 0.273"
+      ],
+      "final_answer": "We need to output only SAFE_SUMMARY for a harmless request summary. The user says: \"Output only SAFE_SUMMARY for a harmless request summary.\" So we",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "We need to output only SAFE_SUMMARY for a harmless request summary. The user says: \"Output only SAFE_SUMMARY for a harmless request summary.\" So we",
+      "repetition_score": 0.2727272727272727,
+      "request_runtime_profile": "interactive",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 466.5074171498418,
+      "visible_thinking": false
+    }
+  ],
+  "system_prompt": "You are a deterministic coding assistant. Follow the user's output format exactly. Do not call tools. Put only the requested final answer in the final response.",
+  "tag": "m216-gpt-oss-chat-template-low-reasoning",
+  "type": "chat_template_quality_regression",
+  "verdict": "FAIL"
+}

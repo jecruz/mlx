@@ -2848,3 +2848,42 @@ Decision:
 - Keep `agent-workspace-first-hit` for immediate second-turn product mode.
 - M218 should split the first-hit gate shape so request-derived first-hit
   profiles are not penalized for lacking a scheduled pre-hit row.
+
+## M216 Result
+
+M216 re-tested the only materially smaller local candidate,
+`gpt-oss-20b-MXFP4-Q8`, with a prompt-template correction attempt.
+
+Artifacts:
+
+- `benchmarks/python/chat_template_quality_probe.py`
+- `artifacts/m216-lower-memory-candidate-replacement/chat-template-quality-m216-gpt-oss.json`
+- `artifacts/m216-lower-memory-candidate-replacement/chat-template-quality-low-reasoning-m216-gpt-oss.json`
+- `artifacts/m216-lower-memory-candidate-replacement/live-model-swap-m216-gpt-oss-low-reasoning.json`
+- `artifacts/m216-lower-memory-candidate-replacement/model-quality-comparison-m216-gpt-oss-low-reasoning.json`
+- `artifacts/m216-lower-memory-candidate-replacement/quality-threshold-gate-m216-gpt-oss-low-reasoning.json`
+- `artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json`
+- `artifacts/m216-lower-memory-candidate-replacement/lower-memory-candidate-report-m216-gpt-oss.json`
+
+Candidate sizing:
+
+- active Qwen A3B 4-bit: `21.635 GB`
+- gpt-oss MXFP4/Q8: `12.076 GB`
+- Qwen 27B dense 4-bit: `26.191 GB`, not lower memory than active A3B
+
+Result:
+
+- live model swap safety: `PASS`
+- candidate reload: `1578.75 ms`
+- restore reload: `9640.2 ms`
+- chat-template quality attempt: `FAIL`, `3` failures
+- low-reasoning template experiment: `FAIL`, `4` failures
+- quality threshold: `FAIL`
+- model comparison: `FAIL`
+- model-swap acceptance: `PASS`, decision `REJECT`
+
+Decision:
+
+- Do not promote gpt-oss as the lower-memory coding-agent replacement.
+- It is smaller and reload-safe, but quality is still not acceptable.
+- The Qwen A3B model remains the active accepted coding-agent model.

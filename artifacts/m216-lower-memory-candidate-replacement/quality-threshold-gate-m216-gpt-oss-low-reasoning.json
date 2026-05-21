@@ -1,0 +1,80 @@
+{
+  "artifacts": {
+    "chat-template-quality-low-reasoning-m216-gpt-oss": {
+      "failure_count": 4,
+      "max_repetition_score": 0.272727,
+      "missing_required_count": 1,
+      "path": "artifacts/m216-lower-memory-candidate-replacement/chat-template-quality-low-reasoning-m216-gpt-oss.json",
+      "row_count": 12,
+      "row_failure_count": 4,
+      "tag": "m216-gpt-oss-chat-template-low-reasoning",
+      "type": "chat_template_quality_regression",
+      "verdict": "FAIL",
+      "visible_thinking_count": 0
+    }
+  },
+  "checks": [
+    {
+      "actual": "FAIL",
+      "label": "chat-template-quality-low-reasoning-m216-gpt-oss.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 4,
+      "label": "chat-template-quality-low-reasoning-m216-gpt-oss.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 4,
+      "label": "chat-template-quality-low-reasoning-m216-gpt-oss.row_failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 1,
+      "label": "chat-template-quality-low-reasoning-m216-gpt-oss.missing_required_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "FAIL"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-low-reasoning-m216-gpt-oss.visible_thinking_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.272727,
+      "label": "chat-template-quality-low-reasoning-m216-gpt-oss.max_repetition_score",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "FAIL"
+    }
+  ],
+  "failures": [
+    "chat-template-quality-low-reasoning-m216-gpt-oss.verdict: 'FAIL' == 'PASS' failed",
+    "chat-template-quality-low-reasoning-m216-gpt-oss.failure_count: 4 <= 0 failed",
+    "chat-template-quality-low-reasoning-m216-gpt-oss.row_failure_count: 4 <= 0 failed",
+    "chat-template-quality-low-reasoning-m216-gpt-oss.missing_required_count: 1 <= 0 failed",
+    "chat-template-quality-low-reasoning-m216-gpt-oss.max_repetition_score: 0.272727 <= 0.2 failed"
+  ],
+  "operator_bundle": null,
+  "readiness": "ci-quality-blocked",
+  "tag": "m216-gpt-oss-low-reasoning",
+  "thresholds": {
+    "allow_warnings": false,
+    "max_artifact_failures": 0,
+    "max_missing_required": 0,
+    "max_repetition_score": 0.2,
+    "max_row_failures": 0,
+    "max_visible_thinking": 0
+  },
+  "type": "quality_threshold_gate",
+  "verdict": "FAIL"
+}

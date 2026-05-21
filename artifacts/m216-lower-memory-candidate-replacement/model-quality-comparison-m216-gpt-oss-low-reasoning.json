@@ -1,0 +1,54 @@
+{
+  "failures": [
+    "gpt-oss-chat-template-low-reasoning:chat-template-quality-low-reasoning-m216-gpt-oss: FAIL failures=4"
+  ],
+  "models": [
+    {
+      "artifacts": {
+        "quality-checkpoint-m206-qwen-a3b": {
+          "failure_count": 0,
+          "failures": [],
+          "mean_service_request_ms": null,
+          "path": "artifacts/m206-live-performance-suite/quality-checkpoint-m206-qwen-a3b.json",
+          "row_count": 0,
+          "tag": "m206-qwen-a3b",
+          "type": "quality_gated_performance_checkpoint",
+          "verdict": "PASS"
+        }
+      },
+      "failures": [],
+      "label": "qwen-a3b",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+      "verdict": "PASS"
+    },
+    {
+      "artifacts": {
+        "chat-template-quality-low-reasoning-m216-gpt-oss": {
+          "failure_count": 4,
+          "failures": [
+            "code_review: repetition score too high: 0.227",
+            "summary: repetition score too high: 0.268",
+            "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+            "safety_boundary: repetition score too high: 0.273"
+          ],
+          "mean_service_request_ms": 471.351,
+          "path": "artifacts/m216-lower-memory-candidate-replacement/chat-template-quality-low-reasoning-m216-gpt-oss.json",
+          "row_count": 12,
+          "tag": "m216-gpt-oss-chat-template-low-reasoning",
+          "type": "chat_template_quality_regression",
+          "verdict": "FAIL"
+        }
+      },
+      "failures": [
+        "gpt-oss-chat-template-low-reasoning:chat-template-quality-low-reasoning-m216-gpt-oss: FAIL failures=4"
+      ],
+      "label": "gpt-oss-chat-template-low-reasoning",
+      "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+      "verdict": "FAIL"
+    }
+  ],
+  "readiness": "quality-regression-detected",
+  "tag": "m216-gpt-oss-low-reasoning",
+  "type": "model_quality_comparison",
+  "verdict": "FAIL"
+}

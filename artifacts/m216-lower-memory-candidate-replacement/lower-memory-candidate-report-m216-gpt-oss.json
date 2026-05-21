@@ -1,0 +1,64 @@
+{
+  "type": "lower_memory_candidate_report",
+  "tag": "m216-gpt-oss",
+  "verdict": "PASS",
+  "readiness": "lower-memory-candidate-rejected",
+  "candidate": {
+    "label": "gpt-oss-20b-MXFP4-Q8",
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/mlx-community/gpt-oss-20b-MXFP4-Q8",
+    "size_gb": 12.076,
+    "model_type": "gpt_oss",
+    "lower_memory_than_active": true
+  },
+  "active_model": {
+    "label": "qwen-a3b",
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit",
+    "size_gb": 21.635,
+    "restored_after_test": true
+  },
+  "attempts": {
+    "prior_raw_completion_m211": {
+      "verdict": "FAIL",
+      "failure_count": 7
+    },
+    "chat_template_route": {
+      "verdict": "FAIL",
+      "failure_count": 3,
+      "finding": "Using /v1/chat/completions improved the candidate but still failed deterministic coding quality."
+    },
+    "low_reasoning_template_experiment": {
+      "verdict": "FAIL",
+      "failure_count": 4,
+      "finding": "Passing low-reasoning style template behavior was worse, so no runtime template change was kept."
+    }
+  },
+  "swap_safety": {
+    "verdict": "PASS",
+    "candidate_reload_ms": 1578.75,
+    "restore_reload_ms": 9640.2
+  },
+  "acceptance": {
+    "swap_decision": "REJECT",
+    "readiness": "swap-blocked",
+    "blockers": [
+      "model_comparison: verdict='FAIL'",
+      "quality_threshold: verdict='FAIL'",
+      "candidate_quality: verdict='FAIL'",
+      "candidate_speed: missing comparable quality gate latency"
+    ]
+  },
+  "decision": {
+    "promote_candidate": false,
+    "reason": "The candidate is smaller and reload-safe, but deterministic coding-agent quality still fails after chat-template correction attempts.",
+    "quality_bar": "speed and memory savings do not matter if coding-agent response quality regresses"
+  },
+  "source_artifacts": {
+    "chat_template_quality": "artifacts/m216-lower-memory-candidate-replacement/chat-template-quality-m216-gpt-oss.json",
+    "low_reasoning_quality": "artifacts/m216-lower-memory-candidate-replacement/chat-template-quality-low-reasoning-m216-gpt-oss.json",
+    "live_model_swap": "artifacts/m216-lower-memory-candidate-replacement/live-model-swap-m216-gpt-oss-low-reasoning.json",
+    "model_quality_comparison": "artifacts/m216-lower-memory-candidate-replacement/model-quality-comparison-m216-gpt-oss-low-reasoning.json",
+    "quality_threshold": "artifacts/m216-lower-memory-candidate-replacement/quality-threshold-gate-m216-gpt-oss-low-reasoning.json",
+    "model_swap_acceptance": "artifacts/m216-lower-memory-candidate-replacement/model-swap-acceptance-m216-gpt-oss-low-reasoning.json"
+  },
+  "failures": []
+}

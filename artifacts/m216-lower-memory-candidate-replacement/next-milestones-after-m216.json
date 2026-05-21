@@ -1,0 +1,24 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m216-next-milestones",
+  "verdict": "PASS",
+  "readiness": "next-milestones-planned",
+  "failures": [],
+  "next_milestones": [
+    {
+      "milestone": "M217",
+      "title": "Prowl artifact-backed quality badges",
+      "acceptance": "extend the Prowl readiness card with quality/model-swap artifact ingestion instead of placeholders"
+    },
+    {
+      "milestone": "M218",
+      "title": "First-hit gate shape split",
+      "acceptance": "split scheduled-pre-hit async gating from request-derived first-hit conversion gating so first-hit profiles are not marked failed for lacking a scheduled pre-hit row"
+    },
+    {
+      "milestone": "M219",
+      "title": "Lower-memory search expansion",
+      "acceptance": "identify or convert a genuinely smaller MLX coding model candidate and run the deterministic quality gate before any performance comparison"
+    }
+  ]
+}
