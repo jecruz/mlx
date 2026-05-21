@@ -3606,3 +3606,34 @@
   - M230 conclusion: the lower-memory Qwen2.5 Coder 14B candidate is
     promotable under a concrete memory, speed, first-hit, proactive-cache, and
     quality gate.
+- Completed M231 model-swap artifact freshness refresh:
+  - added `benchmarks/python/lower_memory_model_swap_acceptance_gate.py`
+  - generated artifacts under
+    `artifacts/m231-model-swap-artifact-freshness-refresh/`
+  - generated fresh M231 quality threshold evidence:
+    - verdict `PASS`
+    - readiness `ci-quality-ready`
+    - checks `6`
+    - failures `0`
+  - generated fresh M231 lower-memory model-swap evidence:
+    - swap decision `ACCEPT`
+    - readiness `swap-acceptable`
+    - checks `10`
+    - blockers `0`
+  - validated Prowl artifact-root behavior with a temporary live-root XCTest:
+    - root status `PASS`
+    - quality status `PASS`
+    - swap status `PASS`
+    - swap decision `ACCEPT`
+    - issues empty
+  - performance:
+    - no inference hot path changed in M231
+    - first duplicate service remains `193.098 ms`
+    - M226-to-M231 first duplicate improvement remains `3433.367 ms` /
+      `94.68%`
+    - max active memory remains `11.028 GB`
+    - max peak memory remains `11.048 GB`
+    - mature-hit speedup remains `23.445x`
+  - M231 conclusion: Prowl now has same-milestone quality and model-swap
+    evidence for the lower-memory candidate, clearing the stale artifact-family
+    gap that blocked a product-facing `PASS` root status.

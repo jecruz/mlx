@@ -1,0 +1,73 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M231",
+  "tag": "m231-model-swap-artifact-freshness-refresh",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "artifacts": [
+    {
+      "path": "artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json",
+      "type": "quality_threshold_gate",
+      "verdict": "PASS",
+      "readiness": "ci-quality-ready",
+      "checks": 6,
+      "failures": 0
+    },
+    {
+      "path": "artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json",
+      "type": "lower_memory_model_swap_acceptance_gate",
+      "verdict": "PASS",
+      "swap_decision": "ACCEPT",
+      "readiness": "swap-acceptable",
+      "checks": 10,
+      "blockers": 0
+    }
+  ],
+  "prowl_validation": {
+    "repo": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm",
+    "command": "swift test --package-path apps/prowl-macos -c release --filter ProwlTests.MLXOperatorArtifactClientTests/testConfiguredDefaultRootReadsFreshM231Artifacts",
+    "result": "PASS",
+    "executed_tests": 1,
+    "failures": 0,
+    "temporary_test_removed": true,
+    "prowl_worktree_clean_after_validation": true,
+    "expected_root_status": "PASS",
+    "expected_quality_source": "artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json",
+    "expected_swap_source": "artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json"
+  },
+  "performance": {
+    "first_duplicate_service_ms": 193.0981669574976,
+    "m226_first_duplicate_service_ms": 3626.465,
+    "service_improvement_ms": 3433.367,
+    "service_improvement_percent": 94.68,
+    "first_duplicate_prefill_tokens": 11,
+    "first_duplicate_cache_hit": true,
+    "conversion_ratio_vs_baseline": 0.04265265991536023,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_active_memory_gb": 11.027572744,
+    "max_peak_memory_gb": 11.048436144
+  },
+  "checks": [
+    {
+      "label": "fresh_quality_artifact",
+      "verdict": "PASS",
+      "evidence": "M231 quality-threshold artifact is PASS and ci-quality-ready"
+    },
+    {
+      "label": "fresh_swap_artifact",
+      "verdict": "PASS",
+      "evidence": "M231 model-swap artifact is ACCEPT and swap-acceptable"
+    },
+    {
+      "label": "prowl_artifact_root_status",
+      "verdict": "PASS",
+      "evidence": "temporary Prowl XCTest read the default MLX artifact root as PASS with empty issues"
+    },
+    {
+      "label": "quality_and_swap_same_milestone",
+      "verdict": "PASS",
+      "evidence": "latest quality and model-swap artifacts are both M231, preventing stale-family status"
+    }
+  ],
+  "failures": []
+}

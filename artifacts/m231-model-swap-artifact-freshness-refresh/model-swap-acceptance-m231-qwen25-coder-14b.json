@@ -1,0 +1,90 @@
+{
+  "blockers": [],
+  "candidate": {
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+    "profile": "agent-workspace-first-hit"
+  },
+  "checks": [
+    {
+      "detail": "verdict='PASS'",
+      "label": "promotion_gate.verdict",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "readiness='lower-memory-profile-promotable'",
+      "label": "promotion_gate.readiness",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "failures=0",
+      "label": "promotion_gate.failure_count",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "quality_threshold.verdict",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "readiness='ci-quality-ready'",
+      "label": "quality_threshold.readiness",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "failures=0",
+      "label": "quality_threshold.failure_count",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "cache_hit=True",
+      "label": "candidate.first_duplicate_cache_hit",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "actual=193.0981669574976, threshold=250.0",
+      "label": "candidate.first_duplicate_service_ms",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "actual=11.048436144, threshold=12.0",
+      "label": "candidate.max_peak_memory_gb",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "actual=23.445196664976958, threshold=5.0",
+      "label": "candidate.mature_hit_speedup",
+      "verdict": "PASS"
+    }
+  ],
+  "metrics": {
+    "conversion_ratio_vs_baseline": 0.04265265991536023,
+    "first_duplicate_cache_created": false,
+    "first_duplicate_cache_hit": true,
+    "first_duplicate_prefill_tokens": 11.0,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_active_memory_gb": 11.027572744,
+    "max_peak_memory_gb": 11.048436144,
+    "proactive_prefix_cache_created": 5.0
+  },
+  "promotion_gate": {
+    "path": "artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b.json",
+    "readiness": "lower-memory-profile-promotable",
+    "verdict": "PASS"
+  },
+  "quality_threshold": {
+    "path": "artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json",
+    "readiness": "ci-quality-ready",
+    "verdict": "PASS"
+  },
+  "readiness": "swap-acceptable",
+  "swap_decision": "ACCEPT",
+  "tag": "m231-qwen25-coder-14b",
+  "thresholds": {
+    "max_first_duplicate_service_ms": 250.0,
+    "max_peak_memory_gb": 12.0,
+    "min_mature_hit_speedup": 5.0
+  },
+  "type": "lower_memory_model_swap_acceptance_gate",
+  "verdict": "PASS"
+}
