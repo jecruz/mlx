@@ -3637,3 +3637,31 @@
   - M231 conclusion: Prowl now has same-milestone quality and model-swap
     evidence for the lower-memory candidate, clearing the stale artifact-family
     gap that blocked a product-facing `PASS` root status.
+- Completed M232 resident lifecycle regression gate:
+  - added `benchmarks/python/resident_lifecycle_regression_gate.py`
+  - generated artifacts under
+    `artifacts/m232-resident-lifecycle-regression-gate/`
+  - gate coverage:
+    - shutdown probe joins warmup/background cache-build work
+    - startup preflight probe verifies occupied-port launch exits before MLX
+      import/model validation
+    - source-contract checks cover reload, unload, and FastAPI lifespan
+      shutdown wiring
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/resident_lifecycle_regression_gate.py benchmarks/python/resident_shutdown_safety_probe.py benchmarks/python/resident_port_preflight_probe.py`
+    - lifecycle gate verdict `PASS`
+    - readiness `resident-lifecycle-regression-ready`
+    - checks `11`
+    - failures `0`
+    - JSON artifacts parse cleanly
+  - note:
+    - the lifecycle gate must run outside the sandbox because the startup
+      preflight probe binds a local `127.0.0.1` test socket
+  - performance:
+    - no inference hot path changed in M232
+    - shutdown probe elapsed about `0.058 ms`
+    - first duplicate service remains `193.098 ms`
+    - M226-to-current first duplicate improvement remains `3433.367 ms` /
+      `94.68%`
+  - M232 conclusion: lifecycle safety is now a repeatable regression gate
+    instead of one-off validation notes.

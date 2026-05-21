@@ -1,0 +1,61 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M232",
+  "tag": "m232-resident-lifecycle-regression-gate",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "artifacts": [
+    {
+      "path": "artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json",
+      "type": "resident_lifecycle_regression_gate",
+      "verdict": "PASS",
+      "readiness": "resident-lifecycle-regression-ready",
+      "checks": 11,
+      "failures": 0
+    },
+    {
+      "path": "artifacts/m232-resident-lifecycle-regression-gate/resident-port-preflight-m232.json",
+      "type": "resident_port_preflight_probe",
+      "verdict": "PASS",
+      "readiness": "resident-port-preflight-ready",
+      "failures": 0
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 -m py_compile benchmarks/python/resident_lifecycle_regression_gate.py benchmarks/python/resident_shutdown_safety_probe.py benchmarks/python/resident_port_preflight_probe.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/resident_lifecycle_regression_gate.py --output-json artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json --output-md artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.md --port-preflight-json artifacts/m232-resident-lifecycle-regression-gate/resident-port-preflight-m232.json --tag m232-resident-lifecycle-regression --fail-on-fail",
+      "result": "PASS",
+      "note": "ran outside sandbox because the startup preflight probe binds a local test socket"
+    },
+    {
+      "command": "python3 -m json.tool artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 -m json.tool artifacts/m232-resident-lifecycle-regression-gate/resident-port-preflight-m232.json",
+      "result": "PASS"
+    }
+  ],
+  "coverage": {
+    "shutdown_probe": "PASS",
+    "startup_preflight_probe": "PASS",
+    "reload_source_contract": "PASS",
+    "unload_source_contract": "PASS",
+    "lifespan_shutdown_source_contract": "PASS"
+  },
+  "performance": {
+    "hot_path_changed": false,
+    "shutdown_probe_elapsed_ms": 0.058,
+    "current_first_duplicate_service_ms": 193.0981669574976,
+    "m226_first_duplicate_service_ms": 3626.465,
+    "service_improvement_ms": 3433.367,
+    "service_improvement_percent": 94.68,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_peak_memory_gb": 11.048436144
+  },
+  "failures": []
+}

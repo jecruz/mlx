@@ -1,0 +1,17 @@
+{
+  "failures": [],
+  "import_probe": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "False"
+  },
+  "occupied_port_launch": {
+    "returncode": 98,
+    "stderr": "error: port unavailable before MLX import: 127.0.0.1:57597: [Errno 48] Address already in use",
+    "stdout": ""
+  },
+  "readiness": "resident-port-preflight-ready",
+  "tag": "m232-resident-lifecycle-regression",
+  "type": "resident_port_preflight_probe",
+  "verdict": "PASS"
+}
