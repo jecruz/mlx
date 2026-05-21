@@ -1,0 +1,36 @@
+{
+  "artifacts": {
+    "deterministic_quality": "artifacts/m221-first-hit-conversion-budget/deterministic-quality-m221-qwen-a3b.json",
+    "first_hit_gate": "artifacts/m221-first-hit-conversion-budget/dax-first-hit-conversion-gate-m221-qwen-a3b-resident-agent-workspace-first-hit.json",
+    "performance_report": "artifacts/m221-first-hit-conversion-budget/first-hit-conversion-budget-m221.md",
+    "quality_threshold": "artifacts/m221-first-hit-conversion-budget/quality-threshold-gate-m221-qwen-a3b.json",
+    "repeated_context_benchmark": "artifacts/m221-first-hit-conversion-budget/dax-repeated-context-m221-qwen-a3b-resident-agent-workspace-first-hit.json",
+    "sweep": "artifacts/m221-first-hit-conversion-budget/dax-first-hit-scheduling-sweep-m221-qwen-a3b-resident.json"
+  },
+  "code_changes": [
+    "benchmarks/python/dax_first_hit_scheduling_sweep.py ranks request-conversion variants by first_hit_service_request_ms",
+    "benchmarks/python/dax_first_hit_scheduling_sweep.py tightens default max_conversion_ratio from 1.10 to 0.80",
+    "benchmarks/python/dax_first_hit_scheduling_sweep.py tightens default min_first_hit_speedup from 2.0 to 5.0"
+  ],
+  "comparison_to_m218": {
+    "m218_conversion_ratio_vs_baseline": 1.0268218745577977,
+    "m218_conversion_service_request_ms": 1121.6122088953853,
+    "m218_mature_hit_speedup_vs_baseline": 5.24180757860939,
+    "m221_conversion_ratio_vs_baseline": 0.774588705514579,
+    "m221_conversion_service_request_ms": 1109.1432499233633,
+    "m221_mature_hit_speedup_vs_baseline": 6.836298161708273
+  },
+  "milestone": "M221",
+  "name": "First-hit conversion budget tightening",
+  "quality": {
+    "deterministic_quality_verdict": "PASS",
+    "quality_threshold_readiness": "ci-quality-ready",
+    "quality_threshold_verdict": "PASS"
+  },
+  "status": "complete",
+  "validation": {
+    "py_compile": "PASS",
+    "sweep_target_verdict": "PASS",
+    "sweep_verdict": "PASS"
+  }
+}

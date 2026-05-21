@@ -110,15 +110,15 @@ def choose_best(summaries: list[dict[str, Any]]) -> dict[str, Any] | None:
         for item in summaries
         if item.get("benchmark_verdict") == "PASS"
         and item.get("first_hit_gate_verdict") == "PASS"
-        and numeric(item.get("scheduled_pre_hit_service_request_ms")) is not None
+        and numeric(item.get("first_hit_service_request_ms")) is not None
     ]
     if not candidates:
         return None
     return min(
         candidates,
         key=lambda item: (
-            float(item["scheduled_pre_hit_service_request_ms"]),
-            float(item.get("first_hit_service_request_ms") or 1e9),
+            float(item["first_hit_service_request_ms"]),
+            -float(item.get("first_hit_speedup_vs_baseline") or 0.0),
         ),
     )
 
@@ -128,15 +128,15 @@ def choose_best_observed(summaries: list[dict[str, Any]]) -> dict[str, Any] | No
         item
         for item in summaries
         if item.get("benchmark_verdict") == "PASS"
-        and numeric(item.get("scheduled_pre_hit_service_request_ms")) is not None
+        and numeric(item.get("first_hit_service_request_ms")) is not None
     ]
     if not candidates:
         return None
     return min(
         candidates,
         key=lambda item: (
-            float(item["scheduled_pre_hit_service_request_ms"]),
-            float(item.get("first_hit_service_request_ms") or 1e9),
+            float(item["first_hit_service_request_ms"]),
+            -float(item.get("first_hit_speedup_vs_baseline") or 0.0),
         ),
     )
 
@@ -162,9 +162,9 @@ def main() -> int:
     parser.add_argument("--max-scheduled-pre-hit-ms", type=float, default=1600.0)
     parser.add_argument("--max-scheduled-pre-hit-ratio", type=float, default=0.50)
     parser.add_argument("--min-scheduled-pre-hit-prefill-tokens", type=int, default=512)
-    parser.add_argument("--min-first-hit-speedup", type=float, default=2.0)
+    parser.add_argument("--min-first-hit-speedup", type=float, default=5.0)
     parser.add_argument("--max-first-hit-prefill-tokens", type=int, default=32)
-    parser.add_argument("--max-conversion-ratio", type=float, default=1.10)
+    parser.add_argument("--max-conversion-ratio", type=float, default=0.80)
     parser.add_argument("--fail-on-fail", action="store_true")
     args = parser.parse_args()
 

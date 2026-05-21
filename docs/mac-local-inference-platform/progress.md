@@ -3329,3 +3329,26 @@
     - `git diff --check`
   - M126 conclusion: product clients can call `apply_product_mode(...)` to emit
     validated request metadata from a small product-mode enum.
+- Completed M221 first-hit conversion budget tightening:
+  - updated `benchmarks/python/dax_first_hit_scheduling_sweep.py`
+  - request-conversion variants are now ranked by
+    `first_hit_service_request_ms` instead of being excluded by the
+    scheduled-pre-hit selector
+  - tightened first-hit sweep defaults:
+    - `--max-conversion-ratio` from `1.10` to `0.80`
+    - `--min-first-hit-speedup` from `2.0` to `5.0`
+  - generated artifacts under
+    `artifacts/m221-first-hit-conversion-budget/`
+  - validation passed:
+    - first-hit scheduling sweep verdict `PASS`
+    - target verdict `PASS`
+    - first duplicate conversion ratio `0.775 <= 0.80`
+    - first duplicate actual prefill tokens `11`
+    - mature hit speedup `6.836x >= 5.0x`
+    - deterministic quality verdict `PASS`
+    - quality threshold verdict `PASS`
+    - `python3 -m py_compile benchmarks/python/dax_first_hit_scheduling_sweep.py`
+  - M221 conclusion: first-hit profiles now have a stricter speed budget and a
+    selector that correctly handles request-conversion gate shapes. The next
+    raw performance target is reducing the observed `903.934 ms` split-prefill
+    cache-prepare cost.
