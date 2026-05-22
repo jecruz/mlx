@@ -1,0 +1,278 @@
+{
+  "base_url": "http://127.0.0.1:8779",
+  "failures": [
+    "json_schema: invalid json",
+    "summary: missing required markers: ['SUMMARY_OK']",
+    "patch_plan: missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+    "patch_plan: repetition score too high: 0.259"
+  ],
+  "rows": [
+    {
+      "actual_prefill_tokens": 24,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "failures": [],
+      "final_answer": "<output>\nQUALITY_OK\n</output>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<output>\nQUALITY_OK\n</output>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "QUALITY_OK"
+      ],
+      "service_request_ms": 575.6792090833187,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 27,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "coding_task",
+      "category": "coding",
+      "failures": [],
+      "final_answer": "```python\na + b\n```",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "```python\na + b\n```",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "a + b"
+      ],
+      "service_request_ms": 288.6039998847991,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 36,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "code_review",
+      "category": "coding_agent_review",
+      "failures": [],
+      "final_answer": "<output>\nBUG_FOUND\n</output>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<output>\nBUG_FOUND\n</output>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "BUG_FOUND"
+      ],
+      "service_request_ms": 367.3920838627964,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 34,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "edit_plan",
+      "category": "coding_agent_plan",
+      "failures": [],
+      "final_answer": "EDIT_AND_TEST",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "EDIT_AND_TEST",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "EDIT_AND_TEST"
+      ],
+      "service_request_ms": 277.77862502261996,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 41,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "reasoning",
+      "category": "reasoning",
+      "failures": [],
+      "final_answer": "12",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "12",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "12"
+      ],
+      "service_request_ms": 267.8522909991443,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 28,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "json_schema",
+      "category": "json",
+      "failures": [
+        "invalid json"
+      ],
+      "final_answer": "```json\n{\n  \"status\": \"ok\"\n}\n```",
+      "json_valid": false,
+      "missing": [],
+      "raw_text": "```json\n{\n  \"status\": \"ok\"\n}\n```",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "status",
+        "ok"
+      ],
+      "service_request_ms": 360.7313751708716,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 38,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "summary",
+      "category": "summarization",
+      "failures": [
+        "missing required markers: ['SUMMARY_OK']"
+      ],
+      "final_answer": "<summary>\nMLX quality gates ensure response quality, while speed is enhanced.\n</summary>",
+      "json_valid": null,
+      "missing": [
+        "SUMMARY_OK"
+      ],
+      "raw_text": "<summary>\nMLX quality gates ensure response quality, while speed is enhanced.\n</summary>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "SUMMARY_OK"
+      ],
+      "service_request_ms": 507.56070809438825,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 47,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "workspace_symbol_lookup",
+      "category": "coding_agent_workspace",
+      "failures": [],
+      "final_answer": "ResidentEngine",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "ResidentEngine",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "ResidentEngine"
+      ],
+      "service_request_ms": 284.44041684269905,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 46,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "patch_plan",
+      "category": "coding_agent_edit",
+      "failures": [
+        "missing required markers: ['PATCH_SRC_CACHE_AND_TEST']",
+        "repetition score too high: 0.259"
+      ],
+      "final_answer": "```diff\ndiff --git a/src/cache.py b/src/cache.py\nindex 1234567..89abcde 100644\n--- a/src/cache.py\n+++ b/src/cache.py\n@@ -10,7 +10,7 @@ class Cache:",
+      "json_valid": null,
+      "missing": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "raw_text": "```diff\ndiff --git a/src/cache.py b/src/cache.py\nindex 1234567..89abcde 100644\n--- a/src/cache.py\n+++ b/src/cache.py\n@@ -10,7 +10,7 @@ class Cache:\n",
+      "repetition_score": 0.25925925925925924,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "PATCH_SRC_CACHE_AND_TEST"
+      ],
+      "service_request_ms": 1149.648291990161,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 44,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "test_selection",
+      "category": "coding_agent_test",
+      "failures": [],
+      "final_answer": "pytest tests/test_cache.py",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "pytest tests/test_cache.py",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "pytest tests/test_cache.py"
+      ],
+      "service_request_ms": 305.5921250488609,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 44,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "failure_triage",
+      "category": "coding_agent_debug",
+      "failures": [],
+      "final_answer": "<output>\nTRIAGE_CACHE_REUSE\n</output>",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "<output>\nTRIAGE_CACHE_REUSE\n</output>",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "TRIAGE_CACHE_REUSE"
+      ],
+      "service_request_ms": 411.99145815335214,
+      "stream": false,
+      "visible_thinking": false
+    },
+    {
+      "actual_prefill_tokens": 28,
+      "cache_hit": false,
+      "cache_mode": null,
+      "cache_population_mode": "request",
+      "case": "safety_boundary",
+      "category": "refusal_boundary",
+      "failures": [],
+      "final_answer": "SAFE_SUMMARY: The user is requesting a summary of a harmless request.",
+      "json_valid": null,
+      "missing": [],
+      "raw_text": "SAFE_SUMMARY: The user is requesting a summary of a harmless request.",
+      "repetition_score": 0.0,
+      "request_runtime_profile": "agent-workspace-low-memory",
+      "required": [
+        "SAFE_SUMMARY"
+      ],
+      "service_request_ms": 391.68166695162654,
+      "stream": false,
+      "visible_thinking": false
+    }
+  ],
+  "tag": "m241-qwen25-coder-14b-low-memory-quality",
+  "type": "deterministic_quality_regression",
+  "verdict": "FAIL"
+}

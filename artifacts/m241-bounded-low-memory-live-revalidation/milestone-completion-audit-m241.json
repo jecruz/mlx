@@ -1,0 +1,79 @@
+{
+  "milestone": "M241",
+  "title": "Bounded low-memory live revalidation",
+  "status": "PASS",
+  "objective": "Rerun lower-memory profile live on Qwen2.5 Coder 14B and prove agent-workspace-low-memory remains within cache, memory, and first-hit quality/performance gates.",
+  "checklist": [
+    {
+      "requirement": "Rerun live Qwen2.5 Coder 14B lower-memory profile",
+      "evidence": "dax-bounded-low-memory-m241-qwen25-coder-14b.json reports dax_profile agent-workspace-low-memory and verdict PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Prove cache/performance gate",
+      "evidence": "baseline 4565.484 ms, first duplicate 187.867 ms, best hit 185.230 ms, best-hit speedup 24.648x",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Prove bounded prefill",
+      "evidence": "first duplicate prefill 11 tokens and conversion prefill 11 tokens, below 32-token budget",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Prove memory budget",
+      "evidence": "lower-memory runtime gate PASS with max active 9.669 GB, max peak 9.689 GB, cache limit 64 MB",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Prove first-hit conversion gate",
+      "evidence": "dax-low-memory-first-hit-conversion-gate-m241-qwen25-coder-14b.json verdict PASS with 6 checks and 0 failures",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Prove quality is not regressed",
+      "evidence": "adapted chat-template quality and quality threshold gate both PASS on runtime_profile agent-workspace-low-memory",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Preserve negative quality evidence",
+      "evidence": "unadapted deterministic completion gate retained as FAIL artifact and documented as not the release-quality route for Qwen2.5 Coder",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Cleanup live server",
+      "evidence": "temporary server process stopped and port 8779 verified with no listener",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "performance_benchmark": "PASS",
+    "runtime_memory_gate": "PASS",
+    "first_hit_conversion_gate": "PASS",
+    "adapted_chat_template_quality": "PASS",
+    "quality_threshold_gate": "PASS",
+    "unadapted_deterministic_quality": "FAIL_DOCUMENTED",
+    "failures": 0
+  },
+  "performance": {
+    "baseline_service_ms": 4565.483708865941,
+    "first_duplicate_service_ms": 187.8668749704957,
+    "best_hit_service_ms": 185.23012497462332,
+    "best_hit_speedup_vs_baseline": 24.647630667481412,
+    "max_active_memory_gb": 9.668618248,
+    "max_peak_memory_gb": 9.689481648,
+    "cache_memory_limit_mb": 64.0,
+    "conversion_prefill_tokens": 11.0
+  },
+  "artifacts": [
+    "benchmarks/python/quality_gate_runner.py",
+    "benchmarks/python/chat_template_quality_probe.py",
+    "artifacts/m241-bounded-low-memory-live-revalidation/dax-bounded-low-memory-m241-qwen25-coder-14b.json",
+    "artifacts/m241-bounded-low-memory-live-revalidation/dax-bounded-low-memory-m241-qwen25-coder-14b.jsonl",
+    "artifacts/m241-bounded-low-memory-live-revalidation/lower-memory-runtime-gate-m241-qwen25-coder-14b.json",
+    "artifacts/m241-bounded-low-memory-live-revalidation/dax-low-memory-first-hit-conversion-gate-m241-qwen25-coder-14b.json",
+    "artifacts/m241-bounded-low-memory-live-revalidation/chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.json",
+    "artifacts/m241-bounded-low-memory-live-revalidation/quality-threshold-gate-m241-qwen25-coder-14b-low-memory.json",
+    "artifacts/m241-bounded-low-memory-live-revalidation/quality-deterministic-m241-qwen25-coder-14b-low-memory.json",
+    "artifacts/m241-bounded-low-memory-live-revalidation/bounded-low-memory-live-revalidation-m241.md"
+  ]
+}

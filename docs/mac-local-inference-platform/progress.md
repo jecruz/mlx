@@ -3881,3 +3881,39 @@
   - M240 conclusion: release evidence is now collected by one command that
     fails if any required quality, model-swap, lifecycle, memory, routing,
     first-hit, or Prowl visibility artifact is missing or not green.
+- Completed M241 bounded low-memory live revalidation:
+  - started a fresh updated-code resident server on `127.0.0.1:8779`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+  - profile: `agent-workspace-low-memory`
+  - generated artifacts under
+    `artifacts/m241-bounded-low-memory-live-revalidation/`
+  - validation passed:
+    - repeated-context low-memory benchmark verdict `PASS`
+    - lower-memory runtime gate verdict `PASS`
+    - first-hit conversion gate verdict `PASS`
+    - adapted chat-template quality verdict `PASS`
+    - quality threshold gate verdict `PASS`
+  - quality caveat:
+    - unadapted deterministic completion quality failed for Qwen2.5 format
+      compliance and is retained as a negative artifact
+    - release quality for this model/profile uses the adapted chat-template
+      quality route
+  - harness changes:
+    - `quality_gate_runner.py` accepts `--runtime-profile`
+    - `chat_template_quality_probe.py` accepts `--runtime-profile`
+  - performance:
+    - baseline service `4565.484 ms`
+    - first duplicate service `187.867 ms`
+    - best hit service `185.230 ms`
+    - first duplicate prefill `11` tokens
+    - best-hit speedup `24.648x`
+    - max active memory `9.669 GB`
+    - max peak memory `9.689 GB`
+    - cache memory limit `64.000 MB`
+  - cleanup:
+    - temporary resident server stopped after validation
+  - M241 conclusion: the lower-memory profile remains inside cache, memory,
+    first-hit performance, and adapted quality gates. The milestone also makes
+    the quality harness profile-aware so future speed work cannot accidentally
+    validate the wrong runtime profile.

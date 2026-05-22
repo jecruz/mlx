@@ -1,0 +1,74 @@
+{
+  "artifacts": {
+    "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory": {
+      "failure_count": 0,
+      "max_repetition_score": 0.045455,
+      "missing_required_count": 0,
+      "path": "artifacts/m241-bounded-low-memory-live-revalidation/chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.json",
+      "row_count": 12,
+      "row_failure_count": 0,
+      "tag": "m241-qwen25-coder-14b-low-memory-chat-template-adapted",
+      "type": "chat_template_quality_regression",
+      "verdict": "PASS",
+      "visible_thinking_count": 0
+    }
+  },
+  "checks": [
+    {
+      "actual": "PASS",
+      "label": "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.verdict",
+      "operator": "==",
+      "threshold": "PASS",
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.row_failure_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.missing_required_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.visible_thinking_count",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0.045455,
+      "label": "chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.max_repetition_score",
+      "operator": "<=",
+      "threshold": 0.2,
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "operator_bundle": null,
+  "readiness": "ci-quality-ready",
+  "tag": "m241-qwen25-coder-14b-low-memory",
+  "thresholds": {
+    "allow_warnings": false,
+    "max_artifact_failures": 0,
+    "max_missing_required": 0,
+    "max_repetition_score": 0.2,
+    "max_row_failures": 0,
+    "max_visible_thinking": 0
+  },
+  "type": "quality_threshold_gate",
+  "verdict": "PASS"
+}

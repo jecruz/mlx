@@ -1,0 +1,13 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m241-next-milestones",
+  "after": "M241",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M242",
+      "title": "Quality-preserving release gate",
+      "acceptance": "combine deterministic quality, model-swap, routing, first-hit, lower-memory, and lifecycle gates into one release-blocking quality/performance manifest"
+    }
+  ]
+}

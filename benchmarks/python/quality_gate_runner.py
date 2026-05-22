@@ -186,7 +186,14 @@ def repetition_score(text: str, n: int = 3) -> float:
     return repeated / max(len(grams), 1)
 
 
-def run_completion(base_url: str, case: dict[str, Any], *, stream: bool = False, cache_mode: str | None = None) -> dict[str, Any]:
+def run_completion(
+    base_url: str,
+    case: dict[str, Any],
+    *,
+    stream: bool = False,
+    cache_mode: str | None = None,
+    runtime_profile: str = "interactive",
+) -> dict[str, Any]:
     if cache_mode is not None:
         request_json("POST", f"{base_url}/engine/config", {"prefix_cache_population_mode": cache_mode})
     payload = {
@@ -195,7 +202,7 @@ def run_completion(base_url: str, case: dict[str, Any], *, stream: bool = False,
         "max_tokens": case.get("max_tokens", 48),
         "stream": stream,
         "stop": STOP,
-        "runtime_profile": "interactive",
+        "runtime_profile": runtime_profile,
     }
     if stream:
         raw_text, metrics = stream_sse(f"{base_url}/v1/completions", payload)
@@ -267,7 +274,10 @@ def gate_golden(args: argparse.Namespace) -> int:
 
 def gate_deterministic(args: argparse.Namespace) -> int:
     base_url = args.base_url.rstrip("/")
-    rows = [run_completion(base_url, case, stream=False) for case in GOLDEN_CASES]
+    rows = [
+        run_completion(base_url, case, stream=False, runtime_profile=args.runtime_profile)
+        for case in GOLDEN_CASES
+    ]
     failures = [f"{row['case']}: {failure}" for row in rows for failure in row["failures"]]
     output = {
         "type": "deterministic_quality_regression",
@@ -285,8 +295,18 @@ def gate_cache(args: argparse.Namespace) -> int:
     rows = []
     failures = []
     for case in [GOLDEN_CASES[0], GOLDEN_CASES[2], LONG_CONTEXT_CASE]:
-        off = run_completion(base_url, case, cache_mode="off")
-        request = run_completion(base_url, case, cache_mode="request")
+        off = run_completion(
+            base_url,
+            case,
+            cache_mode="off",
+            runtime_profile=args.runtime_profile,
+        )
+        request = run_completion(
+            base_url,
+            case,
+            cache_mode="request",
+            runtime_profile=args.runtime_profile,
+        )
         rows.append({"case": case["id"], "off": off, "request": request})
         for mode, row in [("off", off), ("request", request)]:
             failures.extend(f"{case['id']} {mode}: {failure}" for failure in row["failures"])
@@ -310,8 +330,18 @@ def gate_streaming(args: argparse.Namespace) -> int:
     rows = []
     failures = []
     for case in [GOLDEN_CASES[0], GOLDEN_CASES[2], GOLDEN_CASES[4]]:
-        nonstream = run_completion(base_url, case, stream=False)
-        stream = run_completion(base_url, case, stream=True)
+        nonstream = run_completion(
+            base_url,
+            case,
+            stream=False,
+            runtime_profile=args.runtime_profile,
+        )
+        stream = run_completion(
+            base_url,
+            case,
+            stream=True,
+            runtime_profile=args.runtime_profile,
+        )
         rows.append({"case": case["id"], "nonstream": nonstream, "stream": stream})
         for mode, row in [("nonstream", nonstream), ("stream", stream)]:
             failures.extend(f"{case['id']} {mode}: {failure}" for failure in row["failures"])
@@ -328,7 +358,10 @@ def gate_streaming(args: argparse.Namespace) -> int:
 
 def gate_loop(args: argparse.Namespace) -> int:
     base_url = args.base_url.rstrip("/")
-    rows = [run_completion(base_url, case, stream=False) for case in GOLDEN_CASES + [LONG_CONTEXT_CASE]]
+    rows = [
+        run_completion(base_url, case, stream=False, runtime_profile=args.runtime_profile)
+        for case in GOLDEN_CASES + [LONG_CONTEXT_CASE]
+    ]
     failures = []
     for row in rows:
         if row["repetition_score"] > 0.2:
@@ -348,7 +381,12 @@ def gate_loop(args: argparse.Namespace) -> int:
 
 def gate_long_context(args: argparse.Namespace) -> int:
     base_url = args.base_url.rstrip("/")
-    row = run_completion(base_url, LONG_CONTEXT_CASE, stream=False)
+    row = run_completion(
+        base_url,
+        LONG_CONTEXT_CASE,
+        stream=False,
+        runtime_profile=args.runtime_profile,
+    )
     failures = list(row["failures"])
     output = {
         "type": "long_context_rope_imrope_quality",
@@ -363,7 +401,10 @@ def gate_long_context(args: argparse.Namespace) -> int:
 
 def gate_cross_engine(args: argparse.Namespace) -> int:
     base_url = args.base_url.rstrip("/")
-    rows = [run_completion(base_url, case, stream=False) for case in [GOLDEN_CASES[0], GOLDEN_CASES[2], LONG_CONTEXT_CASE]]
+    rows = [
+        run_completion(base_url, case, stream=False, runtime_profile=args.runtime_profile)
+        for case in [GOLDEN_CASES[0], GOLDEN_CASES[2], LONG_CONTEXT_CASE]
+    ]
     failures = [f"{row['case']}: {failure}" for row in rows for failure in row["failures"]]
     output = {
         "type": "cross_engine_quality_comparison",
@@ -434,6 +475,11 @@ def main() -> int:
     parser.add_argument("--output-json", type=Path, required=True)
     parser.add_argument("--output-md", type=Path)
     parser.add_argument("--tag", default="quality-gate")
+    parser.add_argument(
+        "--runtime-profile",
+        default="interactive",
+        help="Runtime profile to request for live completion quality gates.",
+    )
     parser.add_argument("--artifact", nargs=2, action="append", default=[])
     parser.add_argument("--covered-milestone", action="append", default=[])
     parser.add_argument("--fail-on-fail", action="store_true")

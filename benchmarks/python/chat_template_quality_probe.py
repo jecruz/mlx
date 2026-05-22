@@ -75,6 +75,7 @@ def run_case(
     *,
     system_prompt: str | None,
     normalize_json_fences: bool,
+    runtime_profile: str,
 ) -> dict[str, Any]:
     messages = []
     if system_prompt:
@@ -87,7 +88,7 @@ def run_case(
             "model": "local-mlx-chat-template-quality",
             "messages": messages,
             "max_tokens": case.get("max_tokens", 48),
-            "runtime_profile": "interactive",
+            "runtime_profile": runtime_profile,
             "stop": STOP,
         },
     )
@@ -160,6 +161,11 @@ def main() -> int:
             "in the final response."
         ),
     )
+    parser.add_argument(
+        "--runtime-profile",
+        default="interactive",
+        help="Runtime profile to request for live chat-template quality probes.",
+    )
     parser.add_argument("--fail-on-fail", action="store_true")
     args = parser.parse_args()
 
@@ -173,6 +179,7 @@ def main() -> int:
             case,
             system_prompt=args.system_prompt,
             normalize_json_fences=args.prompt_adapter == "qwen25-coder-lower-memory",
+            runtime_profile=args.runtime_profile,
         )
         for case in cases
     ]
@@ -188,6 +195,7 @@ def main() -> int:
         "route": "/v1/chat/completions",
         "prompt_adapter": args.prompt_adapter,
         "system_prompt": args.system_prompt,
+        "runtime_profile": args.runtime_profile,
         "verdict": "PASS" if not failures else "FAIL",
         "rows": rows,
         "failures": failures,
