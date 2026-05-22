@@ -1,0 +1,95 @@
+{
+  "checks": [
+    {
+      "detail": "returncode=0",
+      "label": "shutdown_probe.exit_code",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "shutdown_probe.verdict",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "joined=True, alive_after=False",
+      "label": "shutdown_probe.joined_warmup",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "joined=1, alive_after=0",
+      "label": "shutdown_probe.joined_async_cache_builds",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "returncode=0",
+      "label": "startup_preflight.exit_code",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "verdict='PASS'",
+      "label": "startup_preflight.verdict",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "ResidentEngine.shutdown must signal shutdown_requested before joining background work",
+      "label": "source_contract.resident_engine_shutdown_sets_event",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "EngineManager.reload/unload must request old-engine shutdown before replacement/removal",
+      "label": "source_contract.reload_requests_old_engine_shutdown",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "EngineManager.reload/unload must join old-engine background work",
+      "label": "source_contract.reload_or_unload_joins_old_engine",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "FastAPI lifespan shutdown must call EngineManager.shutdown",
+      "label": "source_contract.lifespan_shutdown_calls_manager",
+      "verdict": "PASS"
+    },
+    {
+      "detail": "occupied-port startup must fail before importing MLX/model validation",
+      "label": "source_contract.port_preflight_before_mlx_import",
+      "verdict": "PASS"
+    }
+  ],
+  "commands": {
+    "shutdown_probe": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3 benchmarks/python/resident_shutdown_safety_probe.py",
+    "startup_preflight_probe": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3 benchmarks/python/resident_port_preflight_probe.py --output-json artifacts/m232-resident-lifecycle-regression-gate/resident-port-preflight-m232.json --tag m232-resident-lifecycle-regression"
+  },
+  "failures": [],
+  "probes": {
+    "shutdown": {
+      "result": {
+        "async_threads_alive_after": 0,
+        "async_threads_alive_keys": [],
+        "async_threads_before": 1,
+        "async_threads_joined": 1,
+        "elapsed_ms": 0.057791126891970634,
+        "pending_async_builds_after": 0,
+        "shutdown_requested": true,
+        "timeout_ms": 1000,
+        "tracked_async_threads_after": 0,
+        "warmup_alive_after": false,
+        "warmup_alive_before": true,
+        "warmup_joined": true,
+        "warmup_thread_present": true
+      },
+      "returncode": 0,
+      "verdict": "PASS"
+    },
+    "startup_preflight": {
+      "artifact": "artifacts/m232-resident-lifecycle-regression-gate/resident-port-preflight-m232.json",
+      "readiness": "resident-port-preflight-ready",
+      "returncode": 0,
+      "verdict": "PASS"
+    }
+  },
+  "readiness": "resident-lifecycle-regression-ready",
+  "tag": "m232-resident-lifecycle-regression",
+  "type": "resident_lifecycle_regression_gate",
+  "verdict": "PASS"
+}

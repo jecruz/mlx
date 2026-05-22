@@ -3742,3 +3742,27 @@
     - max peak memory remains `11.048 GB`
   - M235 conclusion: Prowl can now show why the lower-memory promotion is
     acceptable instead of only showing artifact-root PASS/STALE state.
+- Completed M236 lifecycle gate CI packaging:
+  - updated `benchmarks/python/package_resident_suite_evidence.py`
+  - packaging helper now accepts `--lifecycle-gate-json`
+  - generated package under
+    `artifacts/m236-lifecycle-gate-ci-packaging/resident-suite-evidence-package/`
+  - packaged evidence includes:
+    - resident suite manifest
+    - low-memory first-hit benchmark/gate/summary/jsonl artifacts
+    - M232 lifecycle regression gate
+    - `resident-suite-evidence-index.json` with `lifecycle_gate` summary
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/package_resident_suite_evidence.py`
+    - evidence package result `PASS`
+    - copied artifacts `6`
+    - missing enabled artifacts `0`
+    - lifecycle gate `PASS`
+  - performance:
+    - no inference hot path changed in M236
+    - first duplicate service remains `193.098 ms`
+    - first duplicate prefill remains `11` tokens
+    - mature-hit speedup remains `23.445x`
+  - M236 conclusion: lifecycle safety is now included in the resident evidence
+    package flow, so release/CI packaging can carry both resident suite and
+    lifecycle-gate proof.

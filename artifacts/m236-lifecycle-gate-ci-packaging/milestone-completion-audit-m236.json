@@ -1,0 +1,48 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M236",
+  "tag": "m236-lifecycle-gate-ci-packaging",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "code_changes": [
+    {
+      "path": "benchmarks/python/package_resident_suite_evidence.py",
+      "change": "adds optional --lifecycle-gate-json packaging and lifecycle_gate summary in resident-suite-evidence-index.json"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/m236-lifecycle-gate-ci-packaging/resident-suite-evidence-package/resident-suite-evidence-index.json",
+      "type": "resident_suite_evidence_package",
+      "suite_verdict": "PASS",
+      "lifecycle_gate_verdict": "PASS",
+      "copied": 6,
+      "missing": 0
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 -m py_compile benchmarks/python/package_resident_suite_evidence.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/package_resident_suite_evidence.py artifacts/m98-suite-low-memory-direct-evidence-package/resident-regression-suite-m98-qwen-a3b-low-memory-suite-direct.json --output-dir artifacts/m236-lifecycle-gate-ci-packaging/resident-suite-evidence-package --lifecycle-gate-json artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json",
+      "result": "PASS",
+      "copied": 6,
+      "missing": 0,
+      "lifecycle_gate": "PASS"
+    },
+    {
+      "command": "python3 -m json.tool artifacts/m236-lifecycle-gate-ci-packaging/resident-suite-evidence-package/resident-suite-evidence-index.json",
+      "result": "PASS"
+    }
+  ],
+  "performance": {
+    "hot_path_changed": false,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "first_duplicate_prefill_tokens": 11,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_peak_memory_gb": 11.048436144
+  },
+  "failures": []
+}

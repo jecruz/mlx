@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "benchmark_json": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-m98-qwen-a3b-low-memory-suite-direct.json",
+    "benchmark_jsonl": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-m98-qwen-a3b-low-memory-suite-direct.jsonl",
+    "gate_json": "artifacts/m98-suite-low-memory-direct/dax-product-first-hit-gate-m98-qwen-a3b-low-memory-suite-direct.json"
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "benchmark_verdict": "PASS",
+  "dax_intent": null,
+  "dax_profile": "agent-workspace-low-memory",
+  "derived": {
+    "baseline_service_request_ms": 1488.238374935463,
+    "conversion_actual_prefill_tokens": 18.0,
+    "conversion_ratio_vs_baseline": 0.797351740152957,
+    "conversion_service_request_ms": 1186.6494580172002,
+    "conversion_turn": 2,
+    "mature_hit_actual_prefill_tokens": 18.0,
+    "mature_hit_service_request_ms": 615.8522090408951,
+    "mature_hit_speedup_vs_baseline": 2.41655116777642
+  },
+  "failures": [],
+  "gate_verdict": "PASS",
+  "tag": "m98-qwen-a3b-low-memory-suite-direct",
+  "type": "dax_product_first_hit_gate",
+  "verdict": "PASS"
+}
