@@ -3766,3 +3766,30 @@
   - M236 conclusion: lifecycle safety is now included in the resident evidence
     package flow, so release/CI packaging can carry both resident suite and
     lifecycle-gate proof.
+- Completed M237 bounded first-hit live revalidation:
+  - started a fresh updated-code resident server on `127.0.0.1:8779`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+  - profile: `agent-workspace-first-hit`
+  - generated artifacts under
+    `artifacts/m237-bounded-first-hit-live-revalidation/`
+  - validation passed:
+    - repeated-context benchmark verdict `PASS`
+    - first-hit conversion gate verdict `PASS`
+    - conversion gate checks `6`
+    - failures `0`
+  - performance:
+    - baseline service `4310.493 ms`
+    - first duplicate service `186.185 ms`
+    - best hit service `183.017 ms`
+    - first duplicate prefill `11` tokens
+    - conversion ratio `0.043`
+    - mature-hit speedup `23.152x`
+    - best-hit speedup `23.552x`
+    - peak memory `10.142 GB`
+    - cache memory `0.022 GB`
+  - cleanup:
+    - temporary resident server stopped after benchmark
+  - M237 conclusion: the bounded first-hit profile introduced in M233 preserves
+    the first duplicate latency win and remains inside the M230 promotion
+    budget.

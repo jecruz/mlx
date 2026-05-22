@@ -1,0 +1,61 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M237",
+  "tag": "m237-bounded-first-hit-live-revalidation",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "runtime": {
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+    "base_url": "http://127.0.0.1:8779",
+    "temporary_server_started": true,
+    "temporary_server_stopped": true,
+    "profile": "agent-workspace-first-hit",
+    "prefix_cache_max_entries": 8,
+    "prefix_cache_memory_limit_mb": 128.0,
+    "prefix_cache_min_entries": 5
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.json",
+      "type": "dax_repeated_context_bench",
+      "verdict": "PASS",
+      "hit_count": 5,
+      "best_hit_speedup_vs_baseline": 23.55239826927289,
+      "best_hit_service_request_ms": 183.01716702990234
+    },
+    {
+      "path": "artifacts/m237-bounded-first-hit-live-revalidation/dax-first-hit-conversion-gate-m237-qwen25-coder-14b.json",
+      "type": "dax_first_hit_conversion_gate",
+      "verdict": "PASS",
+      "checks": 6,
+      "failures": 0
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 mlx_engine/resident_service.py --model /Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit --host 127.0.0.1 --port 8779 --warmup-mode off --warmup-prompt-tokens 64 --engine-preset async-experimental --prefix-cache-population-mode async --require-gpu",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/dax_repeated_context_bench.py --base-url http://127.0.0.1:8779 --client-mode resident --dax-profile agent-workspace-first-hit --output-jsonl artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.jsonl --output-json artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.json --turns 6 --shared-repeats 64 --max-tokens 4 --max-hit-prefill-tokens 16 --min-speedup 5 --fail-on-fail",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/dax_first_hit_conversion_gate.py artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.json --output-json artifacts/m237-bounded-first-hit-live-revalidation/dax-first-hit-conversion-gate-m237-qwen25-coder-14b.json --max-conversion-prefill-tokens 16 --max-conversion-ratio 0.05 --conversion-path any --min-mature-hit-speedup 5 --max-mature-hit-prefill-tokens 16 --fail-on-fail",
+      "result": "PASS"
+    }
+  ],
+  "performance": {
+    "m230_first_duplicate_service_ms": 193.0981669574976,
+    "m237_first_duplicate_service_ms": 186.18549988605082,
+    "m237_best_hit_service_ms": 183.01716702990234,
+    "m237_baseline_service_ms": 4310.493208002299,
+    "m237_first_duplicate_prefill_tokens": 11,
+    "m237_conversion_ratio_vs_baseline": 0.043193549067750095,
+    "m237_mature_hit_speedup_vs_baseline": 23.151605311049494,
+    "m237_best_hit_speedup_vs_baseline": 23.55239826927289,
+    "m237_peak_memory_gb": 10.142466944,
+    "m237_cache_memory_gb": 0.02150737
+  },
+  "failures": []
+}
