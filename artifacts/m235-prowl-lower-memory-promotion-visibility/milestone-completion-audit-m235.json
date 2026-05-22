@@ -1,0 +1,59 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M235",
+  "tag": "m235-prowl-lower-memory-promotion-visibility",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "external_repo_changes": [
+    {
+      "repo": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm",
+      "commit": "7eb2f51",
+      "subject": "Show MLX lower-memory promotion evidence",
+      "pushed": true,
+      "worktree_clean": true
+    }
+  ],
+  "changed_surfaces": [
+    {
+      "path": "apps/prowl-macos/Sources/ProwlMac/Features/Engine/MLXOperatorReadinessCard.swift",
+      "change": "MLXOperatorArtifactSummary and model-swap decoder now include candidate model/profile and performance metrics; swap row displays profile, first-duplicate latency, speedup, and peak memory"
+    },
+    {
+      "path": "apps/prowl-macos/Sources/ProwlMac/Features/Settings/SettingsModelSourcesCard.swift",
+      "change": "model sources settings now shows lower-memory promotion summary"
+    },
+    {
+      "path": "apps/prowl-macos/Tests/ProwlTests/MLXOperatorArtifactClientTests.swift",
+      "change": "artifact client test covers candidate model/profile and performance metric decoding"
+    }
+  ],
+  "commands": [
+    {
+      "repo": "/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm",
+      "command": "swift test --package-path apps/prowl-macos -c release",
+      "result": "PASS",
+      "tests": 16,
+      "failures": 0
+    }
+  ],
+  "visible_fields": [
+    "swap_decision",
+    "swap_readiness",
+    "candidate.model",
+    "candidate.profile",
+    "metrics.first_duplicate_service_ms",
+    "metrics.mature_hit_speedup_vs_baseline",
+    "metrics.max_peak_memory_gb"
+  ],
+  "performance": {
+    "hot_path_changed": false,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "first_duplicate_prefill_tokens": 11,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "max_peak_memory_gb": 11.048436144,
+    "model_swap_decision": "ACCEPT",
+    "swap_readiness": "swap-acceptable",
+    "candidate_profile": "agent-workspace-first-hit"
+  },
+  "failures": []
+}

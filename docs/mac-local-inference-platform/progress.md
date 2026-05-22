@@ -3719,3 +3719,26 @@
     - mature-hit speedup remains `23.445x`
   - M234 conclusion: lower-memory routing is now explicit and gated by current
     quality, swap, memory-guard, and first-hit performance evidence.
+- Completed M235 Prowl lower-memory promotion visibility:
+  - updated Prowl in `/Users/jeffreycruz/Development/LLM_INFERENCE/prowl-llm`
+  - Prowl commit `7eb2f51 Show MLX lower-memory promotion evidence`
+  - Prowl now decodes model-swap artifact fields for:
+    - candidate model
+    - candidate profile
+    - first duplicate service latency
+    - mature-hit speedup
+    - max peak memory
+  - Prowl readiness card now shows promotion performance in the swap row
+  - Prowl model-sources settings now shows a lower-memory promotion summary
+  - validation passed:
+    - `swift test --package-path apps/prowl-macos -c release`
+    - tests `16`
+    - failures `0`
+  - performance:
+    - no MLX inference hot path changed in M235
+    - first duplicate service remains `193.098 ms`
+    - first duplicate prefill remains `11` tokens
+    - mature-hit speedup remains `23.445x`
+    - max peak memory remains `11.048 GB`
+  - M235 conclusion: Prowl can now show why the lower-memory promotion is
+    acceptable instead of only showing artifact-root PASS/STALE state.

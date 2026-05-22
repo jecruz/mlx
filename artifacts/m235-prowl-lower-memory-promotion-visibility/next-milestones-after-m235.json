@@ -1,0 +1,28 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m235-next-milestones",
+  "after": "M235",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M236",
+      "title": "Lifecycle gate CI packaging",
+      "acceptance": "package the M232 lifecycle gate with the resident regression evidence bundle so release and CI runs can execute it with one command"
+    },
+    {
+      "milestone": "M237",
+      "title": "Bounded first-hit live revalidation",
+      "acceptance": "rerun the first-hit repeated-context benchmark with the bounded first-hit profile and prove first duplicate latency remains within the M230 promotion budget"
+    },
+    {
+      "milestone": "M238",
+      "title": "Lower-memory route product smoke",
+      "acceptance": "run a product-facing request with lower-memory metadata and verify the response carries agent-workspace-low-memory profile metadata plus current quality/performance gates"
+    },
+    {
+      "milestone": "M239",
+      "title": "Prowl promotion visibility installed-app smoke",
+      "acceptance": "launch or smoke the installed Prowl app path and verify the M235 promotion summary is reachable from the operator settings/readiness surfaces"
+    }
+  ]
+}
