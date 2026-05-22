@@ -4069,6 +4069,20 @@
       budget
   - cleanup:
     - temporary resident server stopped after validation
-  - M246 conclusion: low-memory remains healthy after upstream intake, but the
-    first-hit path needs a follow-up regression recovery milestone because the
-    first duplicate user-visible second turn exceeded the promotion budget.
+- M246 conclusion: low-memory remains healthy after upstream intake, but the
+  first-hit path needs a follow-up regression recovery milestone because the
+  first duplicate user-visible second turn exceeded the promotion budget.
+- Completed M247 first-hit regression recovery:
+  - reproduced the post-upstream first-hit benchmark on a fresh resident server
+    at `http://127.0.0.1:8789`
+  - fresh run result: first duplicate service `185.660 ms`, best hit service
+    `179.281 ms`, best-hit speedup `25.753x`
+  - first-hit conversion gate on the fresh run passed all 6 checks
+  - comparison to M246:
+    - first duplicate service recovered from `265.968 ms` to `185.660 ms`
+    - first duplicate prompt progress last recovered from `254.571 ms` to
+      `174.469 ms`
+    - best-hit latency stayed healthy at `179.281 ms`
+  - M247 conclusion: the M246 first-duplicate regression was not reproducible
+    on the fresh rerun, and the first-hit path is again under the promotion
+    budget while preserving the quality gate.

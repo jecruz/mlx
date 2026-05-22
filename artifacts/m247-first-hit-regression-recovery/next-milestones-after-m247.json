@@ -1,0 +1,18 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m247-next-milestones",
+  "after": "M247",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M248",
+      "title": "Release gate first-duplicate budget enforcement",
+      "acceptance": "update the release gate so first duplicate service budget breaches are release-blocking instead of only warnings"
+    },
+    {
+      "milestone": "M249",
+      "title": "Post-recovery release evidence bundle refresh",
+      "acceptance": "refresh release evidence bundle and quality/performance gate artifacts after first-duplicate regression recovery"
+    }
+  ]
+}

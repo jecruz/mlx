@@ -1,0 +1,69 @@
+{
+  "type": "first_hit_regression_recovery",
+  "tag": "m247-first-hit-regression-recovery",
+  "status": "PASS",
+  "readiness": "first-hit-regression-recovered",
+  "baseline": {
+    "m246_first_hit": {
+      "baseline_service_ms": 4846.586250001565,
+      "best_hit_service_ms": 183.47716704010963,
+      "best_hit_speedup_vs_baseline": 26.415201020310395,
+      "first_duplicate_prefill_tokens": 11,
+      "first_duplicate_service_ms": 265.9677919000387,
+      "hit_count": 5,
+      "verdict": "PASS"
+    }
+  },
+  "current": {
+    "m247_first_hit": {
+      "baseline_service_ms": 4617.0734581537545,
+      "best_hit_service_ms": 179.28074998781085,
+      "best_hit_speedup_vs_baseline": 25.753314053336265,
+      "first_duplicate_prefill_tokens": 11,
+      "first_duplicate_service_ms": 185.6596670113504,
+      "hit_count": 5,
+      "verdict": "PASS"
+    },
+    "m247_first_hit_conversion_gate": {
+      "conversion_turn": 2,
+      "conversion_service_request_ms": 185.6596670113504,
+      "conversion_ratio_vs_baseline": 0.04021154713999088,
+      "mature_hit_service_request_ms": 185.6596670113504,
+      "mature_hit_speedup_vs_baseline": 24.868478611843507,
+      "mature_hit_actual_prefill_tokens": 11.0,
+      "verdict": "PASS"
+    }
+  },
+  "comparisons": {
+    "first_duplicate_service_ms": {
+      "baseline": 265.9677919000387,
+      "current": 185.6596670113504,
+      "delta": -80.30812488868833,
+      "percent": -30.194680459230682
+    },
+    "best_hit_service_ms": {
+      "baseline": 183.47716704010963,
+      "current": 179.28074998781085,
+      "delta": -4.196417052298784,
+      "percent": -2.2871603698684795
+    },
+    "baseline_service_ms": {
+      "baseline": 4846.586250001565,
+      "current": 4617.0734581537545,
+      "delta": -229.51279184781015,
+      "percent": -4.7355557088814
+    },
+    "first_duplicate_prompt_progress_last_ms": {
+      "baseline": 254.57124994136393,
+      "current": 174.46854198351502,
+      "delta": -80.10270795784891,
+      "percent": -31.470480293977063
+    }
+  },
+  "gates": {
+    "benchmark": "PASS",
+    "conversion": "PASS"
+  },
+  "warnings": [],
+  "failures": []
+}
