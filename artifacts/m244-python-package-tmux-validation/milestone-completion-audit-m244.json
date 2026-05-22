@@ -1,0 +1,47 @@
+{
+  "milestone": "M244",
+  "title": "Python package validation via tmux harness",
+  "status": "PASS",
+  "objective": "Turn the tmux Python/Metal import workaround into a repeatable validation harness for MLX package checks.",
+  "checklist": [
+    {
+      "requirement": "Create repeatable Python package validation probe",
+      "evidence": "benchmarks/python/python_package_validation_probe.py validates import mlx, import mlx.core, Metal availability, default device, and minimal-env import",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Create repeatable tmux harness",
+      "evidence": "benchmarks/python/tmux_python_package_validation.py sends the probe to a named tmux pane, waits for JSON, captures completion marker, and writes harness JSON",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Validate MLX package checks through tmux",
+      "evidence": "python-package-validation-m244.json verdict PASS with Metal available true and default_device Device(gpu, 0)",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Validate minimal environment import",
+      "evidence": "minimal-env command returned 0 and stdout True Device(gpu, 0)",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Make the harness fail closed",
+      "evidence": "--fail-on-fail returns non-zero if pane, marker, output JSON, or probe verdict fails",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "py_compile": "PASS",
+    "tmux_harness": "PASS",
+    "probe_verdict": "PASS",
+    "harness_verdict": "PASS",
+    "failures": 0
+  },
+  "artifacts": [
+    "benchmarks/python/python_package_validation_probe.py",
+    "benchmarks/python/tmux_python_package_validation.py",
+    "artifacts/m244-python-package-tmux-validation/python-package-validation-m244.json",
+    "artifacts/m244-python-package-tmux-validation/python-package-validation-m244-harness.json",
+    "artifacts/m244-python-package-tmux-validation/python-package-tmux-validation-m244.md"
+  ]
+}

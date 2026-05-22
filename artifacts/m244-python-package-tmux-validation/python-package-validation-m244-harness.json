@@ -1,0 +1,38 @@
+{
+  "failures": [],
+  "marker_seen": true,
+  "pane": "codex-gpt5_5-panthro_cpp:1.2",
+  "probe": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/benchmarks/python/python_package_validation_probe.py",
+  "probe_output": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench/artifacts/m244-python-package-tmux-validation/python-package-validation-m244.json",
+  "probe_result": {
+    "default_device": "Device(gpu, 0)",
+    "failures": [],
+    "metal_available": true,
+    "minimal_env": {
+      "command": [
+        "env",
+        "-i",
+        "HOME=/Users/jeffreycruz",
+        "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "-c",
+        "import mlx.core as mx; print(mx.metal.is_available(), mx.default_device())"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "True Device(gpu, 0)"
+    },
+    "mlx_file": null,
+    "python_executable": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+    "python_version": "3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "readiness": "python-package-validation-ready",
+    "tag": "m244-python-package-tmux-validation",
+    "type": "python_package_validation_probe",
+    "verdict": "PASS"
+  },
+  "readiness": "tmux-python-package-validation-ready",
+  "repo_root": "/Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench",
+  "tag": "m244-python-package-tmux-validation",
+  "type": "tmux_python_package_validation",
+  "verdict": "PASS"
+}

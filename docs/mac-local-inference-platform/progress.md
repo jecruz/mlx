@@ -3980,3 +3980,28 @@
       - max peak memory `9.689 GB`
   - M243 conclusion: upstream intake is now merged and pushed into the milestone
     branch with native C++/Metal and tmux Python/Metal validation green.
+- Completed M244 Python package validation via tmux harness:
+  - added `benchmarks/python/python_package_validation_probe.py`
+  - added `benchmarks/python/tmux_python_package_validation.py`
+  - generated artifacts under
+    `artifacts/m244-python-package-tmux-validation/`
+  - validation command:
+    `python3 benchmarks/python/tmux_python_package_validation.py --pane codex-gpt5_5-panthro_cpp:1.2 --repo-root /Users/jeffreycruz/Development/LLM_INFERENCE/mlx/.worktrees/prompt-processing-bench --output-json artifacts/m244-python-package-tmux-validation/python-package-validation-m244.json --tag m244-python-package-tmux-validation --require-gpu --fail-on-fail`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/python_package_validation_probe.py benchmarks/python/tmux_python_package_validation.py`
+    - tmux harness verdict `PASS`
+    - probe verdict `PASS`
+    - failures `0`
+  - observed Python/Metal package state:
+    - Python executable
+      `/Library/Frameworks/Python.framework/Versions/3.14/bin/python3`
+    - Python version `3.14.0`
+    - Metal available `true`
+    - default device `Device(gpu, 0)`
+    - minimal-env import `True Device(gpu, 0)`
+  - performance:
+    - no inference hot path changed in M244
+    - M241 low-memory baseline remains current until M246
+  - M244 conclusion: Python package validation now has a repeatable tmux-backed
+    harness, so future release checks do not depend on manual pane command
+    injection when the direct Codex shell cannot import MLX Metal safely.
