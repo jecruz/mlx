@@ -81,6 +81,21 @@ def copied_bundle(payload: dict[str, Any]) -> list[str]:
     return failures
 
 
+def python_package_gpu_ready(payload: dict[str, Any]) -> list[str]:
+    probe = payload.get("probe_result") or payload
+    failures: list[str] = []
+    if probe.get("metal_available") is not True:
+        failures.append(f"metal_available={probe.get('metal_available')!r}")
+    if "Device(gpu" not in str(probe.get("default_device")):
+        failures.append(f"default_device={probe.get('default_device')!r}")
+    minimal_env = probe.get("minimal_env") or {}
+    if minimal_env.get("returncode") != 0:
+        failures.append(f"minimal_env.returncode={minimal_env.get('returncode')!r}")
+    if "Device(gpu" not in str(minimal_env.get("stdout")):
+        failures.append(f"minimal_env.stdout={minimal_env.get('stdout')!r}")
+    return failures
+
+
 DEFAULT_GATES = [
     GateSpec(
         "deterministic_quality_adapted",
@@ -184,6 +199,12 @@ DEFAULT_GATES = [
         "release_packaging",
         extra_checks=(no_failures, copied_bundle),
     ),
+    GateSpec(
+        "python_package_tmux_validation",
+        Path("artifacts/m244-python-package-tmux-validation/python-package-validation-m244-harness.json"),
+        "python_package",
+        extra_checks=(no_failures, python_package_gpu_ready),
+    ),
 ]
 
 
@@ -221,9 +242,19 @@ def summarize_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "baseline_service_request_ms",
         "copied_evidence_count",
         "required_evidence_count",
+        "metal_available",
+        "default_device",
     ):
         if key in payload:
             summary[key] = payload.get(key)
+    if payload.get("probe_result"):
+        probe = payload["probe_result"]
+        summary["probe_result"] = {
+            "verdict": probe.get("verdict"),
+            "metal_available": probe.get("metal_available"),
+            "default_device": probe.get("default_device"),
+            "minimal_env_stdout": (probe.get("minimal_env") or {}).get("stdout"),
+        }
     if payload.get("metrics"):
         metrics = payload["metrics"]
         summary["metrics"] = {
@@ -268,7 +299,7 @@ def evaluate_gate(spec: GateSpec) -> dict[str, Any]:
 def write_markdown(path: Path, output: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "# M242 Quality-Preserving Release Gate",
+        f"# {output['tag']} Quality-Preserving Release Gate",
         "",
         f"Verdict: `{output['verdict']}`",
         f"Readiness: `{output['readiness']}`",

@@ -1,0 +1,13 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m245-next-milestones",
+  "after": "M245",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M246",
+      "title": "Post-upstream performance regression comparison",
+      "acceptance": "rerun Qwen2.5 first-hit and low-memory live benchmarks after upstream intake and compare against M237/M241 baselines"
+    }
+  ]
+}

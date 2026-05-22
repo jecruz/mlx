@@ -4005,3 +4005,31 @@
   - M244 conclusion: Python package validation now has a repeatable tmux-backed
     harness, so future release checks do not depend on manual pane command
     injection when the direct Codex shell cannot import MLX Metal safely.
+- Completed M245 post-upstream release gate rerun:
+  - updated `benchmarks/python/release_quality_performance_gate.py`
+  - release gate now includes M244 Python package tmux validation as a required
+    release-blocking gate
+  - generated artifacts under `artifacts/m245-post-upstream-release-gate/`
+  - validation command:
+    `python3 benchmarks/python/release_quality_performance_gate.py --output-json artifacts/m245-post-upstream-release-gate/quality-preserving-release-gate-m245.json --output-md artifacts/m245-post-upstream-release-gate/quality-preserving-release-gate-m245.md --tag m245-post-upstream-release-gate --fail-on-fail`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/release_quality_performance_gate.py`
+    - release gate verdict `PASS`
+    - readiness `quality-preserving-release-ready`
+    - gates `14`
+    - failures `0`
+  - release-blocking categories:
+    - quality
+    - model swap
+    - routing
+    - first hit
+    - lower memory
+    - lifecycle
+    - release packaging
+    - Python package
+  - performance:
+    - no live Qwen2.5 benchmark rerun in M245
+    - M237 and M241 performance artifacts remain release-gate inputs
+    - M246 is the live post-upstream performance comparison rerun
+  - M245 conclusion: the post-upstream release gate remains green and now blocks
+    release if the repeatable Python package/Metal validation harness regresses.

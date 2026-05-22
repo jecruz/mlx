@@ -1,0 +1,70 @@
+{
+  "milestone": "M245",
+  "title": "Post-upstream release gate rerun",
+  "status": "PASS",
+  "objective": "Rerun the release quality/performance gate after upstream intake and prove all release-blocking artifacts remain green.",
+  "checklist": [
+    {
+      "requirement": "Rerun release quality/performance gate after upstream intake",
+      "evidence": "quality-preserving-release-gate-m245.json was generated after M243/M244 on prompt-processing-bench",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Prove all release-blocking artifacts remain green",
+      "evidence": "release gate verdict PASS with 14 gates and 0 failures",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Include quality gates",
+      "evidence": "deterministic_quality_adapted and quality_threshold are PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Include model-swap gate",
+      "evidence": "model_swap_acceptance is PASS and enforces swap_decision ACCEPT",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Include routing gates",
+      "evidence": "routing_policy, product_mode_routing, and live_request_profile_routing are PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Include first-hit and lower-memory gates",
+      "evidence": "bounded first-hit, lower-memory benchmark, runtime, and conversion gates are PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Include lifecycle and release packaging gates",
+      "evidence": "lifecycle_regression and release_evidence_bundle are PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Include Python package/Metal validation",
+      "evidence": "python_package_tmux_validation is PASS and checks Device(gpu, 0) for normal and minimal-env imports",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "py_compile": "PASS",
+    "release_gate": "PASS",
+    "gate_count": 14,
+    "failures": 0,
+    "categories": [
+      "first_hit",
+      "lifecycle",
+      "lower_memory",
+      "model_swap",
+      "python_package",
+      "quality",
+      "release_packaging",
+      "routing"
+    ]
+  },
+  "artifacts": [
+    "benchmarks/python/release_quality_performance_gate.py",
+    "artifacts/m245-post-upstream-release-gate/quality-preserving-release-gate-m245.json",
+    "artifacts/m245-post-upstream-release-gate/quality-preserving-release-gate-m245.md",
+    "artifacts/m245-post-upstream-release-gate/post-upstream-release-gate-m245.md"
+  ]
+}
