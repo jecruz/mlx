@@ -3849,3 +3849,35 @@
   - M239 conclusion: the installed Prowl app can be smoked successfully and the
     lower-memory promotion evidence is reachable from the operator
     readiness/settings surfaces.
+- Completed M240 release evidence bundle command:
+  - added `benchmarks/python/package_release_evidence_bundle.py`
+  - single release evidence command:
+    `python3 benchmarks/python/package_release_evidence_bundle.py --output-dir artifacts/m240-release-evidence-bundle/release-evidence-bundle --fail-on-fail`
+  - generated bundle index:
+    `artifacts/m240-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/package_release_evidence_bundle.py`
+    - release evidence bundle verdict `PASS`
+    - required evidence items `14`
+    - copied evidence items `14`
+    - failures `0`
+  - packaged evidence includes:
+    - quality threshold
+    - model-swap acceptance
+    - lifecycle gate
+    - proactive cache memory guard
+    - lower-memory routing policy
+    - resident-suite evidence package
+    - bounded first-hit benchmark and conversion gate
+    - product/live routing metadata probes
+    - Prowl installed-app health, direct health, catalog, and promotion
+      visibility smoke
+  - performance:
+    - no MLX inference hot path changed in M240
+    - M231 first duplicate service remains `193.098 ms`
+    - M231 mature-hit speedup remains `23.445x`
+    - M237 first duplicate service remains `186.185 ms`
+    - M237 mature-hit speedup remains `23.152x`
+  - M240 conclusion: release evidence is now collected by one command that
+    fails if any required quality, model-swap, lifecycle, memory, routing,
+    first-hit, or Prowl visibility artifact is missing or not green.

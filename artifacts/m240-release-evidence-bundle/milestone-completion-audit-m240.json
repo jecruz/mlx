@@ -1,0 +1,60 @@
+{
+  "milestone": "M240",
+  "title": "Release evidence bundle command",
+  "status": "PASS",
+  "objective": "Provide a single documented release command that runs/collects quality, swap, lifecycle, memory-guard, routing, and Prowl visibility artifacts.",
+  "checklist": [
+    {
+      "requirement": "Provide a single command",
+      "evidence": "python3 benchmarks/python/package_release_evidence_bundle.py --output-dir artifacts/m240-release-evidence-bundle/release-evidence-bundle --fail-on-fail",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Collect quality evidence",
+      "evidence": "quality_threshold item copied and PASS in release-evidence-index.json",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Collect model-swap evidence",
+      "evidence": "model_swap_acceptance item copied and PASS with swap_decision ACCEPT",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Collect lifecycle evidence",
+      "evidence": "lifecycle_gate item copied and PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Collect memory-guard evidence",
+      "evidence": "memory_guard item copied and PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Collect routing evidence",
+      "evidence": "routing_policy, product_mode_metadata_probe, and live_request_profile_metadata_probe copied and PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Collect Prowl visibility evidence",
+      "evidence": "Prowl installed health, direct health, catalog, and promotion visibility smoke copied and PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Fail if required evidence is missing or not green",
+      "evidence": "command ran with --fail-on-fail and returned PASS with failures 0",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "py_compile": "PASS",
+    "release_evidence_bundle": "PASS",
+    "required_evidence_count": 14,
+    "copied_evidence_count": 14,
+    "failures": 0
+  },
+  "artifacts": [
+    "benchmarks/python/package_release_evidence_bundle.py",
+    "artifacts/m240-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json",
+    "artifacts/m240-release-evidence-bundle/release-evidence-bundle-command-m240.md"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m240-next-milestones",
+  "after": "M240",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M241",
+      "title": "Bounded low-memory live revalidation",
+      "acceptance": "rerun lower-memory profile live on Qwen2.5 Coder 14B and prove agent-workspace-low-memory remains within cache, memory, and first-hit quality/performance gates"
+    },
+    {
+      "milestone": "M242",
+      "title": "Quality-preserving release gate",
+      "acceptance": "combine deterministic quality, model-swap, routing, first-hit, lower-memory, and lifecycle gates into one release-blocking quality/performance manifest"
+    }
+  ]
+}

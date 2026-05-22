@@ -1,0 +1,222 @@
+{
+  "copied_evidence_count": 14,
+  "evidence": [
+    {
+      "bundle_path": "artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json",
+      "failures": [],
+      "key": "quality_threshold",
+      "kind": "quality",
+      "required": true,
+      "source": "artifacts/m231-model-swap-artifact-freshness-refresh/quality-threshold-gate-m231-qwen25-coder-14b-adapted.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "ci-quality-ready",
+        "type": "quality_threshold_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json",
+      "failures": [],
+      "key": "model_swap_acceptance",
+      "kind": "model_swap",
+      "required": true,
+      "source": "artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "first_duplicate_service_ms": 193.0981669574976,
+        "mature_hit_speedup_vs_baseline": 23.445196664976958,
+        "max_peak_memory_gb": 11.048436144,
+        "readiness": "swap-acceptable",
+        "swap_decision": "ACCEPT",
+        "type": "lower_memory_model_swap_acceptance_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json",
+      "failures": [],
+      "key": "lifecycle_gate",
+      "kind": "lifecycle",
+      "required": true,
+      "source": "artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "resident-lifecycle-regression-ready",
+        "type": "resident_lifecycle_regression_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.json",
+      "failures": [],
+      "key": "memory_guard",
+      "kind": "memory_guard",
+      "required": true,
+      "source": "artifacts/m233-proactive-cache-memory-pressure-guard/proactive-cache-memory-pressure-guard-m233.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "proactive-cache-memory-guard-ready",
+        "type": "proactive_cache_memory_pressure_guard",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m234-lower-memory-default-routing-policy/lower-memory-default-routing-policy-gate-m234.json",
+      "failures": [],
+      "key": "routing_policy",
+      "kind": "routing",
+      "required": true,
+      "source": "artifacts/m234-lower-memory-default-routing-policy/lower-memory-default-routing-policy-gate-m234.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "lower-memory-default-routing-ready",
+        "type": "lower_memory_default_routing_policy_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m236-lifecycle-gate-ci-packaging/resident-suite-evidence-package/resident-suite-evidence-index.json",
+      "failures": [],
+      "key": "resident_suite_package_index",
+      "kind": "evidence_package",
+      "required": true,
+      "source": "artifacts/m236-lifecycle-gate-ci-packaging/resident-suite-evidence-package/resident-suite-evidence-index.json",
+      "status": "PASS",
+      "summary": {
+        "lifecycle_gate_verdict": "PASS",
+        "missing": {},
+        "readiness": null,
+        "suite_verdict": "PASS",
+        "type": "resident_suite_evidence_package",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.json",
+      "failures": [],
+      "key": "bounded_first_hit_benchmark",
+      "kind": "first_hit_performance",
+      "required": true,
+      "source": "artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "baseline_service_ms": null,
+        "best_hit_service_ms": null,
+        "cache_memory_gb": null,
+        "first_duplicate_service_ms": null,
+        "mature_hit_speedup_vs_baseline": null,
+        "max_peak_memory_gb": null,
+        "readiness": null,
+        "type": "dax_repeated_context_bench",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m237-bounded-first-hit-live-revalidation/dax-first-hit-conversion-gate-m237-qwen25-coder-14b.json",
+      "failures": [],
+      "key": "bounded_first_hit_conversion_gate",
+      "kind": "first_hit_gate",
+      "required": true,
+      "source": "artifacts/m237-bounded-first-hit-live-revalidation/dax-first-hit-conversion-gate-m237-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "dax_first_hit_conversion_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m238-lower-memory-route-product-smoke/product-mode-metadata-probe-m238.json",
+      "failures": [],
+      "key": "product_mode_metadata_probe",
+      "kind": "product_routing",
+      "required": true,
+      "source": "artifacts/m238-lower-memory-route-product-smoke/product-mode-metadata-probe-m238.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "product_mode_metadata_probe",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m238-lower-memory-route-product-smoke/live-request-profile-metadata-m238.json",
+      "failures": [],
+      "key": "live_request_profile_metadata_probe",
+      "kind": "live_routing",
+      "required": true,
+      "source": "artifacts/m238-lower-memory-route-product-smoke/live-request-profile-metadata-m238.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "live_request_profile_metadata_probe",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-app-health-m239.json",
+      "failures": [],
+      "key": "prowl_installed_app_health",
+      "kind": "prowl_health",
+      "required": true,
+      "source": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-app-health-m239.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": null,
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-direct-health-m239.json",
+      "failures": [],
+      "key": "prowl_direct_health",
+      "kind": "prowl_direct_health",
+      "required": true,
+      "source": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-direct-health-m239.json",
+      "status": "PASS",
+      "summary": {
+        "active_model": "NVIDIA-Nemotron-3-Nano-4B-Q8_0",
+        "active_profile": "default",
+        "readiness": null,
+        "type": null,
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-models-m239.json",
+      "failures": [],
+      "key": "prowl_models_catalog",
+      "kind": "prowl_catalog",
+      "required": true,
+      "source": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-models-m239.json",
+      "status": "PASS",
+      "summary": {
+        "model_count": 102,
+        "readiness": null,
+        "type": null,
+        "verdict": "PASS"
+      }
+    },
+    {
+      "bundle_path": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-promotion-visibility-installed-app-smoke-m239.md",
+      "failures": [],
+      "key": "prowl_promotion_visibility_smoke",
+      "kind": "prowl_visibility",
+      "required": true,
+      "source": "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-promotion-visibility-installed-app-smoke-m239.md",
+      "status": "PASS",
+      "summary": {
+        "contains_required_text": true
+      }
+    }
+  ],
+  "failures": [],
+  "readiness": "release-evidence-ready",
+  "required_evidence_count": 14,
+  "single_command": "python3 benchmarks/python/package_release_evidence_bundle.py --output-dir artifacts/m240-release-evidence-bundle/release-evidence-bundle --fail-on-fail",
+  "tag": "m240-release-evidence-bundle",
+  "type": "release_evidence_bundle",
+  "verdict": "PASS"
+}
