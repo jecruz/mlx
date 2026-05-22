@@ -227,7 +227,7 @@ DEFAULT_GATES = [
     ),
     GateSpec(
         "release_evidence_bundle",
-        Path("artifacts/m240-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json"),
+        Path("artifacts/m249-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json"),
         "release_packaging",
         extra_checks=(no_failures, copied_bundle),
     ),

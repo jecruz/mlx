@@ -1,0 +1,7 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m249-next-milestones",
+  "after": "M249",
+  "readiness": "next-milestones-planned",
+  "next_milestones": []
+}

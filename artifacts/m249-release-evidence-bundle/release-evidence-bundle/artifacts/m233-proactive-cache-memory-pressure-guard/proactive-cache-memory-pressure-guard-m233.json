@@ -1,0 +1,138 @@
+{
+  "carried_forward_performance": {
+    "first_duplicate_cache_hit": true,
+    "first_duplicate_prefill_tokens": 11.0,
+    "first_duplicate_service_ms": 193.0981669574976,
+    "mature_hit_speedup_vs_baseline": 23.445196664976958,
+    "promotion_gate": "artifacts/m230-lower-memory-profile-promotion-gate/lower-memory-profile-promotion-gate-m230-qwen25-coder-14b.json"
+  },
+  "checks": [
+    {
+      "actual": 128.0,
+      "label": "first_hit.prefix_cache_memory_limit_mb",
+      "operator": "<=",
+      "threshold": 128.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 128.0,
+      "label": "first_hit.prefix_cache_memory_limit_mb_nonzero",
+      "operator": ">=",
+      "threshold": 1.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 8,
+      "label": "first_hit.prefix_cache_max_entries",
+      "operator": "<=",
+      "threshold": 8.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 5,
+      "label": "first_hit.prefix_cache_min_entries",
+      "operator": ">=",
+      "threshold": 5.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 64.0,
+      "label": "low_memory.prefix_cache_memory_limit_mb",
+      "operator": "<=",
+      "threshold": 64.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 4,
+      "label": "low_memory.prefix_cache_max_entries",
+      "operator": "<=",
+      "threshold": 4.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 1,
+      "label": "low_memory.prefix_cache_min_entries",
+      "operator": ">=",
+      "threshold": 1.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 5,
+      "label": "m229.first_request.proactive_prefix_cache_created",
+      "operator": ">=",
+      "threshold": 5.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 0,
+      "label": "m229.first_request.proactive_prefix_cache_trim_failures",
+      "operator": "<=",
+      "threshold": 0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 20.817750930786133,
+      "label": "m229.first_request.cache_memory_mb",
+      "operator": "<=",
+      "threshold": 64.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 193.0981669574976,
+      "label": "m230.first_duplicate_service_ms",
+      "operator": "<=",
+      "threshold": 250.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": true,
+      "label": "m230.first_duplicate_cache_hit",
+      "operator": "==",
+      "threshold": true,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 11.0,
+      "label": "m230.first_duplicate_prefill_tokens",
+      "operator": "<=",
+      "threshold": 16.0,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 23.445196664976958,
+      "label": "m230.mature_hit_speedup_vs_baseline",
+      "operator": ">=",
+      "threshold": 5.0,
+      "verdict": "PASS"
+    }
+  ],
+  "failures": [],
+  "observed_m229_first_request": {
+    "cache_memory_bytes": 21828994,
+    "proactive_prefix_cache_created": 5,
+    "proactive_prefix_cache_tokens": [
+      2073,
+      2070,
+      2065,
+      2049,
+      2017
+    ],
+    "proactive_prefix_cache_trim_failures": 0
+  },
+  "profiles": {
+    "agent-workspace-first-hit": {
+      "prefix_cache_max_entries": 8,
+      "prefix_cache_memory_limit_mb": 128.0,
+      "prefix_cache_min_entries": 5
+    },
+    "agent-workspace-low-memory": {
+      "prefix_cache_max_entries": 4,
+      "prefix_cache_memory_limit_mb": 64.0,
+      "prefix_cache_min_entries": 1
+    }
+  },
+  "readiness": "proactive-cache-memory-guard-ready",
+  "tag": "m233-proactive-cache-memory-pressure",
+  "type": "proactive_cache_memory_pressure_guard",
+  "verdict": "PASS"
+}

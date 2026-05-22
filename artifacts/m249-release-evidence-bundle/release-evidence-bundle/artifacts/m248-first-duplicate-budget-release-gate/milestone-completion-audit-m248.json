@@ -1,0 +1,54 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M248",
+  "tag": "m248-first-duplicate-budget-release-gate",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "runtime": {
+    "release_gate": "benchmarks/python/release_quality_performance_gate.py",
+    "output_json": "artifacts/m248-first-duplicate-budget-release-gate/quality-preserving-release-gate-m248.json",
+    "output_md": "artifacts/m248-first-duplicate-budget-release-gate/quality-preserving-release-gate-m248.md"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/m248-first-duplicate-budget-release-gate/quality-preserving-release-gate-m248.json",
+      "type": "quality_preserving_release_gate",
+      "verdict": "PASS",
+      "gate_count": 15,
+      "categories": [
+        "first_hit",
+        "lifecycle",
+        "lower_memory",
+        "model_swap",
+        "python_package",
+        "quality",
+        "release_packaging",
+        "routing"
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 -m py_compile benchmarks/python/release_quality_performance_gate.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/release_quality_performance_gate.py --output-json artifacts/m248-first-duplicate-budget-release-gate/quality-preserving-release-gate-m248.json --output-md artifacts/m248-first-duplicate-budget-release-gate/quality-preserving-release-gate-m248.md --tag m248-first-duplicate-budget-release-gate --fail-on-fail",
+      "result": "PASS"
+    }
+  ],
+  "gates": {
+    "first_duplicate_service_budget": {
+      "path": "artifacts/m247-first-hit-regression-recovery/dax-first-hit-m247-qwen25-coder-14b.json",
+      "first_duplicate_service_request_ms": 185.6596670113504,
+      "threshold_ms": 250.0,
+      "verdict": "PASS"
+    }
+  },
+  "failures": [],
+  "performance": {
+    "first_duplicate_service_request_ms": 185.6596670113504,
+    "best_hit_service_request_ms": 179.28074998781085,
+    "best_hit_speedup_vs_baseline": 25.753314053336265
+  }
+}

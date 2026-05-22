@@ -4098,3 +4098,19 @@
   - M248 conclusion: the release gate now enforces the first-duplicate budget
     explicitly while preserving the existing quality, routing, lifecycle, and
     low-memory coverage.
+- Completed M249 release evidence bundle refresh:
+  - updated `benchmarks/python/package_release_evidence_bundle.py` so the
+    release bundle now includes the recovered M247 first-hit evidence and the
+    M248 first-duplicate budget gate
+  - refreshed the release evidence bundle at
+    `artifacts/m249-release-evidence-bundle/release-evidence-bundle/`
+  - refreshed the quality/performance gate at
+    `artifacts/m249-quality-preserving-release-gate/`
+  - validation passed:
+    - `release_evidence_bundle` verdict `PASS`
+    - copied evidence `20` of `20`
+    - `quality_preserving_release_gate` verdict `PASS`
+    - gate count `15`
+  - M249 conclusion: the release evidence bundle and release gate now reflect
+    the recovered first-duplicate budget state and are ready for the next
+    release checkpoint.

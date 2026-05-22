@@ -1,0 +1,49 @@
+{
+  "milestone": "M249",
+  "title": "Post-recovery release evidence bundle refresh",
+  "status": "PASS",
+  "objective": "Refresh the release evidence bundle and quality/performance gate artifacts after first-duplicate regression recovery.",
+  "checklist": [
+    {
+      "requirement": "Provide a single documented command",
+      "evidence": "python3 benchmarks/python/package_release_evidence_bundle.py --output-dir artifacts/m249-release-evidence-bundle/release-evidence-bundle --fail-on-fail",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Package the recovered first-hit evidence",
+      "evidence": "first_hit_regression_recovery items copied and PASS in release-evidence-index.json",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Package the first-duplicate budget gate",
+      "evidence": "first_duplicate_budget_release_gate item copied and PASS in release-evidence-index.json",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Refresh the quality/performance gate artifact",
+      "evidence": "quality-preserving-release-gate-m249.json points at the refreshed m249 release bundle and PASSes",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Fail if required evidence is missing or not green",
+      "evidence": "package command returned PASS with failures 0",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "py_compile": "PASS",
+    "release_evidence_bundle": "PASS",
+    "quality_preserving_release_gate": "PASS",
+    "required_evidence_count": 20,
+    "copied_evidence_count": 20,
+    "failures": 0
+  },
+  "artifacts": [
+    "benchmarks/python/package_release_evidence_bundle.py",
+    "benchmarks/python/release_quality_performance_gate.py",
+    "artifacts/m249-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json",
+    "artifacts/m249-release-evidence-bundle/release-evidence-bundle-command-m249.md",
+    "artifacts/m249-quality-preserving-release-gate/quality-preserving-release-gate-m249.json",
+    "artifacts/m249-quality-preserving-release-gate/quality-preserving-release-gate-m249.md"
+  ]
+}

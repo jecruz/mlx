@@ -97,6 +97,38 @@ DEFAULT_EVIDENCE = [
         expected_verdict=None,
         required_text="Status: PASS",
     ),
+    EvidenceSpec(
+        "first_hit_regression_recovery_report",
+        Path("artifacts/m247-first-hit-regression-recovery/first-hit-regression-recovery-m247.md"),
+        "first_hit_recovery",
+        expected_verdict=None,
+        required_text="Status: PASS",
+    ),
+    EvidenceSpec(
+        "first_hit_regression_recovery_audit",
+        Path("artifacts/m247-first-hit-regression-recovery/milestone-completion-audit-m247.json"),
+        "first_hit_recovery",
+    ),
+    EvidenceSpec(
+        "first_hit_regression_recovery_benchmark",
+        Path("artifacts/m247-first-hit-regression-recovery/dax-first-hit-m247-qwen25-coder-14b.json"),
+        "first_hit_recovery",
+    ),
+    EvidenceSpec(
+        "first_hit_regression_recovery_conversion_gate",
+        Path("artifacts/m247-first-hit-regression-recovery/dax-first-hit-conversion-gate-m247-qwen25-coder-14b.json"),
+        "first_hit_recovery",
+    ),
+    EvidenceSpec(
+        "first_duplicate_budget_release_gate",
+        Path("artifacts/m248-first-duplicate-budget-release-gate/quality-preserving-release-gate-m248.json"),
+        "first_hit_recovery",
+    ),
+    EvidenceSpec(
+        "first_duplicate_budget_release_audit",
+        Path("artifacts/m248-first-duplicate-budget-release-gate/milestone-completion-audit-m248.json"),
+        "first_hit_recovery",
+    ),
 ]
 
 
@@ -266,7 +298,7 @@ def main() -> None:
         "evidence": entries,
         "single_command": (
             "python3 benchmarks/python/package_release_evidence_bundle.py "
-            "--output-dir artifacts/m240-release-evidence-bundle/release-evidence-bundle "
+            f"--output-dir {args.output_dir} "
             "--fail-on-fail"
         ),
     }
