@@ -3950,3 +3950,33 @@
     performance manifest. The release path is blocked if quality, routing,
     model-swap safety, first-hit performance, lower-memory bounds, lifecycle
     safety, or evidence packaging regresses.
+- Completed M243 upstream intake merge validation:
+  - fast-forwarded `prompt-processing-bench` from `b227899d` to `d9077d8d`
+  - merged validated branch `upstream-intake-20260522`
+  - pushed `jecruz/prompt-processing-bench`
+  - upstream commits integrated: `16`
+  - skipped upstream commit:
+    - `423b5149` because the cherry-pick was empty after prior upstream commits
+  - validation passed:
+    - `git diff --check HEAD~16..HEAD`
+    - `cmake -S . -B /private/tmp/mlx-upstream-intake-build -DCMAKE_BUILD_TYPE=Release -DMLX_BUILD_TESTS=ON`
+    - `cmake --build /private/tmp/mlx-upstream-intake-build --target mlx mlx-metallib tests`
+    - targeted C++ tests for allocator cache, CPU-stream cache sync, GPU int32
+      shape overflow, depthwise conv2d non-multiple-of-8 spatial dims, and
+      scheduler races
+    - tmux Python/Metal import validation on pane
+      `codex-gpt5_5-panthro_cpp:1.2`
+  - Python/Metal validation:
+    - branch `prompt-processing-bench`
+    - head `d9077d8d`
+    - normal import `True Device(gpu, 0)`
+    - minimal-env import `True Device(gpu, 0)`
+  - performance:
+    - no live Qwen2.5 benchmark rerun in M243
+    - M241 low-memory baseline remains current until M246:
+      - first duplicate service `187.867 ms`
+      - best hit service `185.230 ms`
+      - best-hit speedup `24.648x`
+      - max peak memory `9.689 GB`
+  - M243 conclusion: upstream intake is now merged and pushed into the milestone
+    branch with native C++/Metal and tmux Python/Metal validation green.

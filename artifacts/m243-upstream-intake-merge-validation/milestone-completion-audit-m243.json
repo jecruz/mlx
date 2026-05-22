@@ -1,0 +1,56 @@
+{
+  "milestone": "M243",
+  "title": "Upstream intake merge and validation checkpoint",
+  "status": "PASS",
+  "objective": "Fast-forward prompt-processing-bench to upstream-intake-20260522 and verify the merged upstream intake branch.",
+  "checklist": [
+    {
+      "requirement": "Fast-forward prompt-processing-bench to upstream-intake-20260522",
+      "evidence": "git merge --ff-only upstream-intake-20260522 updated b227899d..d9077d8d",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Push merged prompt-processing-bench",
+      "evidence": "git push updated jecruz/prompt-processing-bench to d9077d8d",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Static validation",
+      "evidence": "git diff --check HEAD~16..HEAD returned success",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Native CMake configure",
+      "evidence": "cmake configure in /private/tmp/mlx-upstream-intake-build returned success",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Native MLX and Metal build",
+      "evidence": "cmake --build /private/tmp/mlx-upstream-intake-build --target mlx mlx-metallib tests returned success",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Targeted C++ regression tests",
+      "evidence": "allocator cache, CPU-stream cache sync, GPU int32 overflow, depthwise conv non-mod-8, and scheduler races tests passed",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Python/Metal import validation",
+      "evidence": "tmux pane codex-gpt5_5-panthro_cpp:1.2 reported True Device(gpu, 0) for normal and minimal-env imports",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "diff_check": "PASS",
+    "cmake_configure": "PASS",
+    "native_build": "PASS",
+    "targeted_cpp_tests": "PASS",
+    "python_metal_tmux": "PASS",
+    "failures": 0
+  },
+  "branch": {
+    "name": "prompt-processing-bench",
+    "head": "d9077d8d",
+    "pushed": true
+  }
+}
