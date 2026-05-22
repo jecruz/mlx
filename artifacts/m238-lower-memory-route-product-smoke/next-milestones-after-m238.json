@@ -1,0 +1,28 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m238-next-milestones",
+  "after": "M238",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M239",
+      "title": "Prowl promotion visibility installed-app smoke",
+      "acceptance": "launch or smoke the installed Prowl app path and verify the M235 promotion summary is reachable from the operator settings/readiness surfaces"
+    },
+    {
+      "milestone": "M240",
+      "title": "Release evidence bundle command",
+      "acceptance": "provide a single documented release command that runs/collects quality, swap, lifecycle, memory-guard, routing, and Prowl visibility artifacts"
+    },
+    {
+      "milestone": "M241",
+      "title": "Bounded low-memory live revalidation",
+      "acceptance": "rerun lower-memory profile live on Qwen2.5 Coder 14B and prove agent-workspace-low-memory remains within cache, memory, and first-hit quality/performance gates"
+    },
+    {
+      "milestone": "M242",
+      "title": "Quality-preserving release gate",
+      "acceptance": "combine deterministic quality, model-swap, routing, first-hit, lower-memory, and lifecycle gates into one release-blocking quality/performance manifest"
+    }
+  ]
+}

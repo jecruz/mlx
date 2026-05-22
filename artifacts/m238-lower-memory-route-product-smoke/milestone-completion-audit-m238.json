@@ -1,0 +1,83 @@
+{
+  "type": "milestone_completion_audit",
+  "milestone": "M238",
+  "tag": "m238-lower-memory-route-product-smoke",
+  "verdict": "PASS",
+  "readiness": "milestone-batch-complete",
+  "runtime": {
+    "model": "/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit",
+    "base_url": "http://127.0.0.1:8779",
+    "temporary_server_started": true,
+    "temporary_server_stopped": true
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/m238-lower-memory-route-product-smoke/product-mode-metadata-probe-m238.json",
+      "type": "product_mode_metadata_probe",
+      "verdict": "PASS",
+      "case_count": 7,
+      "failures": 0
+    },
+    {
+      "path": "artifacts/m238-lower-memory-route-product-smoke/live-request-profile-metadata-m238.json",
+      "type": "live_request_profile_metadata_probe",
+      "verdict": "PASS",
+      "row_count": 3,
+      "failures": 0
+    }
+  ],
+  "live_routes": [
+    {
+      "case": "completion_first_hit_intent",
+      "expected_profile": "agent-workspace-first-hit",
+      "observed_profile": "agent-workspace-first-hit",
+      "profile_source": "request_metadata",
+      "profile_applied": true,
+      "service_request_ms": 1415.6602921430022,
+      "actual_prefill_tokens": 24
+    },
+    {
+      "case": "chat_coding_agent_low_memory",
+      "expected_profile": "agent-workspace-low-memory",
+      "observed_profile": "agent-workspace-low-memory",
+      "profile_source": "request_metadata",
+      "profile_applied": true,
+      "service_request_ms": 243.7347499653697,
+      "actual_prefill_tokens": 55
+    },
+    {
+      "case": "completion_manual_override",
+      "expected_profile": "interactive",
+      "observed_profile": "interactive",
+      "profile_source": "request_metadata",
+      "profile_applied": true,
+      "service_request_ms": 183.40704194270074,
+      "actual_prefill_tokens": 23
+    }
+  ],
+  "current_gates": {
+    "m231_model_swap_decision": "ACCEPT",
+    "m231_quality_threshold": "PASS",
+    "m233_memory_guard": "PASS",
+    "m234_routing_policy": "PASS",
+    "m237_bounded_first_hit_live": "PASS"
+  },
+  "commands": [
+    {
+      "command": "python3 benchmarks/python/product_mode_metadata_probe.py --output-json artifacts/m238-lower-memory-route-product-smoke/product-mode-metadata-probe-m238.json --tag m238-lower-memory-route --fail-on-fail",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 benchmarks/python/live_request_profile_metadata_probe.py --base-url http://127.0.0.1:8779 --output-json artifacts/m238-lower-memory-route-product-smoke/live-request-profile-metadata-m238.json --tag m238-lower-memory-route --max-tokens 1 --fail-on-fail",
+      "result": "PASS"
+    }
+  ],
+  "performance": {
+    "lower_memory_route_service_ms": 243.7347499653697,
+    "lower_memory_route_actual_prefill_tokens": 55,
+    "m237_first_duplicate_service_ms": 186.18549988605082,
+    "m237_best_hit_service_ms": 183.01716702990234,
+    "m237_mature_hit_speedup_vs_baseline": 23.151605311049494
+  },
+  "failures": []
+}

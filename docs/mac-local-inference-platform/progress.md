@@ -3793,3 +3793,30 @@
   - M237 conclusion: the bounded first-hit profile introduced in M233 preserves
     the first duplicate latency win and remains inside the M230 promotion
     budget.
+- Completed M238 lower-memory route product smoke:
+  - started a fresh updated-code resident server on `127.0.0.1:8779`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+  - generated artifacts under
+    `artifacts/m238-lower-memory-route-product-smoke/`
+  - validation passed:
+    - product-mode metadata probe verdict `PASS`
+    - product-mode cases `7`
+    - live request profile metadata probe verdict `PASS`
+    - live rows `3`
+    - failures `0`
+  - live route evidence:
+    - first-hit completion selected `agent-workspace-first-hit` from request
+      metadata
+    - low-memory chat selected `agent-workspace-low-memory` from request
+      metadata
+    - manual override selected `interactive` despite low-memory metadata
+  - performance:
+    - low-memory route service `243.735 ms`
+    - low-memory route prefill `55` tokens
+    - M237 first duplicate service remains `186.185 ms`
+    - M237 best hit service remains `183.017 ms`
+  - cleanup:
+    - temporary resident server stopped after smoke
+  - M238 conclusion: product-facing metadata can route live lower-memory
+    requests correctly while preserving manual override and first-hit behavior.
