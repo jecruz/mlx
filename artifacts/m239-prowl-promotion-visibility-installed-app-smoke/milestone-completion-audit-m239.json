@@ -1,0 +1,54 @@
+{
+  "milestone": "M239",
+  "title": "Prowl promotion visibility installed-app smoke",
+  "status": "PASS",
+  "objective": "Launch or smoke the installed Prowl app path and verify the M235 promotion summary is reachable from the operator settings/readiness surfaces.",
+  "checklist": [
+    {
+      "requirement": "Use an installed Prowl app path",
+      "evidence": "/Applications/Prowl.app exists and was passed through PROWL_APP_SMOKE_APP_BUNDLE",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Smoke or launch the app",
+      "evidence": "scripts/smoke-prowl-macos-app.sh completed with 'Prowl macOS app smoke passed.'",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Verify daemon health",
+      "evidence": "prowl-app-health-m239.json reports status ok",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Verify direct backend health",
+      "evidence": "prowl-direct-health-m239.json reports ok true and child_reachable true",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Verify catalog plumbing",
+      "evidence": "prowl-models-m239.json contains 102 model entries",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Verify M235 promotion fields decode",
+      "evidence": "swift test --package-path apps/prowl-macos -c release --filter MLXOperatorArtifactClientTests/testPassArtifactsReportPassRootStatus passed",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Verify readiness/settings surface reachability",
+      "evidence": "source checks found readiness first-dup/speedup/peak summary and settings Promotion summary",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "installed_app_smoke": "PASS",
+    "targeted_swift_test": "PASS",
+    "failures": 0
+  },
+  "artifacts": [
+    "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-app-health-m239.json",
+    "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-direct-health-m239.json",
+    "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-models-m239.json",
+    "artifacts/m239-prowl-promotion-visibility-installed-app-smoke/prowl-promotion-visibility-installed-app-smoke-m239.md"
+  ]
+}

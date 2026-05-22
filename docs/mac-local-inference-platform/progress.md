@@ -3820,3 +3820,32 @@
     - temporary resident server stopped after smoke
   - M238 conclusion: product-facing metadata can route live lower-memory
     requests correctly while preserving manual override and first-hit behavior.
+- Completed M239 Prowl promotion visibility installed-app smoke:
+  - smoked installed app path `/Applications/Prowl.app`
+  - command:
+    `PROWL_APP_SMOKE_APP_BUNDLE=/Applications/Prowl.app PROWL_APP_SMOKE_DAEMON_PORT=18897 PROWL_APP_SMOKE_MODEL_ID= scripts/smoke-prowl-macos-app.sh`
+  - generated artifacts under
+    `artifacts/m239-prowl-promotion-visibility-installed-app-smoke/`
+  - validation passed:
+    - installed app smoke result `PASS`
+    - daemon status `ok`
+    - direct backend `ok`
+    - direct child reachable `true`
+    - model catalog entries `102`
+    - targeted Prowl artifact-client test passed
+  - promotion visibility reachability:
+    - readiness card still exposes profile, first-duplicate latency, speedup,
+      and peak memory
+    - model-sources settings still exposes the `Promotion:` lower-memory summary
+    - artifact-client test still decodes candidate profile and promotion
+      performance fields
+  - performance:
+    - no MLX inference hot path changed in M239
+    - M237 first duplicate service remains `186.185 ms`
+    - M237 best hit service remains `183.017 ms`
+    - M237 mature-hit speedup remains `23.152x`
+    - M237 cache memory remains `0.022 GB`
+    - M238 low-memory route service remains `243.735 ms`
+  - M239 conclusion: the installed Prowl app can be smoked successfully and the
+    lower-memory promotion evidence is reachable from the operator
+    readiness/settings surfaces.
