@@ -4086,3 +4086,15 @@
   - M247 conclusion: the M246 first-duplicate regression was not reproducible
     on the fresh rerun, and the first-hit path is again under the promotion
     budget while preserving the quality gate.
+- Completed M248 first-duplicate budget enforcement:
+  - added an explicit first-duplicate service budget gate to
+    `benchmarks/python/release_quality_performance_gate.py`
+  - the release gate now checks the fresh M247 first-hit run and treats
+    `rows[1].service_request_ms` as a release-blocking budget, not a warning
+  - reran the release gate with the new check:
+    - verdict `PASS`
+    - gate count `15`
+    - first-duplicate service budget `185.660 ms <= 250 ms`
+  - M248 conclusion: the release gate now enforces the first-duplicate budget
+    explicitly while preserving the existing quality, routing, lifecycle, and
+    low-memory coverage.

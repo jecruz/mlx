@@ -63,6 +63,21 @@ def lower_memory_metrics(payload: dict[str, Any]) -> list[str]:
     return failures
 
 
+def first_duplicate_service_budget(payload: dict[str, Any], *, threshold: float) -> list[str]:
+    rows = payload.get("rows") or []
+    if len(rows) < 2:
+        return ["rows[1]=missing"]
+    first_duplicate = rows[1] or {}
+    value = first_duplicate.get("service_request_ms")
+    if not isinstance(value, (int, float)):
+        return ["rows[1].service_request_ms=missing"]
+    return (
+        []
+        if value <= threshold
+        else [f"rows[1].service_request_ms={value!r} > {threshold!r}"]
+    )
+
+
 def lifecycle_ready(payload: dict[str, Any]) -> list[str]:
     return (
         []
@@ -156,6 +171,23 @@ DEFAULT_GATES = [
         Path("artifacts/m237-bounded-first-hit-live-revalidation/dax-first-hit-conversion-gate-m237-qwen25-coder-14b.json"),
         "first_hit",
         extra_checks=(no_failures,),
+    ),
+    GateSpec(
+        "first_duplicate_service_budget",
+        Path("artifacts/m247-first-hit-regression-recovery/dax-first-hit-m247-qwen25-coder-14b.json"),
+        "first_hit",
+        extra_checks=(
+            no_failures,
+            lambda payload: min_speedup(
+                payload,
+                key="best_hit_speedup_vs_baseline",
+                threshold=5.0,
+            ),
+            lambda payload: first_duplicate_service_budget(
+                payload,
+                threshold=250.0,
+            ),
+        ),
     ),
     GateSpec(
         "lower_memory_benchmark",
@@ -255,6 +287,12 @@ def summarize_payload(payload: dict[str, Any]) -> dict[str, Any]:
             "default_device": probe.get("default_device"),
             "minimal_env_stdout": (probe.get("minimal_env") or {}).get("stdout"),
         }
+    if payload.get("type") == "dax_repeated_context_bench":
+        rows = payload.get("rows") or []
+        if len(rows) > 1:
+            summary["first_duplicate_service_request_ms"] = (rows[1] or {}).get(
+                "service_request_ms"
+            )
     if payload.get("metrics"):
         metrics = payload["metrics"]
         summary["metrics"] = {

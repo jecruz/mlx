@@ -1,0 +1,13 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m248-next-milestones",
+  "after": "M248",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M249",
+      "title": "Post-recovery release evidence bundle refresh",
+      "acceptance": "refresh release evidence bundle and quality/performance gate artifacts after first-duplicate regression recovery"
+    }
+  ]
+}
