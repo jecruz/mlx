@@ -1,0 +1,26 @@
+{
+  "failures": [],
+  "input": "artifacts/m246-post-upstream-performance-regression/dax-low-memory-m246-qwen25-coder-14b.jsonl",
+  "metrics": {
+    "conversion_prefill_tokens": 11.0,
+    "health_active_memory_gb": null,
+    "max_active_memory_gb": 9.668618248,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_peak_memory_gb": 11.048436144,
+    "mean_peak_memory_gb": 11.048436144,
+    "memory_source": "request_metrics"
+  },
+  "profiles": [
+    "agent-workspace-low-memory"
+  ],
+  "row_count": 6,
+  "tag": "m246-post-upstream-low-memory",
+  "thresholds": {
+    "max_active_memory_gb": 16.0,
+    "max_cache_memory_limit_mb": 64.0,
+    "max_conversion_prefill_tokens": 32.0,
+    "max_peak_memory_gb": 16.0
+  },
+  "type": "lower_memory_runtime_gate",
+  "verdict": "PASS"
+}

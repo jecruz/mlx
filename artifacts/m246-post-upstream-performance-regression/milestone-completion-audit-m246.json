@@ -1,0 +1,83 @@
+{
+  "milestone": "M246",
+  "title": "Post-upstream performance regression comparison",
+  "status": "PASS_WITH_WARNINGS",
+  "objective": "Rerun Qwen2.5 first-hit and low-memory live benchmarks after upstream intake and compare against M237/M241 baselines.",
+  "checklist": [
+    {
+      "requirement": "Rerun Qwen2.5 first-hit live benchmark after upstream intake",
+      "evidence": "dax-first-hit-m246-qwen25-coder-14b.json verdict PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Rerun first-hit conversion gate",
+      "evidence": "dax-first-hit-conversion-gate-m246-qwen25-coder-14b.json verdict PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Rerun Qwen2.5 low-memory live benchmark after upstream intake",
+      "evidence": "dax-low-memory-m246-qwen25-coder-14b.json verdict PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Rerun low-memory runtime and conversion gates",
+      "evidence": "lower-memory-runtime-gate-m246-qwen25-coder-14b.json and dax-low-memory-first-hit-conversion-gate-m246-qwen25-coder-14b.json verdict PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Compare against M237/M241 baselines",
+      "evidence": "performance-regression-comparison-m246.json compares M246 first-hit to M237 and M246 low-memory to M241",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Surface regressions instead of hiding them",
+      "evidence": "comparison status PASS_WITH_WARNINGS documents first-hit first duplicate +42.851% regression and >250 ms budget breach",
+      "status": "WARN"
+    },
+    {
+      "requirement": "Clean up temporary server",
+      "evidence": "temporary server stopped and port 8779 verified with no listener",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "first_hit_benchmark": "PASS",
+    "first_hit_conversion_gate": "PASS",
+    "low_memory_benchmark": "PASS",
+    "low_memory_runtime_gate": "PASS",
+    "low_memory_conversion_gate": "PASS",
+    "comparison": "PASS_WITH_WARNINGS",
+    "failures": 0,
+    "warnings": 2
+  },
+  "performance": {
+    "first_hit": {
+      "m237_first_duplicate_service_ms": 186.18549988605082,
+      "m246_first_duplicate_service_ms": 265.9677919000387,
+      "first_duplicate_delta_percent": 42.85096963126357,
+      "m237_best_hit_service_ms": 183.01716702990234,
+      "m246_best_hit_service_ms": 183.47716704010963,
+      "best_hit_delta_percent": 0.25134361782991267,
+      "m246_speedup": 26.415201020310395
+    },
+    "low_memory": {
+      "m241_first_duplicate_service_ms": 187.8668749704957,
+      "m246_first_duplicate_service_ms": 186.6524580400437,
+      "first_duplicate_delta_percent": -0.6464241930051331,
+      "m241_best_hit_service_ms": 185.23012497462332,
+      "m246_best_hit_service_ms": 182.69941699691117,
+      "best_hit_delta_percent": -1.3662519354366618,
+      "m246_speedup": 19.122803222963945,
+      "max_peak_memory_gb": 11.048436144
+    }
+  },
+  "artifacts": [
+    "artifacts/m246-post-upstream-performance-regression/dax-first-hit-m246-qwen25-coder-14b.json",
+    "artifacts/m246-post-upstream-performance-regression/dax-first-hit-conversion-gate-m246-qwen25-coder-14b.json",
+    "artifacts/m246-post-upstream-performance-regression/dax-low-memory-m246-qwen25-coder-14b.json",
+    "artifacts/m246-post-upstream-performance-regression/lower-memory-runtime-gate-m246-qwen25-coder-14b.json",
+    "artifacts/m246-post-upstream-performance-regression/dax-low-memory-first-hit-conversion-gate-m246-qwen25-coder-14b.json",
+    "artifacts/m246-post-upstream-performance-regression/performance-regression-comparison-m246.json",
+    "artifacts/m246-post-upstream-performance-regression/post-upstream-performance-regression-m246.md"
+  ]
+}

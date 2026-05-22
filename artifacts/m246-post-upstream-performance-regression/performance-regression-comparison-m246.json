@@ -1,0 +1,95 @@
+{
+  "baselines": {
+    "m237_first_hit": {
+      "baseline_service_ms": 4310.493208002299,
+      "best_hit_service_ms": 183.01716702990234,
+      "best_hit_speedup_vs_baseline": 23.55239826927289,
+      "first_duplicate_prefill_tokens": 11,
+      "first_duplicate_service_ms": 186.18549988605082,
+      "hit_count": 5,
+      "verdict": "PASS"
+    },
+    "m241_low_memory": {
+      "baseline_service_ms": 4565.483708865941,
+      "best_hit_service_ms": 185.23012497462332,
+      "best_hit_speedup_vs_baseline": 24.647630667481412,
+      "first_duplicate_prefill_tokens": 11,
+      "first_duplicate_service_ms": 187.8668749704957,
+      "hit_count": 5,
+      "verdict": "PASS"
+    }
+  },
+  "deltas": {
+    "first_hit": {
+      "best_hit_service_ms": {
+        "absolute_ms": 0.4600000102072954,
+        "percent": 0.2513425476267689
+      },
+      "first_duplicate_service_ms": {
+        "absolute_ms": 79.7822920139879,
+        "percent": 42.85096963126357
+      },
+      "speedup": {
+        "absolute_ms": 2.8628027510375063,
+        "percent": 12.155037114723038
+      }
+    },
+    "low_memory": {
+      "best_hit_service_ms": {
+        "absolute_ms": -2.5307079777121544,
+        "percent": -1.3662507532502413
+      },
+      "first_duplicate_service_ms": {
+        "absolute_ms": -1.2144169304519892,
+        "percent": -0.6464241930051331
+      },
+      "speedup": {
+        "absolute_ms": -5.5248274445174665,
+        "percent": -22.41524761163591
+      }
+    }
+  },
+  "failures": [],
+  "gates": {
+    "first_hit_conversion": "PASS",
+    "low_memory_conversion": "PASS",
+    "low_memory_runtime": "PASS"
+  },
+  "post_upstream": {
+    "m246_first_hit": {
+      "baseline_service_ms": 4846.586250001565,
+      "best_hit_service_ms": 183.47716704010963,
+      "best_hit_speedup_vs_baseline": 26.415201020310395,
+      "first_duplicate_prefill_tokens": 11,
+      "first_duplicate_service_ms": 265.9677919000387,
+      "hit_count": 5,
+      "verdict": "PASS"
+    },
+    "m246_low_memory": {
+      "baseline_service_ms": 3493.7250001821667,
+      "best_hit_service_ms": 182.69941699691117,
+      "best_hit_speedup_vs_baseline": 19.122803222963945,
+      "first_duplicate_prefill_tokens": 11,
+      "first_duplicate_service_ms": 186.6524580400437,
+      "hit_count": 5,
+      "verdict": "PASS"
+    },
+    "m246_low_memory_runtime": {
+      "conversion_prefill_tokens": 11.0,
+      "health_active_memory_gb": null,
+      "max_active_memory_gb": 9.668618248,
+      "max_cache_memory_limit_mb": 64.0,
+      "max_peak_memory_gb": 11.048436144,
+      "mean_peak_memory_gb": 11.048436144,
+      "memory_source": "request_metrics"
+    }
+  },
+  "readiness": "performance-regression-reviewed",
+  "status": "PASS_WITH_WARNINGS",
+  "tag": "m246-post-upstream-performance-regression",
+  "type": "post_upstream_performance_regression_comparison",
+  "warnings": [
+    "first-hit first duplicate service regressed by more than 20 percent",
+    "first-hit first duplicate service exceeds 250 ms promotion budget"
+  ]
+}

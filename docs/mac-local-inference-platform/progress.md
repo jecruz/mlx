@@ -4033,3 +4033,42 @@
     - M246 is the live post-upstream performance comparison rerun
   - M245 conclusion: the post-upstream release gate remains green and now blocks
     release if the repeatable Python package/Metal validation harness regresses.
+- Completed M246 post-upstream performance regression comparison:
+  - started a fresh updated-code resident server on `127.0.0.1:8779`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/lmstudio-community/Qwen2.5-Coder-14B-Instruct-MLX-4bit`
+  - generated artifacts under
+    `artifacts/m246-post-upstream-performance-regression/`
+  - validation passed:
+    - first-hit benchmark verdict `PASS`
+    - first-hit conversion gate verdict `PASS`
+    - low-memory benchmark verdict `PASS`
+    - low-memory runtime gate verdict `PASS`
+    - low-memory conversion gate verdict `PASS`
+  - comparison status: `PASS_WITH_WARNINGS`
+  - first-hit profile:
+    - M237 first duplicate service `186.185 ms`
+    - M246 first duplicate service `265.968 ms`
+    - first duplicate delta `+79.782 ms` / `+42.851%`
+    - M237 best hit service `183.017 ms`
+    - M246 best hit service `183.477 ms`
+    - best hit delta `+0.460 ms` / `+0.251%`
+    - M246 speedup `26.415x`
+  - low-memory profile:
+    - M241 first duplicate service `187.867 ms`
+    - M246 first duplicate service `186.652 ms`
+    - first duplicate delta `-1.214 ms` / `-0.646%`
+    - M241 best hit service `185.230 ms`
+    - M246 best hit service `182.699 ms`
+    - best hit delta `-2.531 ms` / `-1.366%`
+    - M246 speedup `19.123x`
+    - M246 max peak memory `11.048 GB`
+  - warnings:
+    - first-hit first duplicate service regressed by more than 20%
+    - first-hit first duplicate service exceeded the prior `250 ms` promotion
+      budget
+  - cleanup:
+    - temporary resident server stopped after validation
+  - M246 conclusion: low-memory remains healthy after upstream intake, but the
+    first-hit path needs a follow-up regression recovery milestone because the
+    first duplicate user-visible second turn exceeded the promotion budget.

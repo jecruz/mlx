@@ -1,0 +1,23 @@
+{
+  "type": "next_milestone_plan",
+  "tag": "m246-next-milestones",
+  "after": "M246",
+  "readiness": "next-milestones-planned",
+  "next_milestones": [
+    {
+      "milestone": "M247",
+      "title": "First-hit first-duplicate regression recovery",
+      "acceptance": "investigate and restore post-upstream agent-workspace-first-hit first duplicate service below the 250 ms promotion budget while preserving best-hit latency and quality gates"
+    },
+    {
+      "milestone": "M248",
+      "title": "Release gate first-duplicate budget enforcement",
+      "acceptance": "update the release gate so first duplicate service budget breaches are release-blocking instead of only warnings"
+    },
+    {
+      "milestone": "M249",
+      "title": "Post-recovery release evidence bundle refresh",
+      "acceptance": "refresh release evidence bundle and quality/performance gate artifacts after first-duplicate regression recovery"
+    }
+  ]
+}
