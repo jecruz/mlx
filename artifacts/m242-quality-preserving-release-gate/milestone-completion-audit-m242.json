@@ -1,0 +1,63 @@
+{
+  "milestone": "M242",
+  "title": "Quality-preserving release gate",
+  "status": "PASS",
+  "objective": "Combine deterministic quality, model-swap, routing, first-hit, lower-memory, and lifecycle gates into one release-blocking quality/performance manifest.",
+  "checklist": [
+    {
+      "requirement": "Combine deterministic quality gates",
+      "evidence": "deterministic_quality_adapted and quality_threshold gates are PASS in quality-preserving-release-gate-m242.json",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Combine model-swap gate",
+      "evidence": "model_swap_acceptance is PASS and requires swap_decision ACCEPT",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Combine routing gates",
+      "evidence": "routing_policy, product_mode_routing, and live_request_profile_routing are PASS",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Combine first-hit gates",
+      "evidence": "bounded_first_hit_benchmark and bounded_first_hit_conversion are PASS with speed and service checks",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Combine lower-memory gates",
+      "evidence": "lower_memory_benchmark, lower_memory_runtime, and lower_memory_first_hit_conversion are PASS with memory/cache/prefill checks",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Combine lifecycle gate",
+      "evidence": "lifecycle_regression is PASS and readiness is resident-lifecycle-regression-ready",
+      "status": "PASS"
+    },
+    {
+      "requirement": "Create one release-blocking manifest",
+      "evidence": "benchmarks/python/release_quality_performance_gate.py writes quality-preserving-release-gate-m242.json and exits non-zero with --fail-on-fail if any required gate fails",
+      "status": "PASS"
+    }
+  ],
+  "validation": {
+    "py_compile": "PASS",
+    "quality_preserving_release_gate": "PASS",
+    "gate_count": 13,
+    "categories": [
+      "first_hit",
+      "lifecycle",
+      "lower_memory",
+      "model_swap",
+      "quality",
+      "release_packaging",
+      "routing"
+    ],
+    "failures": 0
+  },
+  "artifacts": [
+    "benchmarks/python/release_quality_performance_gate.py",
+    "artifacts/m242-quality-preserving-release-gate/quality-preserving-release-gate-m242.json",
+    "artifacts/m242-quality-preserving-release-gate/quality-preserving-release-gate-m242.md"
+  ]
+}

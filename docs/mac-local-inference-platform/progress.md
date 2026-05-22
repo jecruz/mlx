@@ -3917,3 +3917,36 @@
     first-hit performance, and adapted quality gates. The milestone also makes
     the quality harness profile-aware so future speed work cannot accidentally
     validate the wrong runtime profile.
+- Completed M242 quality-preserving release gate:
+  - added `benchmarks/python/release_quality_performance_gate.py`
+  - generated release-blocking manifest:
+    `artifacts/m242-quality-preserving-release-gate/quality-preserving-release-gate-m242.json`
+  - generated human-readable gate report:
+    `artifacts/m242-quality-preserving-release-gate/quality-preserving-release-gate-m242.md`
+  - validation passed:
+    - `python3 -m py_compile benchmarks/python/release_quality_performance_gate.py`
+    - release gate verdict `PASS`
+    - readiness `quality-preserving-release-ready`
+    - gate count `13`
+    - failures `0`
+  - release gate categories:
+    - quality
+    - model swap
+    - routing
+    - first hit
+    - lower memory
+    - lifecycle
+    - release packaging
+  - performance/quality requirements enforced:
+    - adapted deterministic quality and quality threshold must pass
+    - model-swap decision must be `ACCEPT`
+    - first-hit speedup must remain above threshold and hit service must stay
+      under budget
+    - lower-memory speedup, active memory, peak memory, cache limit, and prefill
+      budgets must stay green
+    - lifecycle regression readiness must remain green
+    - release evidence bundle must have copied every required artifact
+  - M242 conclusion: speed work now has a single release-blocking quality and
+    performance manifest. The release path is blocked if quality, routing,
+    model-swap safety, first-hit performance, lower-memory bounds, lifecycle
+    safety, or evidence packaging regresses.
