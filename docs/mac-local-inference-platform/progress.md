@@ -4136,3 +4136,26 @@
   - M250 conclusion: the branch now carries the NAX-safe upstream stability
     intake with native validation and the quality-preserving release gate still
     passing.
+- Began M251 upstream PR `#3580` batched-matmul intake:
+  - created isolated branch `upstream-pr-3580-batched-matmul`
+  - verified PR `#3580` was open, approved, mergeable, and limited to
+    `mlx/ops.cpp`
+  - cherry-picked the three implementation commits only:
+    - `fb488bce` route large 1D dot products through batched matmul
+    - `24d639d4` chunk-size adjustment
+    - `0d2e6209` operand-level check removal
+  - intentionally skipped the PR's merge-from-main commit
+  - added `test gpu large 1d tensordot` to cover the thresholded GPU path,
+    including tail handling past `32 * 4096`
+  - validation passed:
+    - CMake configure with `-DMLX_DISABLE_NAX=ON`
+    - native build targets `mlx`, `mlx-metallib`, and `tests`
+    - focused large 1D GPU tensordot regression test
+    - targeted CTest `31/31` pass for ops/BLAS/GPU/compile coverage
+    - quality-preserving release gate verdict `PASS`
+    - release gate count `15`, failures `0`
+  - artifacts:
+    - `artifacts/m251-upstream-pr-3580-batched-matmul/upstream-pr-3580-batched-matmul-m251.md`
+    - `artifacts/m251-upstream-pr-3580-batched-matmul/quality-preserving-release-gate-m251.md`
+    - `artifacts/m251-upstream-pr-3580-batched-matmul/quality-preserving-release-gate-m251.json`
+  - M251 status: branch is validated and ready for review/promotion.

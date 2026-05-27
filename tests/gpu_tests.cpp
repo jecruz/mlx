@@ -447,6 +447,14 @@ TEST_CASE("test gpu matmul") {
   }
 }
 
+TEST_CASE("test gpu large 1d tensordot") {
+  const int n = 32 * 4096 + 17;
+  auto a = ones({n}, float32, Device::gpu);
+  auto b = full({n}, 2.0f, float32, Device::gpu);
+  auto out = tensordot(a, b, {0}, {0}, Device::gpu);
+  CHECK_EQ(out.item<float>(), static_cast<float>(2 * n));
+}
+
 TEST_CASE("test gpu validation") {
   // Run this test with Metal validation enabled
   // METAL_DEVICE_WRAPPER_TYPE=1 METAL_DEBUG_ERROR_MODE=0 ./tests/tests \
