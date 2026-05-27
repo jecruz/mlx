@@ -6,6 +6,8 @@ from __future__ import annotations
 import sys
 import unittest
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import release_quality_performance_gate as gate
@@ -53,6 +55,24 @@ class ReleaseQualityPerformanceGateTests(unittest.TestCase):
         self.assertEqual("130/130", summary["baseline_quality_points"])
         self.assertEqual("130/130", summary["candidate_quality_points"])
         self.assertEqual(370.487, summary["candidate_mean_service_request_ms"])
+
+    def test_release_gate_fails_when_response_quality_argument_omitted(self) -> None:
+        with TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            code = gate.main_with_args(
+                SimpleNamespace(
+                    output_json=tmp_path / "gate.json",
+                    output_md=None,
+                    tag="test",
+                    response_quality_comparison_json=None,
+                    fail_on_fail=True,
+                )
+            )
+            self.assertEqual(1, code)
+            self.assertIn(
+                "missing --response-quality-comparison-json",
+                (tmp_path / "gate.json").read_text(),
+            )
 
 
 if __name__ == "__main__":

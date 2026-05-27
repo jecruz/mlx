@@ -24,6 +24,7 @@ Added release gate:
 
 The gate fails if:
 
+- `--response-quality-comparison-json` is omitted from a release-gate run
 - the comparison verdict is not `PASS`
 - readiness is not `response-quality-regression-ready`
 - baseline or candidate case count is not `13`
@@ -46,6 +47,7 @@ python3 -m unittest \
 Result:
 
 - `7` tests passed
+- omitted response-quality argument path fails by design
 
 Compile check:
 

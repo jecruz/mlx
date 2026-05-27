@@ -405,8 +405,7 @@ def write_markdown(path: Path, output: dict[str, Any]) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def main() -> int:
-    args = parse_args()
+def main_with_args(args: argparse.Namespace) -> int:
     gate_specs = list(DEFAULT_GATES)
     if args.response_quality_comparison_json:
         gate_specs.append(
@@ -418,12 +417,22 @@ def main() -> int:
             )
         )
     gates = [evaluate_gate(spec) for spec in gate_specs]
+    if not args.response_quality_comparison_json:
+        gates.append(
+            {
+                "key": "response_quality_regression_candidate",
+                "category": "response_quality",
+                "path": "--response-quality-comparison-json",
+                "status": "MISSING",
+                "failures": ["missing --response-quality-comparison-json"],
+            }
+        )
     failures = [
         f"{entry['key']}: {failure}"
         for entry in gates
         for failure in entry.get("failures", [])
     ]
-    categories = sorted({spec.category for spec in gate_specs})
+    categories = sorted({entry["category"] for entry in gates})
     output = {
         "type": "quality_preserving_release_gate",
         "tag": args.tag,
@@ -450,6 +459,10 @@ def main() -> int:
     if args.fail_on_fail and failures:
         return 1
     return 0
+
+
+def main() -> int:
+    return main_with_args(parse_args())
 
 
 if __name__ == "__main__":

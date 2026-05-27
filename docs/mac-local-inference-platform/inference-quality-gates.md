@@ -437,6 +437,7 @@ into the release-blocking quality-preserving gate:
 
 The release gate now checks:
 
+- `--response-quality-comparison-json` is supplied
 - response-quality comparison verdict is `PASS`
 - comparison readiness is `response-quality-regression-ready`
 - baseline and candidate both have `13` cases
@@ -451,6 +452,7 @@ M259 release gate result:
 - verdict: `PASS`
 - gates: `16`
 - failures: `0`
+- omitted response-quality comparison argument: `FAIL` by design
 - current candidate quality points: `130/130`
 - current candidate mean service request: `345.282 ms`
 

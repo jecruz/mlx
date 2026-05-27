@@ -4367,6 +4367,7 @@
   - added dynamic `response_quality_regression_candidate` gate when a current
     candidate-vs-baseline comparison artifact is supplied
   - added release-gate checks for:
+    - omitted `--response-quality-comparison-json` fails by design
     - response-quality comparison verdict `PASS`
     - readiness `response-quality-regression-ready`
     - `13/13` baseline and candidate case pass counts
