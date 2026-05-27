@@ -47,6 +47,17 @@ The PR's merge-from-main commit was intentionally not cherry-picked.
   - verdict: `PASS`
   - gates: `15`
   - failures: `0`
+- Focused microbenchmark passed:
+  - target:
+    `/private/tmp/mlx-pr3580-batched-matmul-bench-build/benchmarks/cpp/large_1d_tensordot`
+  - compared the prior single-matmul lowering against the optimized large 1D
+    `tensordot` path
+  - average speedups across three `200`-iteration trials:
+    - length `131089`: `1.49x`
+    - length `262144`: `1.67x`
+    - length `1048576`: `2.91x`
+  - raw data:
+    `artifacts/m251-upstream-pr-3580-batched-matmul/large-1d-tensordot-microbenchmark-m251.csv`
 
 ## Notes
 
@@ -59,5 +70,6 @@ The PR's merge-from-main commit was intentionally not cherry-picked.
 ## Conclusion
 
 PR `#3580` applies cleanly on top of M250 and passes native build/test
-validation plus the release quality gate. The branch is ready for review and
-promotion once the final diff check and branch push complete.
+validation plus the release quality gate. The focused microbenchmark shows a
+clear speedup on the exact large 1D GPU tensordot path changed by the PR, so the
+branch is ready for review and promotion.

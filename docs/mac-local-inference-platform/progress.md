@@ -4154,8 +4154,14 @@
     - targeted CTest `31/31` pass for ops/BLAS/GPU/compile coverage
     - quality-preserving release gate verdict `PASS`
     - release gate count `15`, failures `0`
+    - focused large 1D tensordot microbenchmark with average speedups of
+      `1.49x`, `1.67x`, and `2.91x` at lengths `131089`, `262144`, and
+      `1048576`
   - artifacts:
     - `artifacts/m251-upstream-pr-3580-batched-matmul/upstream-pr-3580-batched-matmul-m251.md`
     - `artifacts/m251-upstream-pr-3580-batched-matmul/quality-preserving-release-gate-m251.md`
     - `artifacts/m251-upstream-pr-3580-batched-matmul/quality-preserving-release-gate-m251.json`
-  - M251 status: branch is validated and ready for review/promotion.
+    - `artifacts/m251-upstream-pr-3580-batched-matmul/large-1d-tensordot-microbenchmark-m251.md`
+    - `artifacts/m251-upstream-pr-3580-batched-matmul/large-1d-tensordot-microbenchmark-m251.csv`
+  - M251 status: branch is validated, benchmarked, and ready for
+    review/promotion.
