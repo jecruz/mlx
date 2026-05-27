@@ -4165,3 +4165,16 @@
     - `artifacts/m251-upstream-pr-3580-batched-matmul/large-1d-tensordot-microbenchmark-m251.csv`
   - M251 status: branch is validated, benchmarked, and ready for
     review/promotion.
+- Completed M251 promotion:
+  - fast-forward merged `upstream-pr-3580-batched-matmul` into
+    `prompt-processing-bench`
+  - promoted head `4209b87e`
+  - reran the quality-preserving release gate on the promoted branch:
+    - verdict `PASS`
+    - gate count `15`
+    - failures `0`
+  - promotion artifact:
+    - `artifacts/m251-upstream-pr-3580-batched-matmul/upstream-pr-3580-promotion-m251.md`
+  - M251 conclusion: PR `#3580` is now part of `prompt-processing-bench` with
+    correctness coverage, release-gate evidence, and targeted microbenchmark
+    evidence.
