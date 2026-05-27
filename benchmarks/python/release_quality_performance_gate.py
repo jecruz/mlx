@@ -111,6 +111,29 @@ def python_package_gpu_ready(payload: dict[str, Any]) -> list[str]:
     return failures
 
 
+def response_quality_comparison_ready(payload: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    if payload.get("readiness") != "response-quality-regression-ready":
+        failures.append(f"readiness={payload.get('readiness')!r}")
+    baseline = (payload.get("baseline") or {}).get("summary") or {}
+    candidate = (payload.get("candidate") or {}).get("summary") or {}
+    for label, summary in (("baseline", baseline), ("candidate", candidate)):
+        if summary.get("case_count") != 13:
+            failures.append(f"{label}.case_count={summary.get('case_count')!r} != 13")
+        if summary.get("pass_count") != 13:
+            failures.append(f"{label}.pass_count={summary.get('pass_count')!r} != 13")
+        if summary.get("total_quality_points") != summary.get("max_quality_points"):
+            failures.append(
+                f"{label}.quality_points="
+                f"{summary.get('total_quality_points')!r}/{summary.get('max_quality_points')!r}"
+            )
+        if summary.get("max_repetition_score") != 0.0:
+            failures.append(
+                f"{label}.max_repetition_score={summary.get('max_repetition_score')!r} != 0.0"
+            )
+    return failures
+
+
 DEFAULT_GATES = [
     GateSpec(
         "deterministic_quality_adapted",
@@ -237,6 +260,12 @@ DEFAULT_GATES = [
         "python_package",
         extra_checks=(no_failures, python_package_gpu_ready),
     ),
+    GateSpec(
+        "response_quality_regression_baseline",
+        Path("artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json"),
+        "response_quality",
+        extra_checks=(no_failures, response_quality_comparison_ready),
+    ),
 ]
 
 
@@ -305,6 +334,18 @@ def summarize_payload(payload: dict[str, Any]) -> dict[str, Any]:
             )
             if key in metrics
         }
+    if payload.get("type") == "response_quality_regression_comparison":
+        for side in ("baseline", "candidate"):
+            side_summary = ((payload.get(side) or {}).get("summary") or {})
+            summary[f"{side}_quality_points"] = (
+                f"{side_summary.get('total_quality_points')}/"
+                f"{side_summary.get('max_quality_points')}"
+            )
+            summary[f"{side}_case_count"] = side_summary.get("case_count")
+            summary[f"{side}_pass_count"] = side_summary.get("pass_count")
+            summary[f"{side}_mean_service_request_ms"] = side_summary.get(
+                "mean_service_request_ms"
+            )
     return summary
 
 

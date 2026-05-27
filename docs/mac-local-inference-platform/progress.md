@@ -4361,3 +4361,26 @@
   - M258 conclusion: the accepted Qwen A3B engine now has a durable live
     response-quality baseline that future optimization branches must compare
     against before promotion.
+- Completed M259 release gate response-quality requirement:
+  - added `response_quality_regression_baseline` to
+    `benchmarks/python/release_quality_performance_gate.py`
+  - added release-gate checks for:
+    - response-quality comparison verdict `PASS`
+    - readiness `response-quality-regression-ready`
+    - `13/13` baseline and candidate case pass counts
+    - full baseline and candidate quality points
+    - max repetition score `0.0`
+    - no comparison failures
+  - added focused unit tests in
+    `benchmarks/python/test_release_quality_performance_gate.py`
+  - validation passed:
+    - `python3 -m unittest benchmarks/python/test_release_quality_performance_gate.py benchmarks/python/test_response_quality_regression_harness.py`
+    - `python3 -m py_compile benchmarks/python/release_quality_performance_gate.py benchmarks/python/test_release_quality_performance_gate.py benchmarks/python/response_quality_regression_harness.py benchmarks/python/test_response_quality_regression_harness.py`
+    - release gate verdict `PASS`
+    - release gate count `16`
+    - failures `0`
+  - artifacts:
+    - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.json`
+    - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.md`
+  - M259 conclusion: response quality is now a release-blocking gate, so future
+    speed work cannot be promoted solely on latency/runtime evidence.

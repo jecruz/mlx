@@ -420,3 +420,37 @@ Artifacts:
 This live baseline is now the comparison anchor for future speed work. A future
 candidate may be faster, but it must compare `PASS` against this artifact before
 promotion.
+
+## M259 Release Gate Response-Quality Requirement
+
+M259 wires the M258 live baseline self-comparison into the release-blocking
+quality-preserving gate:
+
+- gate key: `response_quality_regression_baseline`
+- category: `response_quality`
+- source artifact:
+  `artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json`
+
+The release gate now checks:
+
+- response-quality comparison verdict is `PASS`
+- comparison readiness is `response-quality-regression-ready`
+- baseline and candidate both have `13` cases
+- baseline and candidate both pass all `13` cases
+- baseline and candidate both preserve full quality points
+- max repetition score remains `0.0`
+- comparison artifact has no failures
+
+M259 release gate result:
+
+- verdict: `PASS`
+- gates: `16`
+- failures: `0`
+
+Artifacts:
+
+- `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.json`
+- `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.md`
+
+Future speed work is now blocked by response-quality regression evidence, not
+just runtime correctness or performance evidence.
