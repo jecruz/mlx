@@ -103,7 +103,7 @@ std::pair<std::vector<array>, std::vector<int>> ScaledDotProductAttention::vmap(
   std::string mask_mode = do_causal_ ? "causal" : has_arr_mask ? "array" : "";
 
   auto out = scaled_dot_product_attention(
-      q, k, v, scale_, mask_mode, mask_arr, std::nullopt, s);
+      q, k, v, scale_, mask_mode, mask_arr, std::nullopt, -1, s);
 
   // [V*B, H, L, D] -> [V, B, H, L, D]
   auto split_batch = [&s, vmap_size](const array& x) -> array {

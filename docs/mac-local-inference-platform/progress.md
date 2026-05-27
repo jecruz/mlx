@@ -4213,3 +4213,24 @@
     - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/upstream-pr-3385-promotion-m252.md`
   - M252 conclusion: PR `#3385` is now part of `prompt-processing-bench` with
     native and local-built Python SDPA vmap validation.
+- Began M253 upstream PR `#3552` sliding-window SDPA intake:
+  - created isolated branch `upstream-pr-3552-sliding-window-sdpa`
+  - verified PR `#3552` was open and mergeable
+  - cherry-picked upstream commits `efc195b6` and `77eb21da`
+  - fixed one integration issue with M252 by updating the dedicated SDPA vmap
+    re-invocation to pass `window_size=-1` before the stream argument
+  - validation passed:
+    - CMake configure with `MLX_BUILD_TESTS=ON`,
+      `MLX_BUILD_PYTHON_BINDINGS=ON`, and `-DMLX_DISABLE_NAX=ON`
+    - native build targets `core`, `mlx-metallib`, and `tests`
+    - targeted CTest `42/42` pass for GPU/compile/vmap coverage
+    - local Python binding import verified from
+      `/private/tmp/mlx-pr3552-sliding-sdpa-build/mlx/core.cpython-314-darwin.so`
+    - full Python `test_fast_sdpa` passed with `19` tests run and `1` skipped
+    - quality-preserving release gate verdict `PASS`
+    - release gate count `15`, failures `0`
+  - artifacts:
+    - `artifacts/m253-upstream-pr-3552-sliding-window-sdpa/upstream-pr-3552-sliding-window-sdpa-m253.md`
+    - `artifacts/m253-upstream-pr-3552-sliding-window-sdpa/quality-preserving-release-gate-m253.md`
+    - `artifacts/m253-upstream-pr-3552-sliding-window-sdpa/quality-preserving-release-gate-m253.json`
+  - M253 status: branch is validated and ready for promotion.
