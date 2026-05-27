@@ -465,3 +465,51 @@ Artifacts:
 
 Future speed work is now blocked by response-quality regression evidence, not
 just runtime correctness or performance evidence.
+
+## M260 Response-Quality Release Runner
+
+M260 adds a one-command runner for candidate quality capture, baseline
+comparison, and release-gate execution:
+
+- script: `benchmarks/python/run_response_quality_release_gate.py`
+- default baseline:
+  `artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json`
+- output directory:
+  `artifacts/m260-response-quality-release-runner`
+
+Live candidate command:
+
+```bash
+python3 benchmarks/python/run_response_quality_release_gate.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m260-response-quality-release-runner \
+  --tag m260-response-quality-release-runner \
+  --fail-on-fail
+```
+
+Existing candidate artifact command:
+
+```bash
+python3 benchmarks/python/run_response_quality_release_gate.py \
+  --candidate-json artifacts/m259-release-gate-response-quality/current-candidate-quality-capture-m259-qwen-a3b.json \
+  --output-dir artifacts/m260-response-quality-release-runner \
+  --tag m260-response-quality-release-runner \
+  --fail-on-fail
+```
+
+M260 runner result:
+
+- verdict: `PASS`
+- readiness: `response-quality-release-ready`
+- candidate-vs-baseline comparison: `PASS`
+- release gate: `PASS`
+- release gate count: `16`
+- failures: `0`
+
+Artifacts:
+
+- `artifacts/m260-response-quality-release-runner/response-quality-release-runner-m260-response-quality-release-runner.json`
+- `artifacts/m260-response-quality-release-runner/candidate-vs-baseline-m260-response-quality-release-runner.json`
+- `artifacts/m260-response-quality-release-runner/quality-preserving-release-gate-m260-response-quality-release-runner.json`
+
+This removes the manual artifact-plumbing step introduced in M259.

@@ -4399,3 +4399,26 @@
     - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.md`
   - M259 conclusion: response quality is now a release-blocking gate, so future
     speed work cannot be promoted solely on latency/runtime evidence.
+- Completed M260 response-quality release runner:
+  - added `benchmarks/python/run_response_quality_release_gate.py`
+  - runner performs:
+    - candidate response-quality capture from a live endpoint by default
+    - candidate-vs-M258-baseline comparison
+    - release gate execution with `--response-quality-comparison-json`
+    - manifest JSON and Markdown output
+  - runner also supports `--candidate-json` for CI/offline reuse of an existing
+    candidate quality artifact
+  - added focused tests in
+    `benchmarks/python/test_response_quality_release_runner.py`
+  - validation passed:
+    - `python3 -m unittest benchmarks/python/test_response_quality_release_runner.py benchmarks/python/test_release_quality_performance_gate.py benchmarks/python/test_response_quality_regression_harness.py`
+    - `python3 -m py_compile benchmarks/python/run_response_quality_release_gate.py benchmarks/python/test_response_quality_release_runner.py benchmarks/python/release_quality_performance_gate.py benchmarks/python/response_quality_regression_harness.py`
+    - runner with existing M259 candidate artifact produced verdict `PASS`
+    - release gate count `16`
+    - failures `0`
+  - artifacts:
+    - `artifacts/m260-response-quality-release-runner/response-quality-release-runner-m260-response-quality-release-runner.json`
+    - `artifacts/m260-response-quality-release-runner/candidate-vs-baseline-m260-response-quality-release-runner.json`
+    - `artifacts/m260-response-quality-release-runner/quality-preserving-release-gate-m260-response-quality-release-runner.json`
+  - M260 conclusion: future optimization branches can run one command to
+    produce the required response-quality comparison and release-gate evidence.
