@@ -4247,3 +4247,26 @@
   - M253 conclusion: PR `#3552` is now part of `prompt-processing-bench`, with
     sliding-window SDPA integrated with the M252 vmap path and release-gate
     evidence preserved.
+- Began M254 upstream PR `#3485` GatherQMM output-shapes evaluation:
+  - verified PR `#3485` was open and mergeable but still marked
+    `CHANGES_REQUESTED`
+  - confirmed the requested CustomKernel shape behavior was reverted upstream;
+    the current net patch only adds `GatherQMM::output_shapes()` and a
+    shapeless compile regression test
+  - applied the final net patch locally instead of cherry-picking reverted
+    CustomKernel history
+  - validation passed:
+    - CMake configure with `MLX_BUILD_TESTS=ON`,
+      `MLX_BUILD_PYTHON_BINDINGS=ON`, and `-DMLX_DISABLE_NAX=ON`
+    - native build targets `core`, `mlx-metallib`, and `tests`
+    - targeted CTest `42/42` pass for compile/GPU/vmap coverage
+    - local Python binding import verified from
+      `/private/tmp/mlx-pr3485-gather-qmm-build/mlx/core.cpython-314-darwin.so`
+    - focused Python `test_shapeless_compile_gather_qmm` passed
+    - quality-preserving release gate verdict `PASS`
+    - release gate count `15`, failures `0`
+  - artifacts:
+    - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/upstream-pr-3485-gather-qmm-output-shapes-m254.md`
+    - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/quality-preserving-release-gate-m254.md`
+    - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/quality-preserving-release-gate-m254.json`
+  - M254 status: branch is validated and ready for promotion.
