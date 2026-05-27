@@ -4201,3 +4201,15 @@
     - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/quality-preserving-release-gate-m252.md`
     - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/quality-preserving-release-gate-m252.json`
   - M252 status: branch is validated and ready for promotion.
+- Completed M252 promotion:
+  - fast-forward merged `upstream-pr-3385-sdpa-vmap-gqa` into
+    `prompt-processing-bench`
+  - promoted head `e6dc4556`
+  - reran the quality-preserving release gate on the promoted branch:
+    - verdict `PASS`
+    - gate count `15`
+    - failures `0`
+  - promotion artifact:
+    - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/upstream-pr-3385-promotion-m252.md`
+  - M252 conclusion: PR `#3385` is now part of `prompt-processing-bench` with
+    native and local-built Python SDPA vmap validation.
