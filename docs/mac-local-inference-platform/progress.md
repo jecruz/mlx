@@ -4114,3 +4114,25 @@
   - M249 conclusion: the release evidence bundle and release gate now reflect
     the recovered first-duplicate budget state and are ready for the next
     release checkpoint.
+- Completed M250 upstream PR intake NAX-safe release checkpoint:
+  - promoted the recommended upstream PR batch into `prompt-processing-bench`
+    after isolated branch validation
+  - included upstream PR `#3593` for `MLX_DISABLE_NAX`, giving the Mac runtime
+    an explicit build-time safety lever to skip Metal 4 NAX kernels
+  - included upstream PR `#3523` for Metal command-buffer error poisoning
+  - included upstream PR `#3434` for safer custom-kernel cache handling around
+    in-flight pipeline states
+  - validation passed:
+    - CMake configure with `-DMLX_DISABLE_NAX=ON`
+    - native build targets `mlx`, `mlx-metallib`, and `tests`
+    - targeted CTest `33/33` pass for scheduler/custom-kernel/GPU/Metal/stream/
+      compile coverage
+    - quality-preserving release gate verdict `PASS`
+    - release gate count `15`, failures `0`
+  - artifacts:
+    - `artifacts/m250-upstream-pr-intake-nax-safe-release/upstream-pr-intake-nax-safe-release-m250.md`
+    - `artifacts/m250-upstream-pr-intake-nax-safe-release/quality-preserving-release-gate-m250.md`
+    - `artifacts/m250-upstream-pr-intake-nax-safe-release/quality-preserving-release-gate-m250.json`
+  - M250 conclusion: the branch now carries the NAX-safe upstream stability
+    intake with native validation and the quality-preserving release gate still
+    passing.
