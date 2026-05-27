@@ -4234,3 +4234,16 @@
     - `artifacts/m253-upstream-pr-3552-sliding-window-sdpa/quality-preserving-release-gate-m253.md`
     - `artifacts/m253-upstream-pr-3552-sliding-window-sdpa/quality-preserving-release-gate-m253.json`
   - M253 status: branch is validated and ready for promotion.
+- Completed M253 promotion:
+  - fast-forward merged `upstream-pr-3552-sliding-window-sdpa` into
+    `prompt-processing-bench`
+  - promoted head `7582ce3c`
+  - reran the quality-preserving release gate on the promoted branch:
+    - verdict `PASS`
+    - gate count `15`
+    - failures `0`
+  - promotion artifact:
+    - `artifacts/m253-upstream-pr-3552-sliding-window-sdpa/upstream-pr-3552-promotion-m253.md`
+  - M253 conclusion: PR `#3552` is now part of `prompt-processing-bench`, with
+    sliding-window SDPA integrated with the M252 vmap path and release-gate
+    evidence preserved.
