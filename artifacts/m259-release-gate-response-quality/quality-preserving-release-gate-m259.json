@@ -227,8 +227,8 @@
     {
       "category": "response_quality",
       "failures": [],
-      "key": "response_quality_regression_baseline",
-      "path": "artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json",
+      "key": "response_quality_regression_candidate",
+      "path": "artifacts/m259-release-gate-response-quality/current-candidate-vs-baseline-m259-qwen-a3b.json",
       "status": "PASS",
       "summary": {
         "baseline_case_count": 13,
@@ -236,7 +236,7 @@
         "baseline_pass_count": 13,
         "baseline_quality_points": "130/130",
         "candidate_case_count": 13,
-        "candidate_mean_service_request_ms": 370.487,
+        "candidate_mean_service_request_ms": 345.282,
         "candidate_pass_count": 13,
         "candidate_quality_points": "130/130",
         "readiness": "response-quality-regression-ready",

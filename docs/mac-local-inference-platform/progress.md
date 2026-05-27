@@ -4362,24 +4362,38 @@
     response-quality baseline that future optimization branches must compare
     against before promotion.
 - Completed M259 release gate response-quality requirement:
-  - added `response_quality_regression_baseline` to
+  - added explicit `--response-quality-comparison-json` support to
     `benchmarks/python/release_quality_performance_gate.py`
+  - added dynamic `response_quality_regression_candidate` gate when a current
+    candidate-vs-baseline comparison artifact is supplied
   - added release-gate checks for:
     - response-quality comparison verdict `PASS`
     - readiness `response-quality-regression-ready`
     - `13/13` baseline and candidate case pass counts
     - full baseline and candidate quality points
     - max repetition score `0.0`
+    - candidate artifact path differs from the baseline artifact path
     - no comparison failures
+  - captured current M259 candidate quality against the live Qwen A3B server:
+    - verdict `PASS`
+    - cases `13`
+    - quality points `130/130`
+    - failures `0`
+    - mean service request `345.282 ms`
+  - compared current M259 candidate against the M258 baseline:
+    - verdict `PASS`
+    - failures `0`
   - added focused unit tests in
     `benchmarks/python/test_release_quality_performance_gate.py`
   - validation passed:
     - `python3 -m unittest benchmarks/python/test_release_quality_performance_gate.py benchmarks/python/test_response_quality_regression_harness.py`
     - `python3 -m py_compile benchmarks/python/release_quality_performance_gate.py benchmarks/python/test_release_quality_performance_gate.py benchmarks/python/response_quality_regression_harness.py benchmarks/python/test_response_quality_regression_harness.py`
-    - release gate verdict `PASS`
+    - release gate with explicit response-quality comparison verdict `PASS`
     - release gate count `16`
     - failures `0`
   - artifacts:
+    - `artifacts/m259-release-gate-response-quality/current-candidate-quality-capture-m259-qwen-a3b.json`
+    - `artifacts/m259-release-gate-response-quality/current-candidate-vs-baseline-m259-qwen-a3b.json`
     - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.json`
     - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.md`
   - M259 conclusion: response quality is now a release-blocking gate, so future

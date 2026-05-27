@@ -423,13 +423,17 @@ promotion.
 
 ## M259 Release Gate Response-Quality Requirement
 
-M259 wires the M258 live baseline self-comparison into the release-blocking
-quality-preserving gate:
+M259 wires explicit current candidate-vs-baseline response-quality comparison
+into the release-blocking quality-preserving gate:
 
-- gate key: `response_quality_regression_baseline`
+- gate key: `response_quality_regression_candidate`
 - category: `response_quality`
-- source artifact:
-  `artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json`
+- baseline artifact:
+  `artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json`
+- current candidate artifact:
+  `artifacts/m259-release-gate-response-quality/current-candidate-quality-capture-m259-qwen-a3b.json`
+- comparison artifact:
+  `artifacts/m259-release-gate-response-quality/current-candidate-vs-baseline-m259-qwen-a3b.json`
 
 The release gate now checks:
 
@@ -439,6 +443,7 @@ The release gate now checks:
 - baseline and candidate both pass all `13` cases
 - baseline and candidate both preserve full quality points
 - max repetition score remains `0.0`
+- candidate artifact is not the same path as the baseline artifact
 - comparison artifact has no failures
 
 M259 release gate result:
@@ -446,9 +451,13 @@ M259 release gate result:
 - verdict: `PASS`
 - gates: `16`
 - failures: `0`
+- current candidate quality points: `130/130`
+- current candidate mean service request: `345.282 ms`
 
 Artifacts:
 
+- `artifacts/m259-release-gate-response-quality/current-candidate-quality-capture-m259-qwen-a3b.json`
+- `artifacts/m259-release-gate-response-quality/current-candidate-vs-baseline-m259-qwen-a3b.json`
 - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.json`
 - `artifacts/m259-release-gate-response-quality/quality-preserving-release-gate-m259.md`
 

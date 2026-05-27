@@ -26,8 +26,8 @@ def comparison_payload(*, candidate_points: int = 130, verdict: str = "PASS") ->
         "type": "response_quality_regression_comparison",
         "verdict": verdict,
         "readiness": "response-quality-regression-ready",
-        "baseline": {"summary": summary},
-        "candidate": {"summary": candidate_summary},
+        "baseline": {"path": "baseline.json", "summary": summary},
+        "candidate": {"path": "candidate.json", "summary": candidate_summary},
         "failures": [],
     }
 
@@ -41,6 +41,12 @@ class ReleaseQualityPerformanceGateTests(unittest.TestCase):
             comparison_payload(candidate_points=129)
         )
         self.assertTrue(any("candidate.quality_points" in failure for failure in failures))
+
+    def test_response_quality_comparison_rejects_self_comparison(self) -> None:
+        payload = comparison_payload()
+        payload["candidate"]["path"] = payload["baseline"]["path"]
+        failures = gate.response_quality_comparison_ready(payload)
+        self.assertTrue(any("reuses the baseline" in failure for failure in failures))
 
     def test_response_quality_summary_includes_points_and_latency(self) -> None:
         summary = gate.summarize_payload(comparison_payload())

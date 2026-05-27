@@ -1,0 +1,18 @@
+INFO:     Started server process [19813]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8773 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61813 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61837 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61839 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61840 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61841 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61842 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61843 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61844 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61846 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61847 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61850 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61851 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61852 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61853 - "POST /v1/completions HTTP/1.1" 200 OK

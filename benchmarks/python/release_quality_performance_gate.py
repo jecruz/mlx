@@ -115,6 +115,10 @@ def response_quality_comparison_ready(payload: dict[str, Any]) -> list[str]:
     failures: list[str] = []
     if payload.get("readiness") != "response-quality-regression-ready":
         failures.append(f"readiness={payload.get('readiness')!r}")
+    baseline_path = ((payload.get("baseline") or {}).get("path"))
+    candidate_path = ((payload.get("candidate") or {}).get("path"))
+    if baseline_path and candidate_path and baseline_path == candidate_path:
+        failures.append("candidate comparison reuses the baseline artifact path")
     baseline = (payload.get("baseline") or {}).get("summary") or {}
     candidate = (payload.get("candidate") or {}).get("summary") or {}
     for label, summary in (("baseline", baseline), ("candidate", candidate)):
@@ -260,12 +264,6 @@ DEFAULT_GATES = [
         "python_package",
         extra_checks=(no_failures, python_package_gpu_ready),
     ),
-    GateSpec(
-        "response_quality_regression_baseline",
-        Path("artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json"),
-        "response_quality",
-        extra_checks=(no_failures, response_quality_comparison_ready),
-    ),
 ]
 
 
@@ -282,6 +280,14 @@ def parse_args() -> argparse.Namespace:
         default=Path("artifacts/m242-quality-preserving-release-gate/quality-preserving-release-gate-m242.md"),
     )
     parser.add_argument("--tag", default="m242-quality-preserving-release-gate")
+    parser.add_argument(
+        "--response-quality-comparison-json",
+        type=Path,
+        help=(
+            "Current candidate-vs-baseline response-quality comparison artifact. "
+            "Required for promotion/release gates that claim response-quality coverage."
+        ),
+    )
     parser.add_argument("--fail-on-fail", action="store_true")
     return parser.parse_args()
 
@@ -401,13 +407,23 @@ def write_markdown(path: Path, output: dict[str, Any]) -> None:
 
 def main() -> int:
     args = parse_args()
-    gates = [evaluate_gate(spec) for spec in DEFAULT_GATES]
+    gate_specs = list(DEFAULT_GATES)
+    if args.response_quality_comparison_json:
+        gate_specs.append(
+            GateSpec(
+                "response_quality_regression_candidate",
+                args.response_quality_comparison_json,
+                "response_quality",
+                extra_checks=(no_failures, response_quality_comparison_ready),
+            )
+        )
+    gates = [evaluate_gate(spec) for spec in gate_specs]
     failures = [
         f"{entry['key']}: {failure}"
         for entry in gates
         for failure in entry.get("failures", [])
     ]
-    categories = sorted({spec.category for spec in DEFAULT_GATES})
+    categories = sorted({spec.category for spec in gate_specs})
     output = {
         "type": "quality_preserving_release_gate",
         "tag": args.tag,

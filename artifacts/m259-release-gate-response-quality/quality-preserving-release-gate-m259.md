@@ -20,7 +20,7 @@ Readiness: `quality-preserving-release-ready`
 - `lifecycle_regression` (lifecycle): `PASS` - `artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json`
 - `release_evidence_bundle` (release_packaging): `PASS` - `artifacts/m249-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json`
 - `python_package_tmux_validation` (python_package): `PASS` - `artifacts/m244-python-package-tmux-validation/python-package-validation-m244-harness.json`
-- `response_quality_regression_baseline` (response_quality): `PASS` - `artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json`
+- `response_quality_regression_candidate` (response_quality): `PASS` - `artifacts/m259-release-gate-response-quality/current-candidate-vs-baseline-m259-qwen-a3b.json`
 
 ## Failures
 
