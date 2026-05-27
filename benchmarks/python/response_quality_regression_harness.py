@@ -276,6 +276,10 @@ def compare(args: argparse.Namespace) -> int:
         max_repetition_delta=args.max_repetition_delta,
         max_length_drift_ratio=args.max_length_drift_ratio,
     )
+    if baseline.get("verdict") != "PASS":
+        failures.insert(0, f"baseline verdict is {baseline.get('verdict')!r}")
+    if candidate.get("verdict") != "PASS":
+        failures.insert(0, f"candidate verdict is {candidate.get('verdict')!r}")
     baseline_summary = summarize_rows(baseline.get("rows", []))
     candidate_summary = summarize_rows(candidate.get("rows", []))
     output = {

@@ -6,6 +6,8 @@ from __future__ import annotations
 import unittest
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import response_quality_regression_harness as harness
@@ -66,6 +68,33 @@ class ResponseQualityRegressionHarnessTests(unittest.TestCase):
         )
 
         self.assertTrue(any("repetition delta" in failure for failure in failures))
+
+    def test_compare_command_rejects_failed_candidate_artifact(self) -> None:
+        row = harness.build_row(CASE, raw_text="QUALITY_OK")
+        with TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            baseline = tmp_path / "baseline.json"
+            candidate = tmp_path / "candidate.json"
+            output = tmp_path / "output.json"
+            baseline.write_text('{"verdict": "PASS", "rows": [' + harness.json.dumps(row) + "]}")
+            candidate.write_text('{"verdict": "FAIL", "rows": [' + harness.json.dumps(row) + "]}")
+
+            code = harness.compare(
+                SimpleNamespace(
+                    baseline_json=baseline,
+                    candidate_json=candidate,
+                    output_json=output,
+                    output_md=None,
+                    tag="test",
+                    max_quality_point_drop=0,
+                    max_repetition_delta=0.05,
+                    max_length_drift_ratio=0.5,
+                    fail_on_fail=True,
+                )
+            )
+
+            self.assertEqual(1, code)
+            self.assertIn("candidate verdict", output.read_text())
 
 
 if __name__ == "__main__":
