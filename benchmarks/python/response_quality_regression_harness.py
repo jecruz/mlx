@@ -330,8 +330,9 @@ def write_markdown(path: Path | None, output: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     failures = output.get("failures") or []
     failure_lines = "\n".join(f"- `{failure}`" for failure in failures) or "- none"
+    title_tag = str(output.get("tag") or "response-quality-regression")
     lines = [
-        "# M257 Response Quality Regression Harness",
+        f"# {title_tag} Response Quality Regression",
         "",
         f"Type: `{output.get('type')}`",
         f"Verdict: `{output.get('verdict')}`",

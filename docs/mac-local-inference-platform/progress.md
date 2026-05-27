@@ -4336,3 +4336,28 @@
   - M257 conclusion: speed work now has a concrete response-quality regression
     harness; next step is to capture a live accepted-engine baseline and require
     candidate branches to compare against it before promotion.
+- Completed M258 live response quality baseline:
+  - started resident MLX server in tmux session `codex-mlx-server`
+  - endpoint: `http://127.0.0.1:8773`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+  - engine preset: `memory-saver`
+  - device: `Device(gpu, 0)`
+  - live baseline capture passed:
+    - verdict `PASS`
+    - cases `13`
+    - passed cases `13`
+    - quality points `130/130`
+    - failures `0`
+    - max repetition score `0.0`
+    - mean service request `370.487 ms`
+  - live baseline self-comparison passed:
+    - verdict `PASS`
+    - failures `0`
+  - artifacts:
+    - `artifacts/m258-live-response-quality-baseline/live-response-quality-baseline-m258.md`
+    - `artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json`
+    - `artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json`
+  - M258 conclusion: the accepted Qwen A3B engine now has a durable live
+    response-quality baseline that future optimization branches must compare
+    against before promotion.

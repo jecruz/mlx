@@ -388,3 +388,35 @@ Artifacts:
 
 Next live quality step: capture a baseline from the current accepted engine and
 compare future optimization branches against it before promotion.
+
+## M258 Live Response Quality Baseline
+
+M258 captured the first live response-quality baseline from the accepted Qwen
+A3B runtime:
+
+- model:
+  `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+- endpoint: `http://127.0.0.1:8773`
+- engine preset: `memory-saver`
+- device: `Device(gpu, 0)`
+
+Baseline result:
+
+- verdict: `PASS`
+- cases: `13`
+- passed cases: `13`
+- quality points: `130/130`
+- failures: `0`
+- max repetition score: `0.0`
+- mean service request: `370.487 ms`
+
+Artifacts:
+
+- `artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json`
+- `artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.md`
+- `artifacts/m258-live-response-quality-baseline/live-baseline-self-comparison-m258-qwen-a3b.json`
+- `artifacts/m258-live-response-quality-baseline/live-response-quality-baseline-m258.md`
+
+This live baseline is now the comparison anchor for future speed work. A future
+candidate may be faster, but it must compare `PASS` against this artifact before
+promotion.
