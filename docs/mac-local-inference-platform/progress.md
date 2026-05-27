@@ -4178,3 +4178,26 @@
   - M251 conclusion: PR `#3580` is now part of `prompt-processing-bench` with
     correctness coverage, release-gate evidence, and targeted microbenchmark
     evidence.
+- Began M252 upstream PR `#3385` SDPA vmap GQA/MQA intake:
+  - created isolated branch `upstream-pr-3385-sdpa-vmap-gqa`
+  - verified PR `#3385` was open and mergeable
+  - cherry-picked upstream commit `14700f3a` as local `0c5cb227`
+  - crash report supplied during M252 showed the installed MLX wheel crashing
+    through `mlx::core::fast::Custom::vmap`, `vmap_replace`,
+    `Broadcast::vmap`, and `broadcast_shapes`, matching the failure class fixed
+    by PR `#3385`
+  - validation passed:
+    - CMake configure with `-DMLX_DISABLE_NAX=ON`
+    - native build targets `mlx`, `mlx-metallib`, and `tests`
+    - targeted CTest `42/42` pass for GPU/compile/vmap coverage
+    - local Python binding import verified from
+      `/private/tmp/mlx-pr3385-sdpa-vmap-pybuild/mlx/core.cpython-314-darwin.so`
+    - focused Python SDPA vmap test passed
+    - full Python `test_fast_sdpa` passed with `17` tests run and `1` skipped
+    - quality-preserving release gate verdict `PASS`
+    - release gate count `15`, failures `0`
+  - artifacts:
+    - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/upstream-pr-3385-sdpa-vmap-gqa-m252.md`
+    - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/quality-preserving-release-gate-m252.md`
+    - `artifacts/m252-upstream-pr-3385-sdpa-vmap-gqa/quality-preserving-release-gate-m252.json`
+  - M252 status: branch is validated and ready for promotion.
