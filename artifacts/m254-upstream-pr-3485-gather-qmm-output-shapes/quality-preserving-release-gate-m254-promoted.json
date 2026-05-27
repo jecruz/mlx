@@ -1,0 +1,231 @@
+{
+  "categories": [
+    "first_hit",
+    "lifecycle",
+    "lower_memory",
+    "model_swap",
+    "python_package",
+    "quality",
+    "release_packaging",
+    "routing"
+  ],
+  "failures": [],
+  "gate_count": 15,
+  "gates": [
+    {
+      "category": "quality",
+      "failures": [],
+      "key": "deterministic_quality_adapted",
+      "path": "artifacts/m241-bounded-low-memory-live-revalidation/chat-template-quality-adapted-m241-qwen25-coder-14b-low-memory.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "chat_template_quality_regression",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "quality",
+      "failures": [],
+      "key": "quality_threshold",
+      "path": "artifacts/m241-bounded-low-memory-live-revalidation/quality-threshold-gate-m241-qwen25-coder-14b-low-memory.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "ci-quality-ready",
+        "type": "quality_threshold_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "model_swap",
+      "failures": [],
+      "key": "model_swap_acceptance",
+      "path": "artifacts/m231-model-swap-artifact-freshness-refresh/model-swap-acceptance-m231-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "metrics": {
+          "max_active_memory_gb": 11.027572744,
+          "max_peak_memory_gb": 11.048436144
+        },
+        "readiness": "swap-acceptable",
+        "swap_decision": "ACCEPT",
+        "type": "lower_memory_model_swap_acceptance_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "routing",
+      "failures": [],
+      "key": "routing_policy",
+      "path": "artifacts/m234-lower-memory-default-routing-policy/lower-memory-default-routing-policy-gate-m234.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "lower-memory-default-routing-ready",
+        "type": "lower_memory_default_routing_policy_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "routing",
+      "failures": [],
+      "key": "product_mode_routing",
+      "path": "artifacts/m238-lower-memory-route-product-smoke/product-mode-metadata-probe-m238.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "product_mode_metadata_probe",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "routing",
+      "failures": [],
+      "key": "live_request_profile_routing",
+      "path": "artifacts/m238-lower-memory-route-product-smoke/live-request-profile-metadata-m238.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "live_request_profile_metadata_probe",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "first_hit",
+      "failures": [],
+      "key": "bounded_first_hit_benchmark",
+      "path": "artifacts/m237-bounded-first-hit-live-revalidation/dax-bounded-first-hit-m237-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "baseline_service_request_ms": 4310.493208002299,
+        "best_hit_service_request_ms": 183.01716702990234,
+        "best_hit_speedup_vs_baseline": 23.55239826927289,
+        "first_duplicate_service_request_ms": 186.18549988605082,
+        "readiness": null,
+        "type": "dax_repeated_context_bench",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "first_hit",
+      "failures": [],
+      "key": "bounded_first_hit_conversion",
+      "path": "artifacts/m237-bounded-first-hit-live-revalidation/dax-first-hit-conversion-gate-m237-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "dax_first_hit_conversion_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "first_hit",
+      "failures": [],
+      "key": "first_duplicate_service_budget",
+      "path": "artifacts/m247-first-hit-regression-recovery/dax-first-hit-m247-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "baseline_service_request_ms": 4617.0734581537545,
+        "best_hit_service_request_ms": 179.28074998781085,
+        "best_hit_speedup_vs_baseline": 25.753314053336265,
+        "first_duplicate_service_request_ms": 185.6596670113504,
+        "readiness": null,
+        "type": "dax_repeated_context_bench",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "lower_memory",
+      "failures": [],
+      "key": "lower_memory_benchmark",
+      "path": "artifacts/m241-bounded-low-memory-live-revalidation/dax-bounded-low-memory-m241-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "baseline_service_request_ms": 4565.483708865941,
+        "best_hit_service_request_ms": 185.23012497462332,
+        "best_hit_speedup_vs_baseline": 24.647630667481412,
+        "first_duplicate_service_request_ms": 187.8668749704957,
+        "readiness": null,
+        "type": "dax_repeated_context_bench",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "lower_memory",
+      "failures": [],
+      "key": "lower_memory_runtime",
+      "path": "artifacts/m241-bounded-low-memory-live-revalidation/lower-memory-runtime-gate-m241-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "metrics": {
+          "conversion_prefill_tokens": 11.0,
+          "max_active_memory_gb": 9.668618248,
+          "max_cache_memory_limit_mb": 64.0,
+          "max_peak_memory_gb": 9.689481648
+        },
+        "readiness": null,
+        "type": "lower_memory_runtime_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "lower_memory",
+      "failures": [],
+      "key": "lower_memory_first_hit_conversion",
+      "path": "artifacts/m241-bounded-low-memory-live-revalidation/dax-low-memory-first-hit-conversion-gate-m241-qwen25-coder-14b.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": null,
+        "type": "dax_first_hit_conversion_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "lifecycle",
+      "failures": [],
+      "key": "lifecycle_regression",
+      "path": "artifacts/m232-resident-lifecycle-regression-gate/resident-lifecycle-regression-gate-m232.json",
+      "status": "PASS",
+      "summary": {
+        "readiness": "resident-lifecycle-regression-ready",
+        "type": "resident_lifecycle_regression_gate",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "release_packaging",
+      "failures": [],
+      "key": "release_evidence_bundle",
+      "path": "artifacts/m249-release-evidence-bundle/release-evidence-bundle/release-evidence-index.json",
+      "status": "PASS",
+      "summary": {
+        "copied_evidence_count": 20,
+        "readiness": "release-evidence-ready",
+        "required_evidence_count": 20,
+        "type": "release_evidence_bundle",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "category": "python_package",
+      "failures": [],
+      "key": "python_package_tmux_validation",
+      "path": "artifacts/m244-python-package-tmux-validation/python-package-validation-m244-harness.json",
+      "status": "PASS",
+      "summary": {
+        "probe_result": {
+          "default_device": "Device(gpu, 0)",
+          "metal_available": true,
+          "minimal_env_stdout": "True Device(gpu, 0)",
+          "verdict": "PASS"
+        },
+        "readiness": "tmux-python-package-validation-ready",
+        "type": "tmux_python_package_validation",
+        "verdict": "PASS"
+      }
+    }
+  ],
+  "readiness": "quality-preserving-release-ready",
+  "tag": "m254-upstream-pr-3485-promoted",
+  "type": "quality_preserving_release_gate",
+  "verdict": "PASS"
+}

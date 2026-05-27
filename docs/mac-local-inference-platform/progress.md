@@ -4270,3 +4270,15 @@
     - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/quality-preserving-release-gate-m254.md`
     - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/quality-preserving-release-gate-m254.json`
   - M254 status: branch is validated and ready for promotion.
+- Completed M254 promotion:
+  - fast-forward merged `upstream-pr-3485-gather-qmm-output-shapes` into
+    `prompt-processing-bench`
+  - promoted head `ac517b5a`
+  - reran the quality-preserving release gate on the promoted branch:
+    - verdict `PASS`
+    - gate count `15`
+    - failures `0`
+  - promotion artifact:
+    - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/upstream-pr-3485-promotion-m254.md`
+  - M254 conclusion: the validated final-net GatherQMM output-shape fix is now
+    part of `prompt-processing-bench`.
