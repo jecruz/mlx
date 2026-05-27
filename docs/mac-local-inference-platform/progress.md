@@ -4298,3 +4298,22 @@
     - defer `#3002` until NAX path is broadly re-enabled/tested
   - artifact:
     - `artifacts/m255-conflicting-pr-recheck/conflicting-pr-recheck-m255.md`
+- Completed M256 post-intake attention and prompt-processing sweep:
+  - validated the branch after M252-M255
+  - release quality and prompt-processing gate passed:
+    - verdict `PASS`
+    - gate count `15`
+    - failures `0`
+  - targeted C++ compile/GPU/vmap sweep passed:
+    - `42/42` tests passed
+  - local-built Python attention and compile tests passed:
+    - full `test_fast_sdpa`
+    - focused `test_shapeless_compile_gather_qmm`
+    - `20` tests run, `1` skipped, `0` failures
+  - artifact:
+    - `artifacts/m256-post-intake-attention-prompt-sweep/post-intake-attention-prompt-sweep-m256.md`
+    - `artifacts/m256-post-intake-attention-prompt-sweep/quality-preserving-release-gate-m256.md`
+    - `artifacts/m256-post-intake-attention-prompt-sweep/quality-preserving-release-gate-m256.json`
+  - M256 conclusion: the upstream intake batch from M252-M254 preserves
+    attention correctness, compile shape handling, and the existing
+    prompt-processing release gates.
