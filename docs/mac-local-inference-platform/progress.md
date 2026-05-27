@@ -4282,3 +4282,19 @@
     - `artifacts/m254-upstream-pr-3485-gather-qmm-output-shapes/upstream-pr-3485-promotion-m254.md`
   - M254 conclusion: the validated final-net GatherQMM output-shape fix is now
     part of `prompt-processing-bench`.
+- Completed M255 conflicting PR recheck:
+  - fetched and rechecked PRs `#3578`, `#3563`, `#3562`, `#3192`, and `#3002`
+    using `git merge-tree --write-tree`
+  - all five still conflict after M252-M254
+  - conflict summary:
+    - `#3578`: CPU encoder/eval, Metal eval, stream API conflicts
+    - `#3563`: no-GPU allocator and allocator tests
+    - `#3562`: no-GPU allocator and allocator tests
+    - `#3192`: Metal device files
+    - `#3002`: `steel_attention_nax.h`
+  - M255 recommendation:
+    - first manual-adaptation candidate: `#3563`
+    - second manual-adaptation candidate: `#3192`
+    - defer `#3002` until NAX path is broadly re-enabled/tested
+  - artifact:
+    - `artifacts/m255-conflicting-pr-recheck/conflicting-pr-recheck-m255.md`
