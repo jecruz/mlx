@@ -4317,3 +4317,22 @@
   - M256 conclusion: the upstream intake batch from M252-M254 preserves
     attention correctness, compile shape handling, and the existing
     prompt-processing release gates.
+- Completed M257 response quality regression harness:
+  - added `benchmarks/python/response_quality_regression_harness.py`
+  - supports `capture` mode for deterministic live endpoint quality artifacts
+  - supports `compare` mode for baseline-versus-candidate regression blocking
+  - comparison fails on candidate task failures, missing required markers,
+    quality-point drops, repetition regressions, and length drift coupled with a
+    quality drop
+  - added focused unit tests for pass, missing-marker failure, and repetition
+    regression behavior
+  - validation passed:
+    - `python3 -m unittest benchmarks/python/test_response_quality_regression_harness.py`
+    - `python3 -m py_compile benchmarks/python/response_quality_regression_harness.py benchmarks/python/test_response_quality_regression_harness.py`
+    - fixture baseline/candidate comparison produced verdict `PASS`
+  - artifacts:
+    - `artifacts/m257-response-quality-regression-harness/response-quality-regression-comparison-m257.md`
+    - `artifacts/m257-response-quality-regression-harness/response-quality-regression-comparison-m257.json`
+  - M257 conclusion: speed work now has a concrete response-quality regression
+    harness; next step is to capture a live accepted-engine baseline and require
+    candidate branches to compare against it before promotion.

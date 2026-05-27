@@ -1,0 +1,56 @@
+{
+  "type": "response_quality_regression_capture",
+  "tag": "m257-fixture-candidate",
+  "verdict": "PASS",
+  "rows": [
+    {
+      "case": "exact_answer",
+      "category": "instruction_following",
+      "raw_text": "QUALITY_OK",
+      "final_answer": "QUALITY_OK",
+      "required": ["QUALITY_OK"],
+      "missing": [],
+      "json_valid": null,
+      "visible_thinking": false,
+      "repetition_score": 0.0,
+      "max_repetition_score": 0.2,
+      "completion_chars": 10,
+      "service_request_ms": 90.0,
+      "failures": [],
+      "quality_points": 10
+    },
+    {
+      "case": "coding_task",
+      "category": "coding",
+      "raw_text": "a + b",
+      "final_answer": "a + b",
+      "required": ["a + b"],
+      "missing": [],
+      "json_valid": null,
+      "visible_thinking": false,
+      "repetition_score": 0.0,
+      "max_repetition_score": 0.2,
+      "completion_chars": 5,
+      "service_request_ms": 105.0,
+      "failures": [],
+      "quality_points": 10
+    },
+    {
+      "case": "rope_imrope_sentinel_recall",
+      "category": "long_context_rope_imrope",
+      "raw_text": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "final_answer": "ORCHID-17, LANTERN-42, HARBOR-93",
+      "required": ["ORCHID-17", "LANTERN-42", "HARBOR-93"],
+      "missing": [],
+      "json_valid": null,
+      "visible_thinking": false,
+      "repetition_score": 0.0,
+      "max_repetition_score": 0.2,
+      "completion_chars": 34,
+      "service_request_ms": 450.0,
+      "failures": [],
+      "quality_points": 10
+    }
+  ],
+  "failures": []
+}

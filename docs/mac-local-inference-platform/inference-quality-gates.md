@@ -339,3 +339,52 @@ Quality result:
 
 This is the intended quality gate behavior: a smaller model that loads and
 generates is still blocked if coding quality regresses.
+
+## M257 Response Quality Regression Harness
+
+M257 adds a baseline-versus-candidate response-quality comparison harness:
+
+- script: `benchmarks/python/response_quality_regression_harness.py`
+- live capture mode: records deterministic completion outputs, quality markers,
+  repetition score, visible-thinking state, length, and latency
+- comparison mode: fails when the candidate loses required markers, introduces
+  task failures, increases repetition beyond threshold, or drops quality points
+- performance is reported beside quality, but faster latency does not override a
+  quality failure
+
+Commands:
+
+```bash
+python3 benchmarks/python/response_quality_regression_harness.py capture \
+  --base-url http://127.0.0.1:8773 \
+  --model local-mlx \
+  --runtime-profile interactive \
+  --temperature 0.0 \
+  --top-p 1.0 \
+  --seed 257 \
+  --output-json artifacts/m257-response-quality-regression-harness/baseline.json \
+  --output-md artifacts/m257-response-quality-regression-harness/baseline.md \
+  --fail-on-fail
+
+python3 benchmarks/python/response_quality_regression_harness.py compare \
+  --baseline-json artifacts/m257-response-quality-regression-harness/baseline.json \
+  --candidate-json artifacts/m257-response-quality-regression-harness/candidate.json \
+  --output-json artifacts/m257-response-quality-regression-harness/response-quality-regression-comparison-m257.json \
+  --output-md artifacts/m257-response-quality-regression-harness/response-quality-regression-comparison-m257.md \
+  --fail-on-fail
+```
+
+Initial non-live verification:
+
+- unit tests: `PASS`
+- py_compile: `PASS`
+- fixture comparison: `PASS`
+
+Artifacts:
+
+- `artifacts/m257-response-quality-regression-harness/m257-fixture-baseline.json`
+- `artifacts/m257-response-quality-regression-harness/m257-fixture-candidate.json`
+- `artifacts/m257-response-quality-regression-harness/response-quality-regression-comparison-m257.json`
+
+Next live quality step: capture a baseline from the current accepted engine and
+compare future optimization branches against it before promotion.
