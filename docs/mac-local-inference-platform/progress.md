@@ -4422,3 +4422,33 @@
     - `artifacts/m260-response-quality-release-runner/quality-preserving-release-gate-m260-response-quality-release-runner.json`
   - M260 conclusion: future optimization branches can run one command to
     produce the required response-quality comparison and release-gate evidence.
+- Completed M261 live response-quality release runner:
+  - started resident MLX server in tmux session `codex-mlx-server`
+  - endpoint: `http://127.0.0.1:8773`
+  - model:
+    `/Volumes/StudioStackSSD4TB/Development/LLM/lmstudio/models/unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit`
+  - engine preset: `memory-saver`
+  - device: `Device(gpu, 0)`
+  - ran M260 runner in true live-capture mode, without `--candidate-json`
+  - validation passed:
+    - runner verdict `PASS`
+    - readiness `response-quality-release-ready`
+    - candidate source `live-capture`
+    - candidate cases `13`
+    - candidate quality points `130/130`
+    - max repetition score `0.0`
+    - candidate mean service request `346.028 ms`
+    - candidate-vs-baseline comparison `PASS`
+    - release gate `PASS`
+    - release gate count `16`
+    - failures `0`
+  - artifacts:
+    - `artifacts/m261-live-response-quality-release-runner/live-response-quality-release-runner-m261.md`
+    - `artifacts/m261-live-response-quality-release-runner/response-quality-release-runner-m261-live-response-quality-release-runner.json`
+    - `artifacts/m261-live-response-quality-release-runner/candidate-quality-capture-m261-live-response-quality-release-runner.json`
+    - `artifacts/m261-live-response-quality-release-runner/candidate-vs-baseline-m261-live-response-quality-release-runner.json`
+    - `artifacts/m261-live-response-quality-release-runner/quality-preserving-release-gate-m261-live-response-quality-release-runner.json`
+  - stopped the temporary `codex-mlx-server` session after capture to free
+    memory
+  - M261 conclusion: the one-command response-quality release path is now
+    proven against a live resident MLX server.

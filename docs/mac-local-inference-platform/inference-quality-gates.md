@@ -513,3 +513,40 @@ Artifacts:
 - `artifacts/m260-response-quality-release-runner/quality-preserving-release-gate-m260-response-quality-release-runner.json`
 
 This removes the manual artifact-plumbing step introduced in M259.
+
+## M261 Live Response-Quality Release Runner
+
+M261 validated the M260 runner in true live-capture mode against the resident
+MLX server:
+
+```bash
+python3 benchmarks/python/run_response_quality_release_gate.py \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m261-live-response-quality-release-runner \
+  --tag m261-live-response-quality-release-runner \
+  --fail-on-fail
+```
+
+M261 result:
+
+- runner verdict: `PASS`
+- readiness: `response-quality-release-ready`
+- candidate source: `live-capture`
+- candidate cases: `13`
+- candidate quality points: `130/130`
+- candidate mean service request: `346.028 ms`
+- candidate-vs-baseline comparison: `PASS`
+- release gate: `PASS`
+- release gate count: `16`
+- failures: `0`
+
+Artifacts:
+
+- `artifacts/m261-live-response-quality-release-runner/live-response-quality-release-runner-m261.md`
+- `artifacts/m261-live-response-quality-release-runner/response-quality-release-runner-m261-live-response-quality-release-runner.json`
+- `artifacts/m261-live-response-quality-release-runner/candidate-quality-capture-m261-live-response-quality-release-runner.json`
+- `artifacts/m261-live-response-quality-release-runner/candidate-vs-baseline-m261-live-response-quality-release-runner.json`
+- `artifacts/m261-live-response-quality-release-runner/quality-preserving-release-gate-m261-live-response-quality-release-runner.json`
+
+This is the default promotion path for future speed work: live capture,
+baseline comparison, then release gate.
