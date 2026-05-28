@@ -1,0 +1,52 @@
+{
+  "artifacts": {
+    "candidate_quality": {
+      "failure_count": 0,
+      "path": "artifacts/m263-cli-live-response-quality-release/candidate-quality-capture-m263-cli-live-response-quality-release.json",
+      "summary": {
+        "case_count": 13,
+        "max_quality_points": 130,
+        "max_repetition_score": 0.0,
+        "mean_service_request_ms": 342.235,
+        "pass_count": 13,
+        "total_quality_points": 130
+      },
+      "tag": "m263-cli-live-response-quality-release-candidate",
+      "type": "response_quality_regression_capture",
+      "verdict": "PASS"
+    },
+    "candidate_vs_baseline": {
+      "candidate": {
+        "case_count": 13,
+        "max_quality_points": 130,
+        "max_repetition_score": 0.0,
+        "mean_service_request_ms": 342.235,
+        "pass_count": 13,
+        "total_quality_points": 130
+      },
+      "failure_count": 0,
+      "path": "artifacts/m263-cli-live-response-quality-release/candidate-vs-baseline-m263-cli-live-response-quality-release.json",
+      "readiness": "response-quality-regression-ready",
+      "tag": "m263-cli-live-response-quality-release-candidate-vs-baseline",
+      "type": "response_quality_regression_comparison",
+      "verdict": "PASS"
+    },
+    "release_gate": {
+      "failure_count": 0,
+      "gate_count": 16,
+      "path": "artifacts/m263-cli-live-response-quality-release/quality-preserving-release-gate-m263-cli-live-response-quality-release.json",
+      "readiness": "quality-preserving-release-ready",
+      "tag": "m263-cli-live-response-quality-release",
+      "type": "quality_preserving_release_gate",
+      "verdict": "PASS"
+    }
+  },
+  "base_url": "http://127.0.0.1:8773",
+  "baseline_json": "artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json",
+  "candidate_source": "live-capture",
+  "failures": [],
+  "readiness": "response-quality-release-ready",
+  "tag": "m263-cli-live-response-quality-release",
+  "type": "response_quality_release_runner",
+  "verdict": "PASS"
+}

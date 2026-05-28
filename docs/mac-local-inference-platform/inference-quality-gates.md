@@ -595,3 +595,38 @@ Artifacts:
 - `artifacts/m262-cli-response-quality-release/response-quality-release-runner-m262-cli-response-quality-release.json`
 - `artifacts/m262-cli-response-quality-release/candidate-vs-baseline-m262-cli-response-quality-release.json`
 - `artifacts/m262-cli-response-quality-release/quality-preserving-release-gate-m262-cli-response-quality-release.json`
+
+## M263 CLI Live Response-Quality Release
+
+M263 validated the stable CLI command in live-capture mode:
+
+```bash
+bin/mlx-engine response-quality-release \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/m263-cli-live-response-quality-release \
+  --tag m263-cli-live-response-quality-release \
+  --fail-on-fail
+```
+
+M263 result:
+
+- runner verdict: `PASS`
+- readiness: `response-quality-release-ready`
+- candidate source: `live-capture`
+- candidate cases: `13`
+- candidate quality points: `130/130`
+- candidate mean service request: `342.235 ms`
+- candidate-vs-baseline comparison: `PASS`
+- release gate: `PASS`
+- release gate count: `16`
+- failures: `0`
+
+Artifacts:
+
+- `artifacts/m263-cli-live-response-quality-release/cli-live-response-quality-release-m263.md`
+- `artifacts/m263-cli-live-response-quality-release/response-quality-release-runner-m263-cli-live-response-quality-release.json`
+- `artifacts/m263-cli-live-response-quality-release/candidate-quality-capture-m263-cli-live-response-quality-release.json`
+- `artifacts/m263-cli-live-response-quality-release/candidate-vs-baseline-m263-cli-live-response-quality-release.json`
+- `artifacts/m263-cli-live-response-quality-release/quality-preserving-release-gate-m263-cli-live-response-quality-release.json`
+
+This is now the operator-facing promotion command for future speed work.
