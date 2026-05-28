@@ -550,3 +550,48 @@ Artifacts:
 
 This is the default promotion path for future speed work: live capture,
 baseline comparison, then release gate.
+
+## M262 CLI Response-Quality Release Command
+
+M262 adds the stable automation entrypoint:
+
+```bash
+bin/mlx-engine response-quality-release
+```
+
+Default command for live candidate capture:
+
+```bash
+bin/mlx-engine response-quality-release \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/response-quality-release \
+  --tag response-quality-release \
+  --fail-on-fail
+```
+
+Existing candidate artifact command:
+
+```bash
+bin/mlx-engine response-quality-release \
+  --candidate-json artifacts/m259-release-gate-response-quality/current-candidate-quality-capture-m259-qwen-a3b.json \
+  --output-dir artifacts/m262-cli-response-quality-release \
+  --tag m262-cli-response-quality-release \
+  --fail-on-fail
+```
+
+M262 result:
+
+- runner verdict: `PASS`
+- readiness: `response-quality-release-ready`
+- candidate source: `existing-artifact`
+- candidate-vs-baseline comparison: `PASS`
+- release gate: `PASS`
+- release gate count: `16`
+- failures: `0`
+
+Artifacts:
+
+- `artifacts/m262-cli-response-quality-release/cli-response-quality-release-m262.md`
+- `artifacts/m262-cli-response-quality-release/response-quality-release-runner-m262-cli-response-quality-release.json`
+- `artifacts/m262-cli-response-quality-release/candidate-vs-baseline-m262-cli-response-quality-release.json`
+- `artifacts/m262-cli-response-quality-release/quality-preserving-release-gate-m262-cli-response-quality-release.json`

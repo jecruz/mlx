@@ -4452,3 +4452,26 @@
     memory
   - M261 conclusion: the one-command response-quality release path is now
     proven against a live resident MLX server.
+- Completed M262 CLI response-quality release command:
+  - added `response-quality-release` subcommand to `bin/mlx-engine`
+  - command wraps `benchmarks/python/run_response_quality_release_gate.py`
+  - default live endpoint is `http://127.0.0.1:8773`
+  - default baseline is
+    `artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json`
+  - supports `--candidate-json` for CI/offline reuse of an existing candidate
+    capture
+  - added CLI wiring tests in `benchmarks/python/test_mlx_engine_cli.py`
+  - validation passed:
+    - `python3 -m unittest benchmarks/python/test_mlx_engine_cli.py benchmarks/python/test_response_quality_release_runner.py benchmarks/python/test_release_quality_performance_gate.py benchmarks/python/test_response_quality_regression_harness.py`
+    - `python3 -m py_compile bin/mlx-engine benchmarks/python/test_mlx_engine_cli.py benchmarks/python/run_response_quality_release_gate.py benchmarks/python/test_response_quality_release_runner.py`
+    - `bin/mlx-engine response-quality-release --candidate-json artifacts/m259-release-gate-response-quality/current-candidate-quality-capture-m259-qwen-a3b.json --output-dir artifacts/m262-cli-response-quality-release --tag m262-cli-response-quality-release --fail-on-fail`
+    - runner verdict `PASS`
+    - release gate count `16`
+    - failures `0`
+  - artifacts:
+    - `artifacts/m262-cli-response-quality-release/cli-response-quality-release-m262.md`
+    - `artifacts/m262-cli-response-quality-release/response-quality-release-runner-m262-cli-response-quality-release.json`
+    - `artifacts/m262-cli-response-quality-release/candidate-vs-baseline-m262-cli-response-quality-release.json`
+    - `artifacts/m262-cli-response-quality-release/quality-preserving-release-gate-m262-cli-response-quality-release.json`
+  - M262 conclusion: response-quality release validation now has a stable
+    `bin/mlx-engine` automation entrypoint.

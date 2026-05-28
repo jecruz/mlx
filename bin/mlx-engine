@@ -21,6 +21,7 @@ REGRESSION_SUITE = PYTHON_DIR / "run_resident_regression_suite.py"
 OPERATOR_READINESS_RENDER = PYTHON_DIR / "operator_readiness_render.py"
 OPERATOR_READINESS_BUNDLE = PYTHON_DIR / "operator_readiness_bundle.py"
 PROMPT_PERFORMANCE_REPORT = PYTHON_DIR / "prompt_processing_performance_report.py"
+RESPONSE_QUALITY_RELEASE = PYTHON_DIR / "run_response_quality_release_gate.py"
 
 
 def request_json(method: str, url: str, payload: dict[str, Any] | None = None):
@@ -270,6 +271,36 @@ def performance_report(args: argparse.Namespace) -> int:
     return subprocess.call(cmd, cwd=ROOT)
 
 
+def response_quality_release(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(RESPONSE_QUALITY_RELEASE),
+        "--base-url",
+        args.base_url,
+        "--baseline-json",
+        args.baseline_json,
+        "--output-dir",
+        args.output_dir,
+        "--tag",
+        args.tag,
+        "--model",
+        args.model,
+        "--runtime-profile",
+        args.runtime_profile,
+        "--temperature",
+        str(args.temperature),
+        "--top-p",
+        str(args.top_p),
+        "--seed",
+        str(args.seed),
+    ]
+    if args.candidate_json:
+        cmd.extend(["--candidate-json", args.candidate_json])
+    if args.fail_on_fail:
+        cmd.append("--fail-on-fail")
+    return subprocess.call(cmd, cwd=ROOT)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Resident MLX engine CLI")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -428,6 +459,32 @@ def build_parser() -> argparse.ArgumentParser:
     perf_parser.add_argument("--min-speedup", type=float, default=4.0)
     perf_parser.add_argument("--fail-on-fail", action="store_true")
     perf_parser.set_defaults(func=performance_report)
+
+    quality_release_parser = subcommands.add_parser(
+        "response-quality-release",
+        help="Run response-quality capture, baseline comparison, and release gate",
+    )
+    quality_release_parser.add_argument("--base-url", default="http://127.0.0.1:8773")
+    quality_release_parser.add_argument(
+        "--baseline-json",
+        default="artifacts/m258-live-response-quality-baseline/live-baseline-m258-qwen-a3b.json",
+    )
+    quality_release_parser.add_argument(
+        "--candidate-json",
+        help="Use an existing candidate capture instead of capturing from the live endpoint.",
+    )
+    quality_release_parser.add_argument(
+        "--output-dir",
+        default="artifacts/response-quality-release",
+    )
+    quality_release_parser.add_argument("--tag", default="response-quality-release")
+    quality_release_parser.add_argument("--model", default="local-mlx")
+    quality_release_parser.add_argument("--runtime-profile", default="interactive")
+    quality_release_parser.add_argument("--temperature", type=float, default=0.0)
+    quality_release_parser.add_argument("--top-p", type=float, default=1.0)
+    quality_release_parser.add_argument("--seed", type=int, default=260)
+    quality_release_parser.add_argument("--fail-on-fail", action="store_true")
+    quality_release_parser.set_defaults(func=response_quality_release)
 
     return parser
 
