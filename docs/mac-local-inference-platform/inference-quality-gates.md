@@ -630,3 +630,33 @@ Artifacts:
 - `artifacts/m263-cli-live-response-quality-release/quality-preserving-release-gate-m263-cli-live-response-quality-release.json`
 
 This is now the operator-facing promotion command for future speed work.
+
+## M264 Promotion Checklist Integration
+
+M264 makes the M263 CLI command a required promotion checklist step in the
+resident operator runbook:
+
+```bash
+bin/mlx-engine response-quality-release \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/response-quality-release \
+  --tag response-quality-release \
+  --fail-on-fail
+```
+
+Final promotion now requires a live-capture result with:
+
+- runner verdict: `PASS`
+- readiness: `response-quality-release-ready`
+- candidate source: `live-capture`
+- candidate-vs-baseline comparison: `PASS`
+- release gate: `PASS`
+- release gate count: `16`
+- failures: `0`
+
+The command is required before merging or promoting changes that touch routing,
+cache behavior, prompt processing, streaming, sampling defaults, context
+handling, tokenizer handling, RoPE/IMRoPE, KV-cache reuse, model/profile swaps,
+or performance work. `--candidate-json` remains useful for CI/offline reuse,
+but it is not the final operator proof unless a release note explicitly records
+why live capture was skipped.

@@ -41,6 +41,38 @@ Expected readiness characteristics:
 - resident model loaded
 - warmup complete when warmed latency matters
 
+## Required Response-Quality Promotion Gate
+
+Run this before promoting or merging any performance/runtime change that can
+alter output behavior:
+
+```bash
+bin/mlx-engine response-quality-release \
+  --base-url http://127.0.0.1:8773 \
+  --output-dir artifacts/response-quality-release \
+  --tag response-quality-release \
+  --fail-on-fail
+```
+
+This gate is required for changes touching routing, cache behavior, prompt
+processing, streaming, sampling defaults, context handling, tokenizer handling,
+RoPE/IMRoPE, KV-cache reuse, model/profile swaps, or promoted performance
+work.
+
+Required final-promotion result:
+
+- runner verdict: `PASS`
+- readiness: `response-quality-release-ready`
+- candidate source: `live-capture`
+- candidate-vs-baseline comparison: `PASS`
+- release gate: `PASS`
+- release gate count: `16`
+- failures: `0`
+
+`--candidate-json` is acceptable for CI/offline checks that reuse an existing
+capture. It is not the final promotion proof unless the release note explicitly
+documents why a live capture was not required.
+
 ## Product Client Request Metadata
 
 Product clients should send workload intent on the request body instead of

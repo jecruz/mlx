@@ -4506,3 +4506,25 @@
     memory
   - M263 conclusion: the final operator-facing response-quality release command
     is proven end-to-end against a live resident MLX server.
+- Completed M264 promotion checklist integration:
+  - updated the resident operator runbook to require
+    `bin/mlx-engine response-quality-release` before merging or promoting
+    runtime/performance changes that can affect output quality
+  - required final-promotion proof is now a live-capture run with:
+    - runner verdict `PASS`
+    - readiness `response-quality-release-ready`
+    - candidate source `live-capture`
+    - candidate-vs-baseline comparison `PASS`
+    - release gate `PASS`
+    - release gate count `16`
+    - failures `0`
+  - documented that `--candidate-json` is acceptable for CI/offline reuse but
+    is not final operator proof unless the release note explicitly explains why
+    live capture was skipped
+  - artifacts:
+    - `artifacts/m264-promotion-checklist-response-quality/promotion-checklist-response-quality-m264.md`
+  - validation passed:
+    - `rg -n "response-quality-release|Required Response-Quality Promotion Gate|M264" docs/mac-local-inference-platform/resident-operator-runbook.md docs/mac-local-inference-platform/inference-quality-gates.md docs/mac-local-inference-platform/progress.md artifacts/m264-promotion-checklist-response-quality/promotion-checklist-response-quality-m264.md`
+    - `git diff --check`
+  - M264 conclusion: response quality is now an explicit release-promotion
+    requirement, not just an optional benchmark artifact.
