@@ -4528,3 +4528,35 @@
     - `git diff --check`
   - M264 conclusion: response quality is now an explicit release-promotion
     requirement, not just an optional benchmark artifact.
+- Completed M265 upstream runtime-correctness cherry-pick intake:
+  - created clean branch `upstream-intake-m265-runtime-correctness` from
+    `prompt-processing-bench`
+  - refreshed `origin` and `jecruz` before intake; `origin/main` had advanced
+    to `e9e20fa6`
+  - attempted requested upstream commits 1-6 in order:
+    - `cc3ef8d9` shape-product overflow guard
+    - `cd32966c` Metal CommandBuffer error poisoning
+    - `e0163f3a` no-GPU cache eviction CPU stream synchronization
+    - `f831bdfc` no-GPU CPU allocator buffer cache
+    - `4f5b3ff3` singleton lifetime shutdown fix
+    - `933a4a77` DLPack-compatible array import improvements
+  - each candidate reduced to an empty cherry-pick because equivalent local
+    commits are already present on the engine branch:
+    - `8bb5db7e` for `cc3ef8d9`
+    - `2a2ca8bc` for `cd32966c`
+    - `7b5a6374` for `e0163f3a`
+    - `f17617ad` for `f831bdfc`
+    - `1679ffc9` for `4f5b3ff3`
+    - `6446b95c` for `933a4a77`
+  - resolved the transient allocator conflict during `f831bdfc` by preserving
+    both the existing buffer cache behavior and the later CPU-stream
+    synchronization guards; the resolved patch was still empty
+  - artifacts:
+    - `artifacts/m265-upstream-runtime-correctness-intake/upstream-runtime-correctness-intake-m265.md`
+  - validation passed:
+    - `git log --all --oneline --grep=<candidate subject>`
+    - `git status --short --branch`
+    - `git diff --check`
+  - M265 conclusion: requested upstream runtime-correctness candidates 1-6 are
+    already represented on the MLX engine branch; no duplicate runtime code
+    commit was needed.
